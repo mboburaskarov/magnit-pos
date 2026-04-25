@@ -1,13 +1,12 @@
-import { useQueryParams } from '@hooks/useQueryParams';
-import Highlighter from 'react-highlight-words';
-import { Box, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { makeStyles } from '@mui/styles';
-import { get } from 'lodash';
+import { useQueryParams } from '@hooks/useQueryParams'
+import Highlighter from 'react-highlight-words'
+import { Box, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
 
-import OutLineTextFieldThousand from '../../Inputs/OutLineTextFieldThousand';
-import CustomImg from '../../CustomImg';
-
+import OutLineTextFieldThousand from '../../Inputs/OutLineTextFieldThousand'
+import CustomImg from '../../CustomImg'
 
 const useStyles = makeStyles((theme) => ({
   card_detail: {
@@ -368,18 +367,22 @@ export default function ResultItem({ index, setOpenRejectConfirmDialog, itemRef,
             </div>
             <Box ml={2} width={'100%'} overflow={'hidden'}>
               <Typography
-                textOverflow={'ellipsis'}
                 maxWidth={'calc(100% - 1px)'}
-                whiteSpace={'nowrap'}
                 overflow={'hidden'}
                 id='product-name'
                 className={classes.itemName}
+                sx={{
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                }}
               >
                 <Highlighter
                   highlightClassName='highlighter'
                   searchWords={[searchTerm]}
                   autoEscape
-                  textToHighlight={`${product?.name} / ${product?.category_name} (${product?.producer_name})`}
+                  textToHighlight={`${product?.name}`}
                 />
               </Typography>
               <Typography display={'flex'} id='product-barcode'>

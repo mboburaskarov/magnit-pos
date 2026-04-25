@@ -14,7 +14,7 @@ import { t } from 'i18next'
 const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
-      width: '660px',
+      width: '60%',
       borderRadius: '24px 0 0 24px',
       backgroundColor: theme.palette.background.default,
     },
