@@ -39,6 +39,13 @@ const columns = [
   },
 
   {
+    field: 'country',
+    hide: false,
+    minWidth: 70,
+    width: 290,
+  },
+
+  {
     field: 'expire_date',
     hide: false,
     minWidth: 70,
