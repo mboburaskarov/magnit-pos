@@ -281,6 +281,16 @@ export default function tableHeaderSelector({
       }
     }
 
+     if (el.field === 'country') {
+      return {
+        ...el,
+        headerName: 'Страна',
+        colId: el.field,
+
+        cellRenderer: memo((p) => <SimpleText type={'country'} {...p} />),
+      }
+    }
+
     if (el.field === 'number') {
       return {
         ...el,
