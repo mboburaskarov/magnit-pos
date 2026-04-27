@@ -116,11 +116,15 @@ export default function BranchDrawer({ refetchBranchList, openDrawer, closeDrawe
       return
     }
 
-    if (terminalIds.includes(normalizedTerminalId)) {
+    if (terminalIds?.includes(normalizedTerminalId)) {
       error('Bu Terminal ID allaqachon mavjud')
       return
     }
-
+    if(!terminalIds) {
+      setTerminalIds([normalizedTerminalId])
+      setTerminalIdValue('')
+      return
+    }
     setTerminalIds((prev) => [...prev, normalizedTerminalId])
     setTerminalIdValue('')
   }

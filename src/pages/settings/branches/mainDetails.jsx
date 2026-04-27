@@ -106,7 +106,6 @@ export default function MainDetails({
           <InputPhone
             login={false}
             id='phone'
-            required={true}
             disabled
             name='phone'
             control={control}
