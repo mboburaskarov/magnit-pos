@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 export const ProgressBar = ({ current, total, minWidth = '100%', mt = '10px' }) => {
   const progress = current / total
   return (
-    <Box sx={{ width: '100%', minWidth: minWidth, height: '36px', backgroundColor: 'orange.200', borderRadius: '6px', mt: mt }}>
+    <Box sx={{ width: '100%', minWidth: minWidth, height: '36px', backgroundColor: 'orange.200', borderRadius: '6px', mt: mt ,overflow: 'hidden' }}>
       <Box width={(current * 100) / total + '%'} height={36} sx={{ backgroundColor: 'orange.500', borderRadius: '6px' }}>
         {progress > 10 && (
           <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '500', color: 'white', textAlign: 'center' }}>{progress + '%'}</Typography>

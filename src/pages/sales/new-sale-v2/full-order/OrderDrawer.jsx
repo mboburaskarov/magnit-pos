@@ -343,6 +343,17 @@ export default function OrderDrawer({
                             if (get(cashBoxDetails, 'data.data.sale_type') === 'RETURN') {
                               return pay?.type === 'cash'
                             }
+                            if(get(cashBoxDetails, 'data.data.service_type') === 'uzum'){
+                              if(pay?.front_name === 'uzum_tezkor'){
+                                return pay
+                              }else{
+                                return false
+                              }
+                            }else{
+                               if(pay?.front_name === 'uzum_tezkor'){
+                                return false
+                              }
+                            }
                             return pay
                           })
                           .map((item) => (

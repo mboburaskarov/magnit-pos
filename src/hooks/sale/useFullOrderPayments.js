@@ -56,6 +56,7 @@ export const useFullOrderPayments = ({ cartItemsList, paymentTypesList, isOrderD
   // Check if payment type is visible
   const isVisiblePaymentType = useCallback(
     (type) => {
+      
       const totalEnteredMoney = roundAmount(paymentsList.reduce((sum, item) => sum + (item.amount || 0), 0))
       const totalAmount = roundAmount(get(cartItemsList, 'total_amount'))
       const isThereType = type === 'overAll' ? false : paymentsList.some((item) => item.id === type.id)
