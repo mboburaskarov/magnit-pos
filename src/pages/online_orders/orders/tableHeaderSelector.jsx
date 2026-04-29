@@ -91,7 +91,7 @@ export default function tableHeaderSelector({ orderColumns: productsColumns }) {
         ...el,
         headerName: 'Клиент',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} customText={p?.data?.customer?.full_name} type='customer' />),
+        cellRenderer: memo((p) => <SimpleText {...p} customText={p?.data?.customer?.full_name} type='customer.full_name' />),
       }
     }
     if (el.field === 'store') {

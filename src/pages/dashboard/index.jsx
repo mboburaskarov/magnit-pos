@@ -420,7 +420,7 @@ export default function DashboarPage() {
                 id='dashboard-chart'
                 data={regenerated}
                 title={'Платежи'}
-                collapseCount={9}
+                collapseCount={11}
                 isLoading={isPaymentsLoading}
                 subTitle={thousandDivider(Math.round(regenerated.reduce((a, b) => a + b.amount, 0)), 'сум')}
                 tableData={[

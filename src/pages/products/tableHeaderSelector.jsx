@@ -294,7 +294,7 @@ export default function tableHeaderSelector({
     if (el.field === 'number') {
       return {
         ...el,
-        headerName: '№',
+        headerName: '№aa',
         colId: el.field,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
           const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex

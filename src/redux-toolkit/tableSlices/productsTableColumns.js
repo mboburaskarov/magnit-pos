@@ -1,4 +1,3 @@
-import { createSlice } from '@reduxjs/toolkit'
 import { createUniversalSlice } from '../helper/createUniversalSlice'
 
 const columns = [
@@ -30,6 +29,12 @@ const columns = [
     minWidth: 70,
     width: 150,
   },
+ {
+    field: 'country',
+    hide: false,
+    minWidth: 70,
+    width: 290,
+  },
 
   {
     field: 'manufacturer',
@@ -38,13 +43,7 @@ const columns = [
     width: 290,
   },
 
-  {
-    field: 'country',
-    hide: false,
-    minWidth: 70,
-    width: 290,
-  },
-
+ 
   {
     field: 'expire_date',
     hide: false,
