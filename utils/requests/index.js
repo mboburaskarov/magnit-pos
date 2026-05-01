@@ -346,6 +346,7 @@ export const requests = {
   setImportMarkingRequired: ({ product_id, id, is_marking, is_checking }) =>
     request.patch(`v1/product/store-is-marking`, { product_id, id, is_checking, is_marking }),
   getProductsExcelReport: (filter) => requestEXCEL.get(`v1/product/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getProductsExcelByImportReport: (filter) => requestEXCEL.get(`v1/product/export-product-by-import${qs.stringify(filter, { addQueryPrefix: true })}`),
   getProductsExcelReportForAA: (filter) => requestEXCEL.get(`v1/product/export-arzon${qs.stringify(filter, { addQueryPrefix: true })}`),
   getProductMovementDashboardExcel: ({ id, ...filter }) =>
     requestEXCEL.get(`v1/product/movement-units-export${qs.stringify(filter, { addQueryPrefix: true })}`),

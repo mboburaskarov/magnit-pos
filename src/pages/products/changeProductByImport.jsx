@@ -236,7 +236,7 @@ export default function ProductsPageByStore() {
       methods.setValue(`editable_unit_code_${get(productData, 'id')}`, get(productData, 'unit_code'))
     })
   }, [productsList?.data, values?.limit, appType])
-  const { mutate: productsExcelReport, isLoading: isproductsExcelReport } = useMutation(requests.getProductsExcelReport, {
+  const { mutate: productsExcelReport, isLoading: isproductsExcelReport } = useMutation(requests.getProductsExcelByImportReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
     },
@@ -458,7 +458,7 @@ export default function ProductsPageByStore() {
               enableFillHandle={true}
               onCellValueChanged={onCellValueChanged}
               downloadForAA={() => productsExcelReportForAA({ ...productsListFilter, offset: 0, limit: 1000000 })}
-              fullDownload={() => productsExcelReport({ ...productsListFilter, offset: 0, limit: 1000000 })}
+              fullDownload={() => productsExcelReport({ offset: 0, limit: 1000000 })}
               downloadByFilter={() => productsExcelReport(productsListFilter)}
               isDownloading={isproductsExcelReport}
               columns={tableColumns}
