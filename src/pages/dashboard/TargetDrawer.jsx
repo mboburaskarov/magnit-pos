@@ -140,14 +140,23 @@ export default function TargetDrawer({ openDrawer, closeDrawer }) {
     }
   }, [values?.limitTarget, values?.offsetTarget, values?.search, orderStoring, selectedMonth, selectedYear])
 
-  const {
-    data: targetList,
-    isLoading: isTargetList,
-    isFetching: isFetchingTargetList,
-    refetch,
-  } = useQuery(['targetList', targetListFIlter], () => requests.getTargetList(targetListFIlter))
+ const {
+  data: targetList,
+  isLoading: isTargetList,
+  isFetching: isFetchingTargetList,
+} = useQuery({
+  queryKey: ['targetList', targetListFIlter],
+  queryFn: () => requests.getTargetList(targetListFIlter),
+  enabled: !!openDrawer?.open,
+})
+const { data: dashboardTargetStatistic } = useQuery({
+  queryKey: ['dashboardTargetStatisticInside', targetListFIlter],
+  queryFn: () => requests.dashboardTargetStatistic(targetListFIlter),
+  enabled: !!openDrawer?.open,
+})
+ 
 
-  useEffect(() => {
+useEffect(() => {
     const count = targetList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limitTarget || 0))
@@ -219,9 +228,9 @@ export default function TargetDrawer({ openDrawer, closeDrawer }) {
       </Box>
       <Box sx={{ padding: '12px 20px', mt: '24px' }}>
         <Typography sx={{ fontSize: '18px', lineHeight: '28px', fontWeight: '600', color: 'bunker.950' }}>
-          Цель на месяц {thousandDivider(openDrawer?.total, 'сум')}{' '}
+          Цель на месяц {thousandDivider(dashboardTargetStatistic?.data?.data?.total_target_amount, 'сум')}{' '}
         </Typography>
-        <ProgressBar current={openDrawer?.current} total={openDrawer?.total} />
+        <ProgressBar current={dashboardTargetStatistic?.data?.data?.total_target_sales} total={dashboardTargetStatistic?.data?.data?.total_target_amount} />
       </Box>
       <Box
         sx={{
