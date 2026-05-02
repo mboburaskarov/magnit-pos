@@ -1,5 +1,5 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import { persistReducer, persistStore } from 'redux-persist'
+import { createMigrate, persistReducer, persistStore } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
 import { returnToWarehouseRecheckWithCheckingTableColumnsSlice } from './tableSlices/returnToWarehouseRecheckWithCheckingTableColumns'
@@ -54,32 +54,15 @@ import { userSlice } from './userSlice'
 import { onlineOrdersTableColumnsSlice } from './tableSlices/onlineOrderTableColumns'
 import { ostatokByDateTableColumnsSlice } from './tableSlices/ostatokByDateTableColumns'
 
-// Define your migration function here
 const migrations = {
-  // Example migration
-  506: (state) => {
-    // Check if state needs migration
-    if (!state.migrated) {
-      // Perform migration logic
-      return Promise.resolve({
-        ...state,
-        // Update state to indicate migration has been applied
-        migrated: true,
-      })
-    }
-    return Promise.resolve(state)
-  },
-  // Add more migrations as needed
+  507: (state) => Promise.resolve(state),
 }
 
 const persistConfig = {
   key: 'root',
   storage,
-  version: 506, // Current version of the persisted state
-  migrate: (state) => {
-    // Apply migrations based on state version
-    return migrations[state._persist.version](state)
-  },
+  version: 507,
+  migrate: createMigrate(migrations, { debug: false }),
 }
 
 const reducer = combineReducers({
