@@ -34,7 +34,7 @@ const columns = [
     minWidth: 70,
     width: 170,
   },
-
+  {field:'total_new_retail_price', hide:false, minWidth:70, width:300},
   {
     field: 'status',
     hide: false,

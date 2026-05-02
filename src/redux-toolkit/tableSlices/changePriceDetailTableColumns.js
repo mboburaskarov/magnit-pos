@@ -12,7 +12,7 @@ const columns = [
     field: 'name',
     hide: false,
     minWidth: 200,
-    width: 350,
+    width: 400,
   },
 
   {
@@ -32,7 +32,7 @@ const columns = [
     field: 'new_retail_price',
     hide: false,
     minWidth: 70,
-    width: 200,
+    width: 300,
   },
   {
     field: 'old_supply_price',
@@ -58,6 +58,12 @@ const columns = [
     minWidth: 100,
     flex: 1,
   },
+  {
+    field: 'price_difference',
+    hide: false,
+    minWidth: 300,
+    flex: 1,
+  }
 ]
 
 const changePriceDetail = createUniversalSlice('changePriceDetail', columns)
