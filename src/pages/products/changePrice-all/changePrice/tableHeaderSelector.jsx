@@ -121,7 +121,7 @@ export default function tableHeaderSelector({ revaluationColumns, t }) {
         headerName:'Итоговая розн. цена',
         colId:el.field,
         cellRenderer: memo((p) => (
-          <SimpleText {...p} type='total_new_retail_price' withDevider currency={'сум'} />      )),
+          <SimpleText {...p} type='total_price_difference' withDevider currency={'сум'} />      )),
       }
     }
     if (el.field === 'quantity') {
