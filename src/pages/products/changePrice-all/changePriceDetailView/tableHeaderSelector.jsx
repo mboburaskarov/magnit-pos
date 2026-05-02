@@ -4,27 +4,8 @@ import { get } from 'lodash'
 import { memo } from 'react'
 import thousandDivider from '@utils/thousandDivider'
 import { useQueryParams } from '@hooks/useQueryParams'
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
-const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
-  return (
-    <Typography
-      sx={{
-        display: '-webkit-box',
-        overflow: 'hidden',
-        wordWrap: 'break-word',
-        textOverflow: 'ellipsis',
-        '-webkit-box-orient': 'vertical',
-        '-webkit-line-clamp': '3',
-        whiteSpace: 'pre-line',
-        color: !data?.[type] && 'gray.400',
-        textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through',
-      }}
-      id={`product-${type}-${rowIndex}`}
-    >
-      {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
-    </Typography>
-  )
-}
 
 export default function tableHeaderSelector({ revaluationColumns }) {
   const { values } = useQueryParams()
@@ -124,20 +105,34 @@ export default function tableHeaderSelector({ revaluationColumns }) {
         )),
       }
     }
-     if (el.field === 'max_price') {
-          return {
-            ...el,
-            headerName: 'Макс. цена',
-            colId: el.field,
-            cellRenderer: memo((p) => <SimpleText {...p} type='max_price' withDevider currency={'сум'} />),
-          }
-        }
+    if (el.field === 'max_price') {
+      return {
+        ...el,
+        headerName: 'Макс. цена',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='max_price' withDevider currency={'сум'} />),
+      }
+    }
+    if (el.field == 'price_difference') {
+      return {
+        ...el,
+        headerName: 'Разница в цене',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='price_difference' withDevider currency={'сум'} />),
+      }
+    }
     if (el.field === 'scanned_count') {
       return {
         ...el,
         headerName: 'Кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='scanned_count' />),
+        cellRenderer: memo((p) => (
+           <SimpleText
+                      {...p}
+                                 customText={get(p, 'data.unit_per_pack', 0) > 1 ? `${get(p, 'data.quantity', 0)} ( ${get(p, 'data.unit_quantity', 0)}/${get(p, 'data.unit_per_pack', 0)})` : `${get(p, 'data.quantity', 0)}`}
+ type='pack_quantity'
+                    />
+        )),
       }
     }
   })

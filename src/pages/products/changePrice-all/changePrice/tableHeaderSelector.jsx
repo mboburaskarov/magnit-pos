@@ -115,7 +115,15 @@ export default function tableHeaderSelector({ revaluationColumns, t }) {
         cellRenderer: memo((p) => <SimpleText {...p} type={'updated_at'} customText={dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')} />),
       }
     }
-
+    if(el.field == 'total_new_retail_price'){
+      return {
+        ...el,
+        headerName:'Итоговая розн. цена',
+        colId:el.field,
+        cellRenderer: memo((p) => (
+          <SimpleText {...p} type='total_new_retail_price' withDevider currency={'сум'} />      )),
+      }
+    }
     if (el.field === 'quantity') {
       return {
         ...el,

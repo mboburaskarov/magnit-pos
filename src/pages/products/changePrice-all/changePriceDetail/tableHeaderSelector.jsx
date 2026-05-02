@@ -86,12 +86,19 @@ export default function tableHeaderSelector({ revaluationColumns }) {
     if (el.field === 'max_price') {
       return {
         ...el,
-        headerName: 'Макс. цена',
+        headerName: 'Макс. ценаaa',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='max_price' withDevider currency={'сум'} />),
       }
     }
-
+    if (el.field == 'price_difference') {
+      return {
+        ...el,
+        headerName: 'Разница в цене',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='price_difference' withDevider currency={'сум'} />),
+      }
+    }
     if (el.field === 'percent') {
       return {
         ...el,
@@ -119,7 +126,13 @@ export default function tableHeaderSelector({ revaluationColumns }) {
         ...el,
         headerName: 'Кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='scanned_count' />),
+        cellRenderer: memo((p) => (
+          <SimpleText
+            {...p}
+            customText={get(p, 'data.unit_per_pack', 0) > 1 ? `${get(p, 'data.quantity', 0)} ( ${get(p, 'data.unit_quantity', 0)}/${get(p, 'data.unit_per_pack', 0)})` : `${get(p, 'data.quantity', 0)}`}
+            type='scanned_count'
+          />
+        )),
       }
     }
   })
