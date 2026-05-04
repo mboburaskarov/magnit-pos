@@ -1,6 +1,6 @@
 import { ArrowDownward, ArrowUpward } from '@mui/icons-material'
 import AccountTreeIcon from '@mui/icons-material/AccountTree'
-import { Box, IconButton, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import Highlighter from 'react-highlight-words'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '@mui/styles'
@@ -19,14 +19,29 @@ import EditIcon from '../../../assets/icons/EditIcon'
 import { t } from 'i18next'
 import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
-export default function tableHeaderSelector({ orderColumns: productsColumns }) {
+export default function tableHeaderSelector({ orderColumns: productsColumns, setOpenSaleDrawer, setCurrentSaleId, setSaleIds, setCurrentIndex, onlineOrderList }) {
   const columns = productsColumns?.map((el) => {
     if (el.field === 'sale_number') {
       return {
         ...el,
         headerName: 'ID',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} type='sale_number' />),
+        cellRenderer: memo((p) => (
+          <Box
+            sx={{ cursor: 'pointer', color: 'primary.main', fontWeight: 600 }}
+            onClick={() => {
+              const data = onlineOrderList?.data?.data?.data || []
+              const ids = data.map((item) => item.id)
+              const index = ids.indexOf(p.data.id)
+              setSaleIds(ids)
+              setCurrentSaleId(p.data.id)
+              setCurrentIndex(index)
+              setOpenSaleDrawer({ id: p.data.id, currentIndex: index })
+            }}
+          >
+            <SimpleText {...p} type='sale_number' />
+          </Box>
+        )),
       }
     }
     //     // Online sale status

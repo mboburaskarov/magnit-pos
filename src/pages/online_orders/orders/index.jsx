@@ -23,6 +23,9 @@ function OnlineOrders() {
   const [offsetCount, setOffsetCount] = useState(0)
   const dispatch = useDispatch()
   const [openSaleDrawer, setOpenSaleDrawer] = useState(false)
+  const [currentSaleId, setCurrentSaleId] = useState(null)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [saleIds, setSaleIds] = useState([])
 
   const { values } = useQueryParams()
   const navigate = useNavigate()
@@ -51,7 +54,7 @@ function OnlineOrders() {
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [onlineOrderList, onlineOrderFilter])
-  const tableColumns = tableHeaderSelector({ orderColumns: columns })
+  const tableColumns = tableHeaderSelector({ orderColumns: columns, setOpenSaleDrawer, setCurrentSaleId, setSaleIds, setCurrentIndex, onlineOrderList })
 
   return (
     <LoadingContainer readyState={true}>
@@ -127,7 +130,15 @@ function OnlineOrders() {
           isRefreshing={false}
         />
       </Box>
-     
+      <SaleDrawer
+        open={openSaleDrawer}
+        setOpen={setOpenSaleDrawer}
+        ids={saleIds}
+        currentSaleId={currentSaleId}
+        setCurrentSaleId={setCurrentSaleId}
+        currentIndex={currentIndex}
+        setCurrentIndex={setCurrentIndex}
+      />
     </LoadingContainer>
   )
 }
