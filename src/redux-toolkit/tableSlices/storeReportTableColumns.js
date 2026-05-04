@@ -78,6 +78,13 @@ const columns = [
   },
 
   {
+    field: 'uzum_tez_kor',
+    hide: false,
+    minWidth: 70,
+    width: 180,
+  },
+
+  {
     field: 'return_amount',
     hide: false,
     minWidth: 70,
