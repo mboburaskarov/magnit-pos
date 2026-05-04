@@ -16,11 +16,13 @@ import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
 import dayjs from 'dayjs'
 import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
 import InputSearch from '@components/Inputs/InputSearch'
+import SaleDrawer from '@/pages/sales/all-sales/saleDrawer'
 
 function OnlineOrders() {
   const [orderType, setOrderType] = useState('all')
   const [offsetCount, setOffsetCount] = useState(0)
   const dispatch = useDispatch()
+  const [openSaleDrawer, setOpenSaleDrawer] = useState(false)
 
   const { values } = useQueryParams()
   const navigate = useNavigate()
@@ -125,6 +127,7 @@ function OnlineOrders() {
           isRefreshing={false}
         />
       </Box>
+     
     </LoadingContainer>
   )
 }

@@ -223,6 +223,17 @@ export default function tableHeaderSelector({ branchesColumns, values, setOrderS
         cellRenderer: memo((p) => <SimpleText {...p} withDevider type='uzum' />),
       }
     }
+    if (el.field === 'uzum_tez_kor') {
+      return {
+        ...el,
+        headerComponent: CustomHeader,
+        orderStoring,
+        setOrderStoring,
+        headerName: 'Uzum Tezkor',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='uzum_tez_kor' />),
+      }
+    }
     if (el.field === 'discount_amount') {
       return {
         ...el,
