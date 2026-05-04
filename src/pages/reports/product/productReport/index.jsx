@@ -205,7 +205,7 @@ export default function ProductReportPage() {
             id='clients-main-table'
             tableSettings
             uniqId='cart_item_id'
-            fullDownload={() => getPorductReportExcelReport({ ...productReportListFilter, offset: 0, limit: 1000000 })}
+            fullDownload={() => getPorductReportExcelReport({ ...productReportListFilter, offset: 0, limit: 6000000 })}
             downloadByFilter={() => getPorductReportExcelReport(productReportListFilter)}
             isDownloading={isgetPorductReportExcelReport}
             columns={tableColumns}
