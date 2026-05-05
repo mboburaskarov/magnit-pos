@@ -113,7 +113,31 @@ export default function tableHeaderSelector({ importsColumns, values, setScanedN
         headerName: 'Принятое кол-во',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Box id={`${'import_date'}-${p.rowIndex}`} whiteSpace='pre-wrap'>
+          <Box id={`${'import_date'}-${p.rowIndex}`} sx={{ display: 'flex' }} whiteSpace='pre-wrap'>
+            <input
+              type='checkbox'
+              checked={p?.data?.scanned_pack == p?.data?.accepted_count}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setScanedNumber({
+                    returnId: id,
+                    status: 'checking',
+                    product_id: p?.data?.id,
+                    scanned_pack: Number(get(p, 'data.scanned_pack')),
+                    type: 'return',
+                  })
+                } else {
+                  setScanedNumber({
+                    returnId: id,
+                    status: 'checking',
+                    product_id: p?.data?.id,
+                    scanned_pack: 0,
+                    type: 'return',
+                  })
+                }
+              }}
+              name={`scanned_quantity_${p?.data?.id}`}
+            />
             <NumberFormatInput
               uncontrolled
               onBlur={({ target }) => {
@@ -135,6 +159,7 @@ export default function tableHeaderSelector({ importsColumns, values, setScanedN
               name={`scanned_quantity_unit_${p?.data?.id}`}
               type='number'
               fullWidth
+              sx={{ml:'10px'}}
             />
           </Box>
         )),
