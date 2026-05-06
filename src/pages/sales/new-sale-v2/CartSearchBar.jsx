@@ -409,6 +409,8 @@ function CartSearchBar({
                     barcode: get(head(productsData), 'barcode'),
                   })
                 } else {
+                  return
+                  // vaqtincha
                   if (inputlang === 'ru') {
                     handleAddProduct({
                       discount_type: get(discount, 'type', 'percent'),
