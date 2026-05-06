@@ -501,14 +501,27 @@ function NewSaleV2() {
     }
     return requests.createCartItem(params)
   }
-
-  const { mutate: handleAddProduct, isLoading: isCreatingProduct } = useMutation(conditionalCreateCartItem, {
+const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCartItem, {
+    onSuccess: () => {
+     success('Маркировка обновлена')
+      
+    },
+    onError: () => {
+      error('Ошибка при сохранении маркировки')
+    },
+  })
+  const { mutate: handleAddProduct } = useMutation(conditionalCreateCartItem, {
     onSuccess: ({ data }) => {
       const searchValue = searchRef.current.value
 
-      if (searchValue.length > 30 && get(data, 'data.is_marking', false)) {
+      if (searchValue.length > 37 && get(data, 'data.is_marking', false)) {
         //save to marking
-        addNewMarking(data?.data?.id, searchValue)
+        addNewMarking(data?.data?.store_product_id, searchValue)
+         saveMarkingToCartItem({
+      id:data?.data?.id,
+      data: {
+        marking:searchValue,
+      },})
       }
 
       searchResetRef.current.clearValue()

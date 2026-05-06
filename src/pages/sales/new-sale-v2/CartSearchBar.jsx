@@ -23,6 +23,7 @@ import { useDebounce } from 'use-debounce'
 
 import SerchedItem from './SerchedItem'
 import { t } from 'i18next'
+import { extractNumbers } from '@utils/checkingMarkingWithBarcode'
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -250,7 +251,7 @@ function CartSearchBar({
 
   const productsListFilter = useMemo(() => {
     return {
-      search: searchTearm.slice(0, 31),
+      search: searchTearm?.length >= 37 ? extractNumbers(searchTearm) : searchTearm.slice(0, 31),
       offset: 0,
       limit: 30,
     }
