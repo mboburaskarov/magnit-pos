@@ -61,7 +61,7 @@ export const useSaleOperations = ({
       }
       if (!JSON.parse(sendToEpos) || get(cashBoxDetails, 'data.data.service_type') === 'uzum') {
         success('Продажа завершена!')
-        setNewSaleId('888', false)
+        setNewSaleId('888')
         setQrcodeUrl({ qr: 'pharma-cosmos.uz', fiscal: 'No', cardType: cartOwnerType })
       } else {
         sendEPOSData(data)

@@ -478,6 +478,7 @@ export default function OrderDrawer({
                     cashBoxDetails={cashBoxDetails}
                     customerId={customerId}
                     noFormControl
+                    newSaleId={newSaleId}
                     printContainer={printContainer}
                   />
                 </Box>
