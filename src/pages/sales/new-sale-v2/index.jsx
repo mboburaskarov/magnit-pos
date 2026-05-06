@@ -52,6 +52,7 @@ import RamadanIcon from '@/assets/icons/RamadanIcon'
 import { getCurrentEvent } from '@utils/ramadanTime'
 import RamadanDrawer from '@/layouts/LayoutHeader/RamadanDrawer'
 import { checkBarcodeWithMarking, extractNumbers } from '@utils/checkingMarkingWithBarcode'
+import { containsCyrillic, convertoRuOrEngToEng } from '@utils/convertoRuOrEngToEng'
 
 const useStyles = makeStyles((theme) => ({
   currentUser: {
@@ -518,11 +519,12 @@ const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCart
       if (searchValue.length > 37 && get(data, 'data.is_marking', false)) {
         if(checkBarcodeWithMarking(data?.data?.barcode, searchValue) && data?.data?.barcode.length > 0){  
         //save to marking
-        addNewMarking(data?.data?.id, searchValue)
+        const marking = containsCyrillic(searchValue) ? convertoRuOrEngToEng(searchValue) : searchValue
+        addNewMarking(data?.data?.id, marking)
          saveMarkingToCartItem({
       id:data?.data?.store_product_id,
       data: {
-        marking:searchValue,
+        marking:marking,
       },})
         }
 
