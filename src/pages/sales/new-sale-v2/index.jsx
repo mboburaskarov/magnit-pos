@@ -51,6 +51,7 @@ import ProductDrawer from './ProductDrawer'
 import RamadanIcon from '@/assets/icons/RamadanIcon'
 import { getCurrentEvent } from '@utils/ramadanTime'
 import RamadanDrawer from '@/layouts/LayoutHeader/RamadanDrawer'
+import { checkBarcodeWithMarking, extractNumbers } from '@utils/checkingMarkingWithBarcode'
 
 const useStyles = makeStyles((theme) => ({
   currentUser: {
@@ -515,13 +516,16 @@ const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCart
       const searchValue = searchRef.current.value
 
       if (searchValue.length > 37 && get(data, 'data.is_marking', false)) {
+        if(checkBarcodeWithMarking(data?.data?.barcode, searchValue) && data?.data?.barcode.length > 0){  
         //save to marking
-        addNewMarking(data?.data?.store_product_id, searchValue)
+        addNewMarking(data?.data?.id, searchValue)
          saveMarkingToCartItem({
-      id:data?.data?.id,
+      id:data?.data?.store_product_id,
       data: {
         marking:searchValue,
       },})
+        }
+
       }
 
       searchResetRef.current.clearValue()
