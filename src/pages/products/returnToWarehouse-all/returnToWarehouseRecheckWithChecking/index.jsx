@@ -42,6 +42,7 @@ export default function ReturnToWarehouseRecheckScanWithCheckingPage() {
   const { mutate: setScanedNumber } = useMutation(requests.sendScannedReturnToWarehouseNumber, {
     onSuccess: ({ data }) => {
       refetchgetReturnToWarehouseDashBoard()
+      refetch()
       setBarcode('')
     },
     onError: (err) => {
