@@ -234,7 +234,7 @@ export default function ClientsPage() {
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
           title={'Удалить клиента?'}
           desc={'Хотите ли вы удалить клиента?'}
-          supDesc={'“Azitromitsin 250 mg”'}
+          supDesc={''}
           actions={
             <>
               <Button
