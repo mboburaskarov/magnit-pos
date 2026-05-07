@@ -112,7 +112,7 @@ export default function TerminalAccessGuard({ children }) {
     return normalizeUserData(getLocalUserData())
   }, [userData, userInfo?.data?.data])
 
-  const shouldCheckTerminal = Boolean(accessToken && !isLoginPage && currentUser?.id && currentUser?.store && hasAccess('check-terminal-id', currentUser))
+  const shouldCheckTerminal = Boolean(import.meta.env.VITE_MODE !== 'dev' && accessToken && !isLoginPage && currentUser?.id && currentUser?.store && hasAccess('check-terminal-id', currentUser))
   const validationKey = `${accessToken || 'no-token'}:${currentUser?.id || 'no-user'}:${currentUser?.store?.id || 'no-store'}`
 
   useEffect(() => {
@@ -187,9 +187,17 @@ export default function TerminalAccessGuard({ children }) {
           setGuardState({ checked: true, blocked: false, message: '' })
         }
       } catch (error) {
+        const isConnectionRefused = error?.code === 'ERR_CONNECTION_REFUSED' || error?.message?.includes('ERR_CONNECTION_REFUSED') || error?.request && !error?.response
+        const isSuperAdmin = currentUser?.type === 'SUPERADMIN'
+
         if (!isCancelled) {
-          validatedKeyRef.current = validationKey
-          setGuardState({ checked: true, blocked: false, message: '' })
+          if (isConnectionRefused && !isSuperAdmin) {
+            validatedKeyRef.current = null
+            setGuardState({ checked: true, blocked: true, message: 'EPOS terminaliga ulanib bo\'lmadi. Kirish bloklandi.' })
+          } else {
+            validatedKeyRef.current = validationKey
+            setGuardState({ checked: true, blocked: false, message: '' })
+          }
         }
       }
     }

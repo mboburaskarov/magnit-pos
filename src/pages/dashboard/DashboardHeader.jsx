@@ -9,6 +9,7 @@ import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
 import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNewV2'
 import GroupMultiSelect from '@components/Select/GroupMultiSelect'
 import { requests } from '@utils/requests'
+import CheckAccess from '@components/CheckAccess'
 
 export default function DashboardHeader({ selectedShops, setSelectedShops, setSelectedAllB2B }) {
   const { t } = useTranslation()
@@ -28,6 +29,7 @@ export default function DashboardHeader({ selectedShops, setSelectedShops, setSe
       <Box display='inline-flex' padding={'11px 0'} columnGap={3}>
         <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
 
+        <CheckAccess id={'can-filter-store-in-dashboard'}>
         <Box
           sx={{
             width: 400,
@@ -56,7 +58,9 @@ export default function DashboardHeader({ selectedShops, setSelectedShops, setSe
             }}
             request={requests.getAllStores}
           />
+
         </Box>
+         </CheckAccess>
       </Box>
     </Box>
   )

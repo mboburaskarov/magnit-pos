@@ -111,7 +111,7 @@ export default function LoginPage() {
     }
 
     data.phone_number = country.dial_code + data.phone_number.replace(/[X() ]/g, '')
-
+    data.password = data.password.replace(/[()\s-]/g, "")
     logIn({ phone: data.phone_number, password: data.password })
   }
 

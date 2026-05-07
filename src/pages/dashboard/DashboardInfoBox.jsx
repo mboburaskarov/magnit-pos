@@ -70,7 +70,7 @@ export default function DashboardInfoBox({
   const total = countStats?.data?.data?.income_amount + countStats?.data?.data?.production_cost
   const totalWithoutNDS = total - total * 0.12
   const incomePercentWithNDS = ((income / total) * 100).toFixed(1)
-  const incomePercent = ((income / totalWithoutNDS) * 100).toFixed(1)
+  const incomePercent = ((income / totalWithoutNDS) * 100).toFixed(3)
   return (
     <Box sx={{ border: 1, borderRadius: '16px', borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' }}>
       <Box key={ind} sx={{ p: '20px', height: '164px', m: 0 }}>
