@@ -112,7 +112,7 @@ export default function TerminalAccessGuard({ children }) {
     return normalizeUserData(getLocalUserData())
   }, [userData, userInfo?.data?.data])
 
-  const shouldCheckTerminal = Boolean(accessToken && !isLoginPage && currentUser?.id && currentUser?.store && hasAccess('check-terminal-id', currentUser))
+  const shouldCheckTerminal = Boolean(import.meta.env.VITE_MODE !== 'dev' && accessToken && !isLoginPage && currentUser?.id && currentUser?.store && hasAccess('check-terminal-id', currentUser))
   const validationKey = `${accessToken || 'no-token'}:${currentUser?.id || 'no-user'}:${currentUser?.store?.id || 'no-store'}`
 
   useEffect(() => {
