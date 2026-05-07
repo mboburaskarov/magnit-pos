@@ -18,6 +18,7 @@ export default function TargetByEmployee({ open, setOpen }) {
   const targetListFIlter = useMemo(() => {
       return {
         store_id: get(open,'store_id',undefined),
+        ...get(open,'filter',{})
       }
     }, [open])
   
