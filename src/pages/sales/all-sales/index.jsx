@@ -333,37 +333,6 @@ export default function AllSalesPage() {
             </Box>
             <Box width={'20px'} />
             <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
-            {userData?.store && (
-              <Box
-                display='flex'
-                alignItems='center'
-                sx={{
-                  height: '48px',
-                  px: '14px',
-                  border: '1px solid',
-                  borderColor: 'warning.light',
-                  borderRadius: '23px',
-                  bgcolor: '#FFF8EC',
-                  gap: '8px',
-                  ml: '16px',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                <Box
-                  component='span'
-                  sx={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: '50%',
-                    bgcolor: 'warning.main',
-                    flexShrink: 0,
-                  }}
-                />
-                <Typography fontSize='15px' fontWeight={600} color='warning.dark'>
-                  Sizga faqat oxirgi 2 haftalik savdolar ko&apos;rsatiladi
-                </Typography>
-              </Box>
-            )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
             <Box>
