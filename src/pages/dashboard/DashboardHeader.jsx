@@ -9,6 +9,7 @@ import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
 import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNewV2'
 import GroupMultiSelect from '@components/Select/GroupMultiSelect'
 import { requests } from '@utils/requests'
+import CheckAccess from '@components/CheckAccess'
 
 export default function DashboardHeader({ selectedShops, setSelectedShops, setSelectedAllB2B }) {
   const { t } = useTranslation()
@@ -37,6 +38,7 @@ export default function DashboardHeader({ selectedShops, setSelectedShops, setSe
           }}
         >
           {/* <GroupMultiSelect label='Select Pharmacies' apiData={shopList?.data} value={[]} onChange={setSelectedShops} /> */}
+         <CheckAccess id={'can-filter-store-in-dashboard'}>
           <MultiOptionSelectNew
             zIndex={9}
             placeholder={t('placeholders.select_shops')}
@@ -56,6 +58,8 @@ export default function DashboardHeader({ selectedShops, setSelectedShops, setSe
             }}
             request={requests.getAllStores}
           />
+         </CheckAccess>
+
         </Box>
       </Box>
     </Box>

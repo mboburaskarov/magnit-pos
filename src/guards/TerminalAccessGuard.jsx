@@ -187,9 +187,17 @@ export default function TerminalAccessGuard({ children }) {
           setGuardState({ checked: true, blocked: false, message: '' })
         }
       } catch (error) {
+        const isConnectionRefused = error?.code === 'ERR_CONNECTION_REFUSED' || error?.message?.includes('ERR_CONNECTION_REFUSED') || error?.request && !error?.response
+        const isSuperAdmin = currentUser?.type === 'SUPERADMIN'
+
         if (!isCancelled) {
-          validatedKeyRef.current = validationKey
-          setGuardState({ checked: true, blocked: false, message: '' })
+          if (isConnectionRefused && !isSuperAdmin) {
+            validatedKeyRef.current = null
+            setGuardState({ checked: true, blocked: true, message: 'EPOS terminaliga ulanib bo\'lmadi. Kirish bloklandi.' })
+          } else {
+            validatedKeyRef.current = validationKey
+            setGuardState({ checked: true, blocked: false, message: '' })
+          }
         }
       }
     }
