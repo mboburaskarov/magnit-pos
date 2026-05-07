@@ -24,7 +24,7 @@ import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/red
 import RolesCreateDrawer from './RolesCreateDrawer'
 import tableHeaderSelector from './tableHeaderSelector'
 import { Preview, Style } from '@mui/icons-material'
-import { Table2 } from 'lucide-react'
+import { Check, Table2 } from 'lucide-react'
 import StyledTooltip from '@components/StyledTooltip'
 const SELECTION_ID = 'checkboxSelectionField'
 
@@ -192,6 +192,7 @@ export default function RolesPage() {
             )}
           </Box>
           <Box display={'flex'} alignItems={'center'}>
+            <CheckAccess id={'role:report'}>
             <StyledTooltip title={t('Ролевой отчет')}>
               <Link to={'/settings/role-report'}>
                 <IconButton sx={{ width: '52px', padding: '13px', mr: '10px' }}>
@@ -199,6 +200,7 @@ export default function RolesPage() {
                 </IconButton>
               </Link>
             </StyledTooltip>
+            </CheckAccess>
             <Box>
               <ColumnsFilterButtonForAll
                 title={t('ag_grid.table_setting.label')}
