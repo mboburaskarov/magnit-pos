@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 
 import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
 import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNewV2'
-import GroupMultiSelect from '@components/Select/GroupMultiSelect'
+// import GroupMultiSelect from '@components/Select/GroupMultiSelect'
 import { requests } from '@utils/requests'
 import CheckAccess from '@components/CheckAccess'
 
@@ -28,38 +28,6 @@ export default function DashboardHeader({ selectedShops, setSelectedShops, setSe
       </Box>
       <Box display='inline-flex' padding={'11px 0'} columnGap={3}>
         <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
-
-        {userData?.store && (
-          <Box
-            display='flex'
-            alignItems='center'
-            sx={{
-              height: '48px',
-              px: '14px',
-              border: '1px solid',
-              borderColor: 'warning.light',
-              borderRadius: '8px',
-              bgcolor: '#FFF8EC',
-              gap: '8px',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <Box
-              component='span'
-              sx={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                bgcolor: 'warning.main',
-                flexShrink: 0,
-              }}
-            />
-            <Typography fontSize='13px' fontWeight={500} color='warning.dark'>
-              Sizga faqat oxirgi 2 haftalik savdolar ko&apos;rsatiladi
-            </Typography>
-          </Box>
-        )}
-
         <CheckAccess id={'can-filter-store-in-dashboard'}>
         <Box
           sx={{

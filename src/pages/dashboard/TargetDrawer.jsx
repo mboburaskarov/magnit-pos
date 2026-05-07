@@ -16,10 +16,10 @@ import TargetByEmployee from './TargetByEmployeeModal'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
-    maxWidth: '640px',
+    maxWidth: '840px',
     '& .MuiDrawer-paper': {
       width: '60%',
-      maxWidth: '640px',
+      maxWidth: '840px',
       borderRadius: '24px 0 0 24px',
       backgroundColor: theme.palette.background.default,
     },
@@ -170,13 +170,13 @@ useEffect(() => {
         headerName: 'Aптека',
         colId: 'store_name',
         minWidth: 250,
-        maxWidth: 250,
-        width: 250,
+        maxWidth: 450,
+        width: 350,
         headerComponent: CustomHeader,
         orderStoring,
         setOrderStoring,
         cellRenderer: ({ data, rowIndex }) => (
-          <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap' onClick={() => setOpenTargetByEmployee({ store_id: data?.store_id, open: true })} sx={{ cursor: 'pointer' }}>
+          <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap' onClick={() => setOpenTargetByEmployee({ store_id: data?.store_id, open: true ,filter:targetListFIlter})} sx={{ cursor: 'pointer' }}>
             <Typography color={'orange.500'}>{data?.store_name}</Typography>
           </Box>
         ),
@@ -215,7 +215,7 @@ useEffect(() => {
         ),
       },
     ],
-    [orderStoring],
+    [orderStoring,targetListFIlter],
   )
 
   const formattedData = targetList?.data?.data?.data
