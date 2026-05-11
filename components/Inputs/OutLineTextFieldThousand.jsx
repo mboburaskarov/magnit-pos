@@ -115,10 +115,10 @@ const NumberFormatInput = ({
         onValueChange={(values) => {
           const { floatValue } = values // Extract the numeric value
           const newValue = floatValue < 1 ? minNumber : floatValue
-          if (uncontrolled) {
+          if (uncontrolled && typeof setValue === 'function') {
             // If uncontrolled, use the provided setValue
             setValue(newValue)
-          } else {
+          } else if (!uncontrolled) {
             // If controlled, update the form state using react-hook-form's setValue
             methods.setValue(name, newValue, { shouldValidate: true })
           }
