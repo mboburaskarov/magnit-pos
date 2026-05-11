@@ -40,7 +40,7 @@ import TargetDrawer from './TargetDrawer'
 
 export const dashboardBoxData = (navigate, setOpenDrawer) => [
   {
-    title: 'Общая сумма продажaaaaa',
+    title: 'Общая сумма продаж',
     icon: <MoneyArrowDown color='#fe5000' />,
     count: 'sale_amount',
     endText: 'сум',
