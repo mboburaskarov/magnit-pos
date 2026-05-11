@@ -28,7 +28,7 @@ export default function CreateReturn({ open, refetch, setOpen }) {
     },
     onError: (err) => {
       error('Ошибка Создать Перемещение!')
-      console.error('err', err)
+      console.error('errr', err)
     },
   })
   const onSubmit = (data) => {
