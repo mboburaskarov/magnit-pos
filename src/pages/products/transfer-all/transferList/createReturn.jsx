@@ -13,13 +13,14 @@ import { requests } from '@utils/requests'
 import { error, success } from '@utils/toast'
 import CloseIcon from '@icons/CloseIcon'
 import { LoadingButton } from '@mui/lab'
+import { useSelector } from 'react-redux'
 
 export default function CreateReturn({ open, refetch, setOpen }) {
   const methods = useForm()
   const { reset, control } = methods
   const theme = useTheme()
   const { t } = useTranslation()
-
+const userData = useSelector((state) => state.user)
   const { mutate: createReturnToWarehouse, isLoading: iscreateReturnToWarehouse } = useMutation(requests.createTransfer, {
     onSuccess: () => {
       setOpen(false)
@@ -101,7 +102,7 @@ export default function CreateReturn({ open, refetch, setOpen }) {
               minWidth='auto'
               isClearable={true}
               request={requests.getAllStores}
-              filters={{ limit: 10 }}
+              filters={{ limit: 10, is_franchise:userData?.role_type=='FRANCHISE' }}
               control={control}
               getOptionLabel={(option) => {
                 return option.name
@@ -126,7 +127,7 @@ export default function CreateReturn({ open, refetch, setOpen }) {
               minWidth='auto'
               isClearable={true}
               request={requests.getAllStores}
-              filters={{ limit: 10 }}
+              filters={{ limit: 10, is_franchise:userData?.role_type=='FRANCHISE' }}
               control={control}
               getOptionLabel={(option) => {
                 return option.name
