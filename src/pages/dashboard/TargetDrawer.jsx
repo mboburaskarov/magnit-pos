@@ -176,7 +176,12 @@ useEffect(() => {
         orderStoring,
         setOrderStoring,
         cellRenderer: ({ data, rowIndex }) => (
-          <Box id={`${'created_at'}-${rowIndex}`} whiteSpace='pre-wrap' onClick={() => setOpenTargetByEmployee({ store_id: data?.store_id, open: true ,filter:targetListFIlter})} sx={{ cursor: 'pointer' }}>
+          <Box
+            id={`${'created_at'}-${rowIndex}`}
+            whiteSpace='pre-wrap'
+            onClick={() => setOpenTargetByEmployee({ store_id: data?.store_id, store_target_id: data?.id, open: true, filter: targetListFIlter })}
+            sx={{ cursor: 'pointer' }}
+          >
             <Typography color={'orange.500'}>{data?.store_name}</Typography>
           </Box>
         ),
@@ -189,7 +194,7 @@ useEffect(() => {
         headerComponent: CustomHeader,
         orderStoring,
         setOrderStoring,
-        cellRenderer: ({ data, rowIndex }) => <SimpleText data={data} type={'amount'} withDevider currency={'сум'} />,
+        cellRenderer: ({ data }) => <SimpleText data={data} type={'amount'} withDevider currency={'сум'} />,
       },
       {
         headerName: 'Продажи',
@@ -200,7 +205,7 @@ useEffect(() => {
         headerComponent: CustomHeader,
         orderStoring,
         setOrderStoring,
-        cellRenderer: ({ data, rowIndex }) => <SimpleText data={data} type={'sales'} withDevider currency={'сум'} />,
+        cellRenderer: ({ data }) => <SimpleText data={data} type={'sales'} withDevider currency={'сум'} />,
       },
       {
         headerName: '',
@@ -330,7 +335,7 @@ useEffect(() => {
           columns={columns}
           data={formattedData}
           offsetCount={offsetCount}
-          updaterAction={(newData) => {}}
+          updaterAction={() => {}}
           defaultOffsetSize={5}
           emptyTableText={{
             title: 'Нет Таргета',
