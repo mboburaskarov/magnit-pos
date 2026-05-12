@@ -484,6 +484,7 @@ export const requests = {
   //target
   createTarget: (data) => request.post(`v1/store-target`, data),
   getTargetList: (filter) => request.get(`v1/store-target/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getTargetByEmployeeList: ({store_id,...filter}) => request.get(`v1/store-target/employee/list/${store_id}${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getTargetByEmployeeList: ({ store_id, ...filter }) => request.get(`v1/store-target/employee/list/${store_id}${qs.stringify(filter, { addQueryPrefix: true })}`),
+  updateEmployeeTarget: ({ employee_id, data }) => request.put(`v1/store-target/employee/${employee_id}`, data),
   getMyTarget: (filter) => request.get(`v1/store-target/employee/my${qs.stringify(filter, { addQueryPrefix: true })}`),
 }
