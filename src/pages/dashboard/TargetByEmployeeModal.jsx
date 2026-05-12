@@ -16,6 +16,7 @@ import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
 import { LoadingButton } from '@mui/lab'
 import { error, success } from '@utils/toast'
 import { t } from 'i18next'
+import { useQueryParams } from '@/hooks/useQueryParams'
 
 function EditEmployeeTargetModal({ open, setOpen, refetch }) {
   const theme = useTheme()
@@ -120,14 +121,18 @@ function EditEmployeeTargetModal({ open, setOpen, refetch }) {
 
 export default function TargetByEmployee({ open, setOpen }) {
   const theme = useTheme()
+  const { values } = useQueryParams()
   const [openEditTarget, setOpenEditTarget] = useState(false)
+  const [offsetCount, setOffsetCount] = useState(0)
 
   const targetListFIlter = useMemo(() => {
     return {
       store_id: get(open, 'store_id', undefined),
       ...get(open, 'filter', {}),
+      limit: values?.limitEmployeeTarget || 5,
+      offset: values?.offsetEmployeeTarget || 0,
     }
-  }, [open])
+  }, [open, values?.limitEmployeeTarget, values?.offsetEmployeeTarget])
 
   const {
     data: targetList,
@@ -135,6 +140,14 @@ export default function TargetByEmployee({ open, setOpen }) {
     isFetching: isFetchingTargetList,
     refetch,
   } = useQuery(['targetByEmployeeList', targetListFIlter], () => requests.getTargetByEmployeeList(targetListFIlter), { enabled: !!open?.open })
+
+  useEffect(() => {
+    const count = targetList?.data?.data?._meta?.total_count
+
+    const offsetsCount = Math.ceil(count / Number(values?.limitEmployeeTarget || 5))
+
+    setOffsetCount(offsetsCount || 0)
+  }, [targetList?.data, values?.limitEmployeeTarget])
 
   const columns = useMemo(
     () => [
@@ -205,7 +218,7 @@ export default function TargetByEmployee({ open, setOpen }) {
     [open?.store_target_id],
   )
 
-  const formattedData = targetList?.data?.data
+  const formattedData = targetList?.data?.data?.data
 
   return (
     <StyledEmptyDialog
@@ -219,12 +232,14 @@ export default function TargetByEmployee({ open, setOpen }) {
       <Box sx={{ padding: '12px 20px' }}>
         <AgGridTable
           isDataLoading={isTargetList || isFetchingTargetList}
-          offsetQuery='offsetTarget'
-          limitQuery='limitTarget'
+          offsetQuery='offsetEmployeeTarget'
+          limitQuery='limitEmployeeTarget'
           uniqId='employee_id'
-          id='products-target-table'
+          id='employee-target-table'
+          totalCount={targetList?.data?.data?._meta?.total_count || 0}
           columns={columns}
           data={formattedData}
+          offsetCount={offsetCount}
           updaterAction={() => {}}
           defaultOffsetSize={5}
           emptyTableText={{
