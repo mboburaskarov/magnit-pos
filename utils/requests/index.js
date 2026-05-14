@@ -487,4 +487,6 @@ export const requests = {
   getTargetByEmployeeList: ({ store_id, ...filter }) => request.get(`v1/store-target/employee/list/${store_id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateEmployeeTarget: ({ employee_id, data }) => request.put(`v1/store-target/employee/${employee_id}`, data),
   getMyTarget: (filter) => request.get(`v1/store-target/employee/my${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getTargetsExcelReport: (filter) => requestEXCEL.get(`v1/store-target/store-target-export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+
 }
