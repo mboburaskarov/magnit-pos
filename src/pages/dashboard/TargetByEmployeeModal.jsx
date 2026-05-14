@@ -50,6 +50,9 @@ function EditEmployeeTargetModal({ open, setOpen, refetch }) {
     })
   }
 
+
+
+
   const onError = (err) => {
     error('Пожалуйста, заполните все поля!')
     console.error('err', err)
@@ -242,7 +245,7 @@ export default function TargetByEmployee({ open, setOpen }) {
           offsetCount={offsetCount}
           updaterAction={() => {}}
           defaultOffsetSize={5}
-          emptyTableText={{
+  emptyTableText={{
             title: 'Нет Таргета',
             description: ' ',
           }}

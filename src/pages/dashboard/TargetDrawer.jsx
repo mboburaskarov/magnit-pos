@@ -11,8 +11,12 @@ import { requests } from '@utils/requests'
 import thousandDivider from '@utils/thousandDivider'
 import { t } from 'i18next'
 import { useEffect, useMemo, useState } from 'react'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import TargetByEmployee from './TargetByEmployeeModal'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import { get } from 'lodash'
+import { error } from '@utils/toast'
+import dayjs from 'dayjs'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -55,6 +59,7 @@ export const ProgressBar = ({ current, total, minWidth = '100%', mt = '10px' }) 
     </Box>
   )
 }
+
 const CustomHeader = (props) => {
   const lastStort = props.column.colDef.orderStoring
   const currentColId = props.column.colId
@@ -134,8 +139,8 @@ export default function TargetDrawer({ openDrawer, closeDrawer }) {
       limit: values?.limitTarget || 5,
       offset: values?.offsetTarget || 0,
       search: values?.search,
-      month: selectedMonth?.id,
-      year: selectedYear?.id,
+      month: selectedMonth?.id || dayjs().month(),
+      year: selectedYear?.id || dayjs().year(),
       order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
     }
   }, [values?.limitTarget, values?.offsetTarget, values?.search, orderStoring, selectedMonth, selectedYear])
@@ -155,7 +160,16 @@ const { data: dashboardTargetStatistic } = useQuery({
   enabled: !!openDrawer?.open,
 })
  
+  const { mutate: targetsExcelReport, isLoading: istargetsExcelReport } = useMutation(requests.getTargetsExcelReport, {
+    onSuccess: ({ data }) => {
+      downloadLinkExcel(get(data, 'data.file_name'))
+    },
+    onError: (err) => {
+      console.error(err)
 
+      error('Ошибка при скачать excel!')
+    },
+  })
 useEffect(() => {
     const count = targetList?.data?.data?._meta?.total_count
 
@@ -327,6 +341,15 @@ useEffect(() => {
       </Box>
       <Box sx={{ padding: '12px 20px' }}>
         <AgGridTable
+
+
+          fullDownload={() => targetsExcelReport({ ...targetListFIlter, offset: 0, limit: 6000000 })}
+          downloadByFilter={() => targetsExcelReport(targetListFIlter)}
+          isDownloading={istargetsExcelReport}
+
+        
+
+
           isDataLoading={isTargetList || isFetchingTargetList}
           offsetQuery='offsetTarget'
           limitQuery='limitTarget'
