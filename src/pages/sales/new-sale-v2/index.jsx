@@ -445,6 +445,7 @@ function NewSaleV2() {
       }
     }
   }
+  //   test
 
   const searchResult = useQuery(
     ['searchCustomers', debouncedSearchTerm],
