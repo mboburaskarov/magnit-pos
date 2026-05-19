@@ -96,7 +96,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
     refetch,
     isLoading: isDarftChildList,
   } = useQuery('darftChildList', () =>
-    get(open, 'type') == 'draft' ? requests.getDarftChildList(get(open, 'item.id')) : requests.getCashBoxDetaildWithSaleId(get(open, 'item.id'))
+    get(open, 'type') == 'draft' ? requests.getDarftChildList(get(open, 'item.id')) : requests.getCashBoxDetaildWithSaleId(get(open, 'item.id')),
   )
 
   useEffect(() => {
@@ -138,7 +138,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
           <CloseIcon
             color={theme.palette.black}
             onClick={() => {
-              setOpen(false), setChildOpen(false)
+              ;(setOpen(false), setChildOpen(false))
             }}
           />
         </Box>
@@ -190,7 +190,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
                   {t('store')}
                 </Typography>
                 <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                  Pharma Cosmos
+                  MAGNIT
                 </Typography>
               </Box>
             </Box>

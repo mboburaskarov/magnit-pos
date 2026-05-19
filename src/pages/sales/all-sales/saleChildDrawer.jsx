@@ -360,7 +360,7 @@ function SaleChildDrawer({
                     {t('store')}
                   </Typography>
                   <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                    Pharma Cosmos
+                    MAGNIT
                   </Typography>
                 </Box>
               </Box>

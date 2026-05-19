@@ -147,7 +147,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
           <CloseIcon
             color={theme.palette.black}
             onClick={() => {
-              setOpen(false), setChildOpen(false)
+              ;(setOpen(false), setChildOpen(false))
             }}
           />
         </Box>
@@ -206,7 +206,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
                   {t('store')}
                 </Typography>
                 <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                  Pharma Cosmos
+                  MAGNIT
                 </Typography>
               </Box>
             </Box>

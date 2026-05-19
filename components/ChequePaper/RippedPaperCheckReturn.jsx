@@ -36,11 +36,9 @@ function RippedPaperCheckReturn({ saleDetailsList, qrCodeUrl, customerId = '', c
 
     return !!found ? found?.is_active === true : true
   }
-const updatedAt = get(saleDetailsList, 'updated_at')
+  const updatedAt = get(saleDetailsList, 'updated_at')
 
-const isValid = updatedAt
-  ? dayjs().diff(dayjs(updatedAt), 'second') <= 60
-  : false
+  const isValid = updatedAt ? dayjs().diff(dayjs(updatedAt), 'second') <= 60 : false
   return (
     <Box className={`${classes.root} ${noSticky ? classes.noSticky : ''}`}>
       <Box className={classes.inner}>
@@ -55,7 +53,7 @@ const isValid = updatedAt
                   textAlign: 'center',
                 }}
               >
-                "PHARMA COSMOS" MCHJ
+                "MAGNIT" MCHJ
               </p>
             </div>
             <div className={classes.border} />
@@ -215,7 +213,7 @@ const isValid = updatedAt
                         value: `${thousandDivider(el.amount)} so'm`,
                       }}
                     />
-                  )
+                  ),
               )}
 
               {disableSumsOnGoods() && (
@@ -265,33 +263,34 @@ const isValid = updatedAt
                 {<FiskalText data={get(saleDetailsList, 'fiscal_sign')} />}
               </Box>
             </Box>
-        {isValid?
-        
-          <Box>
-            {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
-            <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-              {/* {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? ( */}
-              {/* <> */}
+            {isValid ? (
+              <Box>
+                {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
+                <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
+                  {/* {get(cashBoxDetails, 'data.data.sale_type') == 'SALE' ? ( */}
+                  {/* <> */}
 
-              <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
-                Siz xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
-              </Typography>
-              <QRCodeCanvas size={200} value={qrCodeUrl} />
+                  <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
+                    Siz xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
+                  </Typography>
+                  <QRCodeCanvas size={200} value={qrCodeUrl} />
 
-              <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
-                SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
-              </Typography>
-              <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
-                XARIDINGIZ UCHUN RAHMAT!!!
-              </Typography>
+                  <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
+                    SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
+                  </Typography>
+                  <Typography fontWeight={'800'} fontSize={'14px'} mt={'10px'}>
+                    XARIDINGIZ UCHUN RAHMAT!!!
+                  </Typography>
 
-              {/* </> */}
-              {/* ) : ( */}
-              {/* <></> */}
-              {/* )} */}
-            </Box>
-
-            </Box>:<></>}
+                  {/* </> */}
+                  {/* ) : ( */}
+                  {/* <></> */}
+                  {/* )} */}
+                </Box>
+              </Box>
+            ) : (
+              <></>
+            )}
           </Fragment>
         </Box>
       </Box>

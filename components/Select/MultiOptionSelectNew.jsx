@@ -109,7 +109,7 @@ const MultiOptionSelectNew = ({
         ...customFilter,
       })
 
-      const newData = get(response, 'data.data.data', []).filter((item) => (notShowedPharmaCosmos ? item?.name != 'Pharma Cosmos ' : true))
+      const newData = get(response, 'data.data.data', []).filter((item) => (notShowedPharmaCosmos ? item?.name != 'MAGNIT ' : true))
 
       if (pagination.offset === 0) {
         setOptions(newData) // Replace options for new search
@@ -361,8 +361,8 @@ const MultiOptionSelectNew = ({
         ((values == 'all' || isSelectAll) && values.length != 1)
           ? selectAllLabel
           : countLabel
-          ? `${values?.length} ${countLabel}`
-          : (values || [])?.map((value, index) => `${index !== 0 ? ', ' : ''} ${value?.name}`)
+            ? `${values?.length} ${countLabel}`
+            : (values || [])?.map((value, index) => `${index !== 0 ? ', ' : ''} ${value?.name}`)
 
       return (
         <StyledTooltip sx={{}} hide={val == selectAllLabel} title={<Box sx={{ display: 'flex', flexDirection: 'column' }}>{val}</Box>} placement='top'>

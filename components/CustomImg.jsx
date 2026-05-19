@@ -1,4 +1,4 @@
-function CustomImg({ key, src = '', alt = 'pharma cosmos', className = 'img', onClick = () => {}, ...other }) {
+function CustomImg({ key, src = '', alt = 'magnit management', className = 'img', onClick = () => {}, ...other }) {
   const baseUrl = import.meta.env.VITE_MODE === 'dev' ? import.meta.env.VITE_BASE_API_URL_DEV : import.meta.env.VITE_BASE_API_URL
 
   const imgUrl = `${baseUrl}/v1/upload/${src}`

@@ -19,7 +19,7 @@ const FiskalNumber = ({ data }) => {
 }
 function RippedPaperCheck({
   qrcodeUrl,
-  newSaleId=false,
+  newSaleId = false,
   cashBoxDetails,
   mode,
   customerId,
@@ -65,8 +65,7 @@ function RippedPaperCheck({
                   textAlign: 'center',
                 }}
               >
-                {get(userData, 'company.legal_name','"PHARMA COSMOS" MCHJ')}
-                
+                {get(userData, 'company.legal_name', '" COSMOS" MCHJ')}
               </p>
             </div>
 
@@ -90,7 +89,7 @@ function RippedPaperCheck({
                 id={`return-price-${'index1'}`}
                 rowData={{
                   type: `STIR:`,
-                  value: get(userData, 'store.inn','303970073'),  
+                  value: get(userData, 'store.inn', '303970073'),
                 }}
               />
               {qrcodeUrl != false && disableSumsOnGoods() && (
@@ -231,7 +230,7 @@ function RippedPaperCheck({
                                 value: `${thousandDivider(el.amount)} so'm`,
                               }}
                             />
-                          )
+                          ),
                       )
                   : paymentsList?.map(
                       (el) =>
@@ -243,7 +242,7 @@ function RippedPaperCheck({
                               value: `${thousandDivider(el.amount)} so'm`,
                             }}
                           />
-                        )
+                        ),
                     ))
               }
               {disableSumsOnGoods() && (
@@ -307,9 +306,9 @@ function RippedPaperCheck({
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
             <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-              {qrcodeUrl?.qr == 'pending' || qrcodeUrl?.qr == 'pharma-cosmos.uz' ? (
+              {qrcodeUrl?.qr == 'pending' || qrcodeUrl?.qr == '-cosmos.uz' ? (
                 <>
-                  <QRCodeCanvas size={200} value={'https://pharma-cosmos.uz'} />
+                  <QRCodeCanvas size={200} value={'https://-cosmos.uz'} />
 
                   <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
                     SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI
@@ -323,7 +322,7 @@ function RippedPaperCheck({
                   <Typography fontWeight={'800'} mb={'10px'} textAlign={'center'} mt={'10px'}>
                     Siz xaridning 1% miqdorida "Keshbek" olish huquqiga ega bo'ldingiz
                   </Typography>
-                  <QRCodeCanvas size={200} value={newSaleId?qrcodeUrl.qr:'https://pharma-cosmos.uz'} />
+                  <QRCodeCanvas size={200} value={newSaleId ? qrcodeUrl.qr : 'https://-cosmos.uz'} />
 
                   <Typography fontWeight={'800'} textAlign={'center'} fontSize={'14px'} mt={'10px'}>
                     SOTILGAN TOVAR ALMASHTIRILMAYDI VA QAYTARIB OLINMAYDI

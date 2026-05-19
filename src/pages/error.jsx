@@ -43,7 +43,7 @@ export default function ErrorPage({ errorData }) {
             <Box marginTop='10vh' marginLeft='10vw'>
               <Box width={'80vw'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
                 <Typography variant='h1' color='primary' style={{ fontSize: 48, lineHeight: '56px' }}>
-                  Error message Pharma Cosmos
+                  Error message MAGNIT
                 </Typography>
                 <Button onClick={() => window.location.reload()} primary>
                   Reload

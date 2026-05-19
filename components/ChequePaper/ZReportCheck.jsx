@@ -39,7 +39,7 @@ function RippedPaperZReportCheck({ margin, zrepo, cashBoxDetails, customerId, ch
           {/* <div className={classes.border} /> */}
           <Fragment key={'index69'}>
             <Box minWidth={'250px'} width={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-              <p style={{ marginBottom: '10px', fontWeight: 'bold', fontSize: '16px', textAlign: 'center', marginTop: '10px' }}>"PHARMA COSMOS" MChJ</p>
+              <p style={{ marginBottom: '10px', fontWeight: 'bold', fontSize: '16px', textAlign: 'center', marginTop: '10px' }}>"MAGNIT" MChJ</p>
               <p style={{ marginBottom: '10px', fontWeight: 'bold', fontSize: '16px', textAlign: 'center', marginTop: '10px' }}>
                 {get(userData, 'store.address')}
               </p>

@@ -104,18 +104,19 @@ export const useSaleOperations = ({
       return
     },
   })
-  const {
-    mutate: gelOldEposCheck,
-    isLoading: isGelOldEposCheck,
-  } = useMutation(requests.gelOldEposCheck, {
+  const { mutate: gelOldEposCheck, isLoading: isGelOldEposCheck } = useMutation(requests.gelOldEposCheck, {
     onSuccess: ({ data }) => {
       setCustomerId('')
-      const qrCodeURL = get(data, 'data.receipt.qrCodeURL') ||get(data, 'data.receipt.qr_code_url') || get(data, 'data.receipt.qrCodeUrl') || get(data, 'info.qrCodeURL') || 'pending'
-      const fiscalData = get(data, 'data.receipt.fiscalSign')||get(data, 'data.receipt.fiscal_sign') || get(data, 'info.fiscalSign') || 'pending'
+      const qrCodeURL =
+        get(data, 'data.receipt.qrCodeURL') ||
+        get(data, 'data.receipt.qr_code_url') ||
+        get(data, 'data.receipt.qrCodeUrl') ||
+        get(data, 'info.qrCodeURL') ||
+        'pending'
+      const fiscalData = get(data, 'data.receipt.fiscalSign') || get(data, 'data.receipt.fiscal_sign') || get(data, 'info.fiscalSign') || 'pending'
       const terminalId = get(data, 'data.receipt.terminalId') || get(data, 'data.receipt.terminal_id') || get(data, 'info.terminalId') || 'pending'
       setQrcodeUrl({ qr: qrCodeURL, fiscal: fiscalData, terminalId: terminalId, cardType: cartOwnerType })
-        sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
-
+      sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
     },
     onError: (err) => {
       let message = 'Данная продажа ранее была оформлена на уплату налогов. Скачайте этот чек из раздела «Все продажи».'
@@ -181,7 +182,7 @@ export const useSaleOperations = ({
       setDmedOrganizedList([])
       setCardOwnerType('personal')
     },
-    onError: ({response}) => {
+    onError: ({ response }) => {
       setHasError({ hasError: true, errorType: 'Epos result' })
 
       setOpenRefreshDialog(false)
@@ -327,7 +328,7 @@ export const useSaleOperations = ({
         token: 'DXJFX32CN1296678504F2',
         method: payType == 2 ? 'saleEPS' : SALE_TYPE === 'SALE' ? 'fastSale' : 'refund',
         payType: payType,
-        companyName: 'Pharma Cosmos OOO',
+        companyName: 'MAGNIT OOO',
         companyAddress: get(userData, 'store.address'),
         companyINN: '303970073',
         staffName: get(userData, 'full_name'),

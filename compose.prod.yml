@@ -2,9 +2,7 @@ services:
   app:
     build:
       dockerfile: docker/Dockerfile
-    container_name: pharma-frontend
+    container_name: magnit-management
     command: /bin/sh -c "yarn install && yarn build"
     volumes:
       - .:/app
-
-
