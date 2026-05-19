@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - dev
-      - prod
+      - main
 
 env:
   REGISTRY: ghcr.io
@@ -117,7 +117,7 @@ jobs:
           username: ${{ steps.vars.outputs.user }}
           key: ${{ steps.vars.outputs.key }}
           port: ${{ steps.vars.outputs.port || '22' }}
-          source: "compose.prod.yml"
+          source: 'compose.prod.yml'
           target: ${{ steps.vars.outputs.deploy_path }}
 
       - name: Deploy to server
@@ -151,4 +151,3 @@ jobs:
             docker image prune -f
 
             echo "✅ Deployed ${DOCKER_IMAGE} successfully"
-
