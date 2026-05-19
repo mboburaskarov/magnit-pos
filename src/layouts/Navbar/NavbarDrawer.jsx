@@ -58,7 +58,10 @@ function NavbarDrawer({
       </div>
       <List className={classes.list}>
         {!isOpen && size(currentRoutesMemoized, 0) != 0 && (
-          <div className={`${classes.popperParent} popper`}>
+          <div 
+            className={`${classes.popperParent} popper`}
+            style={{ top: currentRoutesMemoized?.hoverTop ? `${Math.max(20, currentRoutesMemoized.hoverTop - 30)}px` : '90px' }}
+          >
             <div className={`${classes.popper}`}>
               <ListItem className={classes.listItemPopper}>
                 {currentRoutesMemoized?.icon}

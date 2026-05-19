@@ -503,10 +503,9 @@ function NewSaleV2() {
     }
     return requests.createCartItem(params)
   }
-const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCartItem, {
+  const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCartItem, {
     onSuccess: () => {
-     success('Маркировка обновлена')
-      
+      success('Маркировка обновлена')
     },
     onError: () => {
       error('Ошибка при сохранении маркировки')
@@ -517,17 +516,17 @@ const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCart
       const searchValue = searchRef.current.value
 
       if (searchValue.length > 37 && get(data, 'data.is_marking', false)) {
-        if(checkBarcodeWithMarking(data?.data?.barcode, searchValue) && data?.data?.barcode.length > 0){  
-        //save to marking
-        const marking = containsCyrillic(searchValue) ? convertoRuOrEngToEng(searchValue) : searchValue
-        addNewMarking(data?.data?.id, marking)
-         saveMarkingToCartItem({
-      id:data?.data?.store_product_id,
-      data: {
-        marking:marking,
-      },})
+        if (checkBarcodeWithMarking(data?.data?.barcode, searchValue) && data?.data?.barcode.length > 0) {
+          //save to marking
+          const marking = containsCyrillic(searchValue) ? convertoRuOrEngToEng(searchValue) : searchValue
+          addNewMarking(data?.data?.id, marking)
+          saveMarkingToCartItem({
+            id: data?.data?.store_product_id,
+            data: {
+              marking: marking,
+            },
+          })
         }
-
       }
 
       searchResetRef.current.clearValue()
@@ -605,9 +604,9 @@ const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCart
     },
   })
   const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
-useEffect(()=>{
-  setIsOrderDrower(false)
-},[cartItemsList])
+  useEffect(() => {
+    setIsOrderDrower(false)
+  }, [cartItemsList])
   useEffect(() => {
     refetchcartItemsList()
   }, [id])
@@ -769,7 +768,7 @@ useEffect(()=>{
       if (isAllMarkingFill() && get(cartItemsList, 'data.data.data').length > 0) {
         setIsOrderDrower(true)
       } else {
-        setIsOpenImplementMarkingDialog({ mode: 'full',cashBoxDetails })
+        setIsOpenImplementMarkingDialog({ mode: 'full', cashBoxDetails })
       }
     },
     {
@@ -789,7 +788,7 @@ useEffect(()=>{
         setLiteOrder(true)
       } else {
         setLiteOrder(false)
-        setIsOpenImplementMarkingDialog({ mode: 'lite' ,cashBoxDetails})
+        setIsOpenImplementMarkingDialog({ mode: 'lite', cashBoxDetails })
       }
     },
     {
@@ -1288,7 +1287,7 @@ useEffect(()=>{
                       setLiteOrder(true)
                     } else {
                       setLiteOrder(false)
-                      setIsOpenImplementMarkingDialog({ mode: 'lite',cashBoxDetails })
+                      setIsOpenImplementMarkingDialog({ mode: 'lite', cashBoxDetails })
                     }
                   }}
                   color='primary'
@@ -1346,7 +1345,7 @@ useEffect(()=>{
                       if (isAllMarkingFill() || !sendToEpos) {
                         setIsOrderDrower(true)
                       } else {
-                        setIsOpenImplementMarkingDialog({ mode: 'full' ,cashBoxDetails})
+                        setIsOpenImplementMarkingDialog({ mode: 'full', cashBoxDetails })
                       }
                     }}
                   >

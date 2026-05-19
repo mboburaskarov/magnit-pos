@@ -1,21 +1,20 @@
-import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand';
-import RippedPaperZReportCheck from '@components/ChequePaper/ZReportCheck';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Box, Button, Drawer, Typography } from '@mui/material';
-import LoadingContainer from '@components/LoadingContainer';
-import { useNavigate, useParams } from 'react-router-dom';
-import { FormProvider, useForm } from 'react-hook-form';
-import thousandDivider from '@utils/thousandDivider';
-import { useMutation, useQuery } from 'react-query';
-import MoneyOutlineIcon from '@icons/MoneyOutline';
-import ArrowRightIcon from '@icons/ArrowRightIcon';
-import CartOutlineIcon from '@icons/CartOutline';
-import { useReactToPrint } from 'react-to-print';
-import { error, success } from '@utils/toast';
-import { requests } from '@utils/requests';
-import { makeStyles } from '@mui/styles';
-import { get } from 'lodash';
-
+import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
+import RippedPaperZReportCheck from '@components/ChequePaper/ZReportCheck'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Box, Button, Drawer, Typography } from '@mui/material'
+import LoadingContainer from '@components/LoadingContainer'
+import { useNavigate, useParams } from 'react-router-dom'
+import { FormProvider, useForm } from 'react-hook-form'
+import thousandDivider from '@utils/thousandDivider'
+import { useMutation, useQuery } from 'react-query'
+import MoneyOutlineIcon from '@icons/MoneyOutline'
+import ArrowRightIcon from '@icons/ArrowRightIcon'
+import CartOutlineIcon from '@icons/CartOutline'
+import { useReactToPrint } from 'react-to-print'
+import { error, success } from '@utils/toast'
+import { requests } from '@utils/requests'
+import { makeStyles } from '@mui/styles'
+import { get } from 'lodash'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -300,7 +299,7 @@ function CashCloseDrawer({ open, setOpen }) {
             }}
             sx={{ bottom: 0, margin: '0 24px 24px', '& > svg': { width: 24, height: 24, ml: '12px' } }}
           >
-            Закрыть кассу <ArrowRightIcon color={!true ? '#FF6018' : '#fff'} />
+            Закрыть кассу <ArrowRightIcon color={!true ? '#111111' : '#fff'} />
           </Button>
         </FormProvider>
       </LoadingContainer>

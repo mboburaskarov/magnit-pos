@@ -8,15 +8,15 @@ const StatusCell = ({ id, title, bgcolor, color = '#fff' }) => {
       alignItems='center'
       justifyContent='center'
       minWidth={62}
-      py={'6px'}
-      px={'12px'}
-      minHeight={32}
+      py={'2px'}
+      px={'8px'}
+      minHeight={20}
       bgcolor={bgcolor}
       border={'1px solid'}
       borderColor={color}
-      borderRadius={'24px'}
+      borderRadius={2}
     >
-      <Typography color={color} fontSize={'16px'} lineHeight={'20px'} fontWeight={500}>
+      <Typography color={color} fontSize={13}>
         {title}
       </Typography>
     </Box>

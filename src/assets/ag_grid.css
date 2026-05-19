@@ -34,15 +34,15 @@
 
 /* Header */
 .ag-theme-alpine .ag-header {
-  min-height: 56px !important;
-  height: 56px !important;
+  min-height: 48px !important;
+  height: 48px !important;
   border: none;
   border: 1px solid;
   /* border-color: the; */
 }
 
 .column-group-header.ag-theme-alpine .ag-header {
-  min-height: 101px !important;
+  /* min-height: 101px !important; */
 }
 
 .ag-theme-alpine .ag-header-group-cell-label {
@@ -53,7 +53,7 @@
 }
 .ag-theme-alpine .ag-header-group-cell-label .ag-header-group-text {
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   font-family: 'Gilroy';
 }
@@ -66,7 +66,7 @@
   width: 100%;
   text-align: center;
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   font-family: 'Gilroy';
 
@@ -110,8 +110,7 @@
 }
 
 .ag-theme-alpine .ag-header-cell {
-  border-radius: 16px;
-  height: 56px !important;
+  height: 48px !important;
   transition: none;
 }
 
@@ -124,7 +123,7 @@
   height: 50% !important;
 }
 .ag-theme-alpine .ag-header-cell {
-  border-radius: 16px;
+  /* border-radius: 16px; */
   transition: none;
 }
 
@@ -170,7 +169,9 @@
 }
 
 .ag-header-cell-menu-button:not(.ag-header-menu-always-show) {
-  transition: opacity, color 0.2s;
+  transition:
+    opacity,
+    color 0.2s;
 }
 
 .ag-arrow-asc {
@@ -178,7 +179,8 @@
 }
 
 .ag-theme-alpine .ag-header-cell-resize {
-  cursor: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18"  viewBox="0 0 512 512"><path d="M377.941 169.941V216H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.568 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296h243.882v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.568 0-33.941l-86.059-86.059c-15.119-15.12-40.971-4.412-40.971 16.97z"/></svg>')
+  cursor:
+    url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18"  viewBox="0 0 512 512"><path d="M377.941 169.941V216H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.568 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296h243.882v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.568 0-33.941l-86.059-86.059c-15.119-15.12-40.971-4.412-40.971 16.97z"/></svg>')
       8 20,
     ew-resize;
 }
@@ -277,8 +279,8 @@
   order: 1;
 }
 .ag-ltr .ag-cell {
-  border-width: 1px !important;
-  border: var(--ag-cell-horizontal-border);
+  border-width: 0px !important;
+  border: none !important;
 }
 .ag-ltr .ag-cell[col-id='number'] {
   justify-content: center;
@@ -349,6 +351,8 @@
     display: flex;
     align-items: center;
     justify-content: start;
+    border-radius: 0 !important;
+    border: none !important;
   }
 }
 /* No Rows Overlay */

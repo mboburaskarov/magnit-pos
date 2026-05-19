@@ -8,7 +8,7 @@
   outline: 0;
 }
 .select:focus .selection {
-  border: 2px solid #fe5000 !important;
+  border: 2px solid #111111 !important;
 }
 .label {
   display: block;
@@ -45,12 +45,12 @@
   display: inline-block;
   font-family: 'Gilroy', sans-serif;
   color: #111217 !important;
-  font-size: 16px !important;
+  font-size: 14px !important;
 }
 .multiple {
   font-weight: 500;
   font-family: 'Gilroy', sans-serif;
-  line-height: 1.6;
+  line-height: 1.8;
   display: -webkit-box;
   padding-right: 32px;
   padding-left: 10px;

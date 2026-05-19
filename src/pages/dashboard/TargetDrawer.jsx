@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 export const ProgressBar = ({ current, total, minWidth = '100%', mt = '10px' }) => {
   const progress = current / total
   return (
-    <Box sx={{ width: '100%', minWidth: minWidth, height: '36px', backgroundColor: 'orange.200', borderRadius: '6px', mt: mt ,overflow: 'hidden' }}>
+    <Box sx={{ width: '100%', minWidth: minWidth, height: '36px', backgroundColor: 'orange.200', borderRadius: '6px', mt: mt, overflow: 'hidden' }}>
       <Box width={(current * 100) / total + '%'} height={36} sx={{ backgroundColor: 'orange.500', borderRadius: '6px' }}>
         {progress > 10 && (
           <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '500', color: 'white', textAlign: 'center' }}>{progress + '%'}</Typography>
@@ -145,21 +145,21 @@ export default function TargetDrawer({ openDrawer, closeDrawer }) {
     }
   }, [values?.limitTarget, values?.offsetTarget, values?.search, orderStoring, selectedMonth, selectedYear])
 
- const {
-  data: targetList,
-  isLoading: isTargetList,
-  isFetching: isFetchingTargetList,
-} = useQuery({
-  queryKey: ['targetList', targetListFIlter],
-  queryFn: () => requests.getTargetList(targetListFIlter),
-  enabled: !!openDrawer?.open,
-})
-const { data: dashboardTargetStatistic } = useQuery({
-  queryKey: ['dashboardTargetStatisticInside', targetListFIlter],
-  queryFn: () => requests.dashboardTargetStatistic(targetListFIlter),
-  enabled: !!openDrawer?.open,
-})
- 
+  const {
+    data: targetList,
+    isLoading: isTargetList,
+    isFetching: isFetchingTargetList,
+  } = useQuery({
+    queryKey: ['targetList', targetListFIlter],
+    queryFn: () => requests.getTargetList(targetListFIlter),
+    enabled: !!openDrawer?.open,
+  })
+  const { data: dashboardTargetStatistic } = useQuery({
+    queryKey: ['dashboardTargetStatisticInside', targetListFIlter],
+    queryFn: () => requests.dashboardTargetStatistic(targetListFIlter),
+    enabled: !!openDrawer?.open,
+  })
+
   const { mutate: targetsExcelReport, isLoading: istargetsExcelReport } = useMutation(requests.getTargetsExcelReport, {
     onSuccess: ({ data }) => {
       downloadLinkExcel(get(data, 'data.file_name'))
@@ -170,7 +170,7 @@ const { data: dashboardTargetStatistic } = useQuery({
       error('Ошибка при скачать excel!')
     },
   })
-useEffect(() => {
+  useEffect(() => {
     const count = targetList?.data?.data?._meta?.total_count
 
     const offsetsCount = Math.ceil(count / Number(values?.limitTarget || 0))
@@ -181,7 +181,7 @@ useEffect(() => {
   const columns = useMemo(
     () => [
       {
-        headerName: 'Aптека',
+        headerName: 'Магазин',
         colId: 'store_name',
         minWidth: 250,
         maxWidth: 450,
@@ -234,7 +234,7 @@ useEffect(() => {
         ),
       },
     ],
-    [orderStoring,targetListFIlter],
+    [orderStoring, targetListFIlter],
   )
 
   const formattedData = targetList?.data?.data?.data
@@ -341,15 +341,9 @@ useEffect(() => {
       </Box>
       <Box sx={{ padding: '12px 20px' }}>
         <AgGridTable
-
-
           fullDownload={() => targetsExcelReport({ ...targetListFIlter, offset: 0, limit: 6000000 })}
           downloadByFilter={() => targetsExcelReport(targetListFIlter)}
           isDownloading={istargetsExcelReport}
-
-        
-
-
           isDataLoading={isTargetList || isFetchingTargetList}
           offsetQuery='offsetTarget'
           limitQuery='limitTarget'

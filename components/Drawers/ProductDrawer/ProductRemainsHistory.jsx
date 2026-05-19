@@ -56,7 +56,7 @@ export default function ProductRemainsHistory({ id }) {
   const columns = useMemo(
     () => [
       {
-        headerName: 'Aптека',
+        headerName: 'Магазин',
         colId: 'store_name',
         minWidth: 200,
         maxWidth: 350,

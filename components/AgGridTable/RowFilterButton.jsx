@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     background: theme.palette.background.default,
     border: `1px solid ${theme.palette.gray[300]}`,
-    borderRadius: 16,
+    borderRadius: 8,
     zIndex: '20',
     boxShadow: 'none',
     overflow: 'hidden',
@@ -25,19 +25,19 @@ const useStyles = makeStyles((theme) => ({
     background: 'inherit',
     border: '0',
     outline: '0',
-    fontWeight: '600',
-    fontSize: '16px',
+    fontWeight: '500',
+    fontSize: '14px',
     cursor: 'pointer',
     lineHeight: '20px',
     display: 'flex',
+    py: '4px',
     justifyContent: 'space-between',
-    padding: '18px 16px',
     '&:hover': {
       background: theme.palette.gray[100],
     },
   },
 }))
-function RowFilterButton({ totalCount, offsetIndex, offsetQuery, offsetSize, setOffsetSize, setOffsetIndex, eventMessage, id }) {
+function RowFilterButton({ totalCount, offsetSize, setOffsetSize, setOffsetIndex, eventMessage, id }) {
   const { t } = useTranslation()
   const classes = useStyles()
   const [open, setOpen] = useState(false)
@@ -62,19 +62,42 @@ function RowFilterButton({ totalCount, offsetIndex, offsetQuery, offsetSize, set
 
   return (
     <Box borderRadius={'8px'} minWidth={75} display={'flex'} alignItems={'center'} position='relative'>
-      <Typography fontSize={'16px'} lineHeight={'24px'} color={'bunker.400'} fontWeight={'500'} mr={'8px'}>
+      <Typography
+        sx={{
+          color: '#9CA3AF',
+          mr: '8px',
+          userSelect: 'none',
+          fontFamily: 'Gilroy, sans-serif',
+        }}
+      >
         {t('ag_grid.bottom.limit')}
       </Typography>
       <Button
-        sx={(theme) => ({ height: '40px', padding: '8px 12px', borderRadius: '8px', background: theme.palette.background.default })}
-        variant='outlined'
+        sx={{
+          height: '38px',
+          minWidth: '64px',
+          padding: '8px 12px',
+          borderRadius: '8px',
+          border: '1px solid #E2E8F0',
+          backgroundColor: '#FFFFFF',
+          color: '#1F2937',
+          fontSize: '14px',
+          fontWeight: '500',
+          textTransform: 'none',
+          boxShadow: 'none',
+          '&:hover': {
+            backgroundColor: '#F9FAFB',
+            borderColor: '#CBD5E1',
+            boxShadow: 'none',
+          },
+        }}
+        variant='text'
         size='small'
-        endIcon={<ArrowDown />}
-        fullWidth
         onClick={() => setOpen(!open)}
         id={id ? id : 'rowFilterButton'}
       >
-        {offsetSize}
+        <span style={{ marginRight: '6px' }}>{offsetSize}</span>
+        <ArrowDown color='#9CA3AF' />
       </Button>
       {open && (
         <Paper className={classes.lineSortContainer}>

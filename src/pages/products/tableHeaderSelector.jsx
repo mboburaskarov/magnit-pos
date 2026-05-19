@@ -21,7 +21,12 @@ import { Barcode } from 'lucide-react'
 const SimpleText = ({ data, rowIndex, type, withDevider, currency }) => {
   return (
     <Typography
-      sx={{ whiteSpace: 'pre-line', color: !data?.[type] && 'gray.400', textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through' }}
+      sx={{
+        fontSize: '14px',
+        whiteSpace: 'pre-line',
+        color: !data?.[type] && 'gray.400',
+        textDecoration: type == 'name' && data['expire_day'] < 0 && 'line-through',
+      }}
       id={`product-${type}-${rowIndex}`}
     >
       {withDevider ? thousandDivider(data?.[type], currency) : data?.[type] || '-'}
@@ -119,9 +124,8 @@ const CustomHeader = (props) => {
           alignItems: 'center',
           justifyContent: 'center',
           color: '#111217',
-          fontSize: '16px',
-          fontWeight: ' 600',
-          lineHeight: '24px',
+          fontSize: '14px',
+          fontWeight: '500',
         }}
       >
         {props.displayName}
@@ -281,7 +285,7 @@ export default function tableHeaderSelector({
       }
     }
 
-     if (el.field === 'country') {
+    if (el.field === 'country') {
       return {
         ...el,
         headerName: 'Страна',
@@ -294,13 +298,13 @@ export default function tableHeaderSelector({
     if (el.field === 'number') {
       return {
         ...el,
-        headerName: '№aa',
+        headerName: '№',
         colId: el.field,
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
           const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
 
           return (
-            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+            <Typography fontWeight={'400'} fontSize={'14px'} lineHeight={'24px'}>
               {absoluteIndex}
             </Typography>
           )
@@ -318,7 +322,7 @@ export default function tableHeaderSelector({
         cellRenderer: memo((p) => {
           return (
             <StyledTooltip title={`${p?.data?.barcodes?.join(',')}`}>
-              <Typography sx={{ whiteSpace: 'pre-line' }}>
+              <Typography sx={{ whiteSpace: 'pre-line', fontSize: '14px' }}>
                 {(() => {
                   const barcodes = p?.data?.barcodes || []
                   if (barcodes.length > 3) {
@@ -391,7 +395,7 @@ export default function tableHeaderSelector({
         headerName: t('table_columns.quantity'),
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
+          <Typography fontWeight={'600'} fontSize={'14px'} lineHeight={'24px'}>
             {p?.data?.units}
           </Typography>
         )),

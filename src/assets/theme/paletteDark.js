@@ -8,7 +8,7 @@ const paletteDark = {
   },
   background: {
     default: '#111217', // Darkened for dark theme
-    defaultStrong: '#F48C33', // Adjusted from #FF6018
+    defaultStrong: '#F48C33', // Adjusted from #111111
     paper: '#21232A', // Dark paper
     gray: '#323641', // Dark gray
   },
@@ -176,12 +176,12 @@ const paletteDark = {
     100: '#9a3412',
     200: '#c2410c',
     300: '#ea580c',
-    400: '#FF6018',
-    500: '#fb923c',
+    400: '#111111',
+    500: '#111111',
     600: '#fdba74',
     700: '#FFCEA8',
     800: '#FFE9D4',
-    1001: '#FE50000D',
+    1001: '#F1F3F5',
     900: '#fff7ed',
   },
   red: {

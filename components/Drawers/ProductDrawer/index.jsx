@@ -10,7 +10,8 @@ import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useQueryParams } from '@hooks/useQueryParams'
 import DefaultImgIcon from '@icons/defaultImgIcon'
-import { Box, Button, Drawer, Typography } from '@mui/material'
+import CloseIcon from '@icons/CloseIcon'
+import { Box, Button, Drawer, Typography, IconButton } from '@mui/material'
 import getImageUrl from '@utils/getImageUrl'
 import { requests } from '@utils/requests'
 import thousandDivider from '@utils/thousandDivider'
@@ -26,22 +27,32 @@ import ProductMovementDashboard from './ProductMovementDashboard'
 import ProductRemainsHistory from './ProductRemainsHistory'
 import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
 import { useHotkeys } from 'react-hotkeys-hook'
+
 const Image = ({ data, setImages }) => {
   return (
     <Box
       sx={{
         position: 'relative',
-        width: '72px',
-        height: '72px',
-        borderRadius: 3,
+        width: '80px',
+        height: '80px',
+        borderRadius: '16px',
+        border: '1px solid #ECEDF2',
+        overflow: 'hidden',
+        cursor: 'pointer',
+        flexShrink: 0,
+        backgroundColor: '#FFF',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: 'all 0.2s ease',
         '&:hover': {
-          '#overlay_image': {
-            opacity: 0.5,
-          },
+          transform: 'scale(1.02)',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
         },
         '& svg': {
-          width: '72px',
-          height: '72px',
+          width: '40px',
+          height: '40px',
+          color: '#A0A5BA',
         },
       }}
     >
@@ -50,7 +61,7 @@ const Image = ({ data, setImages }) => {
           onClick={() => setImages({ data: data?.photos })}
           src={getImageUrl(data?.photos?.[0])}
           alt={data?.name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12 }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       ) : (
         <DefaultImgIcon />
@@ -61,12 +72,11 @@ const Image = ({ data, setImages }) => {
             transition: 'all 0.2s ease',
             cursor: 'pointer',
             opacity: 0,
-            borderRadius: 3,
             bottom: 0,
             right: 0,
             top: 0,
             left: 0,
-            bgcolor: 'green.600',
+            bgcolor: 'rgba(0, 0, 0, 0.05)',
             position: 'absolute',
             zIndex: 2,
           }}
@@ -133,7 +143,7 @@ export default function ProductDrawer({
     if (!productData || productDataLoading || id == null) return
     setUnitPerPack(get(productData, 'data.data.unit_per_pack'))
   }, [productData])
-  //
+
   const printContainer = useRef()
   const documentName = useRef('Pharma CHEQUE')
   const reactToPrintContent = useCallback(() => printContainer.current, [])
@@ -160,7 +170,6 @@ export default function ProductDrawer({
       return { min: null, max: null }
     }
 
-    // Extract all retail prices safely
     const prices = data.map((item) => Number(item?.retail_price)).filter((price) => !isNaN(price))
 
     if (prices.length === 0) return { min: null, max: null }
@@ -171,13 +180,12 @@ export default function ProductDrawer({
     return { min, max }
   }
 
-  //
-
   useEffect(() => {
-    if (id) setCurrentSaleId(id)
-    if (currentIndex) setCurrentIndex(currentIndex)
-  }, [id])
+    if (id && typeof setCurrentSaleId === 'function') setCurrentSaleId(id)
+    if (currentIndex && typeof setCurrentIndex === 'function') setCurrentIndex(currentIndex)
+  }, [id, setCurrentSaleId, currentIndex, setCurrentIndex])
   useHotkeys(['ArrowRight', 'ArrowLeft'], (key) => {
+    if (!ids || typeof setCurrentIndex !== 'function' || typeof setCurrentSaleId !== 'function') return
     if (key.key == 'ArrowRight') {
       if (ids.length - 1 >= currentIndex) {
         setCurrentIndex((a) => a + 1)
@@ -186,7 +194,6 @@ export default function ProductDrawer({
     }
     if (currentIndex == 1) return
     if (key.key == 'ArrowLeft') {
-      // refetch()
       if (currentIndex >= 1) {
         setCurrentIndex((a) => a - 1)
         setCurrentSaleId(ids[currentIndex - 2])
@@ -206,124 +213,205 @@ export default function ProductDrawer({
     const dateParams = qs.stringify(newParams, { addQueryPrefix: true })
     navigate(`${location.pathname}${dateParams}`)
   }
+
   return (
     <Drawer
       anchor='right'
       sx={{
         '& .MuiDrawer-paper': {
           width: '1000px',
-          borderRadius: '24px 0 0 24px',
+          // borderRadius: '24px 0 0 24px',
+          backgroundColor: '#FFF',
         },
       }}
       onClose={handleClose}
       open={!!id}
       isLoading={productDataLoading && isFetchingproductData}
     >
-      <Box display='inline-flex' pt={'40px'} pb={'20px'} px={'40px'}>
+      {/* Header Container */}
+      <Box
+        sx={{
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 3,
+          pt: '32px',
+          pb: '24px',
+          px: '40px',
+          backgroundColor: '#FFF',
+          borderBottom: '1px solid #ECEDF2',
+        }}
+      >
         <Image setImages={setImages} data={productData?.data?.data} />
-        <Typography mt={0.5} ml={2} fontSize={24} color={'bunker.950'} lineHeight={'32px'} fontWeight={'700'}>
-          {productData?.data?.data?.name}
-          <Typography display='flex' alignItems='center' color='orange.500' mt={1} fontWeight={'500'}>
-            {thousandDivider(getRetailPriceRange(productReaminsDataHistory)?.min, 'сум')} -{' '}
-            {thousandDivider(getRetailPriceRange(productReaminsDataHistory)?.max, 'сум')}
+        <Box sx={{ flex: 1, pr: '48px' }}>
+          <Typography fontSize={'22px'} color={'#111217'} lineHeight={'30px'} fontWeight={'700'}>
+            {productData?.data?.data?.name}
           </Typography>
-        </Typography>
+          <Box display='inline-flex' alignItems='center' bgcolor='rgba(254, 80, 0, 0.08)' px='12px' py='4px' borderRadius='8px' mt='6px'>
+            <Typography fontSize='13px' fontWeight='600' color='#FE5000'>
+              {thousandDivider(getRetailPriceRange(productReaminsDataHistory)?.min, 'сум')} -{' '}
+              {thousandDivider(getRetailPriceRange(productReaminsDataHistory)?.max, 'сум')}
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* Sleek Close Button */}
+        <IconButton
+          onClick={handleClose}
+          sx={{
+            position: 'absolute',
+            top: '24px',
+            right: '24px',
+            backgroundColor: '#ECEDF2',
+            '&:hover': { backgroundColor: '#E1E3EA' },
+            color: '#111217',
+            width: '36px',
+            height: '36px',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
       </Box>
 
-      <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
+      {/* Date Filter Strip */}
       <Box
         sx={{
           width: '100%',
           display: 'flex',
-          justifyContent: 'start',
-          borderBottom: '1px solid',
-          borderColor: 'bunker.100',
-          padding: '10px 40px 10px 40px !important',
+          alignItems: 'center',
+          borderBottom: '1px solid #ECEDF2',
+          padding: '12px 40px',
+          backgroundColor: '#FAFAFB',
+          gap: 2,
         }}
       >
+        <Typography fontSize='13px' fontWeight='700' color='#787D93' textTransform='uppercase' letterSpacing='0.5px'>
+          Период:
+        </Typography>
         <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: null, end_date: null }} initialNull id='accounting-report-date-range' />
       </Box>
-      <ProductMovementDashboard
-        productData={productData}
-        singleProductDashboard={{ ...get(singleProductDashboard, 'data.data'), product_amount: get(productData, 'data.data.retail_price') }}
-        isLoading={singleProductDashboardLoading}
-        unit_per_pack={unitPerPack}
-      />
-      <Box px={'40px'} my={'20px'}>
-        <SectionTitle grey>История продукта</SectionTitle>
-        <ProductHistory id={currentSaleId} unit_per_pack={unitPerPack} />
-      </Box>
-      <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
-      <Box px={'40px'} my={'20px'}>
-        <SectionTitle grey>Остатки</SectionTitle>
 
-        <ProductRemainsHistory id={currentSaleId} />
-      </Box>
-      {productData?.data?.data?.status === 'REJECTED' && (
-        <>
-          <SectionTitle grey mt={6}>
-            Причина отклона
-          </SectionTitle>
-          <Box mt={2} overflow={'hidden'} bgcolor={'grey.100'} borderRadius={3} p={4}>
-            <Typography sx={{ width: '100%', wordBreak: 'break-word' }}>{productData?.data?.data?.rejectedComment || 'Нет'}</Typography>
-          </Box>
-        </>
-      )}
-      <Box borderBottom={'1px solid'} borderColor={'bunker.100'} height={'50px'} />
-      <Box px={'40px'} my={'20px'} mb={'80px'}>
-        <SectionTitle grey>Доп. информация</SectionTitle>
-        <DrawerInfoBox
-          infoData={[
-            { title: 'Код продукта', info: productData?.data?.data?.material_code },
-            { title: 'Баркод', info: thousandDivider(productData?.data?.data?.barcode, '') },
-            { title: 'Цена', info: thousandDivider(productData?.data?.data?.retail_price, 'сум') },
-            { title: 'Производитель', info: productData?.data?.data?.producer?.name },
-            { title: 'Сумма бонуса', info: thousandDivider(productData?.data?.data?.bonus_amount, 'сум') },
-            { title: 'Бонусный процент', info: thousandDivider(productData?.data?.data?.bonus_percent, '%') },
-            { title: 'Время подготовки', info: dayjs(productData?.data?.data?.created_at).format('DD.MM.YYYY') },
-            { title: 'Единицы измерения', info: productData?.data?.data?.unit_type?.unit_name },
-            { title: 'Наименование товара', info: productData?.data?.data?.name },
-            { title: 'Тип', info: productData?.data?.data?.type === 'BUCHET' ? 'Buchet' : 'Market' },
-            { title: 'Описание', info: productData?.data?.data?.description, fullWidth: true },
-            { title: 'Категории', info: productData?.data?.data?.categories?.map((item) => item.name).join('<br>'), fullWidth: true },
-          ]}
-        />
-        <CheckAccess id={'can-view-markinglist'}>
-          <Box mb={'80px'}>
-            {productData?.data?.data?.markings?.map((el) => (
-              <Box
-                key={el}
-                sx={{
-                  backgroundColor: 'bg.10',
-                  borderRadius: '10px',
-                  height: '40px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: '600',
-                  fontSize: '20px',
-                  mb: '15px',
-                }}
-              >
-                {el}
+      {/* Main Content Area */}
+      <Box sx={{ p: '32px', overflowY: 'auto', flex: 1 }}>
+        {/* Movements Dashboard */}
+        {/* <Box>
+          <ProductMovementDashboard
+            productData={productData}
+            singleProductDashboard={{ ...get(singleProductDashboard, 'data.data'), product_amount: get(productData, 'data.data.retail_price') }}
+            isLoading={singleProductDashboardLoading}
+            unit_per_pack={unitPerPack}
+          />
+        </Box> */}
+
+        {/* <Box sx={{ height: '1px', bgcolor: '#ECEDF2', my: '32px' }} /> */}
+
+        {/* History Table */}
+        <Box>
+          <Typography fontSize={'18px'} fontWeight={'700'} color={'#111217'} mb={1.5}>
+            История продукта
+          </Typography>
+          <ProductHistory id={currentSaleId} unit_per_pack={unitPerPack} />
+        </Box>
+
+        <Box sx={{ height: '1px', bgcolor: '#ECEDF2', my: 3 }} />
+
+        {/* Remains Table */}
+        <Box>
+          <Typography fontSize={'18px'} fontWeight={'700'} color={'#111217'} mb={1.5}>
+            Остатки
+          </Typography>
+          <ProductRemainsHistory id={currentSaleId} />
+        </Box>
+
+        {/* Rejected Reason (Conditional) */}
+        {productData?.data?.data?.status === 'REJECTED' && (
+          <>
+            <Box sx={{ height: '1px', bgcolor: '#ECEDF2', my: '32px' }} />
+            <Box>
+              <Typography fontSize={'18px'} fontWeight={'700'} color={'#D32F2F'} mb={1.5}>
+                Причина отклонения
+              </Typography>
+              <Box sx={{ bgcolor: '#FFF5F5', borderRadius: '16px', p: '16px', border: '1px dashed #FFE3E3' }}>
+                <Typography sx={{ width: '100%', wordBreak: 'break-word', color: '#D32F2F', fontWeight: 500 }}>
+                  {productData?.data?.data?.rejectedComment || 'Нет'}
+                </Typography>
               </Box>
-            ))}
-          </Box>
-        </CheckAccess>
+            </Box>
+          </>
+        )}
+
+        <Box sx={{ height: '1px', bgcolor: '#ECEDF2', my: '32px' }} />
+
+        {/* Additional Info Table */}
+        <Box sx={{ mb: '120px' }}>
+          <Typography fontSize={'18px'} fontWeight={'700'} color={'#111217'} mb={1.5}>
+            Доп. информация
+          </Typography>
+          <DrawerInfoBox
+            mt={1}
+            mb={1}
+            columnGap={2}
+            infoData={[
+              { title: 'Код продукта', info: productData?.data?.data?.material_code },
+              { title: 'Баркод', info: thousandDivider(productData?.data?.data?.barcode, '') },
+              { title: 'Цена', info: thousandDivider(productData?.data?.data?.retail_price, 'сум') },
+              { title: 'Производитель', info: productData?.data?.data?.producer?.name },
+              { title: 'Сумма бонуса', info: thousandDivider(productData?.data?.data?.bonus_amount, 'сум') },
+              { title: 'Бонусный процент', info: thousandDivider(productData?.data?.data?.bonus_percent, '%') },
+              { title: 'Время подготовки', info: dayjs(productData?.data?.data?.created_at).format('DD.MM.YYYY') },
+              { title: 'Единицы измерения', info: productData?.data?.data?.unit_type?.unit_name },
+              { title: 'Наименование товара', info: productData?.data?.data?.name },
+              { title: 'Тип', info: productData?.data?.data?.type === 'BUCHET' ? 'Buchet' : 'Market' },
+              { title: 'Описание', info: productData?.data?.data?.description, fullWidth: true },
+              { title: 'Категории', info: productData?.data?.data?.categories?.map((item) => item.name).join('<br>'), fullWidth: true },
+            ]}
+          />
+
+          <CheckAccess id={'can-view-markinglist'}>
+            <Box mt={2}>
+              {productData?.data?.data?.markings?.map((el) => (
+                <Box
+                  key={el}
+                  sx={{
+                    backgroundColor: '#F8F9FC',
+                    borderRadius: '12px',
+                    height: '44px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: '600',
+                    fontSize: '18px',
+                    color: '#111217',
+                    border: '1px solid #ECEDF2',
+                    mb: '12px',
+                  }}
+                >
+                  {el}
+                </Box>
+              ))}
+            </Box>
+          </CheckAccess>
+        </Box>
       </Box>
+
+      {/* Fixed Footer Actions */}
       <Box
         sx={{
-          borderBottomLeftRadius: '24px',
-          borderBottomRightRadius: '24px',
+          borderTop: '1px solid #ECEDF2',
+          boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.04)',
+          position: 'fixed',
+          bottom: 0,
+          right: 0,
+          width: '1000px',
+          bgcolor: '#FFF',
+          p: '20px 40px',
+          columnGap: 2,
+          display: 'inline-flex',
+          zIndex: 9999,
+          borderBottomLeftRadius: '0px',
+          borderBottomRightRadius: '0px',
         }}
-        bgcolor={'#fff'}
-        position={'fixed'}
-        bottom={'0'}
-        zIndex={9999}
-        p={'20px 40px'}
-        columnGap={2}
-        width='1000px'
-        display='inline-flex'
       >
         <ButtonWithPopup
           boxStyles={{ width: '100%' }}
@@ -349,8 +437,8 @@ export default function ProductDrawer({
                 cursor: 'pointer',
                 justifyContent: 'center',
                 alignItems: 'center',
-
-                '&:hover': { bgcolor: 'transparent !important' },
+                width: '100%',
+                fontWeight: 600,
               }}
               className='cash_register_icon_wrapper'
             >
@@ -366,6 +454,7 @@ export default function ProductDrawer({
         <Button
           sx={{
             height: '48px',
+            fontWeight: 600,
           }}
           color='secondary'
           onClick={() => navigate(`/products/edit/${productData?.data?.data.id}`)}
@@ -375,6 +464,8 @@ export default function ProductDrawer({
           Редактировать
         </Button>
       </Box>
+
+      {/* Print Templates */}
       <RippedPaperProductPriceCheck
         printContainer={printContainer}
         data={{
@@ -388,7 +479,6 @@ export default function ProductDrawer({
         data={{
           name: get(productData, 'data.data.name'),
           price: get(productData, 'data.data.retail_unit_price'),
-
           barcode: get(productData, 'data.data.barcode'),
         }}
       />

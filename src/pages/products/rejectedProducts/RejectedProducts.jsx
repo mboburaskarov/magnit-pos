@@ -13,6 +13,7 @@ import { t } from 'i18next'
 import dayjs from 'dayjs'
 import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
 import { error } from '@utils/toast'
+import MgPageHeader from '@components/MgPageHeader'
 
 const CustomHeader = (props) => {
   const lastStort = props.column.colDef.orderStoring
@@ -64,10 +65,6 @@ const CustomHeader = (props) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#111217',
-          fontSize: '16px',
-          fontWeight: ' 600',
-          lineHeight: '24px',
         }}
       >
         {props.displayName}
@@ -120,7 +117,7 @@ export default function RejectedProducts({ id }) {
   const columns = useMemo(
     () => [
       {
-        headerName: 'Aптека',
+        headerName: 'Магазин',
         colId: 'store_name',
         minWidth: 300,
         maxWidth: 300,
@@ -187,66 +184,87 @@ export default function RejectedProducts({ id }) {
   })
 
   return (
-    <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-      <Box display={'flex'} mb={'10px'} justifyContent={'space-between'}>
-        <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          Товары с отказом
-        </Typography>
-      </Box>
-      <Box
-        width='100%'
-        sx={{
-          mb: '20px',
-          display: 'flex',
-          '& .MuiBox-root': {
-            width: 'auto',
-          },
-          '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-          '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-            background: 'transparent',
-            width: '400px',
-            height: 48,
-          },
-        }}
-      >
-        <InputSearch fullWidth={false} id='producrs-search' name='search' placeholder={'Наименование'} uncontrolled />
+    <Box display='flex' flexDirection='column' position='relative' px={'24px'} pb={'20px'}>
+      <MgPageHeader
+        title='Товары с отказом'
+        subtitle={`Всего: ${rejectedProductList?.data?.data?._meta?.total_count || 0}`}
+        showExport
+        onExport={() => productsExcelReport(rejectedProductListFIlter)}
+        exportLoading={isproductsExcelReport}
+      />
 
-        <Box maxWidth={'300px'} ml={2} mr={2}>
-          <MultiOptionSelectNew
-            zIndex={999}
-            placeholder={t('placeholders.select_shops')}
-            // multiple
-            defaultSelectedAll
-            beforeContent={t('placeholders.select_shops')}
-            value={selectedShops}
-            allOptions={get(shopList, 'data.data.ids', [])}
-            selectAllLabel={'Все филиалы'}
-            options={get(shopList, 'data.data.data', [])}
-            isLoading={false}
-            onChange={(val) => {
-              setSelectedShops(val)
-            }}
-            request={requests.getAllStores}
+      <div className='mg-table-card' style={{ marginTop: '12px' }}>
+        {/* Toolbar block matching table-toolbar exactly */}
+        <div
+          className='mg-table-toolbar'
+          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid var(--mg-border)' }}
+        >
+          <div className='mg-table-toolbar-left' style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
+            {/* Search field Box */}
+            <Box
+              width='100%'
+              maxWidth={400}
+              sx={{
+                '& .MuiInputBase-root': {
+                  height: '40px',
+                  border: '1px solid #ECEDF2',
+                  borderRadius: '12px',
+                  bgcolor: '#fff',
+                  px: '12px',
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  border: 'none',
+                },
+                '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                  background: 'transparent',
+                  width: '100%',
+                  height: '40px',
+                },
+              }}
+            >
+              <InputSearch id='producrs-search' name='search' placeholder={'Наименование'} uncontrolled />
+            </Box>
+          </div>
+
+          <div className='mg-table-toolbar-right' style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <Box maxWidth={'300px'}>
+              <MultiOptionSelectNew
+                zIndex={999}
+                placeholder={t('placeholders.select_shops')}
+                defaultSelectedAll
+                beforeContent={t('placeholders.select_shops')}
+                value={selectedShops}
+                allOptions={get(shopList, 'data.data.ids', [])}
+                selectAllLabel={'Все филиалы'}
+                options={get(shopList, 'data.data.data', [])}
+                isLoading={false}
+                onChange={(val) => {
+                  setSelectedShops(val)
+                }}
+                request={requests.getAllStores}
+              />
+            </Box>
+          </div>
+        </div>
+
+        <Box style={{ padding: 0 }}>
+          <AgGridTable
+            isDataLoading={isRejectedProductList || isFetchingrejectedProductList}
+            offsetQuery='offsetHistory'
+            limitQuery='limitHistory'
+            id='products-history-table'
+            totalCount={rejectedProductList?.data?.data?._meta?.total_count || 0}
+            columns={columns}
+            data={formattedData}
+            offsetCount={offsetCount}
+            updaterAction={(newData) => {}}
+            defaultOffsetSize={5}
+            fullDownload={() => productsExcelReport({ ...rejectedProductListFIlter, offset: 0, limit: 1000000 })}
+            downloadByFilter={() => productsExcelReport(rejectedProductListFIlter)}
+            isDownloading={isproductsExcelReport}
           />
         </Box>
-      </Box>
-      <Box>
-        <AgGridTable
-          isDataLoading={isRejectedProductList || isFetchingrejectedProductList}
-          offsetQuery='offsetHistory'
-          limitQuery='limitHistory'
-          id='products-history-table'
-          totalCount={rejectedProductList?.data?.data?._meta?.total_count || 0}
-          columns={columns}
-          data={formattedData}
-          offsetCount={offsetCount}
-          updaterAction={(newData) => {}}
-          defaultOffsetSize={5}
-          fullDownload={() => productsExcelReport({ ...rejectedProductListFIlter, offset: 0, limit: 1000000 })}
-          downloadByFilter={() => productsExcelReport(rejectedProductListFIlter)}
-          isDownloading={isproductsExcelReport}
-        />
-      </Box>
+      </div>
     </Box>
   )
 }

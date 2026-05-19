@@ -1,0 +1,475 @@
+/**
+ * POS Layout CSS - SAP POS Inspired
+ * Touch-friendly, high-contrast, minimal animations.
+ * Optimized for Windows 7/8/10 Chrome.
+ */
+
+:root {
+  --sap-bg: #E8ECEE;
+  --sap-header-bg: #333333;
+  --sap-header-tab: #4D4D4D;
+  --sap-blue: #0070D2;
+  --sap-blue-hover: #005AAB;
+  --sap-border: #CCCCCC;
+  --sap-surface: #FFFFFF;
+  --sap-text: #333333;
+  --sap-text-muted: #666666;
+  --sap-green: #2B9C4A;
+  --sap-red: #E3553C;
+  --sap-row-alt: #F2F2F2;
+  --sap-selection: #0070D2;
+}
+
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background: var(--sap-bg);
+  overflow: hidden;
+}
+
+.pos-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background: var(--sap-bg);
+}
+
+/* ── Top Header ────────────────────────────────────────────── */
+.pos-topbar {
+  display: flex;
+  height: 50px;
+  background: var(--sap-header-bg);
+  color: white;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pos-topbar-left {
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+  gap: 20px;
+}
+
+.pos-topbar-logo {
+  font-weight: 800;
+  font-size: 20px;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.pos-topbar-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  color: #CCCCCC;
+  line-height: 1.4;
+}
+
+.pos-topbar-actions {
+  display: flex;
+  height: 100%;
+}
+
+.pos-topbar-btn {
+  height: 100%;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sap-blue);
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-left: 1px solid rgba(255,255,255,0.1);
+}
+.pos-topbar-btn:hover { background: var(--sap-blue-hover); }
+
+.pos-topbar-tab {
+  height: 100%;
+  padding: 0 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
+  background: transparent;
+  border: none;
+  border-left: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+}
+.pos-topbar-tab.active {
+  background: var(--sap-header-tab);
+}
+
+/* ── Main Layout ───────────────────────────────────────────── */
+.pos-main-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.pos-left-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--sap-border);
+}
+
+.pos-right-section {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  background: var(--sap-surface);
+}
+
+/* ── Cart Table Area ───────────────────────────────────────── */
+.pos-cart-area {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--sap-surface);
+}
+
+.pos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pos-table th {
+  background: #4D4D4D;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: left;
+  padding: 8px 12px;
+  text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-right: 1px solid #666;
+}
+
+.pos-table td {
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--sap-text);
+  border-bottom: 1px solid var(--sap-border);
+  border-right: 1px solid var(--sap-border);
+}
+
+.pos-table tr:nth-child(even) {
+  background: var(--sap-row-alt);
+}
+
+.pos-table tr.selected {
+  background: var(--sap-selection);
+}
+.pos-table tr.selected td {
+  color: white;
+}
+
+.pos-qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pos-qty-btn {
+  width: 28px;
+  height: 28px;
+  background: #FFF;
+  border: 1px solid var(--sap-border);
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--sap-text);
+}
+.pos-table tr.selected .pos-qty-btn {
+  color: var(--sap-text);
+}
+
+/* ── Left Bottom (Summary + Tabs) ──────────────────────────── */
+.pos-left-bottom {
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  background: var(--sap-surface);
+  border-top: 1px solid var(--sap-border);
+}
+
+.pos-summary-bar {
+  display: flex;
+  border-bottom: 1px solid var(--sap-border);
+}
+.pos-summary-box {
+  flex: 1;
+  padding: 10px 20px;
+  border-right: 1px solid var(--sap-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.pos-summary-label {
+  font-size: 12px;
+  color: var(--sap-text-muted);
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.pos-summary-value {
+  font-size: 16px;
+  color: var(--sap-text);
+}
+.pos-summary-total {
+  flex: 1.5;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.pos-summary-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.pos-summary-total-label {
+  font-size: 14px;
+  font-weight: bold;
+}
+.pos-summary-total-val {
+  font-size: 16px;
+  font-weight: bold;
+}
+.pos-summary-total-val.red { color: var(--sap-red); }
+
+.pos-action-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--sap-blue);
+  background: #F2F2F2;
+}
+.pos-action-tab {
+  padding: 10px 20px;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--sap-text-muted);
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+.pos-action-tab.active {
+  color: var(--sap-blue);
+  border-top: 3px solid var(--sap-blue);
+  background: var(--sap-surface);
+}
+
+.pos-action-grid {
+  flex: 1;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  background: #F7F7F7;
+  overflow-y: auto;
+}
+.pos-action-btn {
+  height: 60px;
+  background: #EAF7EC; /* Default pastel green */
+  border: 1px solid #D1E5D5;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 10px;
+  transition: opacity 0.2s;
+}
+.pos-action-btn:hover { opacity: 0.8; }
+.pos-action-btn.orange { background: #FDE8D7; border-color: #EBD3C0; }
+.pos-action-btn.blue { background: #E1F0FA; border-color: #D0E3F0; }
+.pos-action-btn.gray { background: #F2F2F2; border-color: #E6E6E6; }
+
+/* ── Right Section (Sidebar) ───────────────────────────────── */
+.pos-receipt-info {
+  padding: 10px;
+  font-size: 11px;
+  color: var(--sap-text-muted);
+  border-bottom: 1px solid var(--sap-border);
+  background: #F9F9F9;
+}
+
+.pos-customer-box {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--sap-border);
+}
+.pos-customer-icon {
+  color: var(--sap-blue);
+}
+.pos-customer-details {
+  font-size: 12px;
+  color: var(--sap-blue);
+  font-weight: bold;
+}
+
+.pos-numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--sap-border);
+  border-bottom: 1px solid var(--sap-border);
+}
+.pos-num-btn {
+  height: 55px;
+  background: var(--sap-surface);
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--sap-text);
+  cursor: pointer;
+}
+.pos-num-btn:active { background: #E6E6E6; }
+
+.pos-numpad-actions {
+  display: flex;
+  gap: 1px;
+  background: var(--sap-border);
+  border-bottom: 1px solid var(--sap-border);
+}
+.pos-numpad-act-btn {
+  flex: 1;
+  height: 45px;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+.pos-numpad-act-btn.back { background: var(--sap-red); }
+.pos-numpad-act-btn.enter { background: var(--sap-green); }
+
+.pos-cash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  background: var(--sap-surface);
+}
+.pos-cash-bill {
+  height: 50px;
+  background: #E6F2F0; /* slight pastel tint */
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.pos-cash-bill::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+}
+.pos-cash-bill.uzs-10k::before { background: #56A0D3; }
+.pos-cash-bill.uzs-50k::before { background: #B388FF; }
+.pos-cash-bill.uzs-100k::before { background: #FFAB40; }
+.pos-cash-bill.uzs-200k::before { background: #69F0AE; }
+
+.pos-pay-type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 0 4px 4px 4px;
+}
+.pos-pay-type-btn {
+  height: 50px;
+  background: var(--sap-blue);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pos-pay-type-btn:hover { background: var(--sap-blue-hover); }
+
+.pos-exact-btn {
+  margin: 4px;
+  height: 70px;
+  background: var(--sap-blue);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pos-exact-btn:hover { background: var(--sap-blue-hover); }
+
+.pos-quick-select-btn {
+  margin: 0 4px 4px 4px;
+  height: 40px;
+  background: var(--sap-blue);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.pos-quick-select-btn:hover { background: var(--sap-blue-hover); }
+
+.pos-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pos-modal {
+  background: var(--sap-surface);
+  border-radius: 8px;
+  padding: 32px;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.pos-modal-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--sap-text);
+  margin-bottom: 8px;
+}
+
+.pos-modal-desc {
+  font-size: 14px;
+  color: var(--sap-text-muted);
+  margin-bottom: 20px;
+}
+
+.pos-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+

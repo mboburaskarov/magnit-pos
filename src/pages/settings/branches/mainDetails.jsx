@@ -16,14 +16,7 @@ import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
 import { YMaps, Map, Placemark } from 'react-yandex-maps'
 import PlusIcon from '@/assets/icons/PlusIcon'
 
-export default function MainDetails({
-  openDrawer,
-  terminalIdValue,
-  setTerminalIdValue,
-  terminalIds,
-  handleAddTerminalId,
-  handleDeleteTerminalId,
-}) {
+export default function MainDetails({ openDrawer, terminalIdValue, setTerminalIdValue, terminalIds, handleAddTerminalId, handleDeleteTerminalId }) {
   const { control, errors, setValue, reset, getValues, watch } = useFormContext()
   const { t } = useTranslation()
   const [openLocationModal, setOpenLocationModal] = useState(false)
@@ -175,28 +168,18 @@ export default function MainDetails({
             }}
             filterOption={() => true}
           />
-           
         </Grid>
         <Grid item xs={6}>
           <Label mb='4px'>{'ИНН'}</Label>
 
-          <TextField
-            id='inn'
-            type={'number'}
-            name='inn'
-            control={control}
-            fullWidth
-            error={errors?.inn}
-            placeholder={'ИНН'}
-            asteriks
-          />
+          <TextField id='inn' type={'number'} name='inn' control={control} fullWidth error={errors?.inn} placeholder={'ИНН'} asteriks />
         </Grid>
       </Grid>
       <Box height={'20px'} />
 
       <Grid container spacing={3}>
         <Grid item xs={6}>
-          <Label mb='4px'>{t('В Аптекае код')}</Label>
+          <Label mb='4px'>{t('В Магазине код')}</Label>
 
           <TextField
             id='client-name'
@@ -204,7 +187,7 @@ export default function MainDetails({
             control={control}
             fullWidth
             error={errors?.store_code}
-            placeholder={'В Аптекае код'}
+            placeholder={'В Магазине код'}
             type={'number'}
             asteriks
           />
@@ -240,7 +223,7 @@ export default function MainDetails({
             placeholder='HH:MM - HH:MM'
           >
             {(inputProps) => (
-              <TextField {...inputProps} setValue={() => {}} id='client-name' name='ranged-time' fullWidth uncontrolled placeholder={'В Аптекае код'} />
+              <TextField {...inputProps} setValue={() => {}} id='client-name' name='ranged-time' fullWidth uncontrolled placeholder={'В Магазине код'} />
             )}
           </ReactInputMask>
         </Grid>
@@ -313,7 +296,6 @@ export default function MainDetails({
               }}
             >
               <Plus color='#fff' />
-
             </Button>
           </Box>
 
@@ -349,12 +331,8 @@ export default function MainDetails({
                   >
                     {terminalId}
                   </Typography>
-                  <Button
-                    color='error'
-                    onClick={() => handleDeleteTerminalId(terminalId)}
-                    sx={{ minWidth: 'auto',padding:' 0 10px',height:'32px' }}
-                  >
-                    <Trash2 color='#fff' size={16}/>
+                  <Button color='error' onClick={() => handleDeleteTerminalId(terminalId)} sx={{ minWidth: 'auto', padding: ' 0 10px', height: '32px' }}>
+                    <Trash2 color='#fff' size={16} />
                   </Button>
                 </Box>
               ))

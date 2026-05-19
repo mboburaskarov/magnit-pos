@@ -25,17 +25,67 @@ function ProductMovementDashboard({ singleProductDashboard, productData, isLoadi
   const [collapse, setCollapse] = useState(false)
 
   const items = [
-    { title: 'Импорты', collapseTitle: 'Импорты', color: 'green.700', countKey: 'import_count', amountKey: 'import_amount' },
-    { title: 'Возврат от клиента ', collapseTitle: 'Возврат или продажи', color: 'green.700', countKey: 'return_sale_count', amountKey: 'return_sale_amount' },
-    { title: 'Перемещение', collapseTitle: 'Перемещение', color: 'green.700', countKey: 'transfer_in_count', amountKey: 'transfer_in_amount' },
-    { title: 'Инвентаризация', collapseTitle: 'Инвентаризация', color: 'green.700', countKey: 'inventory_plus_count', amountKey: 'inventory_plus_amount' },
+    {
+      title: 'Импорты',
+      collapseTitle: 'Импорты',
+      countKey: 'import_count',
+      amountKey: 'import_amount',
+      variant: 'green',
+    },
+    {
+      title: 'Возврат от клиента',
+      collapseTitle: 'Возврат или продажи',
+      countKey: 'return_sale_count',
+      amountKey: 'return_sale_amount',
+      variant: 'green',
+    },
+    {
+      title: 'Перемещение',
+      collapseTitle: 'Перемещение',
+      countKey: 'transfer_in_count',
+      amountKey: 'transfer_in_amount',
+      variant: 'green',
+    },
+    {
+      title: 'Инвентаризация',
+      collapseTitle: 'Инвентаризация',
+      countKey: 'inventory_plus_count',
+      amountKey: 'inventory_plus_amount',
+      variant: 'green',
+    },
 
-    { title: 'Возврат на склад', color: 'red.700', countKey: 'return_to_sklad_count', amountKey: 'return_to_sklad_amount' },
-    { title: 'Продажи', color: 'red.700', countKey: 'sale_count', amountKey: 'sale_amount' },
-    { title: 'Перемещение', color: 'red.700', countKey: 'transfer_out_count', amountKey: 'transfer_out_amount' },
-    { title: 'Инвентаризация', color: 'red.700', countKey: 'inventory_minus_count', amountKey: 'inventory_minus_amount' },
+    {
+      title: 'Возврат на склад',
+      countKey: 'return_to_sklad_count',
+      amountKey: 'return_to_sklad_amount',
+      variant: 'red',
+    },
+    {
+      title: 'Продажи',
+      countKey: 'sale_count',
+      amountKey: 'sale_amount',
+      variant: 'red',
+    },
+    {
+      title: 'Перемещение',
+      countKey: 'transfer_out_count',
+      amountKey: 'transfer_out_amount',
+      variant: 'red',
+    },
+    {
+      title: 'Инвентаризация',
+      countKey: 'inventory_minus_count',
+      amountKey: 'inventory_minus_amount',
+      variant: 'red',
+    },
 
-    { title: 'Текущее', collapseTitle: 'Текущее', color: 'indigo.600', countKey: 'unit_quantity', amountKey: 'product_amount' },
+    {
+      title: 'Текущее',
+      collapseTitle: 'Текущее',
+      countKey: 'unit_quantity',
+      amountKey: 'product_amount',
+      variant: 'blue',
+    },
   ]
 
   const merged = { ...singleProductDashboard }
@@ -54,7 +104,34 @@ function ProductMovementDashboard({ singleProductDashboard, productData, isLoadi
     merged.inventory_plus_amount += merged.inventory_minus_amount || 0
   }
 
-  const filteredItems = collapse ? items.filter((i) => i.color !== 'red.700' || i.title === 'Текущее') : items
+  const filteredItems = collapse ? items.filter((i) => i.variant !== 'red' || i.title === 'Текущее') : items
+
+  const getVariantStyles = (variant) => {
+    switch (variant) {
+      case 'green':
+        return {
+          bgcolor: '#F5FCF7',
+          border: '1px solid #E3F5E7',
+          textColor: '#1A7A3E',
+          accentColor: '#1A7A3E',
+        }
+      case 'red':
+        return {
+          bgcolor: '#FFF5F5',
+          border: '1px solid #FFE3E3',
+          textColor: '#D32F2F',
+          accentColor: '#D32F2F',
+        }
+      case 'blue':
+      default:
+        return {
+          bgcolor: '#F3F6FF',
+          border: '1px solid #E1E8FF',
+          textColor: '#2B54E6',
+          accentColor: '#2B54E6',
+        }
+    }
+  }
 
   return (
     <Box>
@@ -62,70 +139,68 @@ function ProductMovementDashboard({ singleProductDashboard, productData, isLoadi
         sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'end',
+          justifyContent: 'space-between',
           width: '100%',
-          pl: '40px',
+          mb: 1.5,
         }}
       >
+        <Typography fontSize={'18px'} fontWeight={'700'} color={'#111217'}>
+          Статистика движения
+        </Typography>
         <Typography
-          textAlign={'end'}
           onClick={() => setCollapse((a) => !a)}
           sx={{
-            mb: 1,
-
             cursor: 'pointer',
             fontWeight: 600,
-            fontSize: '17px',
-            color: 'gray.700',
+            fontSize: '14px',
+            color: '#787D93',
             userSelect: 'none',
-            padding: '10px 40px 0 0',
+            '&:hover': { color: '#111217' },
           }}
         >
-          {collapse ? 'Еще' : 'Меньше'}
+          {collapse ? 'Развернуть' : 'Свернуть'}
         </Typography>
       </Box>
 
       <Box
         sx={{
-          padding: '10px 35px',
           display: 'grid',
           gridTemplateColumns: 'repeat(5, 1fr)',
-          gridAutoRows: collapse ? '45px' : '90px',
-          gap: '10px',
+          gridAutoRows: collapse ? '60px' : '100px',
+          gap: '12px',
         }}
       >
         {filteredItems.map((item, index) => {
           const isLast = item.title === 'Текущее'
+          const styles = getVariantStyles(item.variant)
 
           return (
             <Box
               key={index}
               sx={{
-                gridRow: isLast ? '1 / span 2' : 'auto',
+                gridRow: isLast && !collapse ? '1 / span 2' : 'auto',
                 gridColumn: isLast ? '5' : 'auto',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: isLast && !collapse ? 'center' : 'flex-start',
-                alignItems: isLast && !collapse ? 'center' : 'flex-start',
-                padding: '5px 12px',
-                bgcolor: 'bg.10',
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                padding: '12px 16px',
+                bgcolor: styles.bgcolor,
+                border: styles.border,
                 borderRadius: '16px',
-                height: isLast && !collapse ? 'auto' : '90px',
-                maxHeight: isLast && !collapse ? 'auto' : '90px',
+                height: isLast && !collapse ? '100%' : '100%',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.03)',
+                },
               }}
             >
               <Box sx={{ width: '100%' }}>
                 {isLoading ? (
-                  <Skeleton width='50%' height={20} sx={{ mt: 1 }} />
+                  <Skeleton width='60%' height={16} />
                 ) : (
-                  <Typography
-                    fontSize={14}
-                    textAlign={isLast && !collapse ? 'center' : 'start'}
-                    mt={'5px'}
-                    lineHeight={'24px'}
-                    color={'bunker.600'}
-                    fontWeight={600}
-                  >
+                  <Typography fontSize={12} lineHeight={'1.2'} color={'#787D93'} fontWeight={600} textTransform={'uppercase'} letterSpacing={'0.5px'}>
                     {collapse ? item.collapseTitle : item.title}
                   </Typography>
                 )}
@@ -133,23 +208,16 @@ function ProductMovementDashboard({ singleProductDashboard, productData, isLoadi
 
               {isLoading ? (
                 <>
-                  <Skeleton width='60%' height={40} sx={{ mt: '5px', mb: '2px' }} />
-                  <Skeleton width='40%' height={20} />
+                  <Skeleton width='80%' height={28} sx={{ mt: '6px' }} />
+                  <Skeleton width='50%' height={16} sx={{ mt: '4px' }} />
                 </>
               ) : (
                 <>
-                  <Typography
-                    fontSize={20}
-                    m={'5px 0 2px'}
-                    display={'flex'}
-                    alignItems={'flex-end'}
-                    fontWeight={700}
-                    color={get(merged, item.countKey) >= 0 ? item.color : 'red.700'}
-                  >
+                  <Typography fontSize={22} mt={'6px'} lineHeight={'1.1'} fontWeight={700} color={styles.textColor}>
                     {formatCount(Math.abs(get(merged, item.countKey)) || 0, unit_per_pack)}
                   </Typography>
 
-                  <Typography fontSize={13} ml={'3px'} lineHeight={'24px'} color={get(merged, item.countKey) >= 0 ? item.color : 'red.700'} fontWeight={600}>
+                  <Typography fontSize={13} mt={'2px'} lineHeight={'1.2'} color={styles.textColor} fontWeight={600}>
                     {thousandDivider(get(merged, item.amountKey), 'сум', true)}
                   </Typography>
                 </>

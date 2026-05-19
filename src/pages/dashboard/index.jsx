@@ -6,17 +6,7 @@ import CheckAccess from '@components/CheckAccess'
 import LoadingContainer from '@components/LoadingContainer'
 import { paymentTypes } from '@constants/paymentTypes'
 import { useQueryParams } from '@hooks/useQueryParams'
-import ChartArrowUp from '@icons/dashboard/ChartArrowUp'
-import Gift from '@icons/dashboard/Gift'
-import HomeSetting from '@icons/dashboard/HomeSetting'
-import HourglassEnd from '@icons/dashboard/HourglassEnd'
-import MoneyArrowDown from '@icons/dashboard/MoneyArrowDown'
-import ShoppingBasketArrow from '@icons/dashboard/ShoppingBasketArrow'
-import ShoppingBasketCheck from '@icons/dashboard/ShoppingBasketCheck'
-import StopWatchMinus from '@icons/dashboard/StopWatchMinus'
-import Time24 from '@icons/dashboard/Time24'
-import TimeForward from '@icons/dashboard/TimeForward'
-import Wallet from '@icons/dashboard/Wallet'
+import { DollarSign, ShoppingCart, Users, Activity, Package, Wallet } from 'lucide-react'
 import RightArrowIcon from '@icons/RightArrowIcon'
 import { Box, Button, Grid, Typography } from '@mui/material'
 import { calculatePercentage } from '@utils/calculatePercentage'
@@ -29,6 +19,16 @@ import isoWeek from 'dayjs/plugin/isoWeek'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts'
+
+const mockStatusDistribution = [
+  { status: 'Новый', count: 48 },
+  { status: 'Принят', count: 31 },
+  { status: 'Готовится', count: 57 },
+  { status: 'Курьер принял', count: 23 },
+]
+const ORDER_STATUS_COLORS = { Новый: '#2563EB', Принят: '#7C3AED', Готовится: '#F59E0B', 'Курьер принял': '#10B981' }
+const ORDER_STATUS_LABELS = { Новый: 'Новый', Принят: 'Принят', Готовится: 'Готовится', 'Курьер принял': 'Курьер принял' }
 import { Link, useNavigate } from 'react-router-dom'
 
 import DashboardHeader from './DashboardHeader'
@@ -40,126 +40,56 @@ import TargetDrawer from './TargetDrawer'
 
 export const dashboardBoxData = (navigate, setOpenDrawer) => [
   {
-    title: 'Общая сумма продаж',
-    icon: <MoneyArrowDown color='#fe5000' />,
+    title: 'Общая выручка',
+    icon: <DollarSign size={20} strokeWidth={2} />,
     count: 'sale_amount',
     endText: 'сум',
     id: 'sale_amount',
     percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_sale_amount',
+    theme: 'lavender',
   },
   {
-    title: 'Себестоимость',
-    icon: <ChartArrowUp color='#fe5000' />,
-    count: 'production_cost',
-    endText: 'сум',
-    id: 'production_cost',
-    percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_production_cost',
-  },
-  {
-    title: 'Чистая прибыль',
-    icon: <ChartArrowUp color='#fe5000' />,
-    count: 'income_amount',
-    endText: 'сум',
-    id: 'income_amount',
-    percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_income_amount',
-  },
-  {
-    title: 'Импорт в ожидании (за весь период)',
-    icon: <TimeForward color='#fe5000' />,
-    count: 'import_amount',
-    endText: 'сум',
-    id: 'import_amount',
-    percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_import_amount',
-  },
-  {
-    title: 'Импорты старше 24 часов',
-    icon: <Time24 color='#fe5000' />,
-    count: 'not_last_24h_import_amount',
-    endText: 'сум',
-    id: 'not_last_24h_import_amount',
-    percent: () => 0,
-    old: 'before_not_last_24h_import_amount',
-  },
-  {
-    title: 'Общая сумма баланса',
-    icon: <Wallet color='#fe5000' />,
-    count: 'stock_total_amount',
-    endText: 'сум',
-    id: 'stock_total_amount',
-    percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_stock_amount',
-  },
-  {
-    title: 'Общее количество продаж',
-    icon: <ShoppingBasketArrow color='#fe5000' />,
+    title: 'Всего заказов',
+    icon: <ShoppingCart size={20} strokeWidth={2} />,
     count: 'sale_count',
     endText: 'шт',
     id: 'sale_count',
     percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_sale_count',
+    theme: 'black',
   },
   {
-    title: 'Общее количество остатков',
-    icon: <ShoppingBasketCheck color='#fe5000' />,
-    count: 'total_product_count',
-    endText: 'шт',
-    id: 'total_product_count',
-    percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_product_count',
-  },
-  {
-    title: 'Просроченные продукты',
-    icon: <StopWatchMinus color='#fe5000' />,
-    count: 'expired_soon_count',
+    title: 'Средний чек',
+    icon: <DollarSign size={20} strokeWidth={2} />,
+    count: 'average_receipt',
     endText: 'сум',
-    withoutDivider: true,
-    id: 'expired_soon_amount',
-    amount: 'expired_soon_amount',
+    id: 'average_receipt',
     percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_expired_soon_amount',
+    theme: 'white',
+    iconColor: '#F59E0B',
   },
   {
-    title: 'Истекающие через 3 месяца',
-    icon: <HourglassEnd color='#fe5000' />,
-    count: 'expiring_soon_count',
-    amount: 'expiring_soon_amount',
-    withoutDivider: true,
+    title: 'Себестоимость',
+    icon: <Activity size={20} strokeWidth={2} />,
+    count: 'production_cost',
     endText: 'сум',
-    id: 'expiring_soon_amount',
+    id: 'production_cost',
     percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_expiring_soon_amount',
+    theme: 'white',
+    iconColor: '#DC2626',
   },
   {
-    title: 'Количество карт лояльности',
-    icon: <Gift color='#fe5000' />,
-    count: 'total_loyalty_card_count',
-    endText: 'шт',
-    id: 'total_loyalty_card_count',
-    action: () => {
-      navigate('/clients/all?tab=loyalty-cards')
-    },
-    percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_total_loyalty_card_count',
-  },
-  {
-    title: 'Общая сумма карты лояльности',
-    icon: <Gift color='#fe5000' />,
-    count: 'total_loyalty_card_balance',
+    title: 'Чистая прибыль',
+    icon: <DollarSign size={20} strokeWidth={2} />,
+    count: 'income_amount',
     endText: 'сум',
-    id: 'total_loyalty_card_balance',
-    action: () => {
-      navigate('/clients/all?tab=loyalty-cards')
-    },
+    id: 'income_amount',
     percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_total_loyalty_card_balance',
+    theme: 'white',
+    iconColor: '#6366F1',
   },
   {
-    title: 'Новые карты лояльности на сегодня',
-    icon: <Gift color='#fe5000' />,
+    title: 'Новые клиенты',
+    icon: <Users size={20} strokeWidth={2} />,
     count: 'today_created_loyalty_card_count',
     endText: 'шт',
     action: () => {
@@ -167,30 +97,7 @@ export const dashboardBoxData = (navigate, setOpenDrawer) => [
     },
     id: 'today_created_loyalty_card_count',
     percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_today_created_loyalty_card_count',
-  },
-  //target
-  {
-    title: 'Таргет',
-    icon: <DashboardTargetIcon color='#fe5000' />,
-    count: 'total_target_sales',
-    amount: 'total_target_amount',
-    endText: 'сум',
-    action: (current = 20, total = 90) => {
-      setOpenDrawer({ total, current, open: true })
-    },
-    id: 'target_amount',
-    percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_target_amount',
-  },
-  {
-    title: 'Ваш бонус',
-    icon: <Gift color='#fe5000' />,
-    count: 'bonus_amount',
-    endText: 'сум',
-    id: 'bonus_amount',
-    percent: (before, current) => calculatePercentage(before || 1, current),
-    old: 'before_bonus_amount',
+    theme: 'grey',
   },
 ]
 export default function DashboarPage() {
@@ -300,140 +207,148 @@ export default function DashboarPage() {
   }
   return (
     <LoadingContainer readyState={true}>
-      <DashboardHeader setSelectedAllB2B={setSelectedAllB2B} setSelectedShops={setSelectedShops} selectedShops={selectedShops} />
+      <Box sx={{ padding: '20px 24px', backgroundColor: '#F8F9FA', minHeight: '100vh' }}>
+        <DashboardHeader setSelectedAllB2B={setSelectedAllB2B} setSelectedShops={setSelectedShops} selectedShops={selectedShops} />
 
-      <Box display='flex' flexDirection='column' position='relative' pt={0} px={'20px'} pb={'32px'} width={'100%'}>
-        <Grid width={'100%'} container>
-          <Grid width={'100%'} item>
-            <Grid container mt={0} spacing={2}>
-              {dashboardBoxData(navigate, setOpenDrawer).map((el, ind) => (
-                <CheckAccess id={`dashboard-box-${el.id}`} key={el.id}>
-                  <Grid item xs={12} xl={3} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'}>
-                    <DashboardInfoBox key={ind} {...el} dashboard_filter={dashboard_filter} />
-                  </Grid>
-                </CheckAccess>
-              ))}
-              <CheckAccess id={`franchise-dashboard-box`}>
-                <Grid item xs={12} xl={3} sm={12} md={6} lg={4} gap={0} pb={'0px'} pt={'20px !important'}>
-                  <Box
-                    sx={(theme) => ({
-                      display: 'flex',
-                      alignItems: 'start',
-                      justifyContent: 'start',
-                      border: 1,
-                      borderColor: '#A4A5AB33',
-                      borderRadius: '16px',
-                      minHeight: '154px',
-                      width: '100%',
-                      height: '100%',
-                    })}
-                  >
-                    <Box
-                      key={1}
-                      sx={(theme) => ({
-                        display: 'flex',
-                        alignItems: 'start',
-                        justifyContent: 'center',
-                        flexDirection: 'column',
-                        p: '20px',
-                        height: '164px',
-
-                        m: 0,
-                      })}
-                    >
-                      <HomeSetting color='#fe5000' />
-                      <Typography
-                        sx={{
-                          fontSize: '16px',
-                          fontWeight: '600',
-                          lineHeight: '20px',
-                          my: '12px',
-                        }}
-                      >
-                        Перейти к панели управления B2B
-                      </Typography>
-                      <Link to={'/dashboard/b2b'}>
-                        <Button
-                          sx={{
-                            borderRadius: '50px',
-                            mr: '4px',
-                            p: '9px 16px',
-                            height: '30px',
-                            backgroundColor: 'white !important',
-                            color: 'orange.500',
-                            fontSize: '14px',
-                            borderColor: 'orange.500',
-                            '& svg': {
-                              flexShrink: 0,
-                            },
-                          }}
-                          color='secondary'
-                        >
-                          Показать <RightArrowIcon />
-                        </Button>
-                      </Link>
-                    </Box>
-                  </Box>
-                </Grid>
+        <Box display='flex' flexDirection='column' position='relative' pt={0} pb={'24px'}>
+          <div className='mdash-kpi-grid' style={{ marginTop: '20px' }}>
+            {dashboardBoxData(navigate, setOpenDrawer).map((el, ind) => (
+              <CheckAccess id={`dashboard-box-${el.id}`} key={el.id}>
+                <DashboardInfoBox key={ind} {...el} dashboard_filter={dashboard_filter} />
               </CheckAccess>
-            </Grid>
+            ))}
+          </div>
 
-            <CheckAccess id={'dashboard-chart'}>
-              <Box mt={'32px'} display='inline-flex' columnGap={3} width='100%'>
-                <SingleLineChart
-                  width='100%'
-                  id='dashboard-chart'
-                  period={detailing}
-                  detalization={detalization}
-                  setDetalization={setDetalization}
-                  chartType={chartType}
-                  setchartType={setchartType}
-                  isLoading={isChartLoading}
-                  sortBy={sortBy}
-                  dataKey={sortBy === 'SUM' ? 'all_orders' : 'count'}
-                  data={{
-                    values: toFixData,
-                    total: sortBy === 'SUM' ? totalSum : totalCount,
-                  }}
-                  measurmentUnit={sortBy === 'SUM' ? ' сум' : ' шт'}
-                />
-              </Box>
-            </CheckAccess>
-          </Grid>
-        </Grid>
-      </Box>
-      <Box sx={{ padding: '0 20px' }} ref={topsBoxRef}>
-        {!shouldLoadTopsData && (
-          <Box sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
-            <Typography>Scroll down to load statistics...</Typography>
-          </Box>
-        )}
-        {shouldLoadTopsData && isTopsDataLoading && (
-          <Box sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
-            <Typography>Loading statistics...</Typography>
-          </Box>
-        )}
-        <CheckAccess id={'dashboard-transactions-vendor'}>
-          <Grid width={'100%'} container spacing={2}>
-            <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={2}>
-              <DashboardTopsBox
+          <CheckAccess id={'dashboard-chart'} style={{ width: '100%' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', marginTop: '20px' }}>
+              <SingleLineChart
+                width='100%'
                 id='dashboard-chart'
+                period={detailing}
+                detalization={detalization}
+                setDetalization={setDetalization}
+                chartType={chartType}
+                setchartType={setchartType}
+                isLoading={isChartLoading}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+                dataKey={sortBy === 'SUM' ? 'all_orders' : 'count'}
+                data={{
+                  values: toFixData,
+                  total: sortBy === 'SUM' ? totalSum : totalCount,
+                }}
+                measurmentUnit={sortBy === 'SUM' ? ' сум' : ' шт'}
+              />
+
+              <div className='mdash-kpi-card' style={{ padding: '20px 20px 12px 20px', borderRadius: '20px', minHeight: 'auto' }}>
+                <div className='mdash-chart-header' style={{ marginBottom: '16px' }}>
+                  <div>
+                    <h3 className='mdash-chart-title'>Аналитические показатели</h3>
+                    <p className='mdash-chart-subtitle'>Данные за текущий месяц</p>
+                  </div>
+                </div>
+                <div style={{ position: 'relative', height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <ResponsiveContainer width='100%' height='100%'>
+                    <PieChart>
+                      <Pie
+                        data={mockStatusDistribution}
+                        dataKey='count'
+                        nameKey='status'
+                        cx='50%'
+                        cy='50%'
+                        innerRadius={85}
+                        outerRadius={115}
+                        strokeWidth={0}
+                        paddingAngle={2}
+                      >
+                        {mockStatusDistribution.map((entry, i) => (
+                          <Cell key={i} fill={ORDER_STATUS_COLORS[entry.status]} />
+                        ))}
+                      </Pie>
+                      <RechartsTooltip formatter={(v, n) => [v, ORDER_STATUS_LABELS[n] ?? n]} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div style={{ position: 'absolute', textAlign: 'center', pointerEvents: 'none' }}>
+                    <div style={{ fontSize: 24, fontWeight: 700, color: '#0F1115' }}>159</div>
+                    <div style={{ fontSize: 12, color: '#667085' }}>Orders</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: '24px' }}>
+                  {mockStatusDistribution.map((s) => (
+                    <div key={s.status} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 13 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ width: 10, height: 10, borderRadius: '50%', background: ORDER_STATUS_COLORS[s.status], flexShrink: 0 }} />
+                        <span style={{ color: '#667085', fontWeight: 500 }}>{ORDER_STATUS_LABELS[s.status]}</span>
+                      </div>
+                      <span style={{ fontWeight: 600, color: '#0F1115' }}>{s.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </CheckAccess>
+        </Box>
+        <Box ref={topsBoxRef}>
+          {!shouldLoadTopsData && (
+            <Box sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
+              <Typography>Scroll down to load statistics...</Typography>
+            </Box>
+          )}
+          {shouldLoadTopsData && isTopsDataLoading && (
+            <Box sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
+              <Typography>Loading statistics...</Typography>
+            </Box>
+          )}
+
+          {/* Row 1: Топ продукты + Топ категорий */}
+          <CheckAccess id={'dashboard-vendor'}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+              <DashboardTopsBox
+                id='dashboard-top-products'
+                data={get(topProducts, 'data.data')}
+                isLoading={isTopProductsLoading}
+                title={'Топ продуктов'}
+                href={addDateToLink('/reports/top-products')}
+                tableData={[
+                  { title: 'Продукт', colId: 'name' },
+                  { title: 'Количество', colId: 'count', sortable: true },
+                  { title: 'Выручка', colId: 'total_amount', sortable: true },
+                ]}
+              />
+              <DashboardTopsBox
+                id='dashboard-top-branchs'
+                href={addDateToLink('/reports/top-branchs')}
+                data={get(topStores, 'data.data')}
+                title={'Топ категорий'}
+                isLoading={isTopStoreLoading}
+                tableData={[
+                  { title: 'Категория', colId: 'name' },
+                  { title: 'Количество', colId: 'count', sortable: true },
+                  { title: 'Выручка', colId: 'total_amount', sortable: true },
+                ]}
+              />
+            </div>
+          </CheckAccess>
+
+          {/* Row 2: Платежи + Транзакции */}
+          <CheckAccess id={'dashboard-transactions-vendor'}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+              <DashboardTopsBox
+                id='dashboard-payments'
                 data={regenerated}
                 title={'Платежи'}
                 collapseCount={11}
                 isLoading={isPaymentsLoading}
                 subTitle={thousandDivider(Math.round(regenerated.reduce((a, b) => a + b.amount, 0)), 'сум')}
                 tableData={[
-                  { title: 'Тип Платежи	', colId: 'name' },
+                  { title: 'Тип Платежи', colId: 'name' },
                   { title: 'Кол-во', colId: 'count', sortable: true },
                   { title: 'Сумма', colId: 'amount', sortable: true },
                   { title: 'Прирост', colId: 'stat' },
                 ]}
               />
-            </Grid>
-            <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={2}>
               <DashboardTopsBox
-                id='dashboard-chart'
+                id='dashboard-transactions'
                 data={get(transaction, 'data.data')}
                 title={'Транзакции'}
                 isLoading={isTransactionLoading}
@@ -442,94 +357,52 @@ export default function DashboarPage() {
                     const count = parseFloat((b.count || '0').replace(',', '.'))
                     return a + count
                   }, 0),
-
                   'шт',
                 )}
                 tableData={[
-                  { title: 'Тип	', colId: 'name' },
+                  { title: 'Тип', colId: 'name' },
                   { title: 'Кол-во', colId: 'count', sortable: true },
                   { title: 'Сумма', colId: 'amount', sortable: true },
                   { title: 'Прирост', colId: 'stat' },
                 ]}
               />
-            </Grid>
-          </Grid>
-        </CheckAccess>
-        <CheckAccess id={'dashboard-vendor'}>
-          <Grid width={'100%'} container mt={'32px'} spacing={2}>
-            <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={0} pb={'0px'} pt={'20px !important'}>
+            </div>
+          </CheckAccess>
+
+          {/* Row 3: Топ продавцы + Бонусные продукты */}
+          <CheckAccess id={'dashboard-seller'}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
               <DashboardTopsBox
-                id='dashboard-chart'
-                href={addDateToLink('/reports/top-branchs')}
-                data={get(topStores, 'data.data')}
-                title={'Топ филиалам'}
-                isLoading={isTopStoreLoading}
-                tableData={[
-                  { title: 'Филиал', colId: 'name' },
-                  { title: 'Кол-во', colId: 'count', sortable: true },
-                  { title: 'Сумма', colId: 'total_amount', sortable: true },
-                  { title: 'Прирост', colId: 'stat' },
-                ]}
-              />
-            </Grid>
-            <Grid item xs={6} xl={6} sm={6} md={6} lg={6} gap={0} pb={'0px'} pt={'20px !important'}>
-              <DashboardTopsBox
-                id='dashboard-chart'
-                data={get(topProducts, 'data.data')}
-                isLoading={isTopProductsLoading}
-                title={'Топ продукты'}
-                href={addDateToLink('/reports/top-products')}
-                tableData={[
-                  { title: 'Продукт', colId: 'name' },
-                  { title: 'Кол-во ', colId: 'count', sortable: true },
-                  { title: 'Сумма', colId: 'total_amount', sortable: true },
-                  { title: 'Прирост', colId: 'stat' },
-                ]}
-              />
-            </Grid>
-          </Grid>
-        </CheckAccess>
-        <CheckAccess id={'dashboard-seller'}>
-          <Grid width={'100%'} mt={'32px'} container spacing={2}>
-            <Grid item xs={6} xl={6} sm={6} md={6} lg={6}>
-              <DashboardTopsBox
-                id='dashboard-chart'
+                id='dashboard-sellers'
                 data={get(topSellers, 'data.data')}
                 isLoading={isTopSellerLoading}
                 title={'Топ продавцы'}
                 href={addDateToLink('/reports/top-vendors')}
                 tableData={[
-                  { title: 'Продавец	', colId: 'full_name' },
+                  { title: 'Продавец', colId: 'full_name' },
                   { title: 'Кол-во', colId: 'count', sortable: true },
                   { title: 'Сумма', colId: 'total_amount', sortable: true },
                   { title: 'Прирост', colId: 'stat' },
                 ]}
               />
-            </Grid>
-            <Grid item xs={6} xl={6} sm={6} md={6} lg={6}>
               <DashboardTopsBox
-                id='dashboard-chart'
+                id='dashboard-bonus'
                 data={get(topBonusProducts, 'data.data')}
                 isLoading={isTopBonusProductLoading}
                 title={'Бонусные продукты'}
                 href={addDateToLink('/reports/bonus-products')}
                 tableData={[
-                  { title: 'Продукт	', colId: 'name' },
+                  { title: 'Продукт', colId: 'name' },
                   { title: 'Кол-во', colId: 'count', sortable: true },
                   { title: 'Сумма', colId: 'bonus_amount', sortable: true },
                   { title: 'Прирост', colId: 'stat' },
                 ]}
               />
-            </Grid>
-          </Grid>
-        </CheckAccess>
-      </Box>
-      <TargetDrawer openDrawer={openDrawer} closeDrawer={() => setOpenDrawer(false)} />
-      <CheckAccess id={'dashboard-expired-imports'}>
-        <Box>
-          <ImportPage dashboard_filter={dashboard_filter} />
+            </div>
+          </CheckAccess>
         </Box>
-      </CheckAccess>
+        <TargetDrawer openDrawer={openDrawer} closeDrawer={() => setOpenDrawer(false)} />
+      </Box>
     </LoadingContainer>
   )
 }

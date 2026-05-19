@@ -42,7 +42,7 @@ export default function MainDetails({ clientData, openDrawer }) {
   const { data: employeeInfo, refetch: refetemployeeInfo } = useQuery(
     ['employeeInfo', openDrawer],
     () => requests.getSingleVendor(get(openDrawer, 'id', 'no')),
-    { enabled: !!get(openDrawer, 'id', false) }
+    { enabled: !!get(openDrawer, 'id', false) },
   )
   const mode = openDrawer?.mode
   const { control, errors, setValue } = useFormContext()
@@ -136,7 +136,7 @@ export default function MainDetails({ clientData, openDrawer }) {
 
       <Box mb={4} />
       <Typography fontSize={'20px'} lineHeight={'32px'} mb='24px' fontWeight={'600'} color={'#000'}>
-        Аптека и роли
+        Магазин и роли
       </Typography>
 
       <Grid container spacing={4}>
@@ -147,7 +147,7 @@ export default function MainDetails({ clientData, openDrawer }) {
             id='store'
             name='store_id'
             isMulti={false}
-            placeholder={t('Выберите Аптека')}
+            placeholder={t('Выберите Магазин')}
             minWidth='auto'
             isClearable={true}
             request={requests.getAllStores}

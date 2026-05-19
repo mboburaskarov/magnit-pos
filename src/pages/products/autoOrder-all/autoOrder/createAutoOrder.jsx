@@ -78,7 +78,7 @@ export default function CreateAutoOrder({ open, refetch, setOpen }) {
               isMulti={false}
               required
               label={t('input.store.label')}
-              placeholder={t('Выберите Аптека')}
+              placeholder={t('Выберите Магазин')}
               minWidth='auto'
               isClearable={true}
               request={requests.getAllStores}

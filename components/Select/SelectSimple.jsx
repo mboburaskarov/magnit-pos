@@ -81,7 +81,7 @@ export const useStyles = makeStyles((theme) => ({
     height: 'auto',
     cursor: 'pointer',
     display: 'flex',
-    fontFamily: 'Gilroy',
+
     overflow: 'hidden',
     alignItems: 'center',
     userSelect: 'none',

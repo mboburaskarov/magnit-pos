@@ -89,8 +89,8 @@ export default function AddTargetToBranch({ open, refetch, setOpen }) {
                 name='store'
                 isMulti={false}
                 required
-                label={t('Аптека')}
-                placeholder={t('Выберите Аптека')}
+                label={t('Магазин')}
+                placeholder={t('Выберите Магазин')}
                 minWidth='auto'
                 isClearable={true}
                 request={requests.getAllStores}

@@ -48,7 +48,7 @@ export default function CreateReturn({ open, refetch, setOpen }) {
   useEffect(() => {
     reset({}, { keepDirty: true })
   }, [open])
-// test
+  // test
   return (
     <StyledEmptyDialog
       overflowVisible
@@ -96,7 +96,7 @@ export default function CreateReturn({ open, refetch, setOpen }) {
               isMulti={false}
               required
               label={'От ' + t('input.store.label')}
-              placeholder={t('Выберите Аптека')}
+              placeholder={t('Выберите Магазин')}
               minWidth='auto'
               isClearable={true}
               request={requests.getAllStores}
@@ -120,7 +120,7 @@ export default function CreateReturn({ open, refetch, setOpen }) {
               isMulti={false}
               required
               label={'До ' + t('input.store.label')}
-              placeholder={t('Выберите Аптека')}
+              placeholder={t('Выберите Магазин')}
               minWidth='auto'
               isClearable={true}
               request={requests.getAllStores}

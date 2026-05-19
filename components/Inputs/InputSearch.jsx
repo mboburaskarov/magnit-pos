@@ -14,12 +14,13 @@ import { useQueryParams } from '../../src/hooks/useQueryParams'
 const useStyles = makeStyles((theme) => ({
   input: {
     position: 'relative',
-    height: 48,
     margin: 0,
-    borderRadius: '50px',
+    borderRadius: '8px !important',
     width: ({ maxWidth }) => maxWidth,
-    backgroundColor: theme.palette.gray[100],
-    color: theme.palette.gray[400],
+    backgroundColor: '#ffffff !important',
+    color: '#111111 !important',
+    border: '1px solid #E5E7EB !important',
+
     '& svg > path': {
       fill: theme.palette.bunker[400],
     },
@@ -27,24 +28,43 @@ const useStyles = makeStyles((theme) => ({
       // backgroundColor: '#fe9000 !important',
     },
     '& .MuiOutlinedInput-root': {
-      border: `2px solid transparent`,
+      border: 'none !important',
+      backgroundColor: '#ffffff !important',
+      height: '38px !important',
+      borderRadius: '8px !important',
+
       '&:hover': {
-        backgroundColor: `${theme.palette.gray[101]} !important`,
+        backgroundColor: `#ffffff !important`,
       },
     },
 
-    '& .MuiInputBase-root:hover': {
-      // backgroundColor: '#fe5000 !important',
+    '& .MuiInputBase-root': {
+      height: '38px !important',
+      backgroundColor: '#ffffff !important',
+      borderRadius: '8px !important',
+      fontSize: '14px !important',
+      fontWeight: '500 !important',
+      color: '#111111 !important',
+      boxSizing: 'border-box !important',
     },
 
     '& .MuiInputBase-input::placeholder': {
-      color: theme.palette.bunker[400], // Change placeholder color
-      fontSize: '18px', // Adjust font size
+      color: '#bdbdbd !important',
+      fontSize: '14px !important',
+      fontWeight: '400 !important',
       opacity: 1,
       lineHeight: '24px',
     },
     '& .Mui-error:not(.Mui-focused)': {
       border: `2px solid ${theme.palette.red[500]}`,
+    },
+    '& input': {
+      fontSize: '14px !important',
+      fontWeight: '500 !important',
+      color: '#111111 !important',
+      // height: '40px !important',
+      padding: '0 14px !important',
+      boxSizing: 'border-box !important',
     },
   },
   resetIcon: {
@@ -65,15 +85,17 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   white: {
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: '#ffffff !important',
     '& .MuiOutlinedInput-root': {
-      backgroundColor: theme.palette.background.default,
-      boxShadow: `inset 0 0 0 1px ${theme.palette.gray[300]}`,
+      backgroundColor: '#ffffff !important',
+      boxShadow: 'none !important',
     },
   },
   gray: {
+    backgroundColor: '#ffffff !important',
     '& .MuiOutlinedInput-root': {
-      backgroundColor: theme.palette.background.gray,
+      backgroundColor: '#ffffff !important',
+      boxShadow: 'none !important',
     },
   },
   inputEndText: {
@@ -138,7 +160,7 @@ const InputSearch = ({
     },
     {
       preventDefault: true,
-    }
+    },
   )
 
   return (

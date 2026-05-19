@@ -53,7 +53,7 @@ const AirbnbSlider = withStyles((theme) => ({
 
 export default function ChartSlider({ max, min, defaultValue = [20, 40], value, onChange }) {
   return (
-    <Box pb={3} pl={3} pr={2}>
+    <Box pb={1} pl={3} pr={2}>
       <AirbnbSlider
         getAriaLabel={(index) => (index === 0 ? 'Minimum price' : 'Maximum price')}
         defaultValue={defaultValue}

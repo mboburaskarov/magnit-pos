@@ -1,16 +1,15 @@
-import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
-import AgGridTable from '@components/AgGridTable/AgGridTable';
-import { useQueryParams } from '@hooks/useQueryParams';
-import thousandDivider from '@utils/thousandDivider';
-import { useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { Box, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { requests } from '@utils/requests';
-import { error } from '@utils/toast';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
-
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import { useQueryParams } from '@hooks/useQueryParams'
+import thousandDivider from '@utils/thousandDivider'
+import { useEffect, useMemo, useState } from 'react'
+import { useMutation, useQuery } from 'react-query'
+import { Box, Typography } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+import { requests } from '@utils/requests'
+import { error } from '@utils/toast'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
 export default function EposSales({ id }) {
   const { values } = useQueryParams()
@@ -111,10 +110,10 @@ export default function EposSales({ id }) {
             {get(data, 'entry_type') == '3'
               ? 'Списание '
               : get(data, 'entry_type') == '1'
-              ? 'Импорт '
-              : get(data, 'entry_type') == '2'
-              ? 'Инвентаризация '
-              : 'Продажa '}
+                ? 'Импорт '
+                : get(data, 'entry_type') == '2'
+                  ? 'Инвентаризация '
+                  : 'Продажa '}
             #{get(data, 'public_id')}
           </Typography>
         ),
@@ -152,7 +151,7 @@ export default function EposSales({ id }) {
         ),
       },
       {
-        headerName: 'Aптека',
+        headerName: 'Магазин',
         colId: 'store',
         minWidth: 185,
         maxWidth: 285,
@@ -160,7 +159,7 @@ export default function EposSales({ id }) {
         cellRenderer: ({ data, rowIndex }) => <Typography>{get(data, 'store_name')}</Typography>,
       },
     ],
-    []
+    [],
   )
 
   return (

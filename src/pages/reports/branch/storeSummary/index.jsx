@@ -1,31 +1,30 @@
-import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/storeSummaryTableColumns';
-import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll';
-import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
-import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
-import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew';
-import { makeFormattedData } from '@utils/helper/makeFormattedTableData';
-import AgGridTable from '@components/AgGridTable/AgGridTable';
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
-import LoadingContainer from '@components/LoadingContainer';
-import InputSearch from '@components/Inputs/InputSearch';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { Box, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import { requests } from '@utils/requests';
-import ArrowDown from '@icons/ArrowDown';
-import Header from '@components/Header';
-import ArrowUp from '@icons/ArrowUp';
-import { error } from '@utils/toast';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
+import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/storeSummaryTableColumns'
+import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
+import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import LoadingContainer from '@components/LoadingContainer'
+import InputSearch from '@components/Inputs/InputSearch'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useMemo, useState } from 'react'
+import { useMutation, useQuery } from 'react-query'
+import { Box, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
+import { requests } from '@utils/requests'
+import ArrowDown from '@icons/ArrowDown'
+import Header from '@components/Header'
+import ArrowUp from '@icons/ArrowUp'
+import { error } from '@utils/toast'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
-import StoreSummaryReportDashboard from './StoreSummaryReportDashboardReportDashboard';
-import tableHeaderSelector from './tableHeaderSelector';
-import FilterMenu from './FilterMenu';
-
+import StoreSummaryReportDashboard from './StoreSummaryReportDashboardReportDashboard'
+import tableHeaderSelector from './tableHeaderSelector'
+import FilterMenu from './FilterMenu'
 
 export default function StoreSummaryPage() {
   const dispatch = useDispatch()
@@ -110,12 +109,12 @@ export default function StoreSummaryPage() {
   })
   const { data: storeSummaryReportStat, refetch: fetchstoreSummaryReportStat } = useQuery(
     ['storeSummaryReportStat', values?.search, storeSummaryReportListFilter],
-    () => requests.getStoreSummaryReportStat(storeSummaryReportListFilter)
+    () => requests.getStoreSummaryReportStat(storeSummaryReportListFilter),
   )
 
   return (
     <LoadingContainer readyState={true}>
-      <Header noActions isLoading={false} backIcon backHref='/reports/branch' text={'Остаток Аптека '} />
+      <Header noActions isLoading={false} backIcon backHref='/reports/branch' text={'Остаток Магазин '} />
       <Box display='flex' mx={'auto'} flexDirection='column' position='relative' pt={'0px'} px={'50px'} pb={'20px'}>
         <Box
           sx={{
@@ -237,7 +236,7 @@ export default function StoreSummaryPage() {
             isDataLoading={isFetchingstoreSummaryReportList || storeSummaryReportListLoading}
             offsetCount={offsetCount}
             emptyTableText={{
-              title: 'Остаток Аптека не существует',
+              title: 'Остаток Магазин не существует',
               description: '...',
             }}
             updaterAction={(newData) => {

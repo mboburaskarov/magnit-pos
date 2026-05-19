@@ -4,13 +4,14 @@ import { getDateFromDateTime } from '@utils/parseDateTime'
 import thousandDivider from '@utils/thousandDivider'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, LineChart, Line } from 'recharts'
 import LoadingBlurry from '../LoadingBlurry'
 import SelectSimple from '../Select/SelectSimple'
 import CustomizedAxisTick from './ChartAxisTick'
 import ChartPlaceholder from './ChartPlaceholder'
 import ChartSlider from './ChartSlider'
 import DashboardTooltip from './DashboardTooltip'
+import '../../src/pages/dashboard/magnit-dashboard.css'
 
 const detailingOptions = [
   { name: 'по час', value: 'hour' },
@@ -24,22 +25,33 @@ const chartOptions = [
   { name: 'Возвраты', value: 'return', soon: true, isDisabled: true },
 ]
 
-const orangeColor = '#ffb18e'
 const Body = ({ children, isLoading, isEmpty }) => (
-  <Box
-    position='relative'
-    sx={(theme) => ({
-      width: '100%',
-      height: '100%',
-      fontFamily: theme.fontFamily.Gilroy,
-      fontWeight: 600,
-      fontSize: 14,
-      lineHeight: '17px',
-      color: theme.palette.gray[600],
-    })}
-  >
+  <Box position='relative' sx={{ width: '100%', height: '100%' }}>
     {isEmpty ? (
-      <ChartPlaceholder textstyle={{ fontSize: 24, width: 330, lineHeight: '28px' }} text='Данные не найдены для диаграммы' height={395} noMargin />
+      <div
+        style={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 12,
+          borderRadius: 16,
+          background: '#F9FAFB',
+          border: '1.5px dashed #E2E8F0',
+        }}
+      >
+        <svg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'>
+          <rect x='4' y='28' width='8' height='14' rx='2' fill='#D1D5DB' />
+          <rect x='16' y='18' width='8' height='24' rx='2' fill='#D1D5DB' />
+          <rect x='28' y='22' width='8' height='20' rx='2' fill='#D1D5DB' />
+          <rect x='40' y='12' width='8' height='30' rx='2' fill='#D1D5DB' />
+        </svg>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: '#6B7280', marginBottom: 4 }}>Данные не найдены</div>
+          <div style={{ fontSize: 13, color: '#9CA3AF' }}>Выберите другой период для отображения графика</div>
+        </div>
+      </div>
     ) : (
       children
     )}
@@ -59,6 +71,8 @@ export default function SingleBarChart({
   width: boxWidth = '100%',
   dataKey,
   id,
+  sortBy,
+  setSortBy,
 }) {
   const { t } = useTranslation()
   const [chartData, setChartData] = useState([])
@@ -77,155 +91,143 @@ export default function SingleBarChart({
       setSliderValue([0, 0])
     }
   }, [data, detalization])
-  const maxValue = Math.max(...chartData.slice(sliderValue[0], sliderValue[1]).map((item) => item?.count))
-  const maxValue2 = chartData
-    .slice(sliderValue[0], sliderValue[1])
-    .map((item) => item?.all_orders)
-    ?.reduce((sum, num) => sum + num, 0)
+  const maxValue = Math.max(...(chartData.slice(sliderValue[0], sliderValue[1]).map((item) => item?.count) || [0]))
+  const maxValue2 =
+    chartData
+      .slice(sliderValue[0], sliderValue[1])
+      .map((item) => item?.all_orders)
+      ?.reduce((sum, num) => sum + num, 0) || 0
+
+  const [viewType, setViewType] = useState('bar')
+  const periods = [
+    { label: '1d', value: 'hour' },
+    { label: '7d', value: 'day' },
+    { label: '30d', value: 'week' },
+    { label: '6m', value: 'month' },
+  ]
 
   return (
-    <Box
-      sx={(theme) => ({
-        border: 1,
-        borderColor: '#A4A5AB33',
-        width: boxWidth,
-        minHeight: 432,
-        borderRadius: 6,
-        backgroundColor: theme.palette.background.default,
-      })}
-    >
-      <Box p={3} pb={2}>
-        <Box display='flex' justifyContent='space-between' alignItems='center' mb={3}>
+    <div className='mdash-kpi-card' style={{ width: boxWidth, minHeight: 'auto', padding: '20px' }}>
+      <div className='mdash-chart-header' style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
           {isLoading ? (
-            <Skeleton
-              variant='text'
-              sx={{
-                width: '250px',
-                borderRadius: 5,
-                height: '48px',
-              }}
-            />
+            <Skeleton variant='text' width={250} height={32} />
           ) : (
-            <Box display='flex' alignItems='center'>
-              <Typography
-                sx={(theme) => ({
-                  fontSize: 22,
-                  lineHeight: '30px',
-                  fontWeight: 600,
-                  fontFamily: theme.fontFamily.Gilroy,
-                  color: theme.palette.dark[500],
-                })}
-              >
-                {t('all_sales')} ({thousandDivider(Math.round(maxValue2), 'сум')})
-              </Typography>
-            </Box>
+            <>
+              <h3 className='mdash-chart-title'>Отчет по продажам</h3>
+              <p className='mdash-chart-subtitle'>Динамика выручки и заказов</p>
+            </>
           )}
-          <Box display={'flex'}>
-            <SelectSimple
-              id={id + 'detailing'}
-              name={id + 'detailing'}
-              placeholder='Детализация'
-              uncontrolled
-              isSearchable={false}
-              onChange={setchartType}
-              minWidth={130}
-              value={chartType}
-              fullWidth
-              boxStyle={{ width: 187, mr: '10px' }}
-              isClearable={false}
-              options={chartOptions}
-              getOptionLabel={(option) => (
-                <Box display={'flex'}>
-                  {option.name}
-                  {option.soon && (
-                    <Typography
-                      sx={{
-                        width: '40px',
-                        height: '20px',
-                        backgroundColor: '#A53EFF',
-                        color: '#fff',
-                        fontSize: '10px',
-                        fontWeight: '600',
-                        borderRadius: '24px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        ml: '5px',
-                      }}
-                    >
-                      soon
-                    </Typography>
-                  )}
-                </Box>
-              )}
-              beforeContent=''
-            />
-            <SelectSimple
-              id={id + 'detailing'}
-              name={id + 'detailing'}
-              placeholder='Детализация'
-              uncontrolled
-              isSearchable={false}
-              onChange={setDetalization}
-              minWidth={130}
-              value={detalization}
-              fullWidth
-              boxStyle={{ width: 157 }}
-              isClearable={false}
-              options={
-                period === 'today' || period === 'yesterday'
-                  ? detailingOptions.slice(0, 2)
-                  : period === 'week'
-                  ? detailingOptions.slice(0, 4)
-                  : period === 'month'
-                  ? detailingOptions.slice(1, 5)
-                  : period === 'days'
-                  ? detailingOptions.slice(0, 3)
-                  : detailingOptions.slice(5)
-              }
-              getOptionLabel={(option) => option.name}
-              beforeContent=''
-            />
-          </Box>
-        </Box>
-        <Body isLoading={isLoading} isEmpty={!chartData.length}>
-          <ResponsiveContainer width='100%' height={350}>
-            <AreaChart data={chartData.slice(sliderValue[0], sliderValue[1])}>
-              <defs>
-                <linearGradient id='gradient-fill' x1='0' y1='0' x2='0' y2='1'>
-                  <stop offset='0%' stopColor={orangeColor} stopOpacity={0.3} />
-                  <stop offset='100%' stopColor={orangeColor} stopOpacity={0.1} />
-                </linearGradient>
-              </defs>
+        </div>
+        <div className='mdash-chart-actions'>
+          <div className='mdash-toggle-group periods-group'>
+            {periods.map((p) => {
+              const isActive = (typeof detalization === 'string' ? detalization : detalization?.value) === p.value;
+              return (
+                <button
+                  key={p.label}
+                  onClick={() => {
+                    const option = detailingOptions.find((o) => o.value === p.value);
+                    if (option) setDetalization?.(option);
+                  }}
+                  className={`mdash-toggle-btn ${isActive ? 'active-black' : ''}`}
+                >
+                  {p.label}
+                </button>
+              );
+            })}
+            <button
+              onClick={() => {
+                const option = detailingOptions.find((o) => o.value === 'month');
+                if (option) setDetalization?.(option);
+              }}
+              className={`mdash-toggle-btn ${(typeof detalization === 'string' ? detalization : detalization?.value) === 'month' ? 'active-black' : ''}`}
+            >
+              Max
+            </button>
+          </div>
 
-              <CartesianGrid strokeDasharray='3 3' vertical={false} />
+          <div className='mdash-toggle-group sort-group'>
+            <button
+              onClick={() => setSortBy?.('SUM')}
+              className={`mdash-toggle-btn ${sortBy === 'SUM' ? 'active-white' : ''}`}
+            >
+              Sum
+            </button>
+            <button
+              onClick={() => setSortBy?.('QTY')}
+              className={`mdash-toggle-btn ${sortBy === 'QTY' ? 'active-white' : ''}`}
+            >
+              Qty
+            </button>
+          </div>
+
+          <div className='mdash-toggle-group view-group'>
+            <button
+              onClick={() => setViewType('bar')}
+              className={`mdash-toggle-btn ${viewType === 'bar' ? 'active-white' : ''}`}
+            >
+              Bar
+            </button>
+            <button
+              onClick={() => setViewType('line')}
+              className={`mdash-toggle-btn ${viewType === 'line' ? 'active-white' : ''}`}
+            >
+              Line
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <Body isLoading={isLoading} isEmpty={!chartData.length}>
+        <ResponsiveContainer width='100%' height={300}>
+          {viewType === 'bar' ? (
+            <BarChart data={chartData.slice(sliderValue[0], sliderValue[1])} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray='3 3' stroke='#E6E8EC' vertical={false} />
               <XAxis
                 dataKey='start_date'
                 tickLine={false}
                 axisLine={false}
-                tick={<CustomizedAxisTick detalization={detalization} />}
+                tick={{ fontSize: 12, fill: '#A1A1AA' }}
                 tickFormatter={(value) => getDateFromDateTime(value)}
+                dy={10}
               />
-              <YAxis tickLine={false} axisLine={false} tickFormatter={(value) => getShorterNumber(value, 0)} />
+              <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#A1A1AA' }} tickFormatter={(value) => getShorterNumber(value, 0)} />
+              <Tooltip
+                content={<DashboardTooltip measurmentUnit={measurmentUnit} detalization={detalization} />}
+                wrapperStyle={{ zIndex: 11 }}
+                cursor={{ fill: '#F4F4F5' }}
+              />
+              <Bar dataKey={dataKey || 'value'} fill='#111111' radius={[4, 4, 0, 0]} maxBarSize={30} />
+            </BarChart>
+          ) : (
+            <LineChart data={chartData.slice(sliderValue[0], sliderValue[1])} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray='3 3' stroke='#E6E8EC' vertical={false} />
+              <XAxis
+                dataKey='start_date'
+                tickLine={false}
+                axisLine={false}
+                tick={{ fontSize: 12, fill: '#A1A1AA' }}
+                tickFormatter={(value) => getDateFromDateTime(value)}
+                dy={10}
+              />
+              <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#A1A1AA' }} tickFormatter={(value) => getShorterNumber(value, 0)} />
               <Tooltip content={<DashboardTooltip measurmentUnit={measurmentUnit} detalization={detalization} />} wrapperStyle={{ zIndex: 11 }} />
-              <Area
+              <Line
                 type='monotone'
                 dataKey={dataKey || 'value'}
-                stroke={'#fe5000'}
-                fill='url(#gradient-fill)'
+                stroke='#111111'
                 strokeWidth={3}
-                activeDot={{
-                  r: 6,
-                  stroke: orangeColor,
-                  strokeWidth: 2,
-                  fill: '#fff',
-                }}
+                dot={{ r: 4, fill: '#111111', strokeWidth: 0 }}
+                activeDot={{ r: 6, fill: '#111111', stroke: '#fff', strokeWidth: 2 }}
               />
-            </AreaChart>
-          </ResponsiveContainer>
-          <ChartSlider value={sliderValue} onChange={handleSliderChange} min={0} max={chartData?.length} />
-        </Body>
-      </Box>
-    </Box>
+            </LineChart>
+          )}
+        </ResponsiveContainer>
+        <div style={{ marginTop: '20px' }}>
+          <ChartSlider value={sliderValue} onChange={handleSliderChange} min={0} max={chartData?.length || 1} />
+        </div>
+      </Body>
+    </div>
   )
 }

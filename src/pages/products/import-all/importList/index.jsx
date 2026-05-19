@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import AgGridTable from '@components/AgGridTable/AgGridTable'
 import ColumnsFilterButtonForAll from '@components/AgGridTable/ColumnsFilterButtonForAll'
 import ImageGallery from '@components/ImageGallery'
@@ -16,23 +17,31 @@ import { useQueryParams } from '@hooks/useQueryParams'
 import { changeColumnSequence, resetTableHeader, updateTableHeader } from '@/redux-toolkit/tableSlices/importsTableColumns'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
+import CreateImport from './createImport'
 
 import { get } from 'lodash'
-import HeaderWithDashboardWrapper from '@components/HeaderWithDashboard'
 import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
 import ImportDashboard from './importantDashboard'
 import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import thousandDivider from '@utils/thousandDivider'
+import MgPageHeader from '@components/MgPageHeader'
+import MgTabs from '@components/MgTabs'
 
 export default function ImportPage() {
   const theme = useTheme()
   const dispatch = useDispatch()
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { columns, loading } = useSelector((state) => state.importsTableColumns)
   const { values } = useQueryParams()
+
   const [offsetCount, setOffsetCount] = useState(0)
   const [openImageGallery, setOpenImageGallery] = useState(false)
-
   const [filterMenu, setFilterMenu] = useState(false)
+  const [openCreateImportModal, setOpenCreateImportModal] = useState(false)
+  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(false)
+  const [appType, setAppType] = useState('ALL')
+
   const tableColumns = tableHeaderSelector({
     importsColumns: columns,
     t,
@@ -50,9 +59,8 @@ export default function ImportPage() {
   const importsListFilter = useMemo(() => {
     return {
       limit: values?.limit || 10,
-      offset: values?.search ? 0 : values?.offset || 0,
+      offset: values?.search ? 0 : appType === 'ALL' ? values?.offset || 0 : 0,
       search: values?.search,
-
       store_id: values?.store_id,
       start_date: values?.start_date ? values?.start_date + 'T00:00:00+05:00' : values?.start_date,
       end_date:
@@ -61,12 +69,13 @@ export default function ImportPage() {
           : values?.end_date
             ? values?.end_date + 'T23:59:59+05:00'
             : undefined,
-      status: values?.status,
+      status: appType === 'ALL' ? values?.status : appType,
       import_date: values?.import_date,
       received_amount_to: values?.received_amount_to,
       received_amount_from: values?.received_amount_from,
     }
   }, [
+    appType,
     values?.offset,
     values?.limit,
     values?.end_date,
@@ -87,7 +96,6 @@ export default function ImportPage() {
 
   useEffect(() => {
     const count = importsList?.data?.data?._meta?.total_count
-
     const offsetsCount = Math.ceil(count / Number(values?.limit))
     setOffsetCount(offsetsCount || 0)
   }, [importsList?.data, values?.limit])
@@ -98,7 +106,6 @@ export default function ImportPage() {
     },
     onError: (err) => {
       console.error(err)
-
       error('Ошибка при скачать excel!')
     },
   })
@@ -106,56 +113,121 @@ export default function ImportPage() {
   const { data: getImportStatusCount } = useQuery(['getImportStatusCount', values?.search, importsListFilter], () =>
     requests.getImportStatusCount(importsListFilter),
   )
+
+  const handleTabChange = (type) => {
+    setAppType(type)
+    navigate(`/products/import?offset=0&limit=${values?.limit || 10}`)
+  }
+
+  const totalImportsCount = importsList?.data?.data?._meta?.total_count || 0
+
   return (
     <LoadingContainer readyState={true}>
-      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <HeaderWithDashboardWrapper title={'Импорт'} component={<ImportDashboard data={get(getImportStatusCount, 'data.data', 0)} />} />
+      <Box display='flex' flexDirection='column' position='relative' px={'24px'} pb={'20px'}>
+        {/* Redesigned Premium Page Header Block */}
+        <MgPageHeader
+          title='Импорт'
+          subtitle={`Всего: ${totalImportsCount}`}
+          showStatsToggle
+          isOpenStats={isOpenStatDashboard}
+          onStatsToggle={() => setIsOpenStatDashboard((p) => !p)}
+          showExport
+          onExport={() => importsExcelReport(importsListFilter)}
+          exportLoading={isimportsExcelReport}
+          showCreate
+          onCreate={() => setOpenCreateImportModal(true)}
+          createLabel='Создать'
+        />
 
-        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-          <Box display={'flex'}>
-            <Box
-              width='100%'
-              sx={{
-                '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                  background: 'transparent',
-                  width: '400px',
-                  height: 48,
-                },
-              }}
-            >
-              <InputSearch id='producrs-search' name='search' placeholder={'Импортный номер, наименование'} uncontrolled />
-            </Box>
+        {/* Dashboard Section */}
+        {isOpenStatDashboard && (
+          <Box mb='24px' sx={{ animation: 'slideDown 0.3s ease' }}>
+            <ImportDashboard data={get(getImportStatusCount, 'data.data', 0)} />
+          </Box>
+        )}
 
-            <Box minWidth={113} ml={'16px'}>
-              <Button
+        {/* Redesigned Table Card wrapper to contain Tabs, Toolbar, and Table */}
+        <div className='mg-table-card' style={{ marginTop: '12px' }}>
+          {/* Tabs container using reusable MgTabs component */}
+          <MgTabs
+            activeTab={appType}
+            onChange={handleTabChange}
+            tabs={[
+              {
+                value: 'ALL',
+                title: 'Все',
+                count: totalImportsCount,
+              },
+              {
+                value: 'new',
+                title: 'Новый',
+                count: appType === 'new' ? totalImportsCount : 0,
+              },
+              {
+                value: 'completed',
+                title: 'Завершенный',
+                count: appType === 'completed' ? totalImportsCount : 0,
+              },
+            ]}
+          />
+
+          {/* Toolbar block matching table-toolbar exactly */}
+          <div
+            className='mg-table-toolbar'
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid var(--mg-border)' }}
+          >
+            <div className='mg-table-toolbar-left' style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
+              {/* Search field Box */}
+              <Box
+                width='100%'
+                maxWidth={400}
                 sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
+                  '& .MuiInputBase-root': {
+                    height: '40px',
+                    border: '1px solid #ECEDF2',
+                    borderRadius: '12px',
+                    bgcolor: '#fff',
+                    px: '12px',
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: 'none',
+                  },
+                  '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                    background: 'transparent',
+                    width: '100%',
+                    height: '40px',
                   },
                 }}
-                fullWidth
-                startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
               >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
-            </Box>
-          </Box>
-          <Box display={'flex'} alignItems={'center'}>
-            <Box>
+                <InputSearch id='imports-search' name='search' placeholder={'Импортный номер, наименование'} uncontrolled />
+              </Box>
+            </div>
+
+            {/* Toolbar block right containing filter and settings */}
+            <div className='mg-table-toolbar-right' style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              {/* Filter button */}
+              <button
+                type='button'
+                className={`mg-btn mg-btn-secondary ${filterMenu ? 'active' : ''}`}
+                onClick={() => setFilterMenu((prev) => !prev)}
+                style={{
+                  height: '40px',
+                  padding: '0 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  border: '1px solid #ECEDF2',
+                  borderRadius: '12px',
+                  background: '#fff',
+                  color: '#111217',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                <FilterMenuIcon color='#111217' />
+                <span style={{ fontSize: '14px' }}>{t('filter_dialog.label')}</span>
+              </button>
+
               <ColumnsFilterButtonForAll
                 title={t('ag_grid.table_setting.label')}
                 columns={tableColumns}
@@ -163,37 +235,40 @@ export default function ImportPage() {
                 resetTableHeader={resetTableHeader}
                 changeColumnSequence={changeColumnSequence}
               />
-            </Box>
-          </Box>
-        </Box>
-        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
-        <Box>
-          <AgGridTable
-            id='imports-main-table'
-            fullDownload={() => importsExcelReport({ ...importsListFilter, offset: 0, limit: 1000000 })}
-            downloadByFilter={() => importsExcelReport(importsListFilter)}
-            isDownloading={isimportsExcelReport}
-            tableSettings
-            columns={tableColumns}
-            defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
-            data={importsList?.data?.data?.data || []}
-            totalCount={importsList?.data?.data?._meta?.total_count || 0}
-            isDataLoading={isFetchingimportsList || importsListLoading}
-            offsetCount={offsetCount}
-            updaterAction={(newData) => {
-              if (newData) dispatch(updateTableHeader(newData))
-            }}
-            emptyTableText={{
-              title: 'Импорт недоступен',
-              description: 'Если вы не можете найти искомый Импорт',
-            }}
-            fullInfoAboutCurrentPage
-            resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingimportsList || importsListLoading}
-          />
-        </Box>
+            </div>
+          </div>
+
+          {/* Ag Grid Table component wrapped inside padded container */}
+          <div style={{ padding: '0px' }}>
+            <AgGridTable
+              id='imports-main-table'
+              fullDownload={() => importsExcelReport({ ...importsListFilter, offset: 0, limit: 1000000 })}
+              downloadByFilter={() => importsExcelReport(importsListFilter)}
+              isDownloading={isimportsExcelReport}
+              tableSettings
+              columns={tableColumns}
+              defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
+              data={importsList?.data?.data?.data || []}
+              totalCount={importsList?.data?.data?._meta?.total_count || 0}
+              isDataLoading={isFetchingimportsList || importsListLoading}
+              offsetCount={offsetCount}
+              updaterAction={(newData) => {
+                if (newData) dispatch(updateTableHeader(newData))
+              }}
+              emptyTableText={{
+                title: 'Импорт недоступен',
+                description: 'Если вы не можете найти искомый Импорт',
+              }}
+              fullInfoAboutCurrentPage
+              resetTable={() => dispatch(resetTableHeader({ refetch }))}
+              isRefreshing={loading || isFetchingimportsList || importsListLoading}
+            />
+          </div>
+        </div>
       </Box>
 
+      <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
+      <CreateImport open={openCreateImportModal} setOpen={setOpenCreateImportModal} refetch={refetch} />
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />
     </LoadingContainer>
   )

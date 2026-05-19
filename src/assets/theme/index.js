@@ -1,10 +1,9 @@
-import typography from './typography';
-
+import typography from './typography'
 
 export const theme = ({ mode, palette }) => {
   const fontFamily = {
-    inter: '"Inter", sans-serif',
-    Gilroy: 'Gilroy',
+    inter: '"Euclid Circular B", "Inter", sans-serif',
+    Gilroy: '"Euclid Circular B", "Gilroy", sans-serif',
   }
   return {
     mode,
@@ -103,10 +102,10 @@ export const theme = ({ mode, palette }) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            borderRadius: 50,
+            borderRadius: 12,
             padding: '14px 20px',
             minHeight: 0,
-            height: 56,
+            height: 48,
             minWidth: 0,
             outline: '0',
             border: '0',
@@ -137,10 +136,10 @@ export const theme = ({ mode, palette }) => {
           },
 
           containedPrimary: {
-            backgroundColor: palette.orange[500],
+            backgroundColor: palette.black,
             color: '#fff',
             '&:hover': {
-              background: palette.orange[600],
+              background: palette.bunker[800],
             },
           },
 
@@ -289,9 +288,9 @@ export const theme = ({ mode, palette }) => {
         },
         styleOverrides: {
           root: {
-            fontSize: 18,
+            fontSize: 14,
             fontWeight: 400,
-            lineHeight: '24px',
+            lineHeight: '20px',
             color: palette.black,
           },
           h1: {
@@ -427,8 +426,8 @@ export const theme = ({ mode, palette }) => {
         defaultProps: { disableUnderline: true },
         styleOverrides: {
           root: {
-            width: '445px',
-            borderRadius: 40,
+            width: '100%',
+            borderRadius: 12,
             backgroundColor: palette.background.paper,
             '&:hover': {
               backgroundColor: palette.background.paper,
@@ -507,7 +506,7 @@ export const theme = ({ mode, palette }) => {
       MuiOutlinedInput: {
         styleOverrides: {
           root: {
-            borderRadius: 50,
+            borderRadius: 12,
             transition: '0.3s',
             color: palette.gray[600],
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
@@ -543,10 +542,11 @@ export const theme = ({ mode, palette }) => {
             border: '2px solid transparent',
             borderColor: palette.bunker[100],
             backgroundColor: palette.white,
+            borderRadius: 12,
             height: 48,
             '&.Mui-focused': {
               boxSizing: 'border-box',
-              border: `2px solid ${palette.orange[500]} !important`,
+              border: `2px solid ${palette.black} !important`,
             },
             '&.Mui-error:not(.Mui-focused)': {
               border: '2px solid red',
@@ -568,7 +568,7 @@ export const theme = ({ mode, palette }) => {
               backgroundColor: 'transparent !important',
               WebkitBoxShadow: '0 0 0 1000px white inset !important',
               ' -webkit-text-fill-color': 'inherit !important' /* Inherit the text color */,
-              fontSize: '16px !important' /* Maintain font size */,
+              fontSize: '13px !important' /* Maintain font size */,
               lineHeight: 'inherit !important' /* Prevent height issues */,
               borderRadius: 'inherit !important' /* Keep border radius consistent */,
             },

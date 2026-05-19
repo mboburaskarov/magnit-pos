@@ -12,6 +12,7 @@ import ArrowRight from '@icons/ArrowRight'
 import LeftArrowIcon from '@icons/LeftArrow'
 import { useQueryParams } from '@hooks/useQueryParams'
 import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import IndicatorBadge from '@components/IndicatorBadge'
 import { Delete } from '@mui/icons-material'
 import DeleteIcon from '@/assets/icons/DeleteIcon'
 
@@ -124,42 +125,14 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Недостачи'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'red.500',
-                  }}
-                >
-                  <LeftArrowIcon fill='transparent' color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Недостачи' type='<' bgcolor='red.500' />
 
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={''} type={'shortage'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Излишек'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'green.500',
-                  }}
-                >
-                  <ArrowRight color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Излишек' type='>' bgcolor='green.500' />
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={''} type={'surplus'} />

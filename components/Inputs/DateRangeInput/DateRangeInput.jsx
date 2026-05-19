@@ -212,12 +212,14 @@ export default function DateRangeInput({
         endIcon={<ArrowDown />}
         noMarginSvg
         sx={{
-          height: minHeight,
-          border: '1px solid #ECEDF2 !important',
+          height: '40px',
+          border: '1px solid #E5E7EB !important',
+          borderRadius: '8px !important',
+          backgroundColor: '#ffffff !important',
           padding: '0',
-          paddingLeft: '16px',
+          paddingLeft: '12px',
           '& .MuiButton-endIcon': {
-            marginLeft: '10px',
+            marginLeft: '6px',
           },
         }}
         placement='bottom-end'
@@ -226,16 +228,10 @@ export default function DateRangeInput({
             display='flex'
             sx={{
               alignItems: 'center',
-              '& > span': { lineHeight: '19px', color: 'gray.600', fontWeight: 600, m: '0' },
+              '& > span': { lineHeight: '12px', color: 'gray.600', fontWeight: 500, m: '0' },
             }}
           >
-            <Box
-              sx={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                display: 'flex',
-              }}
-            >
+            <Box sx={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
               <ClockIcon />
             </Box>
             <Box
@@ -251,12 +247,12 @@ export default function DateRangeInput({
                   <Typography
                     key={index}
                     sx={{
-                      fontWeight: 600,
+                      fontWeight: 500,
                       textAlign: 'center',
                       color: index === 0 ? '#868FAA' : 'dark.500',
-                      lineHeight: '18px',
-                      ml: '10px',
-                      fontSize: index == 0 ? '12px' : '16px',
+                      lineHeight: '14px',
+                      ml: '8px',
+                      fontSize: index == 0 ? '12px' : '14px',
                     }}
                   >
                     {letter.trim()}

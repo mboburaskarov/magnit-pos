@@ -41,7 +41,6 @@ const MultiOptionSelectNewV2 = ({
   const [typed, setTyped] = useState('')
   const [hasApplied, setHasApplied] = useState(false)
   const [isSelectAll, setIsSelectAll] = useState(false)
-  const [isSelectAllB2B, setIsSelectAllB2B] = useState(false)
   const [tempValues, setTempValues] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isSearching, setIsSearching] = useState(false) // Separate loading state for search
@@ -107,7 +106,6 @@ const MultiOptionSelectNewV2 = ({
       const response = await request({
         limit: pagination.limit,
         offset: pagination.offset,
-        is_franchise: isSelectAllB2B,
         search: searchTerm || serachParams?.search,
         ...customFilter,
       })
@@ -132,7 +130,6 @@ const MultiOptionSelectNewV2 = ({
         setValues(newData)
         onChange?.(newData)
         setHasApplied(true)
-        setIsSelectAllB2B(true)
         setIsSelectAll(true)
       }
     } catch (err) {
@@ -173,7 +170,7 @@ const MultiOptionSelectNewV2 = ({
     }
 
     if (onChange && tempValues) {
-      if (tempValues?.length === 0 && !isSelectAllB2B) {
+      if (tempValues?.length === 0) {
         error(t('toast.error.multiple_select_at_least_one'))
         return
       } else {
@@ -300,7 +297,6 @@ const MultiOptionSelectNewV2 = ({
 
   const onClickOption = (e) => {
     setIsSelectAll(false)
-    setIsSelectAllB2B(false)
     const { value } = e.currentTarget.dataset
     const selectedOption = options == 'all' ? [] : options.find((el) => el.id === value)
     setValues((prev) => {
@@ -352,12 +348,11 @@ const MultiOptionSelectNewV2 = ({
     setTempValues(multiple ? values : values?.[0])
     if (values?.length === options?.length && options.length > 0) {
       setIsSelectAll(true)
-      setIsSelectAllB2B(true)
     }
   }, [multiple, values, options])
 
   const renderValues = () => {
-    if (values.length === 0 && !isSelectAll && !isSelectAllB2B) {
+    if (values.length === 0 && !isSelectAll) {
       return <div className='placeholder'>{placeholder}</div>
     }
 
@@ -365,9 +360,7 @@ const MultiOptionSelectNewV2 = ({
       let val =
         (selectAllLabel && options.length && values?.length === options.length && values.length != 1) ||
         ((values == 'all' || isSelectAll) && values.length != 1)
-          ? selectAllLabel + (isSelectAllB2B ? ' & Все B2B' : '')
-          : isSelectAllB2B && (values != 'all' || !isSelectAll) && values.length != 1
-          ? 'Все B2B'
+          ? selectAllLabel
           : countLabel
           ? `${values?.length} ${countLabel}`
           : (values || [])?.map((value, index) => `${index !== 0 ? ', ' : ''} ${value?.name}`)
@@ -480,36 +473,7 @@ const MultiOptionSelectNewV2 = ({
                     {(isSelectAll || values == 'all') && values?.length != 1 ? <Box flexShrink={0}>{<TickSmallIcon />}</Box> : ''}
                   </Box>
                 )}
-                {selectAllLabel && (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      minWidth: '96px',
-                      height: '48px',
-                      px: '15px',
-                      justifyContent: 'space-between',
 
-                      borderBottom: '2px dashed',
-                      borderColor: 'bunker.300',
-                    }}
-                    onClick={() => {
-                      // setTempValues(!isSelectAllB2B ? (multiple ? 'all' : options?.[0]) : [])
-                      setIsSelectAllB2B((prev) => !prev)
-                      onChangeAllB2B(!isSelectAllB2B)
-                      // setValues(!isSelectAllB2B ? (multiple ? 'all' : options?.[0]) : [])
-                    }}
-                  >
-                    <Typography sx={{ fontSize: '14px', fontWeight: '600', mr: '10px' }}>Все B2B</Typography>
-                    {isSelectAllB2B ? (
-                      <Box flexShrink={0}>
-                        <TickSmallIcon />
-                      </Box>
-                    ) : (
-                      ''
-                    )}
-                  </Box>
-                )}
               </Box>
 
               <Box sx={{ maxHeight: '330px', overflow: 'auto' }}>{options.map(renderOption)}</Box>

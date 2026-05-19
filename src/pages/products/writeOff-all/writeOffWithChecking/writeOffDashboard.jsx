@@ -15,7 +15,7 @@ function WriteOffDashboard({ data }) {
       }}
     >
       {[
-        { title: 'Aптека', value: 'store' },
+        { title: 'Магазин', value: 'store' },
         { title: 'Кол-во товаров', value: 'writeoff_count' },
         { title: 'Сумма к списанию по цене поставки', value: 'supply_price_sum' },
         { title: 'Причина', value: 'comment' },
@@ -82,8 +82,8 @@ function WriteOffDashboard({ data }) {
                   {stat.value == 'store'
                     ? get(data, 'store.name', 'Undefined')
                     : stat.value == 'comment'
-                    ? writeOffReason.find((r) => r.id == data?.comment)?.name
-                    : thousandDivider(data?.[stat.value], 'сум')}
+                      ? writeOffReason.find((r) => r.id == data?.comment)?.name
+                      : thousandDivider(data?.[stat.value], 'сум')}
                 </Typography>
               </>
             )}

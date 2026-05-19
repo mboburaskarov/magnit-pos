@@ -31,13 +31,12 @@ const useStyles = makeStyles((theme) => ({
     background: 'inherit',
     border: '0',
     outline: '0',
-    fontWeight: '600',
-    fontSize: '16px',
+    fontWeight: '500',
+    fontSize: '14px',
     cursor: 'pointer',
     lineHeight: '20px',
     display: 'flex',
     justifyContent: 'space-between',
-    padding: '18px 16px',
     '&:hover': {
       background: theme.palette.gray[100],
     },
@@ -60,7 +59,7 @@ function ListWithPagination({ request, limit = 5, limitQuery = 'customLimit', re
           ...values,
           [limitQuery]: limit,
         },
-        { addQueryPrefix: true }
+        { addQueryPrefix: true },
       )
       navigate(`${location.pathname}${offsetLimitParams}`)
     }
@@ -71,7 +70,7 @@ function ListWithPagination({ request, limit = 5, limitQuery = 'customLimit', re
         ...values,
         [limitQuery]: offsetSize,
       },
-      { addQueryPrefix: true }
+      { addQueryPrefix: true },
     )
 
     navigate(`${location.pathname}${offsetLimitParams}`)

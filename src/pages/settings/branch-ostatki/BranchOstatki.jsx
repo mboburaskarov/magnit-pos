@@ -81,7 +81,7 @@ export default function BranchOstatkiPage() {
         cellRenderer: ({ data, rowIndex }) => <SimpleText data={data} type={'detailed_name'} />,
       },
       {
-        headerName: 'В Аптекае код',
+        headerName: 'В Магазине код',
         colId: 'store_code',
         minWidth: 185,
         maxWidth: 185,
@@ -122,13 +122,13 @@ export default function BranchOstatkiPage() {
                 getBranchOstatkiWithInvenotry({ store_id: get(data, 'id'), limit: 10000, offset: 0 })
               }}
             >
-              {isGetBranchOstatkiWithInvenotry ? <CircularProgress size={18} thickness={5} /> : <Download sx={{ color: '#FF6018' }} />}
+              {isGetBranchOstatkiWithInvenotry ? <CircularProgress size={18} thickness={5} /> : <Download sx={{ color: '#111111' }} />}
             </Box>
           </StyledTooltip>
         ),
       },
     ],
-    [isGetBranchOstatkiWithInvenotry]
+    [isGetBranchOstatkiWithInvenotry],
   )
   const PROVIDER_TYPES = [
     { id: 'payme', name: 'Payme' },

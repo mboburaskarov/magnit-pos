@@ -129,7 +129,7 @@ export default function CreateBannedProduct({ open, refetch, setOpen }) {
               name='store_id'
               isMulti={true}
               label={t('store')}
-              placeholder={t('Выберите Аптека')}
+              placeholder={t('Выберите Магазин')}
               minWidth='auto'
               isClearable={true}
               request={requests.getAllStores}

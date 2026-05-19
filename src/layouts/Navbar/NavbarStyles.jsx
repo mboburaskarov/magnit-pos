@@ -48,7 +48,7 @@ export const navbarStyles = makeStyles((theme) => {
     popperParent: {
       position: 'fixed !important',
       left: `96px !important`,
-      top: `90px !important`,
+      top: `90px`,
       width: 268,
       opacity: 0,
       borderLeft: '36px solid transparent',

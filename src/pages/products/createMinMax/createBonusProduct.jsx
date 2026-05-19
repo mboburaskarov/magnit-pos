@@ -108,8 +108,8 @@ export default function CreateBonusProduct({ open, refetch, setOpen }) {
               name='store_id'
               isMulti={false}
               required
-              label={t('Aптека')}
-              placeholder={t('Выберите Аптека')}
+              label={t('Магазин')}
+              placeholder={t('Выберите Магазин')}
               minWidth='auto'
               isClearable={true}
               request={requests.getAllStores}

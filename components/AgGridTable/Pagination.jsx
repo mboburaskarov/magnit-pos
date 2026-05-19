@@ -1,99 +1,67 @@
-import { Pagination as MuiPagination, PaginationItem } from '@mui/material'
-import { makeStyles } from '@mui/styles'
-import { useState } from 'react'
-import BackArrow from '../../src/assets/icons/BackArrow'
-import ForwardArrow from '../../src/assets/icons/ForwardArrow'
-import useDidUpdate from '../../src/hooks/useDidUpdate'
-import { useQueryParams } from '../../src/hooks/useQueryParams'
+import { Pagination as MuiPagination } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-    '& ul li button': {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minWidth: 40,
-      height: 40,
-      padding: 4,
-      borderRadius: 8,
-      border: `1px solid transparent`,
-      outline: 'none',
-      backgroundColor: 'transparent',
-      color: theme.palette.gray[600],
-      fontSize: 16,
-      lineHeight: '19px',
-      fontFamily: theme.fontFamily.Gilroy,
-      fontWeight: 600,
-      cursor: 'pointer',
-      '&[disabled]': {
-        cursor: 'default',
-      },
+const StyledPagination = styled(MuiPagination)(({ theme }) => ({
+  '& .MuiPaginationItem-root': {
+    color: '#9CA3AF',
+    fontFamily: 'Gilroy, sans-serif',
+    fontWeight: 600,
+    fontSize: '14px',
+    borderRadius: '8px',
+    minWidth: '32px',
+    height: '32px',
+    margin: '0 4px',
+    transition: 'all 0.2s',
+    '&:hover': {
+      backgroundColor: '#F3F4F6',
+      color: '#4B5563',
     },
-    '& ul li button.Mui-selected': {
-      backgroundColor: `transparent`,
-      border: `1px solid ${theme.palette.orange[500]}`,
-      fontWeight: 600,
+    '&.Mui-selected': {
+      backgroundColor: 'transparent',
       color: theme.palette.orange[500],
+      border: `1px solid ${theme.palette.orange[500]}`,
     },
-    '& ul li button:hover': {
-      backgroundColor: theme.palette.gray[100],
-    },
-    '& ul li button.Mui-selected:hover': {
-      backgroundColor: 'transparent',
-    },
-    '& ul li button span ': {
-      display: 'none',
+    '&.Mui-selected:hover': {
+      backgroundColor: 'rgba(254, 80, 0, 0.04)',
     },
   },
-  arrowBtn: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 40,
-    height: 40,
-    marginRight: 4,
+  '& .MuiPaginationItem-ellipsis': {
+    color: '#9CA3AF',
     border: 'none',
-    outline: 'none',
     backgroundColor: 'transparent',
-    cursor: 'pointer',
-    '& svg': {
-      fill: theme.palette.bunker[950],
-    },
+    '&:hover': {
+      backgroundColor: 'transparent',
+    }
+  },
+  '& .MuiPaginationItem-previousNext': {
+    color: '#111217',
+    border: 'none',
+    backgroundColor: 'transparent',
+    '&:hover': {
+      backgroundColor: '#F3F4F6',
+    }
   },
 }))
 
-export default function Pagination({ count, handleChangeOffset, offset, offsetQuery }) {
-  const { values } = useQueryParams()
-  const classes = useStyles()
+export default function Pagination({ count, handleChangeOffset, offset }) {
+  // The 'offset' prop corresponds directly to the active page index passed from AgGridBottom
+  const currentPage = Number(offset) === 0 ? 1 : Number(offset)
+  const totalPages = count || 1
 
-  const [offsetValue, setOffsetValue] = useState(Number(values?.[offsetQuery] || offset))
-
-  useDidUpdate(() => {
-    setOffsetValue(Number(values?.[offsetQuery] || offset))
-  }, [offset])
+  const handlePageChange = (event, page) => {
+    if (page >= 1 && page <= totalPages) {
+      handleChangeOffset(page)
+    }
+  }
 
   return (
-    <MuiPagination
-      count={count || 1}
-      onChange={(_, newVal) => {
-        handleChangeOffset(newVal)
-      }}
-      renderItem={(props) =>
-        ['previous', 'next'].includes(props.type) ? (
-          <button {...props} type='button' className={classes.arrowBtn} id={props.type === 'previous' ? 'previousPageBtn' : 'nextPageBtn'}>
-            {props.type === 'previous' ? <BackArrow /> : <ForwardArrow />}
-          </button>
-        ) : (
-          <PaginationItem id={`offsetCount-${offsetValue}`} {...props} />
-        )
-      }
-      offset={offsetValue}
+    <StyledPagination 
+      count={totalPages} 
+      page={currentPage} 
+      onChange={handlePageChange} 
       siblingCount={1}
       boundaryCount={1}
-      page={offset == 0 ? 1 : offset}
-      className={classes.root}
+      shape="rounded"
     />
   )
 }

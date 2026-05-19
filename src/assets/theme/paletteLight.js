@@ -9,12 +9,12 @@ const paletteLight = {
   },
   background: {
     default: '#fff',
-    defaultStrong: '#FF6018',
+    defaultStrong: '#111111',
     paper: '#FFFFFF',
     gray: '#f9f9fa',
   },
   primary: {
-    main: '#FF6018',
+    main: '#111111',
     // main: '#FE500050',
   },
   secondary: {
@@ -178,12 +178,12 @@ const paletteLight = {
   },
   orange: {
     50: '#fff7ed',
-    100: '#FE50000D',
+    100: '#F1F3F5',
     150: '#FFE9D4',
     200: '#FFCEA8',
     300: '#fdba74',
-    400: '#fb923c',
-    500: '#FF6018',
+    400: '#111111',
+    500: '#111111',
     600: '#ea580c',
     700: '#c2410c',
     800: '#9a3412',

@@ -93,7 +93,7 @@ export default function tableHeaderSelector({ productsColumns, values, t, stores
     if (el.field === 'store_code') {
       return {
         ...el,
-        headerName: 'В Аптекае код',
+        headerName: 'В Магазине код',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='store_code' />),
       }

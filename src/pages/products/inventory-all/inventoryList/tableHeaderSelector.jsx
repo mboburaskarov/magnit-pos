@@ -13,6 +13,7 @@ import DeleteIcon from '@icons/DeleteIcon'
 import LeftArrowIcon from '@icons/LeftArrow'
 import { useQueryParams } from '@hooks/useQueryParams'
 import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import IndicatorBadge from '@components/IndicatorBadge'
 
 export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmDialog }) {
   const { values } = useQueryParams()
@@ -27,11 +28,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
           const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
 
-          return (
-            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-              {absoluteIndex}
-            </Typography>
-          )
+          return <Typography>{absoluteIndex}</Typography>
         }),
       }
     }
@@ -63,7 +60,7 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
             }
             state={{ from }}
           >
-            <Typography whiteSpace={'pre-wrap'} fontWeight={'600'} color={'orange.500'} fontSize={'16px'} lineHeight={'24px'}>
+            <Typography whiteSpace={'pre-wrap'} fontWeight={500}>
               {p.data.name}
             </Typography>
           </Link>
@@ -110,65 +107,21 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Програм'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'green.500',
-                  }}
-                >
-                  <ArrowRight fill='transparent' color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Програм' type='>' bgcolor='green.500' />
 
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={''} type={'current_count'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Факт'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'red.500',
-                  }}
-                >
-                  <Typography textAlign={'center'} width={'20px'} height={'20px'} color={'#fff'}>
-                    +
-                  </Typography>
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Факт' type='+' bgcolor='red.500' />
 
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={''} type={'fact_count'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Разница'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'red.500',
-                  }}
-                >
-                  <LeftArrowIcon fill='transparent' color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Разница' type='<' bgcolor='red.500' />
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={''} type={'difference_count'} />
@@ -186,65 +139,21 @@ export default function tableHeaderSelector({ importsColumns, t, setOpenConfirmD
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Програм'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'green.500',
-                  }}
-                >
-                  <ArrowRight fill='transparent' color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Програм' type='>' bgcolor='green.500' />
 
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={'сум'} type={'current_sum'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Факт'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'red.500',
-                  }}
-                >
-                  <Typography textAlign={'center'} width={'20px'} height={'20px'} color={'#fff'}>
-                    +
-                  </Typography>
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Факт' type='+' bgcolor='red.500' />
 
               <Box width={'10px'} />
 
-              <SimpleText {...p} withDevider currency={''} type={'fact_sum'} />
+              <SimpleText {...p} withDevider currency={'сум'} type={'fact_sum'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Разница'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'red.500',
-                  }}
-                >
-                  <LeftArrowIcon fill='transparent' color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Разница' type='<' bgcolor='red.500' />
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={'сум'} type={'difference_sum'} />

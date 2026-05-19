@@ -4,7 +4,9 @@ import { requests } from '@utils/requests'
 import { useQuery } from 'react-query'
 import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
+import { TrendingUp, TrendingDown } from 'lucide-react'
 import RightArrowIcon from '@/assets/icons/RightArrowIcon'
+import './magnit-dashboard.css' // Import the MagnitGo CSS styles
 
 export default function DashboardInfoBox({
   noDot,
@@ -22,7 +24,7 @@ export default function DashboardInfoBox({
   action,
   ...l
 }) {
-  const isSaleBox = ['sale_amount', 'sale_count'].includes(id)
+  const isSaleBox = ['sale_amount', 'sale_count', 'average_receipt'].includes(id)
   const isLoyaltyBox = ['total_loyalty_card_count', 'total_loyalty_card_balance', 'today_created_loyalty_card_count'].includes(id)
   const isNetProfit = ['income_amount', 'production_cost'].includes(id)
   const isImport = ['import_amount', 'not_last_24h_import_amount'].includes(id)
@@ -61,200 +63,81 @@ export default function DashboardInfoBox({
     },
     enabled: !!queryKey,
   })
-  const count = countStats?.data?.data?.[countProp]
-  const before = countStats?.data?.data?.old
+
+  let count = countStats?.data?.data?.[countProp]
+  let before = countStats?.data?.data?.old
+  
+  if (id === 'average_receipt') {
+    const sAmount = countStats?.data?.data?.sale_amount || 0;
+    const sCount = countStats?.data?.data?.sale_count || 1;
+    count = sAmount / sCount;
+  }
+
   const amount = countStats?.data?.data?.[amountProp]
   const percent = percentProp?.(before, count)
   const isFall = percent < 0
   const income = countStats?.data?.data?.income_amount
   const total = countStats?.data?.data?.income_amount + countStats?.data?.data?.production_cost
   const productionCost = countStats?.data?.data?.production_cost
-  const totalWithoutNDS = total - total * 0.12
-  const incomePercentWithNDS = ((income / total) * 100).toFixed(1)
-  const incomePercent = ((income/productionCost) * 100).toFixed(3)
+  
+  const theme = l.theme || 'white'
+  let cardClass = "mdash-kpi-card"
+  if (theme !== 'white') cardClass += ` mdash-kpi-${theme}`
+  
+  let iconWrapStyle = undefined
+  if (theme === 'white' && l.iconColor) {
+    iconWrapStyle = { background: `${l.iconColor}1a`, color: l.iconColor }
+  }
+
+  const finalValue = withoutDivider ? Math.round(amount || 0) : Math.round(count || 0)
+  
   return (
-    <Box sx={{ border: 1, borderRadius: '16px', borderColor: '#A4A5AB33', minHeight: '154px', width: '100%' }}>
-      <Box key={ind} sx={{ p: '20px', height: '164px', m: 0 }}>
-        <Box width='100%' alignItems='start' flexDirection='column' display='inline-flex'>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-            {!noDot && <Box height={'48px'}>{isLoading ? <Skeleton variant='circular' width={48} height={48} sx={{ borderRadius: '12px' }} /> : icon}</Box>}
-            {action && (
-              <Button
-                onClick={() => action(count, amount)}
-                sx={{
-                  borderRadius: '50px',
-                  ml: '8px',
-                  p: '9px 0px',
-                  height: '36px',
-                  width: '36px',
-                  backgroundColor: 'white !important',
-                  color: 'orange.500',
-                  fontSize: '14px',
-                  borderColor: 'orange.500',
-                  '& svg': {
-                    flexShrink: 0,
-                  },
-                }}
-                color='secondary'
-              >
-                <RightArrowIcon />
-              </Button>
-            )}
-          </Box>
-          <Box flex={1}>
-            {isLoading ? (
-              <Skeleton variant='rectangular' width='65%' height={20} sx={{ mt: '16px', borderRadius: '6px' }} />
-            ) : (
-              <Typography display='flex' alignItems={'center'} fontSize='14px' fontWeight='500' lineHeight='20px' color='bunker.500' mt='16px'>
-                {title} {id === 'target_amount' ? `(Ежемесячно - ${thousandDivider(amount, '')} сум)` : ''}
-                {(id === 'expiring_soon_amount' || id === 'expired_soon_amount') && (
-                  <Typography
-                    sx={{
-                      padding: '3px 8px 1px',
-                      borderRadius: '16px',
-                      backgroundColor: 'bunker.100',
-                      fontWeight: '500',
-                      fontSize: '12px',
-                      ml: '8px',
-                      lineHeight: '16px',
-                      color: 'bunker.500',
-                    }}
-                  >
-                    {withoutDivider ? count : thousandDivider(count, '')} шт
-                  </Typography>
-                )}
-                {id == 'income_amount' && (
-                  <>
-                    <Typography
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-
-                        padding: '3px 8px 3px',
-                        borderRadius: '16px',
-                        backgroundColor: 'bunker.100',
-                        fontWeight: '700',
-                        fontSize: '12px',
-                        ml: '8px',
-                        lineHeight: '16px',
-                        color: 'bunker.500',
-                      }}
-                    >
-                      cНДС: {thousandDivider(incomePercentWithNDS, '%')}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-
-                        padding: '3px 8px 3px',
-                        borderRadius: '16px',
-                        backgroundColor: 'bunker.100',
-                        fontWeight: '700',
-                        fontSize: '12px',
-                        ml: '8px',
-                        lineHeight: '16px',
-                        color: 'bunker.500',
-                      }}
-                    >
-                      {thousandDivider(incomePercent, '%')}
-                    </Typography>
-                  </>
-                )}
-              </Typography>
-            )}
-          </Box>
-        </Box>
-
-        <Box mt={icon ? '0px' : 0} width='100%' justifyContent='space-between' alignItems='center' display='inline-flex'>
-          <Box flex={1}>
-            {isLoading ? (
-              <Skeleton variant='rectangular' width='55%' height={40} sx={{ borderRadius: '8px' }} />
-            ) : (
-              <Typography
-                alignItems='center'
-                display='flex'
-                color='dark.500'
-                fontSize='28px'
-                lineHeight='40px'
-                fontWeight='700'
-                variant='h1'
-                sx={{
-                  '& > p': {
-                    fontSize: '28px',
-                    lineHeight: '40px',
-                    fontWeight: '700 !important',
-                    color: 'dark.500',
-                  },
-                }}
-              >
-                {withoutDivider ? thousandDivider(Math.round(amount), endText) : <Typography>{thousandDivider(Math.round(count), endText)}</Typography>}
-                {/* {id.includes('loyalty_card') && (
-                  <Link to={'/clients/all?tab=loyalty-cards'}>
-                    <Button
-                      sx={{
-                        borderRadius: '50px',
-                        ml: '8px',
-                        p: '9px 0px',
-                        height: '30px',
-                        backgroundColor: 'white !important',
-                        color: 'orange.500',
-                        fontSize: '14px',
-                        borderColor: 'orange.500',
-                        '& svg': {
-                          flexShrink: 0,
-                        },
-                      }}
-                      color='secondary'
-                    >
-                      <RightArrowIcon />
-                    </Button>
-                  </Link>
-                )} */}
-              </Typography>
-            )}
-          </Box>
-        </Box>
-      </Box>
-
-      {/* <Box key={ind} sx={{ py: '18px', px: '20px', height: '52px', m: 0, borderTop: 1, borderColor: '#A4A5AB33' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {percent < 1000 && (
-            <>
-              {isLoading ? (
-                <Skeleton variant='rectangular' width={65} height={26} sx={{ borderRadius: '16px' }} />
-              ) : (
-                <Box
-                  display='inline-flex'
-                  sx={{
-                    borderRadius: '16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '3px 8px 1px',
-                    backgroundColor: !isFall ? '#30BE821F' : '#FF46393D',
-                  }}
-                  alignItems='center'
-                >
-                  <Typography color={isFall ? '#FF4639' : '#30BE82'} fontWeight='500' fontSize={12} lineHeight='16px'>
-                    {!isFall ? '+' : ''} {percent}%
-                  </Typography>
-                </Box>
-              )}
-            </>
+    <div className={cardClass} style={{ width: '100%', minHeight: '160px', height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div className="mdash-kpi-top">
+        <div className="mdash-kpi-icon-wrap" style={iconWrapStyle}>
+          {isLoading ? <Skeleton variant="circular" width={24} height={24} /> : icon}
+        </div>
+        
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+          {percent !== undefined && percent !== null && !isNaN(percent) && (
+            <div className={`mdash-kpi-badge ${isFall ? 'mdash-badge-red' : 'mdash-badge-green'}`}>
+              {isFall ? <TrendingDown size={11} /> : <TrendingUp size={11} />}
+              {Math.abs(percent)}%
+            </div>
           )}
-          <Box sx={{ ml: '10px' }}>
-            {isLoading ? (
-              <Skeleton variant='rectangular' width={140} height={16} sx={{ borderRadius: '6px' }} />
-            ) : (
-              <Typography color='bunker.500' fontSize='12px' lineHeight='16px' fontWeight='500' variant='h1'>
-                {thousandDivider(old)} {endText} за прошедший период
-              </Typography>
-            )}
-          </Box>
-        </Box>
-      </Box> */}
-    </Box>
+          
+          {action && (
+            <button
+              onClick={() => action(count, amount)}
+              style={{
+                width: '24px', height: '24px', borderRadius: '12px', border: '1px solid #E5E7EB',
+                background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+                color: 'var(--mg-text-muted)'
+              }}
+            >
+              <RightArrowIcon style={{ width: 12, height: 12 }} />
+            </button>
+          )}
+        </div>
+      </div>
+      
+      <div className="mdash-kpi-val">
+        {isLoading ? (
+           <Skeleton variant="text" width="60%" height={32} />
+        ) : (
+          <>
+            {thousandDivider(finalValue, '')} {endText}
+          </>
+        )}
+      </div>
+      
+      <div className="mdash-kpi-label">
+        {isLoading ? (
+          <Skeleton variant="text" width="80%" />
+        ) : (
+          title
+        )}
+      </div>
+    </div>
   )
 }

@@ -15,6 +15,7 @@ import { memo } from 'react'
 import { get } from 'lodash'
 import dayjs from 'dayjs'
 import * as qs from 'qs'
+import IndicatorBadge from '@components/IndicatorBadge'
 
 export default function tableHeaderSelector({ importsColumns, t, downloadNakladnoy, setOpenConfirmDialog }) {
   const { values } = useQueryParams()
@@ -31,11 +32,7 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
           const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
 
-          return (
-            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-              {absoluteIndex}
-            </Typography>
-          )
+          return <Typography>{absoluteIndex}</Typography>
         }),
       }
     }
@@ -104,10 +101,8 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
             <Link to={targetPath} state={{ from }}>
               <Typography
                 whiteSpace={'pre-wrap'}
-                fontWeight={'600'}
+                fontWeight={500}
                 color={p.data.status !== 'canceled' ? 'orange.500' : 'red.500'}
-                fontSize={'16px'}
-                lineHeight={'24px'}
                 onClick={() => {
                   if (targetPath) {
                     navigate(targetPath, {
@@ -141,42 +136,14 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Недостачи'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'red.500',
-                  }}
-                >
-                  <LeftArrowIcon fill='transparent' color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Недостачи' type='<' bgcolor='red.500' />
 
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={'сум'} type={'received_retail_sum'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Излишек'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'green.500',
-                  }}
-                >
-                  <ArrowRight color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Излишек' type='>' bgcolor='green.500' />
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={'сум'} type={'accepted_retail_sum'} />
@@ -193,42 +160,14 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Недостачи'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'red.500',
-                  }}
-                >
-                  <LeftArrowIcon fill='transparent' color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Недостачи' type='<' bgcolor='red.500' />
 
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={'сум'} type={'received_supply_sum'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Излишек'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'green.500',
-                  }}
-                >
-                  <ArrowRight color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Излишек' type='>' bgcolor='green.500' />
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={'сум'} type={'accepted_supply_sum'} />
@@ -269,42 +208,14 @@ export default function tableHeaderSelector({ importsColumns, t, downloadNakladn
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Недостачи'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'red.500',
-                  }}
-                >
-                  <LeftArrowIcon fill='transparent' color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Недостачи' type='<' bgcolor='red.500' />
 
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={''} type={'shortage'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Излишек'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'green.500',
-                  }}
-                >
-                  <ArrowRight color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Излишек' type='>' bgcolor='green.500' />
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={''} type={'surplus'} />

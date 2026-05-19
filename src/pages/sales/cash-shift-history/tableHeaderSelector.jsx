@@ -1,10 +1,9 @@
-import { SimpleText } from '@components/AgGridTable/Cells/SimpleText';
-import thousandDivider from '@utils/thousandDivider';
-import { Box, Typography } from '@mui/material';
-import { memo } from 'react';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
-
+import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
+import thousandDivider from '@utils/thousandDivider'
+import { Box, Typography } from '@mui/material'
+import { memo } from 'react'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
 export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDrawer, values }) {
   const columns = productsColumns?.map((el) => {
@@ -31,7 +30,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'store_name') {
       return {
         ...el,
-        headerName: 'Aптека',
+        headerName: 'Магазин',
         colId: el.field,
 
         cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),

@@ -1,22 +1,16 @@
-import DashboardIcon from '../assets/icons/navbar/DashboardIcon'
-import SettingIcon from '../assets/icons/navbar/SettingIcon'
-import KatalogIcon from '../assets/icons/navbar/KatalogIcon'
-import ClientsIcon from '../assets/icons/navbar/ClientsIcon'
-import ReportIcon from '../assets/icons/navbar/ReportIcon'
-import SaleIcon from '../assets/icons/navbar/SaleIcon'
-import OnlineSaleNoorIcon from '@/assets/icons/OnlineSaleNoorIcon'
+import { ShoppingCart, Package, Users, BarChart3, Globe, Settings, LayoutDashboard } from 'lucide-react'
 
 export const navbatRouteData = [
   {
     label: 'navbar.dashboard',
     id: '2',
-    icon: <DashboardIcon />,
+    icon: <LayoutDashboard size={20} strokeWidth={1.8} />,
     href: '/dashboard',
   },
   {
     label: 'navbar.catalog',
     id: '3',
-    icon: <KatalogIcon />,
+    icon: <Package size={20} strokeWidth={1.8} />,
     href: '/products',
     children: [
       {
@@ -86,7 +80,7 @@ export const navbatRouteData = [
   {
     label: 'navbar.sales',
     id: '5',
-    icon: <SaleIcon />,
+    icon: <ShoppingCart size={20} strokeWidth={1.8} />,
     href: '/sales',
     children: [
       {
@@ -112,14 +106,14 @@ export const navbatRouteData = [
   {
     label: 'navbar.online_orders',
     id: '5',
-    icon: <OnlineSaleNoorIcon />,
+    icon: <Globe size={20} strokeWidth={1.8} />,
     href: '/online-orders/orders',
     аctive: '/online-orders/orders*',
   },
   {
     label: 'navbar.clients',
     id: '1',
-    icon: <ClientsIcon />,
+    icon: <Users size={20} strokeWidth={1.8} />,
     href: '/clients',
     children: [
       {
@@ -140,7 +134,7 @@ export const navbatRouteData = [
   {
     label: 'navbar.reports',
     id: '9999',
-    icon: <ReportIcon />,
+    icon: <BarChart3 size={20} strokeWidth={1.8} />,
     href: '/reports',
     children: [
       {
@@ -173,7 +167,7 @@ export const navbatRouteData = [
   {
     label: 'navbar.settings',
     id: '9',
-    icon: <SettingIcon />,
+    icon: <Settings size={20} strokeWidth={1.8} />,
     href: '/settings',
     children: [
       {

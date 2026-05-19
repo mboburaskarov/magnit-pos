@@ -1,18 +1,36 @@
-import { Typography } from '@mui/material'
-import EmptyTableData from '../../src/assets/icons/EmptyTableData'
 import { useTranslation } from 'react-i18next'
 export const OverlayNoRowsTemplate = ({ emptyTableText }) => {
   const { t } = useTranslation()
   return (
-    <div className='no-rows-container'>
-      <div className='no-rows-root'>
-        <EmptyTableData />
-        <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'600'} color={'bunker.950'}>
+    <div
+      style={{
+        // width: '100%',
+        height: '240px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 12,
+        borderRadius: 16,
+        background: '#F9FAFB',
+        border: '1.5px dashed #E2E8F0',
+        margin: '20px',
+        padding: '24px',
+        boxSizing: 'border-box',
+      }}
+    >
+      <svg width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='#D1D5DB' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round'>
+        <path d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z' />
+        <polyline points='3.27 6.96 12 12.01 20.73 6.96' />
+        <line x1='12' y1='22.08' x2='12' y2='12' />
+      </svg>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: '#4B5563', marginBottom: 4 }}>
           {emptyTableText?.title ? emptyTableText?.title : t('table.data.empty.title')}
-        </Typography>
-        <Typography mb={'50px'} fontSize={'18px'} mt={'8px'} lineHeight={'28px'} fontWeight={'500'} color={'bunker.500'}>
+        </div>
+        <div style={{ fontSize: 13, color: '#9CA3AF', maxWidth: '460px', margin: '0 auto', lineHeight: '18px' }}>
           {emptyTableText?.description ? emptyTableText?.description : t('table.data.empty.description')}
-        </Typography>
+        </div>
       </div>
     </div>
   )

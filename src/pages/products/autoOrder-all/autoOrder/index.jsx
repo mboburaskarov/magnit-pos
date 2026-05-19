@@ -26,6 +26,7 @@ import CreateAutoOrder from './createAutoOrder'
 import FilterMenu from './FilterMenu'
 import tableHeaderSelector from './tableHeaderSelector'
 import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import MgPageHeader from '@components/MgPageHeader'
 
 export default function AutoOrderPage() {
   const theme = useTheme()
@@ -120,76 +121,99 @@ export default function AutoOrderPage() {
   return (
     <LoadingContainer readyState={true}>
       <FormProvider {...methods}>
-        <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-          <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-            Авто заказ
-          </Typography>
-          <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-            <Box display={'flex'}>
-              <Box
-                width='100%'
-                sx={{
-                  '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                  '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                    background: 'transparent',
-                    width: '400px',
-                    height: 48,
-                  },
-                }}
-              >
-                <InputSearch id='producrs-search' name='search' placeholder={'Номер автозаказа, Аптека'} uncontrolled />
-              </Box>
-              <Box minWidth={113} ml={'16px'}>
-                <Button
-                  sx={{
-                    height: '48px',
-                    padding: 0,
-                    bgcolor: '#fff',
-                    border: '1px solid #ECEDF2',
-                    color: 'dark.500',
-                    fontWeight: '500',
-                    fontSize: '16px',
-                    lineHeight: '24px',
-                    '& span': {
-                      mr: '12px',
-                    },
-                  }}
-                  fullWidth
-                  startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                  variant='contained'
-                  color='secondary'
-                  onClick={() => setFilterMenu((prev) => !prev)}
-                >
-                  <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                    {t('filter_dialog.label')}
-                  </Typography>
-                </Button>
-              </Box>
-            </Box>
-            <Box display={'flex'} alignItems={'center'}>
-              <StyledTooltip title={'Создать мин-макс'}>
+        <Box display='flex' flexDirection='column' position='relative' px={'24px'} pb={'20px'}>
+          <MgPageHeader
+            title='Авто заказ'
+            subtitle={`Всего: ${new Intl.NumberFormat('ru-UZ').format(autoOrderList?.data?.data?._meta?.total_count || 0)}`}
+            showCreate
+            onCreate={() => setOrderModel(true)}
+            createLabel='Создать'
+            createPermissionId='create-auto-order'
+          />
+
+          <div className='mg-table-card' style={{ marginTop: '12px' }}>
+            {/* Toolbar block matching table-toolbar exactly */}
+            <div
+              className='mg-table-toolbar'
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '16px 20px',
+                borderBottom: '1px solid var(--mg-border)',
+              }}
+            >
+              <div className='mg-table-toolbar-left' style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
+                {/* Search field Box */}
                 <Box
-                  onClick={() => navigate('/products/min-max-create')}
+                  width='100%'
+                  maxWidth={400}
                   sx={{
-                    backgroundColor: 'bg.10',
-                    padding: '10px',
-                    borderRadius: '10px',
-                    mr: '10px',
-                    display: 'flex',
-                    width: '48px',
-                    height: '48px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    '& svg': {
-                      width: '23px',
-                      height: '23px',
+                    '& .MuiInputBase-root': {
+                      height: '40px',
+                      border: '1px solid #ECEDF2',
+                      borderRadius: '12px',
+                      bgcolor: '#fff',
+                      px: '12px',
+                    },
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      border: 'none',
+                    },
+                    '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                      background: 'transparent',
+                      width: '100%',
+                      height: '40px',
                     },
                   }}
                 >
-                  <CategoryIcon />
+                  <InputSearch id='producrs-search' name='search' placeholder={'Номер автозаказа, Магазин'} uncontrolled />
                 </Box>
-              </StyledTooltip>
-              <Box>
+              </div>
+
+              <div className='mg-table-toolbar-right' style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <StyledTooltip title={'Создать мин-макс'}>
+                  <button
+                    type='button'
+                    onClick={() => navigate('/products/min-max-create')}
+                    style={{
+                      height: '40px',
+                      width: '40px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: '1px solid #ECEDF2',
+                      borderRadius: '12px',
+                      background: '#fff',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <CategoryIcon color='#111217' />
+                  </button>
+                </StyledTooltip>
+
+                {/* Filter button */}
+                <button
+                  type='button'
+                  className={`mg-btn mg-btn-secondary ${filterMenu ? 'active' : ''}`}
+                  onClick={() => setFilterMenu((prev) => !prev)}
+                  style={{
+                    height: '40px',
+                    padding: '0 16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    border: '1px solid #ECEDF2',
+                    borderRadius: '12px',
+                    background: '#fff',
+                    color: '#111217',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  <FilterMenuIcon color='#111217' />
+                  <span style={{ fontSize: '14px' }}>{t('filter_dialog.label')}</span>
+                </button>
+
                 <ColumnsFilterButtonForAll
                   title={t('ag_grid.table_setting.label')}
                   columns={tableColumns}
@@ -197,39 +221,31 @@ export default function AutoOrderPage() {
                   resetTableHeader={resetTableHeader}
                   changeColumnSequence={changeColumnSequence}
                 />
-              </Box>
-              <CheckAccess id={'create-auto-order'}>
-                <Box minWidth={156}>
-                  <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
-                    Создать заказ
-                  </Button>
-                </Box>
-              </CheckAccess>
+              </div>
+            </div>
+
+            <Box style={{ padding: 0 }}>
+              <AgGridTable
+                id='auto-order-main-table'
+                tableSettings
+                columns={tableColumns}
+                data={autoOrderList?.data?.data?.data || []}
+                totalCount={autoOrderList?.data?.data?._meta?.total_count || 0}
+                isDataLoading={isFetchingautoOrderList || autoOrderListLoading}
+                offsetCount={offsetCount}
+                updaterAction={(newData) => {
+                  if (newData) dispatch(updateTableHeader(newData))
+                }}
+                emptyTableText={{
+                  title: 'Авто заказ недоступен',
+                  description: '...',
+                }}
+                fullInfoAboutCurrentPage
+                resetTable={() => dispatch(resetTableHeader({ refetch }))}
+                isRefreshing={loading || isFetchingautoOrderList || autoOrderListLoading}
+              />
             </Box>
-          </Box>
-          <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
-          <CreateAutoOrder refetch={refetch} open={orderModel} setOpen={setOrderModel} />
-          <Box>
-            <AgGridTable
-              id='auto-order-main-table'
-              tableSettings
-              columns={tableColumns}
-              data={autoOrderList?.data?.data?.data || []}
-              totalCount={autoOrderList?.data?.data?._meta?.total_count || 0}
-              isDataLoading={isFetchingautoOrderList || autoOrderListLoading}
-              offsetCount={offsetCount}
-              updaterAction={(newData) => {
-                if (newData) dispatch(updateTableHeader(newData))
-              }}
-              emptyTableText={{
-                title: 'Авто заказ недоступен',
-                description: '...',
-              }}
-              fullInfoAboutCurrentPage
-              resetTable={() => dispatch(resetTableHeader({ refetch }))}
-              isRefreshing={loading || isFetchingautoOrderList || autoOrderListLoading}
-            />
-          </Box>
+          </div>
         </Box>
       </FormProvider>
       {openConfirmDialog && (

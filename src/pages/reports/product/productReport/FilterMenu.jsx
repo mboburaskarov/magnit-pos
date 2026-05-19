@@ -1,20 +1,19 @@
-import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew';
-import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
-import { FormProvider, useForm } from 'react-hook-form';
-import { Box, Button, Typography } from '@mui/material';
-import LazySelect from '@components/Select/LazySelect';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { requests } from '@utils/requests';
-import { useSelector } from 'react-redux';
-import CloseIcon from '@icons/CloseIcon';
-import { useTheme } from '@mui/styles';
-import { useQuery } from 'react-query';
-import Label from '@components/Label';
-import { get } from 'lodash';
-import * as qs from 'qs';
-
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import { FormProvider, useForm } from 'react-hook-form'
+import { Box, Button, Typography } from '@mui/material'
+import LazySelect from '@components/Select/LazySelect'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { requests } from '@utils/requests'
+import { useSelector } from 'react-redux'
+import CloseIcon from '@icons/CloseIcon'
+import { useTheme } from '@mui/styles'
+import { useQuery } from 'react-query'
+import Label from '@components/Label'
+import { get } from 'lodash'
+import * as qs from 'qs'
 
 export default function FilterMenu({ open, selectedShops, setSelectedShops, setOpen }) {
   const navigate = useNavigate()
@@ -97,7 +96,7 @@ export default function FilterMenu({ open, selectedShops, setSelectedShops, setO
               filterOption={() => true}
             />
             <Box width={'100%'}>
-              <Label>Аптека</Label>
+              <Label>Магазин</Label>
               <MultiOptionSelectNew
                 zIndex={999}
                 placeholder={t('placeholders.select_shops')}

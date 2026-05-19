@@ -3,6 +3,7 @@ import { Box, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { memo } from 'react'
+import IndicatorBadge from '@components/IndicatorBadge'
 
 export default function tableHeaderSelector({ inventoryColumns, values }) {
   const columns = inventoryColumns?.map((el) => {
@@ -41,9 +42,15 @@ export default function tableHeaderSelector({ inventoryColumns, values }) {
     if (el.field === 'current_quantity') {
       return {
         ...el,
-        headerName: 'Програм кол-во',
+        headerName: 'Програм кол-vo',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='current_quantity' />),
+        cellRenderer: memo((p) => (
+          <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+            <IndicatorBadge tooltip='Програм' type='>' bgcolor='green.500' />
+            <Box width={'10px'} />
+            <SimpleText {...p} withDevider type='current_quantity' />
+          </Box>
+        )),
       }
     }
     if (el.field === 'current_quantity_pattern') {
@@ -52,11 +59,15 @@ export default function tableHeaderSelector({ inventoryColumns, values }) {
         headerName: 'Програм кол-во',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Typography>
-            {p?.data?.current_unit > 0
-              ? `${Math.floor(p?.data?.current_quantity)}(${p?.data?.current_unit}/${p?.data?.unit_per_pack})`
-              : p?.data?.current_quantity}
-          </Typography>
+          <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+            <IndicatorBadge tooltip='Програм' type='>' bgcolor='green.500' />
+            <Box width={'10px'} />
+            <Typography>
+              {p?.data?.current_unit > 0
+                ? `${Math.floor(p?.data?.current_quantity)}(${p?.data?.current_unit}/${p?.data?.unit_per_pack})`
+                : p?.data?.current_quantity}
+            </Typography>
+          </Box>
         )),
       }
     }
@@ -65,7 +76,13 @@ export default function tableHeaderSelector({ inventoryColumns, values }) {
         ...el,
         headerName: 'Програм Cумма',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type='current_sum' />),
+        cellRenderer: memo((p) => (
+          <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+            <IndicatorBadge tooltip='Програм' type='>' bgcolor='green.500' />
+            <Box width={'10px'} />
+            <SimpleText {...p} currency={'сум'} withDevider type='current_sum' />
+          </Box>
+        )),
       }
     }
     if (el.field === 'retail_price') {
@@ -104,7 +121,13 @@ export default function tableHeaderSelector({ inventoryColumns, values }) {
         headerName: 'Факт УП',
 
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='fact_quantity' />),
+        cellRenderer: memo((p) => (
+          <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+            <IndicatorBadge tooltip='Факт' type='+' bgcolor='red.500' />
+            <Box width={'10px'} />
+            <SimpleText {...p} withDevider type='fact_quantity' />
+          </Box>
+        )),
       }
     }
     if (el.field === 'fact_unit') {
@@ -113,7 +136,13 @@ export default function tableHeaderSelector({ inventoryColumns, values }) {
         headerName: 'Факт кол-во',
 
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='fact_unit' />),
+        cellRenderer: memo((p) => (
+          <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+            <IndicatorBadge tooltip='Факт' type='+' bgcolor='red.500' />
+            <Box width={'10px'} />
+            <SimpleText {...p} withDevider type='fact_unit' />
+          </Box>
+        )),
       }
     }
     if (el.field === 'fact_quantity_pattern') {
@@ -122,9 +151,13 @@ export default function tableHeaderSelector({ inventoryColumns, values }) {
         headerName: 'Факт  кол-во',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Typography>
-            {p?.data?.fact_unit > 0 ? `${Math.floor(p?.data?.fact_quantity)}(${p?.data?.fact_unit}/${p?.data?.unit_per_pack})` : p?.data?.fact_quantity}
-          </Typography>
+          <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+            <IndicatorBadge tooltip='Факт' type='+' bgcolor='red.500' />
+            <Box width={'10px'} />
+            <Typography>
+              {p?.data?.fact_unit > 0 ? `${Math.floor(p?.data?.fact_quantity)}(${p?.data?.fact_unit}/${p?.data?.unit_per_pack})` : p?.data?.fact_quantity}
+            </Typography>
+          </Box>
         )),
       }
     }
@@ -133,7 +166,13 @@ export default function tableHeaderSelector({ inventoryColumns, values }) {
         ...el,
         headerName: 'Факт Cумма',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type='fact_sum' />),
+        cellRenderer: memo((p) => (
+          <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+            <IndicatorBadge tooltip='Факт' type='+' bgcolor='red.500' />
+            <Box width={'10px'} />
+            <SimpleText {...p} currency={'сум'} withDevider type='fact_sum' />
+          </Box>
+        )),
       }
     }
     if (el.field === 'difference_quantity') {
@@ -141,7 +180,13 @@ export default function tableHeaderSelector({ inventoryColumns, values }) {
         ...el,
         headerName: 'Разница кол-во',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} withDevider type='difference_quantity' />),
+        cellRenderer: memo((p) => (
+          <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+            <IndicatorBadge tooltip='Разница' type='<' bgcolor='red.500' />
+            <Box width={'10px'} />
+            <SimpleText {...p} withDevider type='difference_quantity' />
+          </Box>
+        )),
       }
     }
     if (el.field === 'difference_quantity_pattern') {
@@ -150,11 +195,15 @@ export default function tableHeaderSelector({ inventoryColumns, values }) {
         headerName: 'Разница кол-во',
         colId: el.field,
         cellRenderer: memo((p) => (
-          <Typography>
-            {p?.data?.difference_unit > 0
-              ? `${Math.floor(p?.data?.difference_quantity)}(${p?.data?.difference_unit}/${p?.data?.unit_per_pack})`
-              : p?.data?.difference_quantity}
-          </Typography>
+          <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+            <IndicatorBadge tooltip='Разница' type='<' bgcolor='red.500' />
+            <Box width={'10px'} />
+            <Typography>
+              {p?.data?.difference_unit > 0
+                ? `${Math.floor(p?.data?.difference_quantity)}(${p?.data?.difference_unit}/${p?.data?.unit_per_pack})`
+                : p?.data?.difference_quantity}
+            </Typography>
+          </Box>
         )),
       }
     }
@@ -163,7 +212,13 @@ export default function tableHeaderSelector({ inventoryColumns, values }) {
         ...el,
         headerName: 'Разница сумма',
         colId: el.field,
-        cellRenderer: memo((p) => <SimpleText {...p} currency={'сум'} withDevider type='difference_sum' />),
+        cellRenderer: memo((p) => (
+          <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
+            <IndicatorBadge tooltip='Разница' type='<' bgcolor='red.500' />
+            <Box width={'10px'} />
+            <SimpleText {...p} currency={'сум'} withDevider type='difference_sum' />
+          </Box>
+        )),
       }
     }
   })

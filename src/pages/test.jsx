@@ -88,7 +88,7 @@ function Test() {
   })
 
   const { data: registerCashList, refetch: refetchregisterCashList } = useQuery('registerCashList', () =>
-    requests.getAllCashBoxList({ store_id: get(userData, 'store.id'), limit: 20, offset: 0 })
+    requests.getAllCashBoxList({ store_id: get(userData, 'store.id'), limit: 20, offset: 0 }),
   )
   const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashOperationBox, {
     onSuccess: ({ data }) => {
@@ -256,7 +256,7 @@ function Test() {
                       onClick={() => methods.handleSubmit(onSubmit, onError)()}
                       sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}
                     >
-                      Kassani oching <ArrowRightIcon color={'#FF6018'} />
+                      Kassani oching <ArrowRightIcon color={'#111111'} />
                     </Button>
                   </Box>
                 </Box>
@@ -296,7 +296,7 @@ function Test() {
               }
               sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}
             >
-              e-pos Kassani oching <ArrowRightIcon color={'#FF6018'} />
+              e-pos Kassani oching <ArrowRightIcon color={'#111111'} />
             </Button>
             <Button
               type='submit'
@@ -305,7 +305,7 @@ function Test() {
                   {
                     token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
                     method: 'closeZreport', // Название метода, Обязательное поле, String
-                  }
+                  },
                   // {
                   //   token: 'DXJFX32CN1296678504F2',
                   //   method: 'validationMarking',
@@ -327,7 +327,7 @@ function Test() {
               }
               sx={{ bottom: 0, margin: '0 24px 24px', '& > svg': { width: 24, height: 24, ml: '12px' } }}
             >
-              e-pos Закрыть кассу <ArrowRightIcon color={!true ? '#FF6018' : '#fff'} />
+              e-pos Закрыть кассу <ArrowRightIcon color={!true ? '#111111' : '#fff'} />
             </Button>
             <Button
               type='submit'
@@ -341,7 +341,7 @@ function Test() {
               }
               sx={{ bottom: 0, margin: '0 24px 24px', '& > svg': { width: 24, height: 24, ml: '12px' } }}
             >
-              oldingi z achchot olish <ArrowRightIcon color={!true ? '#FF6018' : '#fff'} />
+              oldingi z achchot olish <ArrowRightIcon color={!true ? '#111111' : '#fff'} />
             </Button>
 
             <Button
@@ -356,7 +356,7 @@ function Test() {
               }
               sx={{ bottom: 0, margin: '0 24px 24px', '& > svg': { width: 24, height: 24, ml: '12px' } }}
             >
-              hozirgi z achchot olish <ArrowRightIcon color={!true ? '#FF6018' : '#fff'} />
+              hozirgi z achchot olish <ArrowRightIcon color={!true ? '#111111' : '#fff'} />
             </Button>
             <Box
               maxWidth='400px'

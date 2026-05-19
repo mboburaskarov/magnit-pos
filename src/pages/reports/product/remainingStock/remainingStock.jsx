@@ -1,18 +1,17 @@
-import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
-import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
-import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew';
-import AgGridTable from '@components/AgGridTable/AgGridTable';
-import InputSearch from '@components/Inputs/InputSearch';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useEffect, useMemo, useState } from 'react';
-import { Box, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { requests } from '@utils/requests';
-import { useQuery } from 'react-query';
-import { get } from 'lodash';
-import { t } from 'i18next';
-import dayjs from 'dayjs';
-
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNew'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import InputSearch from '@components/Inputs/InputSearch'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { useEffect, useMemo, useState } from 'react'
+import { Box, Typography } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+import { requests } from '@utils/requests'
+import { useQuery } from 'react-query'
+import { get } from 'lodash'
+import { t } from 'i18next'
+import dayjs from 'dayjs'
 
 export default function RemainingStockPage({ id }) {
   const { values } = useQueryParams()
@@ -55,7 +54,7 @@ export default function RemainingStockPage({ id }) {
   const columns = useMemo(
     () => [
       {
-        headerName: 'Aптека',
+        headerName: 'Магазин',
         colId: 'store_name',
         minWidth: 300,
         maxWidth: 300,
@@ -102,7 +101,7 @@ export default function RemainingStockPage({ id }) {
         ),
       },
     ],
-    []
+    [],
   )
 
   const formattedData = allProducts?.data?.data?.data

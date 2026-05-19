@@ -1,16 +1,15 @@
-import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
-import { FormProvider, useForm } from 'react-hook-form';
-import { Box, Button, Typography } from '@mui/material';
-import LazySelect from '@components/Select/LazySelect';
-import { useQueryParams } from '@hooks/useQueryParams';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { requests } from '@utils/requests';
-import CloseIcon from '@icons/CloseIcon';
-import { useTheme } from '@mui/styles';
-import { useEffect } from 'react';
-import * as qs from 'qs';
-
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import { FormProvider, useForm } from 'react-hook-form'
+import { Box, Button, Typography } from '@mui/material'
+import LazySelect from '@components/Select/LazySelect'
+import { useQueryParams } from '@hooks/useQueryParams'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { requests } from '@utils/requests'
+import CloseIcon from '@icons/CloseIcon'
+import { useTheme } from '@mui/styles'
+import { useEffect } from 'react'
+import * as qs from 'qs'
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
   const theme = useTheme()
@@ -52,7 +51,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
         cashbox_id: cashbox_id ? { name: values?.cashbox_name, value: values?.cashbox_id } : null,
         store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
       },
-      { keepDirty: true }
+      { keepDirty: true },
     )
   }, [values?.cashbox_id, values?.store_id])
 
@@ -94,7 +93,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 id='store'
                 name='store_id'
                 isMulti={false}
-                placeholder={t('Выберите Аптека')}
+                placeholder={t('Выберите Магазин')}
                 minWidth='auto'
                 isClearable={true}
                 label={t('input.store.label')}

@@ -1,7 +1,7 @@
 {
   "ag_grid.table_setting.label": "Stol sozlamalari",
   "ag_grid.bottom.limit": "Ko‘rsatilgan",
-  "ag_grid.bottom.info": "{{start}} dan {{end}} gacha {{from}} ta e‘londan ko‘rsatildi",
+  "ag_grid.bottom.info": "Ko'rsatildi: {{start}}–{{end}} dan {{from}}",
   "greeting": "Xayrli kun",
   "filter_dialog.reset.label": "Standart sozlamalar",
   "filter_dialog.save.label": "Saqlash",

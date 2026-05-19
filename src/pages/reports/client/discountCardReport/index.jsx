@@ -1,21 +1,20 @@
-import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput';
-import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate';
-import AgGridTable from '@components/AgGridTable/AgGridTable';
-import { downloadLinkExcel } from '@utils/downloadLinkEXCEL';
-import LoadingContainer from '@components/LoadingContainer';
-import { memo, useEffect, useMemo, useState } from 'react';
-import InputSearch from '@components/Inputs/InputSearch';
-import { useQueryParams } from '@hooks/useQueryParams';
-import thousandDivider from '@utils/thousandDivider';
-import { useMutation, useQuery } from 'react-query';
-import { Box, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { requests } from '@utils/requests';
-import Header from '@components/Header';
-import { error } from '@utils/toast';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
-
+import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
+import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
+import AgGridTable from '@components/AgGridTable/AgGridTable'
+import { downloadLinkExcel } from '@utils/downloadLinkEXCEL'
+import LoadingContainer from '@components/LoadingContainer'
+import { memo, useEffect, useMemo, useState } from 'react'
+import InputSearch from '@components/Inputs/InputSearch'
+import { useQueryParams } from '@hooks/useQueryParams'
+import thousandDivider from '@utils/thousandDivider'
+import { useMutation, useQuery } from 'react-query'
+import { Box, Typography } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+import { requests } from '@utils/requests'
+import Header from '@components/Header'
+import { error } from '@utils/toast'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
 export default function DiscountCardReport({ id }) {
   const { values } = useQueryParams()
@@ -70,7 +69,7 @@ export default function DiscountCardReport({ id }) {
       },
 
       {
-        headerName: 'Aптека',
+        headerName: 'Магазин',
         colId: 'store_name',
         minWidth: 300,
         maxWidth: 300,
@@ -90,7 +89,7 @@ export default function DiscountCardReport({ id }) {
           <Box
             onClick={() =>
               navigate(
-                `/sales/all-sales?customer_id=${data?.customer_id}&customer_name=${data?.customer_name}&type=Discount&start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`
+                `/sales/all-sales?customer_id=${data?.customer_id}&customer_name=${data?.customer_name}&type=Discount&start_date=${values?.start_date}&end_date=${values?.end_date}&from_time=${values?.from_time}&to_time=${values?.to_time}`,
               )
             }
             id={`${'created_at'}-${rowIndex}`}
@@ -161,7 +160,7 @@ export default function DiscountCardReport({ id }) {
         ),
       },
     ],
-    [values]
+    [values],
   )
 
   const formattedData = discountCartReport?.data?.data?.data

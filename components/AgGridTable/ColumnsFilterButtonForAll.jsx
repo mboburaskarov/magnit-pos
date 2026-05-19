@@ -6,7 +6,7 @@ import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import CloseIcon from '../../src/assets/icons/CloseIcon'
-import EditorIcon from '../../src/assets/icons/EditorIcon'
+import SettingsIcon from '../../src/assets/icons/SettingsIcon'
 import ButtonWithWrapper from '../Buttons/ButtonWithWrapper'
 import CheckAccess from '../CheckAccess'
 import StyledEmptyDialog from '../Dialogs/StyledeEmptyDialog'
@@ -78,7 +78,7 @@ function ColumnsFilterButtonForAll({ routeString = false, columns, title, change
   const theme = useTheme()
   return (
     <>
-      <ButtonWithWrapper onClick={() => setOpen(true)} icon={<EditorIcon color={theme.palette.black} />} />
+      <ButtonWithWrapper onClick={() => setOpen(true)} icon={<SettingsIcon color={theme.palette.black} />} />
 
       <StyledEmptyDialog
         open={open}

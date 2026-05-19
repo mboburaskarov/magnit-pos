@@ -1,21 +1,20 @@
-import InputDateRangePicker from '@components/Inputs/InputDateRangePicker';
-import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
-import { FormProvider, useForm } from 'react-hook-form';
-import LazySelect from '@components/Select/LazySelect';
-import CheckAccess from '@components/CheckAccess';
-import { HasAccess } from '@components/hasAccess';
-import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
-import { Box, Button } from '@mui/material';
-import { requests } from '@utils/requests';
-import { useSelector } from 'react-redux';
-import CloseIcon from '@icons/CloseIcon';
-import { useTheme } from '@mui/styles';
-import { useQuery } from 'react-query';
-import { error } from '@utils/toast';
-import { get } from 'lodash';
-import dayjs from 'dayjs';
-
+import InputDateRangePicker from '@components/Inputs/InputDateRangePicker'
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import { FormProvider, useForm } from 'react-hook-form'
+import LazySelect from '@components/Select/LazySelect'
+import CheckAccess from '@components/CheckAccess'
+import { HasAccess } from '@components/hasAccess'
+import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
+import { Box, Button } from '@mui/material'
+import { requests } from '@utils/requests'
+import { useSelector } from 'react-redux'
+import CloseIcon from '@icons/CloseIcon'
+import { useTheme } from '@mui/styles'
+import { useQuery } from 'react-query'
+import { error } from '@utils/toast'
+import { get } from 'lodash'
+import dayjs from 'dayjs'
 
 export default function PrintManualZReport({ open, setManualZreportData, setOpen, handlePrint }) {
   const methods = useForm()
@@ -95,7 +94,7 @@ export default function PrintManualZReport({ open, setManualZreportData, setOpen
                 white
                 name='store_id'
                 isMulti={false}
-                placeholder={t('Выберите Аптека')}
+                placeholder={t('Выберите Магазин')}
                 minWidth='auto'
                 isClearable={true}
                 label={t('input.store.label')}

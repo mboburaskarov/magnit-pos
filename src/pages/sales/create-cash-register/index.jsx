@@ -86,7 +86,7 @@ function NewCashRegister() {
   const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
   const dispatch = useDispatch()
-  const [isEposTurnOn, setisEposTurnOn] = useState({is_open: true, message: ''})
+  const [isEposTurnOn, setisEposTurnOn] = useState({ is_open: true, message: '' })
   const { mutate: getUserInfo } = useMutation(requests.getUserInfo, {
     onSuccess: ({ data }) => {
       dispatch(setUserData({ ...data?.data }))
@@ -205,7 +205,7 @@ function NewCashRegister() {
       console.error('err', err)
     },
   })
-  const { mutate: checkEPOSTurnOn,isLoading: ischeckEPOSTurnOn } = useMutation(requests.checkEPOSTurnOn, {
+  const { mutate: checkEPOSTurnOn, isLoading: ischeckEPOSTurnOn } = useMutation(requests.checkEPOSTurnOn, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true)) {
         setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
@@ -220,15 +220,15 @@ function NewCashRegister() {
       console.error('err', err)
     },
   })
-  const { mutate: closeCheckZReport,isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
+  const { mutate: closeCheckZReport, isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
       const terminalID = getEposTerminalId(data)
       const terminalIds = userData?.store?.terminal_ids || []
-      
+
       const allowedTerminal = isAllowedTerminal(terminalID, terminalIds)
-      
+
       if (!allowedTerminal && hasAccess('check-terminal-id', userData)) {
-        setisEposTurnOn({ is_open: false, message:`Вы в другом филиале! Epos: ${terminalID} Pharma: ${terminalIds?.join(',')}` })
+        setisEposTurnOn({ is_open: false, message: `Вы в другом филиале! Epos: ${terminalID} Pharma: ${terminalIds?.join(',')}` })
         return
       }
       if (get(data, 'error', true)) {
@@ -248,11 +248,11 @@ function NewCashRegister() {
   useEffect(() => {
     checkEPOSTurnOn(EPOS_STATUS_PAYLOAD)
   }, [])
-  
+
   return (
     <LoadingContainer readyState={!isCheckSaleExist && !iscloseCheckZReport && !ischeckEPOSTurnOn}>
       <FormProvider {...methods}>
-        {isEposTurnOn?.is_open  ? (
+        {isEposTurnOn?.is_open ? (
           <Box className={classes.box}>
             <Box className={classes.wrapper}>
               <Typography display={'flex'} alignItems={'center'} fontSize={'32px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'} p={'24px'}>
@@ -306,7 +306,7 @@ function NewCashRegister() {
                     disabled={get(canCreate, 'is_open') || isopenZReport || isCreatingCashbox}
                     sx={{ bottom: 0, '& > svg': { width: 24, height: 24, ml: '12px' } }}
                   >
-                    Kassani oching <ArrowRightIcon color={!get(canCreate, 'canCreate') ? '#FF6018' : '#fff'} />
+                    Kassani oching <ArrowRightIcon color={!get(canCreate, 'canCreate') ? '#111111' : '#fff'} />
                   </Button>
                 </Box>
                 <Box sx={{ border: '1px solid', mx: '40px', borderColor: 'bunker.100' }} />
@@ -368,4 +368,3 @@ function NewCashRegister() {
 }
 
 export default NewCashRegister
-

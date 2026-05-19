@@ -105,10 +105,10 @@ const useStyles = makeStyles((theme) => ({
         marginRight: 0,
       },
       '&:nth-child(6) ': {
-        color: theme.palette.orange[500],
+        color: theme.palette.gray[600],
       },
       '&:nth-child(7) ': {
-        color: theme.palette.orange[500],
+        color: theme.palette.gray[600],
       },
     },
     '& .DayPicker-Day': {
@@ -127,7 +127,7 @@ const useStyles = makeStyles((theme) => ({
       transition: 'all 0s ease',
       cursor: 'pointer',
       '&:not(.DayPicker-Day--outside):hover': {
-        backgroundColor: `${theme.palette.orange[600]} !important`,
+        backgroundColor: `#111111 !important`,
         color: '#fff !important',
         borderRadius: '50% !important',
         zIndex: 1,
@@ -155,8 +155,8 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: 3,
     },
     '& .DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside)': {
-      backgroundColor: theme.palette.type === 'dark' ? theme.palette.orange[200] : theme.palette.orange[50],
-      color: theme.palette.type === 'dark' ? theme.palette.gray[700] : theme.palette.gray[600],
+      backgroundColor: '#f1f3f5',
+      color: '#111111',
       '&:last-child': {
         borderRadius: '50% !important',
       },
@@ -168,19 +168,17 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     '& .DayPicker-Day--start.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside)': {
-      backgroundColor: theme.palette.orange[600],
+      backgroundColor: '#111111',
       color: '#fff',
       borderRadius: '50% !important',
       boxShadow: ({ isOneDayDifference }) =>
-        !isOneDayDifference && `9px 0 0px 0px ${theme.palette.type === 'dark' ? theme.palette.orange[200] : theme.palette.orange[50]}`,
+        !isOneDayDifference && `9px 0 0px 0px #f1f3f5`,
     },
     '& .DayPicker-Day--end.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside)': {
-      backgroundColor: theme.palette.orange[600],
+      backgroundColor: '#111111',
       borderRadius: '50% !important',
       margin: '0 2px',
       color: '#fff',
-      // boxShadow: ({ isOneDayDifference }) =>
-      //   !isOneDayDifference && `-9px 0 0px 0px ${theme.palette.type === 'dark' ? theme.palette.orange[200] : theme.palette.orange[50]}`,
     },
     '& .DayPicker-Day.DayPicker-Day--disabled': {
       color: `${theme.palette.gray[400]} !important`,
@@ -201,7 +199,7 @@ const useStyles = makeStyles((theme) => ({
       right: 'auto',
       left: 'auto',
       marginTop: 0,
-      color: theme.palette.orange[500],
+      color: '#667085',
     },
     '& .DayPicker-NavButton--prev': {
       left: 15,
@@ -405,13 +403,13 @@ export default function DateFilterDrawerSingle({
                   sx={{
                     borderRadius: 4,
                     border: 'none',
-                    backgroundColor: selectedRange == item?.id ? '#fe5000 !important' : '#fff',
+                    backgroundColor: selectedRange == item?.id ? '#111111 !important' : '#fff',
                     marginBottom: 2,
                     color: selectedRange == item?.id ? '#fff !important' : 'bunker.950',
                     height: '54px',
                     justifyContent: 'flex-start',
                     '&:hover': {
-                      backgroundColor: selectedRange == item?.id ? '#fe5000 !important' : '#fff',
+                      backgroundColor: selectedRange == item?.id ? '#111111 !important' : '#fff',
                       color: selectedRange == item?.id ? '#fff !important' : 'bunker.950',
                       border: 'none',
                     },

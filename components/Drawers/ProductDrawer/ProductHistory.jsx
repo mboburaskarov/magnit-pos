@@ -151,7 +151,7 @@ export default function ProductHistory({ id, unit_per_pack }) {
         ),
       },
       {
-        headerName: 'Aптека',
+        headerName: 'Магазин',
         colId: 'store',
         minWidth: 185,
         maxWidth: 285,

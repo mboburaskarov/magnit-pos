@@ -3,63 +3,87 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
 
 import DateRangeInput from '@components/Inputs/DateRangeInput/DateRangeInput'
 import MultiOptionSelectNew from '@components/Select/MultiOptionSelectNewV2'
-// import GroupMultiSelect from '@components/Select/GroupMultiSelect'
 import { requests } from '@utils/requests'
 import CheckAccess from '@components/CheckAccess'
 
 export default function DashboardHeader({ selectedShops, setSelectedShops, setSelectedAllB2B }) {
   const { t } = useTranslation()
 
-  const userData = useSelector((state) => state.user)
   const { data: shopList } = useQuery('shopList', () => requests.getAllStores({ limit: 20, offset: 0 }))
   return (
-    <Box p={'24px 20px 13px 20px'} bgcolor='background.default' top={0} display='inline-flex' justifyContent='space-between'>
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography variant='h1' fontWeight={700} mb={'5px'} fontSize={'28px'} lineHeight={'40px'} color={'dark.500'}>
-          {t('greeting')}, {get(userData, 'first_name')}!
-        </Typography>
-        <Typography variant='h1' fontWeight={500} fontSize={'14px'} lineHeight={'20px'} color={'bunker.500'}>
-          Добро пожаловать! Управляйте своими аптеками с помощью PharmaCosmos CRM.
-        </Typography>
-      </Box>
-      <Box display='inline-flex' padding={'11px 0'} columnGap={3}>
-        <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
-        <CheckAccess id={'can-filter-store-in-dashboard'}>
-        <Box
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        mb: '0px',
+        flexWrap: 'wrap',
+        gap: '16px',
+      }}
+    >
+      <Box>
+        <Typography
+          variant='h1'
           sx={{
-            width: 400,
-            '.selection': {
-              height: '48px',
-            },
+            fontSize: '28px',
+            fontWeight: 700,
+            color: '#111827',
+            mb: '8px',
+            letterSpacing: '-0.02em',
+            fontFamily: 'Euclid Circular B, sans-serif',
           }}
         >
-          {/* <GroupMultiSelect label='Select Pharmacies' apiData={shopList?.data} value={[]} onChange={setSelectedShops} /> */}
-          <MultiOptionSelectNew
-            zIndex={9}
-            placeholder={t('placeholders.select_shops')}
-            multiple
-            defaultSelectedAll
-            beforeContent={t('placeholders.select_shops')}
-            value={selectedShops}
-            allOptions={get(shopList, 'data.data.ids', [])}
-            selectAllLabel={t('Все филиалы')}
-            options={get(shopList, 'data.data.data', [])}
-            isLoading={false}
-            onChangeAllB2B={(val) => {
-              setSelectedAllB2B(val)
-            }}
-            onChange={(val) => {
-              setSelectedShops(val)
-            }}
-            request={requests.getAllStores}
-          />
+          Дашборд
+        </Typography>
+        <Typography sx={{ color: '#71717A', fontFamily: 'Euclid Circular B, sans-serif' }}>Обзор бизнес-показателей и операций</Typography>
+      </Box>
 
-        </Box>
-         </CheckAccess>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: '16px',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          flex: 1,
+          justifyContent: 'flex-end',
+          minWidth: { xs: '100%', sm: 'auto' },
+        }}
+      >
+        <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
+        <CheckAccess id={'can-filter-store-in-dashboard'}>
+          <Box
+            sx={{
+              width: { xs: '100%', sm: 300 },
+              maxWidth: 300,
+              flexShrink: 1,
+              '.selection': {
+                borderRadius: '8px',
+                border: '1px solid #E5E7EB !important',
+                backgroundColor: '#ffffff !important',
+                height: '40px',
+              },
+            }}
+          >
+            <MultiOptionSelectNew
+              zIndex={9}
+              placeholder={t('placeholders.select_shops')}
+              multiple
+              defaultSelectedAll
+              beforeContent={t('placeholders.select_shops')}
+              value={selectedShops}
+              allOptions={get(shopList, 'data.data.ids', [])}
+              selectAllLabel={t('Все филиалы')}
+              options={get(shopList, 'data.data.data', [])}
+              isLoading={false}
+              onChangeAllB2B={(val) => setSelectedAllB2B(val)}
+              onChange={(val) => setSelectedShops(val)}
+              request={requests.getAllStores}
+            />
+          </Box>
+        </CheckAccess>
       </Box>
     </Box>
   )

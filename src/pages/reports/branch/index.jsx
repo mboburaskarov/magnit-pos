@@ -1,9 +1,8 @@
-import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next'
+import { Box } from '@mui/material'
 
-import ReportBox from '../../../../components/ReportsSection/ReportBox';
-import palette from '../../../assets/theme/mui.config';
-
+import ReportBox from '../../../../components/ReportsSection/ReportBox'
+import palette from '../../../assets/theme/mui.config'
 
 function BranchReportsList() {
   const { t } = useTranslation()
@@ -25,7 +24,7 @@ function BranchReportsList() {
           color={palette.red[500]}
         />
         <ReportBox
-          title={t('Остаток Аптека')}
+          title={t('Остаток Магазин')}
           desc={t('Отчёт показывает текущие остатки товаров в выбранной аптеке. Помогает контролировать наличие и своевременно пополнять запасы.')}
           to='/reports/store-summary'
           checkslug='/reports/branch'

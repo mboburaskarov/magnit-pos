@@ -1,22 +1,21 @@
-import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog';
-import getOptionsFromUrlParam from '@utils/getOptionsFromUrlParam';
-import SelectSimple from '@components/Select/SelectSimple';
-import { FormProvider, useForm } from 'react-hook-form';
-import { Box, Button, Typography } from '@mui/material';
-import LazySelect from '@components/Select/LazySelect';
-import InputRange from '@components/Inputs/InputRange';
-import { useQueryParams } from '@hooks/useQueryParams';
-import CheckAccess from '@components/CheckAccess';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { requests } from '@utils/requests';
-import { useSelector } from 'react-redux';
-import CloseIcon from '@icons/CloseIcon';
-import { useTheme } from '@mui/styles';
-import { useQuery } from 'react-query';
-import { useEffect } from 'react';
-import * as qs from 'qs';
-
+import StyledEmptyDialog from '@components/Dialogs/StyledeEmptyDialog'
+import getOptionsFromUrlParam from '@utils/getOptionsFromUrlParam'
+import SelectSimple from '@components/Select/SelectSimple'
+import { FormProvider, useForm } from 'react-hook-form'
+import { Box, Button, Typography } from '@mui/material'
+import LazySelect from '@components/Select/LazySelect'
+import InputRange from '@components/Inputs/InputRange'
+import { useQueryParams } from '@hooks/useQueryParams'
+import CheckAccess from '@components/CheckAccess'
+import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+import { requests } from '@utils/requests'
+import { useSelector } from 'react-redux'
+import CloseIcon from '@icons/CloseIcon'
+import { useTheme } from '@mui/styles'
+import { useQuery } from 'react-query'
+import { useEffect } from 'react'
+import * as qs from 'qs'
 
 export default function FilterMenu({ open, setOpen, setRegions }) {
   const theme = useTheme()
@@ -69,7 +68,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 { id: 'SALE', name: 'Продажа' },
                 { id: 'RETURN', name: 'Возврат' },
               ],
-              'name'
+              'name',
             )[0]
           : null,
         type: type
@@ -79,7 +78,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 { id: 'FiscalSign', name: 'Незаконченный' },
                 { id: 'TaxFree', name: 'Направленный' },
               ],
-              'name'
+              'name',
             )[0]
           : null,
         referral: referral
@@ -89,7 +88,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                 { name: 'Oson apteka', id: 'oson-apteka' },
                 { name: 'Arzon apteka', id: 'arzon-apteka' },
               ],
-              'name'
+              'name',
             )[0]
           : null,
         vendor_id: vendor_id ? { name: values?.vendor_name, value: values?.vendor_id } : null,
@@ -98,7 +97,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
         total_amount_to: total_amount_to || null,
         total_amount_from: total_amount_from || null,
       },
-      { keepDirty: true }
+      { keepDirty: true },
     )
   }, [
     values?.payment_type_id,
@@ -217,7 +216,7 @@ export default function FilterMenu({ open, setOpen, setRegions }) {
                   white
                   name='store_id'
                   isMulti={false}
-                  placeholder={t('Выберите Аптека')}
+                  placeholder={t('Выберите Магазин')}
                   minWidth='auto'
                   isClearable={true}
                   label={t('input.store.label')}

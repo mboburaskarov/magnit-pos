@@ -15,9 +15,9 @@ function ProductDashboard({ data }) {
       {[
         { title: 'Наименований', value: 'total_count', endText: 'шт' },
         { title: 'Товарных единиц', value: 'total_quantity', endText: 'ед.' },
-        { title: 'PharamaCosmos суммa', value: 'total_stock_amount', endText: 'сум' },
-        { title: 'B2B суммa', value: 'total_stock_amount', endText: 'сум' },
-        { title: 'Oбщая суммa', value: 'total_stock_amount', endText: 'сум' },
+        { title: ' сумма', value: 'total_stock_amount', endText: 'сум' },
+        { title: 'B2B сумма', value: 'total_stock_amount', endText: 'сум' },
+        { title: 'Oбщая сумма', value: 'total_stock_amount', endText: 'сум' },
       ].map((stat) => (
         <Grid sm='2.4' lg='2.4' md='2.4' item sx={{}}>
           <Box

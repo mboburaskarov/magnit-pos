@@ -65,7 +65,7 @@ function Test() {
               }}
               disabled={store.fixed_stage == 1 || store.fixed_stage == 2}
               loading={isFixingPlusErrors}
-              sx={{ height: '20px', bgcolor: '#FF6018', color: 'white', mr: '10px' }}
+              sx={{ height: '20px', bgcolor: '#111111', color: 'white', mr: '10px' }}
             >
               Plus
             </LoadingButton>
@@ -75,7 +75,7 @@ function Test() {
               }}
               disabled={store.fixed_stage == 2}
               loading={isFixingMinusErrors}
-              sx={{ height: '20px', bgcolor: '#FF6018', color: 'white' }}
+              sx={{ height: '20px', bgcolor: '#111111', color: 'white' }}
             >
               Minus
             </LoadingButton>
@@ -103,7 +103,7 @@ function Test() {
                 getProductMovementDashboardExcel({ store_id: store.id, limit: 10000, offset: 0 })
               }}
             >
-              {isGetProductMovementDashboardExcel ? <CircularProgress size={18} thickness={5} /> : <Download sx={{ color: '#FF6018' }} />}
+              {isGetProductMovementDashboardExcel ? <CircularProgress size={18} thickness={5} /> : <Download sx={{ color: '#111111' }} />}
             </Box>
           </Box>
         </Box>

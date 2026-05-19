@@ -105,7 +105,7 @@ function OnlineOrders() {
             mr: '10px',
           }}
         >
-          <InputSearch fullWidth id='producrs-search' name='search' placeholder={'ID, Аптека'} uncontrolled />
+          <InputSearch fullWidth id='producrs-search' name='search' placeholder={'ID, Магазин'} uncontrolled />
         </Box>
         <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: dayjs(new Date()).format('YYYY-MM-DD') }} id='accounting-report-date-range' />
       </Box>

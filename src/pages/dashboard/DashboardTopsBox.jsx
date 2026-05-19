@@ -1,9 +1,10 @@
-import RightArrowRound from '@icons/dashboard/RightArrowRound'
+import { Eye } from 'lucide-react'
 import SortIcon from '@icons/dashboard/SortIcon'
 import { Box, Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import thousandDivider from '@utils/thousandDivider'
 import { size } from 'lodash'
 import { Link, useLocation } from 'react-router-dom'
+import './magnit-dashboard.css'
 
 export default function DashboardTopsBox({
   data,
@@ -24,57 +25,34 @@ export default function DashboardTopsBox({
   const from = location.pathname + location.search
 
   return (
-    <Box
-      sx={{
-        height: '100%',
-        border: '1px solid #ECEDF2',
-        borderRadius: '16px',
-        p: '20px',
-        pb: '4px',
-        backgroundColor: 'white',
-        width: '100%',
-        position: 'relative',
-      }}
-    >
+    <div className="mdash-kpi-card" style={{ height: '100%', position: 'relative', borderRadius: '16px', padding: '20px 20px 8px 20px' }}>
       {/* ---------- HEADER ---------- */}
-      <Box display='flex' justifyContent='space-between' alignItems='center' mb='8px'>
-        <Box sx={{ width: '100%' }}>
+      <div className="mdash-chart-header" style={{ marginBottom: '12px' }}>
+        <div>
           {isLoading ? (
             <>
-              <Typography lineHeight='32px' fontWeight='700' fontSize='24px'>
-                {title}
-              </Typography>
-              <Skeleton variant='text' width={80} height={24} sx={{ borderRadius: '8px' }} />
+              <h3 className="mdash-chart-title">{title}</h3>
+              <Skeleton variant='text' width={80} height={24} />
             </>
           ) : (
             <>
-              <Typography lineHeight='32px' fontWeight='700' fontSize='24px'>
-                {title}
-              </Typography>
-              <Typography color='orange.500' lineHeight='24px' fontWeight={600} fontSize='16px'>
-                {subTitle}
-              </Typography>
+              <h3 className="mdash-chart-title">{title}</h3>
+              <p className="mdash-chart-subtitle" style={{ color: '#6B7280', fontWeight: 500 }}>{subTitle}</p>
             </>
           )}
-        </Box>
+        </div>
 
         {href && !isLoading && (
           <Link to={href} state={{ from }}>
-            <Box
-              sx={{
-                mr: '2px',
-                cursor: 'pointer',
-                '&:hover': {
-                  '& rect': { stroke: '#333' },
-                  '& path': { fill: '#333' },
-                },
-              }}
+            <div style={{ width: 32, height: 32, borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F1F5F9', color: '#667085', transition: 'all 0.2s', cursor: 'pointer' }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#E2E8F0'; e.currentTarget.style.color = '#111'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#F1F5F9'; e.currentTarget.style.color = '#667085'; }}
             >
-              <RightArrowRound sx={{ fontSize: '25px' }} />
-            </Box>
+              <Eye size={16} />
+            </div>
           </Link>
         )}
-      </Box>
+      </div>
 
       {/* ---------- TABLE ---------- */}
       <Box
@@ -91,14 +69,14 @@ export default function DashboardTopsBox({
             {/* ---------- TABLE HEADER ---------- */}
             <TableHead
               sx={{
-                backgroundColor: '#F7F7F7',
                 '& .table-cell': {
-                  color: 'bunker.300 !important',
-                  fontSize: '14px',
-                  fontWeight: 600,
+                  color: '#9CA3AF !important',
+                  fontSize: '13px',
+                  fontWeight: 500,
                   lineHeight: '20px',
-                  p: '12px 8px',
+                  p: '10px 8px',
                   border: 'none',
+                  borderBottom: '1px solid #F3F4F6',
                 },
               }}
             >
@@ -119,10 +97,10 @@ export default function DashboardTopsBox({
                       }),
                     }}
                   >
-                    <Box display='flex' alignItems='center' color='bunker.300'>
+                    <Box display='flex' alignItems='center'>
                       {el?.title}
                       {el?.sortable && !isLoading && (
-                        <Box display='inline-flex' ml='2px'>
+                        <Box display='inline-flex' ml='4px'>
                           {/* placeholder sorting icon */}
                           <SortIcon />
                         </Box>
@@ -138,8 +116,7 @@ export default function DashboardTopsBox({
               <TableBody
                 sx={{
                   '& .MuiTableRow-root:not(:last-child)': {
-                    borderBottom: '1px solid',
-                    borderColor: 'bunker.100',
+                    borderBottom: '1px solid #F3F4F6',
                   },
                   '& .table-cell': {
                     fontSize: '14px',
@@ -158,7 +135,7 @@ export default function DashboardTopsBox({
                           variant='rounded'
                           width={ind === 0 ? '60%' : ind === tableData.length - 1 ? '50%' : '80%'}
                           height={16}
-                          sx={{ borderRadius: '8px' }}
+                          sx={{ borderRadius: '4px' }}
                         />
                       </TableCell>
                     ))}
@@ -169,8 +146,7 @@ export default function DashboardTopsBox({
               <TableBody
                 sx={{
                   '& .MuiTableRow-root:not(:last-child)': {
-                    borderBottom: '1px solid',
-                    borderColor: 'bunker.100',
+                    borderBottom: '1px solid #F3F4F6',
                   },
                   '& .table-cell': {
                     fontSize: '14px',
@@ -178,7 +154,7 @@ export default function DashboardTopsBox({
                     lineHeight: '20px',
                     border: 'none',
                     p: '16px 12px',
-                    color: 'dark.500',
+                    color: '#111827',
                   },
                 }}
               >
@@ -187,7 +163,7 @@ export default function DashboardTopsBox({
                   const percent = item?.percent
 
                   return (
-                    <TableRow key={index}>
+                    <TableRow key={index} sx={{ '&:hover': { backgroundColor: '#F9FAFB' } }}>
                       {tableData.map((el, ind) => {
                         if (el?.colId === 'name' || el?.colId === 'full_name') {
                           return (
@@ -220,7 +196,7 @@ export default function DashboardTopsBox({
 
                         if (el?.colId === 'total_amount' || el?.colId === 'amount' || el?.colId === 'bonus_amount') {
                           return (
-                            <TableCell key={ind} className='table-cell'>
+                            <TableCell key={ind} className='table-cell' sx={{ fontWeight: 600 }}>
                               {thousandDivider(item[el?.colId], 'сум')}
                             </TableCell>
                           )
@@ -233,25 +209,17 @@ export default function DashboardTopsBox({
                                 display='inline-flex'
                                 alignItems='center'
                                 sx={{
-                                  borderRadius: '16px',
+                                  borderRadius: '6px',
                                   justifyContent: 'center',
                                   textAlign: 'center',
-                                  height: '20px',
-                                  width: 'fit-content',
-                                  backgroundColor: !isFall ? '#30BE821A' : '#F45B691A',
+                                  padding: '4px 8px',
+                                  backgroundColor: !isFall ? '#D1FAE5' : '#FEE2E2',
+                                  color: !isFall ? '#059669' : '#DC2626',
+                                  fontWeight: 600,
+                                  fontSize: '12px'
                                 }}
                               >
-                                <Typography
-                                  component='span' // ✅ fix nested <p> warning
-                                  padding='3px 8px'
-                                  color={isFall ? '#F45B69' : '#30BE82'}
-                                  textAlign='center'
-                                  fontWeight='500'
-                                  fontSize={12}
-                                  lineHeight='16px'
-                                >
                                   {!isFall ? '+' : ''} {percent <= 999 || percent == undefined ? thousandDivider(percent) : 999}%
-                                </Typography>
                               </Box>
                             </TableCell>
                           )
@@ -279,20 +247,18 @@ export default function DashboardTopsBox({
               >
                 <Typography
                   sx={{
-                    fontSize: '24px',
-                    lineHeight: '32px',
+                    fontSize: '16px',
                     fontWeight: '600',
-                    color: 'bunker.950',
+                    color: '#111827',
                   }}
                 >
                   {noData?.title}
                 </Typography>
                 <Typography
                   sx={{
-                    fontSize: '18px',
-                    lineHeight: '28px',
-                    fontWeight: '500',
-                    color: 'bunker.500',
+                    fontSize: '14px',
+                    color: '#6B7280',
+                    mt: '4px'
                   }}
                 >
                   {noData?.description}
@@ -302,6 +268,6 @@ export default function DashboardTopsBox({
           </Table>
         </TableContainer>
       </Box>
-    </Box>
+    </div>
   )
 }

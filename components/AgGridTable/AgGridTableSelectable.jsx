@@ -68,6 +68,7 @@ const AgGridSimpleTable = ({
   isRefreshing,
   status,
   onCellSelectionChange, // New prop to handle cell selection changes
+  rowHeight,
 }) => {
   const tableOffsetSizes = localStorage?.getItem('table_offset_sizes') ? JSON.parse(localStorage?.getItem('table_offset_sizes')) : {}
   const classes = useStyles()
@@ -254,16 +255,17 @@ const AgGridSimpleTable = ({
   useEffect(() => {
     const baseUrl = navigateUrl || location.pathname
     if (baseUrl && !noRedirect) {
+      const currentPage = offsetIndex === 0 ? 1 : offsetIndex;
       const offsetLimitParams = qs.stringify(
         {
           ...values,
-          [limitQuery]: offsetSize,
-          [offsetQuery]: offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
+          [limitQuery]: currentPage * offsetSize,
+          [offsetQuery]: (currentPage - 1) * offsetSize,
         },
         { addQueryPrefix: true },
       )
 
-      navigate(`${baseUrl}${offsetLimitParams}`)
+      navigate(`${baseUrl}${offsetLimitParams}`, { replace: true, state: { from: location?.state?.from } })
     }
   }, [offsetIndex, offsetSize, location.pathname, status])
 
@@ -305,8 +307,11 @@ const AgGridSimpleTable = ({
 
   useEffect(() => {
     if (status !== prevStatus) {
-      setOffsetSize(values?.limit || defaultOffsetSize)
-      changeOffset(defaultOffsetIndex)
+      const restoredSize = (values?.[limitQuery] && values?.[offsetQuery]) 
+        ? Number(values[limitQuery]) - Number(values[offsetQuery]) 
+        : (values?.[limitQuery] || defaultOffsetSize);
+      setOffsetSize(restoredSize || defaultOffsetSize);
+      changeOffset(defaultOffsetIndex);
     }
   }, [status])
 
@@ -384,7 +389,7 @@ const AgGridSimpleTable = ({
           // suppressRowVirtualisation={true}
           onDisplayedColumnsChanged={debounce((p) => onDisplayedColumnsChanged({ ...p, updaterAction }), 1000)}
           onColumnResized={debounce((p) => onColumnResized({ ...p, updaterAction }), 1000)}
-          rowHeight={48}
+          rowHeight={rowHeight || 48}
           suppressRowClickSelection={true}
           suppressPaginationPanel={true}
           getRowStyle={getRowStyle}

@@ -12,11 +12,11 @@ const useStyles = makeStyles((theme) => ({
   cell: {
     height: '100%',
     margin: 0,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 600,
     color: theme.palette.gray[600],
     padding: '15px',
-    fontFamily: theme.fontFamily.Gilroy,
+    fontFamily: 'inherit',
     display: 'flex',
     alignItems: 'center',
     border: 'none',

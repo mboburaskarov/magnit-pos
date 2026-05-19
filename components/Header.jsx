@@ -10,18 +10,17 @@ const useStyles = makeStyles((theme) => ({
   title: {
     display: 'inline-flex',
     alignItems: 'center',
-    fontFamily: 'Gilroy',
+
     fontWeight: 'bold',
     '& a': {
       display: 'inline-flex',
       alignItems: 'center',
       marginRight: 16,
-      fontFamily: 'Gilroy',
     },
     '& span': {
       color: theme.palette.gray[400],
       marginRight: 8,
-      fontFamily: 'Gilroy',
+
       paddingRight: 10,
     },
   },

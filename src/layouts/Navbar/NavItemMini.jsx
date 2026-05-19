@@ -58,7 +58,7 @@ function NavItemMini({ item, handleClickNavItems, isActive }) {
         onMouseOver={(event) => {
           if (item.children?.length > 0 && !isOpen) {
             event.preventDefault()
-            handleClickNavItems(item)
+            handleClickNavItems({ ...item, hoverTop: event.currentTarget.getBoundingClientRect().top })
           } else if (!item.children?.length) {
             event.preventDefault()
             handleClickNavItems([])

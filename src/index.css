@@ -1,9 +1,99 @@
 @import './assets/fonts/stylesheet.css';
 @import './assets/ag_grid.css';
 @import './assets/datepicker.css';
+@import './assets/magnit.css';
+
+/* ── MagnitGo Design System Fonts ─────────────────────────────────────── */
+@font-face {
+  font-family: 'Euclid Circular B';
+  src: url('/fonts/EuclidCircularBLight.ttf') format('truetype');
+  font-weight: 300; font-style: normal;
+}
+@font-face {
+  font-family: 'Euclid Circular B';
+  src: url('/fonts/EuclidCircularBRegular.ttf') format('truetype');
+  font-weight: 400; font-style: normal;
+}
+@font-face {
+  font-family: 'Euclid Circular B';
+  src: url('/fonts/EuclidCircularBMedium.ttf') format('truetype');
+  font-weight: 500; font-style: normal;
+}
+@font-face {
+  font-family: 'Euclid Circular B';
+  src: url('/fonts/EuclidCircularBSemiBold.ttf') format('truetype');
+  font-weight: 600; font-style: normal;
+}
+@font-face {
+  font-family: 'Euclid Circular B';
+  src: url('/fonts/EuclidCircularBBold.ttf') format('truetype');
+  font-weight: 700; font-style: normal;
+}
+
+/* ── Design Tokens ─────────────────────────────────────────────────────── */
+:root {
+  --mg-bg: #F6F7F9;
+  --mg-surface: #FFFFFF;
+  --mg-surface-2: #F1F3F5;
+  --mg-border: #E6E8EC;
+  --mg-border-2: #F0F0F0;
+  --mg-text-primary: #0F1115;
+  --mg-text-secondary: #667085;
+  --mg-text-muted: #98A2B3;
+
+  --mg-accent: #111111;
+  --mg-accent-light: #F1F3F5;
+  --mg-accent-hover: #333333;
+
+  --mg-success: #16A34A;
+  --mg-success-light: #DCFCE7;
+  --mg-danger: #EF4444;
+  --mg-danger-light: #FEF2F2;
+  --mg-warning: #F59E0B;
+  --mg-warning-light: #FFFBEB;
+  --mg-info: #2563EB;
+  --mg-info-light: #EFF6FF;
+  --mg-purple: #7C3AED;
+  --mg-purple-light: #F5F3FF;
+
+  --mg-sidebar-w: 260px;
+  --mg-sidebar-w-collapsed: 72px;
+  --mg-header-h: 72px;
+
+  --mg-radius-sm: 8px;
+  --mg-radius: 12px;
+  --mg-radius-lg: 20px;
+  --mg-radius-xl: 24px;
+
+  --mg-shadow-sm: 0 2px 4px rgba(0,0,0,.03);
+  --mg-shadow: 0 4px 12px rgba(0,0,0,.05);
+  --mg-shadow-lg: 0 8px 24px rgba(0,0,0,.06);
+
+  --mg-transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+  --mg-font: 'Euclid Circular B', 'Gilroy', system-ui, sans-serif;
+}
+
+[data-theme="dark"] {
+  --mg-bg: #09090B;
+  --mg-surface: #111113;
+  --mg-surface-2: #18181B;
+  --mg-border: #27272A;
+  --mg-border-2: #222222;
+  --mg-text-primary: #F4F4F5;
+  --mg-text-secondary: #A1A1AA;
+  --mg-text-muted: #71717A;
+  --mg-accent: #FFFFFF;
+  --mg-accent-light: #2A2A2A;
+  --mg-accent-hover: #E0E0E0;
+  --mg-shadow-sm: 0 2px 4px rgba(0,0,0,.2);
+  --mg-shadow: 0 4px 12px rgba(0,0,0,.3);
+  --mg-shadow-lg: 0 8px 24px rgba(0,0,0,.4);
+}
+
+/* ── Existing pharma resets ────────────────────────────────────────────── */
 
 :root {
-  font-family: 'Gilroy';
+  font-family: 'Euclid Circular B', 'Gilroy', sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -15,6 +105,18 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+/* Global font reset — prevents browser defaulting buttons/inputs to Arial */
+button,
+input,
+select,
+textarea,
+optgroup {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
 }
 p {
   /* user-select: none; */

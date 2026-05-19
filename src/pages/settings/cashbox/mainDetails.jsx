@@ -20,7 +20,7 @@ export default function MainDetails({ paymentTypes, setPaymentTypes, openDrawer 
     () => requests.getPaymentTypesList({ cash_box_id: get(openDrawer, 'id', null) }),
     {
       enabled: Boolean(openDrawer),
-    }
+    },
   )
 
   const { control, errors, reset, setValue } = useFormContext()
@@ -58,7 +58,7 @@ export default function MainDetails({ paymentTypes, setPaymentTypes, openDrawer 
             id='store'
             name='store_id'
             isMulti={false}
-            placeholder={t('Выберите Аптека')}
+            placeholder={t('Выберите Магазин')}
             minWidth='auto'
             isClearable={true}
             request={requests.getAllStores}

@@ -83,17 +83,17 @@ export default function BranchDrawer({ refetchBranchList, openDrawer, closeDrawe
     try {
       if (openDrawer?.mode === 'edit') {
         await updateBranch({ data: requestBody, id: openDrawer?.data?.id })
-        success('Аптека был отредактирован!')
+        success('Магазин был отредактирован!')
       } else {
         await createBranch(requestBody)
-        success('Аптека создан!')
+        success('Магазин создан!')
       }
 
       closeDrawer(false)
       methods.reset()
       refetchBranchList()
     } catch (err) {
-      error(openDrawer?.mode === 'edit' ? 'Ошибка редактирования Аптекаа.!' : 'Ошибка при Аптека создан!')
+      error(openDrawer?.mode === 'edit' ? 'Ошибка редактирования Магазина.!' : 'Ошибка при Магазин создан!')
       console.error('err', err)
     }
   }
@@ -120,7 +120,7 @@ export default function BranchDrawer({ refetchBranchList, openDrawer, closeDrawe
       error('Bu Terminal ID allaqachon mavjud')
       return
     }
-    if(!terminalIds) {
+    if (!terminalIds) {
       setTerminalIds([normalizedTerminalId])
       setTerminalIdValue('')
       return

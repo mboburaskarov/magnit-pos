@@ -1,9 +1,8 @@
-import { useTheme } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { useTheme } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 
-import paletteLight from '../../src/assets/theme/paletteLight';
-import paletteDark from '../../src/assets/theme/paletteDark';
-
+import paletteLight from '../../src/assets/theme/paletteLight'
+import paletteDark from '../../src/assets/theme/paletteDark'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,11 +72,11 @@ export const generateCustomStyles = (props = {}) => {
       boxShadow: state.isFocused
         ? `0 0 0 2px ${palette.orange[500]}`
         : error
-        ? `0 0 0 2px red`
-        : `0 0 0 ${solidBorder ? 2 : 0}px ${dashed ? 'transparent' : palette.bunker[100]}`,
+          ? `0 0 0 2px red`
+          : `0 0 0 ${solidBorder ? 2 : 0}px ${dashed ? 'transparent' : palette.bunker[100]}`,
       border: dashed ? `1px dashed ${palette.gray[300]}` : `2px solid ${palette.bunker[100]}`,
       border: borderNone ? 'none' : `2px solid ${palette.bunker[100]}`,
-      fontFamily: 'Gilroy',
+
       cursor: state.isMulti ? 'text' : 'pointer',
     }),
     input: (provided) => ({
@@ -86,7 +85,7 @@ export const generateCustomStyles = (props = {}) => {
       padding: '4px 16px',
       fontSize: '18px !important',
       fontWeight: 600,
-      fontFamily: 'Gilroy',
+
       color: `${palette.gray[600]} !important`,
       '& input': {
         font: 'inherit',
@@ -100,7 +99,7 @@ export const generateCustomStyles = (props = {}) => {
       lineHeight: '19px',
       fontWeight: 600,
       color: palette.gray[400],
-      fontFamily: 'Gilroy',
+
       whiteSpace: placeholderWrap ? 'wrap' : 'noWrap',
     }),
     singleValue: (provided) => ({
@@ -108,7 +107,7 @@ export const generateCustomStyles = (props = {}) => {
       paddingLeft: hasBeforeContent ? '20px' : 8,
       fontSize: 17,
       fontWeight: 500,
-      fontFamily: 'Gilroy',
+
       color: palette.dark[500],
 
       alignItems: 'center',
@@ -124,7 +123,7 @@ export const generateCustomStyles = (props = {}) => {
       height: 34,
       borderRadius: '20px',
       backgroundColor: white ? palette.gray[100] : palette.background.default,
-      fontFamily: 'Gilroy',
+
       cursor: 'pointer',
     }),
     multiValueLabel: (provided, state) => ({
@@ -202,7 +201,7 @@ export const generateCustomStyles = (props = {}) => {
       fontSize: 16,
       lineHeight: '19px',
       fontWeight: 600,
-      fontFamily: 'Gilroy',
+
       padding: 16,
     }),
     option: (base, state) => ({
@@ -214,7 +213,7 @@ export const generateCustomStyles = (props = {}) => {
       fontSize: 18,
       lineHeight: '19px',
       fontWeight: 600,
-      fontFamily: 'Gilroy',
+
       color: `${palette.dark[500]} !important`,
       cursor: 'pointer',
       backgroundColor: state.isFocused ? palette.gray[101] : state.isFocused ? palette.orange[50] : 'transparent',

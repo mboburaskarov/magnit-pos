@@ -29,6 +29,7 @@ import tableHeaderSelector from './tableHeaderSelector'
 import TransferDashboard from './transferDashboard'
 import StatusDetailModal from './statusDetailModal'
 import { makeFormattedData } from '@utils/helper/makeFormattedTableData'
+import MgPageHeader from '@components/MgPageHeader'
 import { height } from '@mui/system'
 
 export default function TransferPage() {
@@ -43,6 +44,7 @@ export default function TransferPage() {
   const [statusModal, setStatusModal] = useState(false)
   const [openConfirmDialog, setOpenConfirmDialog] = useState(null)
   const [filterMenu, setFilterMenu] = useState(false)
+  const [isOpenStatDashboard, setIsOpenStatDashboard] = useState(false)
 
   const { mutate: downloadNakladnoy, isLoading: isDownloadNakladnoy } = useMutation(requests.downloadTransferNakladnoy, {
     onSuccess: ({ data }) => {
@@ -142,53 +144,78 @@ export default function TransferPage() {
   )
   return (
     <LoadingContainer readyState={true}>
-      <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-        <HeaderWithDashboardWrapper title={'Перемещение'} component={<TransferDashboard data={get(statusCountList, 'data.data', 0)} />} />
-        <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-          <Box display={'flex'}>
-            <Box
-              width='100%'
-              sx={{
-                '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                  background: 'transparent',
-                  width: '400px',
-                  height: 48,
-                },
-              }}
-            >
-              <InputSearch id='producrs-search' name='search' placeholder={'Перемещение номер, наименование'} uncontrolled />
-            </Box>
+      <Box display='flex' flexDirection='column' position='relative' px={'24px'} pb={'20px'}>
+        <MgPageHeader
+          title='Перемещение'
+          subtitle={`Всего: ${new Intl.NumberFormat('ru-UZ').format(transferList?.data?._meta?.total_count || 0)}`}
+          showStatsToggle
+          isOpenStats={isOpenStatDashboard}
+          onStatsToggle={() => setIsOpenStatDashboard((p) => !p)}
+          showCreate
+          onCreate={() => setOrderModel(true)}
+          createLabel='Создать'
+          createPermissionId='create-transfer'
+        />
 
-            <Box minWidth={113} ml={'16px'}>
-              <Button
+        {isOpenStatDashboard && <TransferDashboard data={get(statusCountList, 'data.data', 0)} />}
+
+        <div className='mg-table-card' style={{ marginTop: '12px' }}>
+          {/* Toolbar block matching table-toolbar exactly */}
+          <div
+            className='mg-table-toolbar'
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid var(--mg-border)' }}
+          >
+            <div className='mg-table-toolbar-left' style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
+              {/* Search field Box */}
+              <Box
+                width='100%'
+                maxWidth={400}
                 sx={{
-                  height: '48px',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
-                  color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
-                  '& span': {
-                    mr: '12px',
+                  '& .MuiInputBase-root': {
+                    height: '40px',
+                    border: '1px solid #ECEDF2',
+                    borderRadius: '12px',
+                    bgcolor: '#fff',
+                    px: '12px',
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: 'none',
+                  },
+                  '& .MuiFormControl-root, .MuiFormControl-root:hover': {
+                    background: 'transparent',
+                    width: '100%',
+                    height: '40px',
                   },
                 }}
-                fullWidth
-                startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setFilterMenu((prev) => !prev)}
               >
-                <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                  {t('filter_dialog.label')}
-                </Typography>
-              </Button>
-            </Box>
-          </Box>
-          <Box display={'flex'} alignItems={'center'}>
-            <Box>
+                <InputSearch id='producrs-search' name='search' placeholder={'Перемещение номер, наименование'} uncontrolled />
+              </Box>
+            </div>
+
+            <div className='mg-table-toolbar-right' style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              {/* Filter button */}
+              <button
+                type='button'
+                className={`mg-btn mg-btn-secondary ${filterMenu ? 'active' : ''}`}
+                onClick={() => setFilterMenu((prev) => !prev)}
+                style={{
+                  height: '40px',
+                  padding: '0 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  border: '1px solid #ECEDF2',
+                  borderRadius: '12px',
+                  background: '#fff',
+                  color: '#111217',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                <FilterMenuIcon color='#111217' />
+                <span style={{ fontSize: '14px' }}>{t('filter_dialog.label')}</span>
+              </button>
+
               <ColumnsFilterButtonForAll
                 title={t('ag_grid.table_setting.label')}
                 columns={tableColumns}
@@ -196,52 +223,35 @@ export default function TransferPage() {
                 resetTableHeader={resetTableHeader}
                 changeColumnSequence={changeColumnSequence}
               />
-            </Box>
-            <CheckAccess id={'create-transfer'} noAccess>
-              <Box minWidth={156}>
-                <Button sx={{ height: '48px' }} type='submit' onClick={() => setOrderModel(true)} fullWidth variant='contained' color='primary'>
-                  Новое перемещение
-                </Button>
-              </Box>
-            </CheckAccess>
-          </Box>
-        </Box>
-        <FilterMenu open={filterMenu} setOpen={setFilterMenu} />
-        <CreateReturn refetch={refetch} open={orderModel} setOpen={setOrderModel} />
-        <StatusDetailModal open={statusModal} setOpen={setStatusModal} />
+            </div>
+          </div>
 
-        <Box
-          sx={{
-            '& .ag-root-wrapper': {
-              // height: 'calc(100vh - 300px) !important',
-              overflowY: 'auto',
-            },
-          }}
-        >
-          <AgGridTable
-            id='imports-main-table'
-            fullDownload={() => getReturnToWarehouseExcelReport({ ...transferListFilter, offset: 0, limit: 1000000 })}
-            downloadByFilter={() => getReturnToWarehouseExcelReport(transferListFilter)}
-            isDownloading={isgetReturnToWarehouseExcelReport}
-            tableSettings
-            columns={tableColumns}
-            defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
-            data={transferList?.data?.data?.data || []}
-            totalCount={transferList?.data?._meta?.total_count || 0}
-            isDataLoading={isFetchingtransferList || transferListLoading}
-            offsetCount={offsetCount}
-            updaterAction={(newData) => {
-              if (newData) dispatch(updateTableHeader(newData))
-            }}
-            emptyTableText={{
-              title: 'Перемещение недоступен',
-              description: 'Если вы не можете найти искомый Перемещение',
-            }}
-            fullInfoAboutCurrentPage
-            resetTable={() => dispatch(resetTableHeader({ refetch }))}
-            isRefreshing={loading || isFetchingtransferList || transferListLoading}
-          />
-        </Box>
+          <Box style={{ padding: 0 }}>
+            <AgGridTable
+              id='imports-main-table'
+              fullDownload={() => getReturnToWarehouseExcelReport({ ...transferListFilter, offset: 0, limit: 1000000 })}
+              downloadByFilter={() => getReturnToWarehouseExcelReport(transferListFilter)}
+              isDownloading={isgetReturnToWarehouseExcelReport}
+              tableSettings
+              columns={tableColumns}
+              defaultOffsetIndex={Number(values?.offset / values?.limit + 1 || 1)}
+              data={transferList?.data?.data?.data || []}
+              totalCount={transferList?.data?._meta?.total_count || 0}
+              isDataLoading={isFetchingtransferList || transferListLoading}
+              offsetCount={offsetCount}
+              updaterAction={(newData) => {
+                if (newData) dispatch(updateTableHeader(newData))
+              }}
+              emptyTableText={{
+                title: 'Перемещение недоступен',
+                description: 'Если вы не можете найти искомый Перемещение',
+              }}
+              fullInfoAboutCurrentPage
+              resetTable={() => dispatch(resetTableHeader({ refetch }))}
+              isRefreshing={loading || isFetchingtransferList || transferListLoading}
+            />
+          </Box>
+        </div>
       </Box>
 
       <ImageGallery open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />

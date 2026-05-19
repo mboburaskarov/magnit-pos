@@ -23,7 +23,7 @@ export default function CreatePaymentAssetBody({ isOpen }) {
       setValue('type_action', get(onePermission, 'data.data.type'))
       setValue(
         'parent_id',
-        actions?.data?.data?.filter((e) => e.id == get(onePermission, 'data.data.parent_id')).flatMap((item) => ({ name: item?.name, value: item?.id }))[0]
+        actions?.data?.data?.filter((e) => e.id == get(onePermission, 'data.data.parent_id')).flatMap((item) => ({ name: item?.name, value: item?.id }))[0],
       )
       if (get(onePermission, 'data.data.type') == 'payme') {
         setValue('payment_type_id', { name: get(onePermission, 'data.data.name'), value: get(onePermission, 'data.data.payment_type_id') })
@@ -74,7 +74,7 @@ export default function CreatePaymentAssetBody({ isOpen }) {
           id='store'
           name='store_id'
           isMulti={false}
-          placeholder={t('Выберите Аптека')}
+          placeholder={t('Выберите Магазин')}
           minWidth='auto'
           isClearable={true}
           label={t('input.store.label')}

@@ -20,7 +20,7 @@ export default function PopUpSelect({ id, name, minHeight = '48px', selectedStor
           width: '200px',
           backgroundColor: '#fe5000 !important',
           '&:hover': {
-            backgroundColor: '#fb923c !important',
+            backgroundColor: '#111111 !important',
           },
           '& p': {
             color: '#fff !important',

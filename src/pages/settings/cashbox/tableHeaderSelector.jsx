@@ -46,7 +46,7 @@ export default function tableHeaderSelector({ setOpenCreateCashBoxDrawer, values
     if (el.field === 'store_name') {
       return {
         ...el,
-        headerName: 'Aптека',
+        headerName: 'Магазин',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),
       }

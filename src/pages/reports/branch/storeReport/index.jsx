@@ -160,7 +160,7 @@ export default function StoreReportPage() {
                 id='store'
                 name='store_id'
                 isMulti={false}
-                placeholder={t('Выберите Аптека')}
+                placeholder={t('Выберите Магазин')}
                 minWidth='auto'
                 isClearable={true}
                 label={''}

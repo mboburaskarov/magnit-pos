@@ -126,13 +126,12 @@ const AgGridUnSelectableSimpleTable = ({
   useEffect(() => {
     const baseUrl = navigateUrl || location.pathname
     if (baseUrl && !noRedirect) {
+      const currentPage = offsetIndex === 0 ? 1 : offsetIndex;
       const offsetLimitParams = qs.stringify(
         {
           ...values,
-          [limitQuery]: offsetSize,
-          // [offsetQuery]: offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
-          [offsetQuery]:
-            values[offsetQuery] && values[offsetQuery] != '0' && offsetIndex == 0 ? values[offsetQuery] : offsetIndex == 0 ? 0 : (offsetIndex - 1) * offsetSize,
+          [limitQuery]: currentPage * offsetSize,
+          [offsetQuery]: (currentPage - 1) * offsetSize,
         },
         { addQueryPrefix: true },
       )
@@ -153,7 +152,7 @@ const AgGridUnSelectableSimpleTable = ({
         const offsetLimitParams = qs.stringify(
           {
             ...values,
-            [limitQuery]: offsetSize,
+            [limitQuery]: offsetSize, // For page 1, limit = offsetSize
             [offsetQuery]: 0,
           },
           { addQueryPrefix: true },
@@ -181,8 +180,11 @@ const AgGridUnSelectableSimpleTable = ({
 
   useEffect(() => {
     if (status !== prevStatus) {
-      setOffsetSize(values?.limit || defaultOffsetSize)
-      changeOffset(defaultOffsetIndex)
+      const restoredSize = (values?.[limitQuery] && values?.[offsetQuery]) 
+        ? Number(values[limitQuery]) - Number(values[offsetQuery]) 
+        : (values?.[limitQuery] || defaultOffsetSize);
+      setOffsetSize(restoredSize || defaultOffsetSize);
+      changeOffset(defaultOffsetIndex);
     }
   }, [status])
 

@@ -72,12 +72,12 @@ export default function BranchesPage() {
   const { mutate: deleteStore, isLoading: isDeletingProduct } = useMutation(requests.deleteStore, {
     onSuccess: () => {
       refetch()
-      success('Аптека успешно удален!')
+      success('Магазин успешно удален!')
       setOpenConfirmDialog(null)
     },
     onError: (err) => {
       refetch()
-      error('Ошибка при удалении Аптека!')
+      error('Ошибка при удалении Магазин!')
       setOpenConfirmDialog(null)
       console.error('err', err)
     },
@@ -217,8 +217,8 @@ export default function BranchesPage() {
           open={!!openConfirmDialog}
           setOpen={setOpenConfirmDialog}
           icon={openConfirmDialog?.type === 'activate' ? <BigTickIcon /> : <BigWarningIcon />}
-          title={'Удалить Аптека?'}
-          desc={'хотите удалить свой Аптека?'}
+          title={'Удалить Магазин?'}
+          desc={'хотите удалить свой Магазин?'}
           supDesc={openConfirmDialog.name}
           actions={
             <>

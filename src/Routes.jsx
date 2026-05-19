@@ -1,14 +1,23 @@
 // eslint-disable-next-line no-unused-vars
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate, useRoutes } from 'react-router-dom'
 import LoadingContainer from '../components/LoadingContainer'
 import TerminalAccessGuard from './guards/TerminalAccessGuard'
 import MainLayout from './layouts/MainLayout'
+import MagnitLayout from './layouts/MagnitLayout'
 import NotFoundPage from './pages/404'
 import Redirect from './pages/redirect'
 import Test from './pages/test'
 import routes from './routes/index'
+
+// ── MagnitGo section pages (lazy) ─────────────────────────────────────
+const BannersPage       = lazy(() => import('./pages/magnit/banners/BannersPage'))
+const CategoriesPage    = lazy(() => import('./pages/magnit/categories/CategoriesPage'))
+const BrandsPage        = lazy(() => import('./pages/magnit/brands/BrandsPage'))
+const HomeSectionsPage  = lazy(() => import('./pages/magnit/home-sections/HomeSectionsPage'))
+const NotificationsPage = lazy(() => import('./pages/magnit/notifications/NotificationsPage'))
+const ChatPage          = lazy(() => import('./pages/magnit/chat/ChatPage'))
 
 export const filterNavData = (routes, urls, user_data) => {
   if (user_data?.type === 'SUPERADMIN') {
@@ -119,6 +128,20 @@ export default function Routes() {
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const formattedRoutes = useRoutes([
+    // ── MagnitGo sections — bypass pharma permission filter ──
+    {
+      path: 'magnit',
+      element: <MagnitLayout />,
+      children: [
+        { path: 'chat',                  element: <ChatPage /> },
+        { path: 'app/banners',           element: <BannersPage /> },
+        { path: 'app/home-sections',     element: <HomeSectionsPage /> },
+        { path: 'app/notifications',     element: <NotificationsPage /> },
+        { path: 'catalog/brands',        element: <BrandsPage /> },
+        { path: 'catalog/categories',    element: <CategoriesPage /> },
+      ],
+    },
+    // ── Existing pharma routes (permission-filtered) ──────────
     ...filteredRoutes,
     {
       path: '',

@@ -1,2 +1,1 @@
-# pharma-frontend
-# pharma-frontend
+Magnit management

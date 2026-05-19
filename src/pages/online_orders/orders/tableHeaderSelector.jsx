@@ -19,7 +19,14 @@ import EditIcon from '../../../assets/icons/EditIcon'
 import { t } from 'i18next'
 import { SimpleText } from '@components/AgGridTable/Cells/SimpleText'
 
-export default function tableHeaderSelector({ orderColumns: productsColumns, setOpenSaleDrawer, setCurrentSaleId, setSaleIds, setCurrentIndex, onlineOrderList }) {
+export default function tableHeaderSelector({
+  orderColumns: productsColumns,
+  setOpenSaleDrawer,
+  setCurrentSaleId,
+  setSaleIds,
+  setCurrentIndex,
+  onlineOrderList,
+}) {
   const columns = productsColumns?.map((el) => {
     if (el.field === 'sale_number') {
       return {
@@ -63,14 +70,14 @@ export default function tableHeaderSelector({ orderColumns: productsColumns, set
               p.data.online_status == '1'
                 ? 'Новый'
                 : p.data.online_status == '2'
-                ? 'Поиск курьера'
-                : p.data.online_status == '3'
-                ? 'Завершено'
-                : p.data.online_status == '4'
-                ? 'Ожидает курьера'
-                : p.data.online_status == '-1'
-                ? 'Отменен'
-                : ''
+                  ? 'Поиск курьера'
+                  : p.data.online_status == '3'
+                    ? 'Завершено'
+                    : p.data.online_status == '4'
+                      ? 'Ожидает курьера'
+                      : p.data.online_status == '-1'
+                        ? 'Отменен'
+                        : ''
             }
             type='online_status'
           />
@@ -112,7 +119,7 @@ export default function tableHeaderSelector({ orderColumns: productsColumns, set
     if (el.field === 'store') {
       return {
         ...el,
-        headerName: 'Аптека',
+        headerName: 'Магазин',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} customText={p.data.store.name} type='store' />),
       }

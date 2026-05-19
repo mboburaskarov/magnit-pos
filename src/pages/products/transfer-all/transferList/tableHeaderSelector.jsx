@@ -14,6 +14,7 @@ import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { memo } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import IndicatorBadge from '@components/IndicatorBadge'
 
 export default function tableHeaderSelector({ transferColumns, t, downloadNakladnoy, setOpenConfirmDialog, setStatusModal }) {
   const { values } = useQueryParams()
@@ -29,11 +30,7 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
           const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
 
-          return (
-            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-              {absoluteIndex}
-            </Typography>
-          )
+          return <Typography>{absoluteIndex}</Typography>
         }),
       }
     }
@@ -66,10 +63,8 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
             <Link to={targetPath} state={{ from }}>
               <Typography
                 whiteSpace={'pre-wrap'}
-                fontWeight={'600'}
+                fontWeight={500}
                 color={p.data.status !== 'canceled' ? 'orange.500' : 'red.500'}
-                fontSize={'16px'}
-                lineHeight={'24px'}
                 sx={{ cursor: targetPath ? 'pointer' : 'default' }}
               >
                 {p.data.name}
@@ -82,7 +77,7 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
     if (el.field === 'store_name') {
       return {
         ...el,
-        headerName: 'до Аптека',
+        headerName: 'до Магазин',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type={'store_name'} customText={p.data?.to_store?.name} />),
       }
@@ -91,7 +86,7 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
     if (el.field === 'from_store_name') {
       return {
         ...el,
-        headerName: 'oт Аптека',
+        headerName: 'oт Магазин',
         colId: el.field,
         cellRenderer: memo((p) => <SimpleText {...p} type={'from_store_name'} customText={p.data?.store?.name} />),
       }
@@ -104,42 +99,14 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Недостачи'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'red.500',
-                  }}
-                >
-                  <LeftArrowIcon fill='transparent' color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Недостачи' type='<' bgcolor='red.500' />
 
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={'сум'} type={'received_retail_sum'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Излишек'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'green.500',
-                  }}
-                >
-                  <ArrowRight color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Излишек' type='>' bgcolor='green.500' />
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={'сум'} type={'accepted_retail_sum'} />
@@ -156,42 +123,14 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Недостачи'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'red.500',
-                  }}
-                >
-                  <LeftArrowIcon fill='transparent' color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Недостачи' type='<' bgcolor='red.500' />
 
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={'сум'} type={'received_supply_sum'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Излишек'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'green.500',
-                  }}
-                >
-                  <ArrowRight color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Излишек' type='>' bgcolor='green.500' />
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={'сум'} type={'accepted_supply_sum'} />
@@ -212,6 +151,13 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
         return !stagesByStatus[status]?.includes(stage)
       }
 
+      const formatCount = (val) => {
+        if (val === undefined || val === null) return ''
+        const num = Number(val)
+        if (isNaN(num)) return val
+        return num % 1 === 0 ? num : parseFloat(num.toFixed(1))
+      }
+
       return {
         ...el,
         headerName: t('table_columns.status'),
@@ -223,65 +169,54 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
             whiteSpace='pre-wrap'
             sx={{
               cursor: 'pointer',
-              '& .step-title > p': {
-                fontSize: '16px',
-                fontWeight: '600',
-                lineHeight: '24px',
-                color: 'black',
-              },
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              height: '100%',
+              py: '4px',
             }}
           >
             <Box
               sx={{
                 display: 'flex',
-                alignItems: 'start',
+                alignItems: 'center',
+                width: '100%',
                 '& .loaded-bar': {
-                  height: '10px',
+                  height: '4px',
                   flex: 1,
-                  width: '24px',
                   marginX: '-2px',
-                  backgroundColor: '#ffff',
-                  overflow: 'hidden',
-                  position: 'relative',
-                  marginTop: '8px',
-                  background: `repeating-linear-gradient(
-          45deg,
-          #f0f0f0,
-          #f0f0f0 5px,
-          #e8e8e8 5px,
-          #e8e8e8 10px
-        )`,
+                  backgroundColor: '#ECEDF2',
+                  borderRadius: '2px',
                 },
                 '& .complated-bar': {
-                  height: '10px',
+                  height: '4px',
                   flex: 1,
-                  width: '24px',
                   marginX: '-2px',
-
-                  overflow: 'hidden',
-                  position: 'relative',
-                  marginTop: '8px',
-                  background: `repeating-linear-gradient(
-          45deg,
-          #ff9f40,
-          #ff9f50 5px,
-          #ff7f40 5px,
-          #ff7f00 10px
-        )`,
+                  backgroundColor: '#111217',
+                  borderRadius: '2px',
                 },
                 '& .step-icon-box': {
-                  backgroundColor: 'orange.500',
+                  backgroundColor: '#111217',
                   borderRadius: '50%',
-                  width: '27px',
-                  height: '27px',
+                  width: '26px',
+                  height: '26px',
                   flexShrink: 0,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   zIndex: 9,
+                  '& svg': {
+                    width: '14px',
+                    height: '14px',
+                    color: '#fff',
+                    fill: 'none',
+                  },
                 },
                 '& .step-icon-box.loaded': {
-                  backgroundColor: 'bunker.200',
+                  backgroundColor: '#ECEDF2',
+                  '& svg': {
+                    color: '#A0A5BA',
+                  },
                 },
               }}
             >
@@ -305,24 +240,44 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
               </Box>
             </Box>
 
-            <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', mt: 1 }}>
-              <Box className='step-title' sx={{ width: '27px', textAlign: 'center', flexShrink: 0 }}>
-                <Typography></Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                width: '100%',
+                alignItems: 'center',
+                mt: '4px',
+                '& .step-title-text': {
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  color: '#111217',
+                  lineHeight: '1.2',
+                  textAlign: 'center',
+                },
+              }}
+            >
+              <Box sx={{ width: '26px', flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+                <Typography className='step-title-text'></Typography>
               </Box>
-              <Box sx={{ flex: 1 }} />
+              <Box sx={{ flex: 1, marginX: '-2px' }} />
 
-              <Box className='step-title' sx={{ width: '27px', textAlign: 'center', flexShrink: 0 }}>
-                <Typography>{!isLoadedStage(p?.data, 1) && get(p, 'data.expected_count')}</Typography>
+              <Box sx={{ width: '26px', flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+                <Typography className='step-title-text'>
+                  {!isLoadedStage(p?.data, 1) && formatCount(get(p, 'data.expected_count'))}
+                </Typography>
               </Box>
-              <Box sx={{ flex: 1 }} />
+              <Box sx={{ flex: 1, marginX: '-2px' }} />
 
-              <Box className='step-title' sx={{ width: '27px', textAlign: 'center', flexShrink: 0 }}>
-                <Typography>{!isLoadedStage(p?.data, 2) && get(p, 'data.scanned_count')}</Typography>
+              <Box sx={{ width: '26px', flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+                <Typography className='step-title-text'>
+                  {!isLoadedStage(p?.data, 2) && formatCount(get(p, 'data.scanned_count'))}
+                </Typography>
               </Box>
-              <Box sx={{ flex: 1 }} />
+              <Box sx={{ flex: 1, marginX: '-2px' }} />
 
-              <Box className='step-title' sx={{ width: '27px', textAlign: 'center', flexShrink: 0 }}>
-                <Typography>{!isLoadedStage(p?.data, 3) && get(p, 'data.accepted_count')}</Typography>
+              <Box sx={{ width: '26px', flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+                <Typography className='step-title-text'>
+                  {!isLoadedStage(p?.data, 3) && formatCount(get(p, 'data.accepted_count'))}
+                </Typography>
               </Box>
             </Box>
           </Box>
@@ -338,42 +293,14 @@ export default function tableHeaderSelector({ transferColumns, t, downloadNaklad
         cellRenderer: memo((p) => (
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Недостачи'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'red.500',
-                  }}
-                >
-                  <LeftArrowIcon fill='transparent' color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Недостачи' type='<' bgcolor='red.500' />
 
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={''} type={'shortage'} />
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
-              <StyledTooltip title={'Излишек'}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    bgcolor: 'green.500',
-                  }}
-                >
-                  <ArrowRight color='#fff' />
-                </Box>
-              </StyledTooltip>
+              <IndicatorBadge tooltip='Излишек' type='>' bgcolor='green.500' />
               <Box width={'10px'} />
 
               <SimpleText {...p} withDevider currency={''} type={'surplus'} />

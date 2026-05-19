@@ -23,11 +23,7 @@ export default function tableHeaderSelector({ revaluationColumns, t }) {
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
           const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
 
-          return (
-            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-              {absoluteIndex}
-            </Typography>
-          )
+          return <Typography>{absoluteIndex}</Typography>
         }),
       }
     }
@@ -59,9 +55,7 @@ export default function tableHeaderSelector({ revaluationColumns, t }) {
             }
             state={{ from }}
           >
-            <Typography fontWeight={'600'} color={'orange.500'} fontSize={'16px'} lineHeight={'24px'}>
-              {p.data.name}
-            </Typography>
+            <Typography fontWeight={500}>{p.data.name}</Typography>
           </Link>
         )),
       }
@@ -115,13 +109,12 @@ export default function tableHeaderSelector({ revaluationColumns, t }) {
         cellRenderer: memo((p) => <SimpleText {...p} type={'updated_at'} customText={dayjs(p.data?.['created_at']).format('DD.MM.YYYY HH:mm:ss')} />),
       }
     }
-    if(el.field == 'total_new_retail_price'){
+    if (el.field == 'total_new_retail_price') {
       return {
         ...el,
-        headerName:'Итоговая розн. цена',
-        colId:el.field,
-        cellRenderer: memo((p) => (
-          <SimpleText {...p} type='total_price_difference' withDevider currency={'сум'} />      )),
+        headerName: 'Итоговая розн. цена',
+        colId: el.field,
+        cellRenderer: memo((p) => <SimpleText {...p} type='total_price_difference' withDevider currency={'сум'} />),
       }
     }
     if (el.field === 'quantity') {

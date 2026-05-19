@@ -6,6 +6,7 @@ import { faArrowCircleDown, faArrowCircleUp, faCheckCircle } from '@fortawesome/
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useQueryParams } from '@hooks/useQueryParams'
 import { Box, Typography } from '@mui/material'
+import { fontWeight } from '@mui/system'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import * as qs from 'qs'
@@ -26,11 +27,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         cellRenderer: memo(({ rowIndex, api, ...p }) => {
           const absoluteIndex = Number(get(values, 'offset', 0)) + 1 + rowIndex
 
-          return (
-            <Typography fontWeight={'600'} fontSize={'16px'} lineHeight={'24px'}>
-              {absoluteIndex}
-            </Typography>
-          )
+          return <Typography>{absoluteIndex}</Typography>
         }),
       }
     }
@@ -49,14 +46,7 @@ export default function tableHeaderSelector({ importsColumns, t }) {
         colId: el.field,
         cellRenderer: memo((p) => (
           <Link to={`/products/imports/${p.data.id}`} state={{ from }}>
-            <SimpleText
-              sx={{
-                color: '#fe5000 !important',
-              }}
-              customText={p.data.document_number}
-              {...p}
-              type='document_number'
-            />
+            <SimpleText sx={{ fontWeight: 600 }} customText={p.data.document_number} {...p} type='document_number' />
           </Link>
         )),
       }

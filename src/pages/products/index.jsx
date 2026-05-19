@@ -44,6 +44,8 @@ import ProductDashboard from './productDashboard'
 import FilterMenu from './FilterMenu'
 import { useDrawerHistory } from '@hooks/useDrawerHistory'
 import AddNewBarcodeToProduct from './addNewBarcodeToProduct'
+import MgPageHeader from '@components/MgPageHeader'
+import MgTabs from '@components/MgTabs'
 
 const SELECTION_ID = 'checkboxSelectionField'
 const LoadingChangeBarcode = ({ status }) => {
@@ -200,7 +202,7 @@ export default function ProductsPage() {
       retail_price_to: values?.retail_price_to,
       region: values?.region_id,
       order: orderStoring.position == 1 ? `+${orderStoring.colId}` : orderStoring.position == 2 ? `-${orderStoring.colId}` : undefined,
-      is_return: values?.is_return, 
+      is_return: values?.is_return,
       supply_price_from: values?.supply_price_from,
       retail_price_from: values?.retail_price_from,
       no_barcode: values?.no_barcode == '1' ? true : false,
@@ -383,342 +385,197 @@ export default function ProductsPage() {
       <FormProvider {...methods}>
         {isproductsExcelReport && <LoadingBlock zIndex={99} top={0} position={'fixed'} width={'100%'} left='0' />}
 
-        <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
-          <Box display={'flex'} mb={'10px'} justifyContent={'space-between'}>
-            <Typography onClick={() => navigate('/products/all-by-import')} variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-              {t('page.catalog.title')}
-            </Typography>
-            <Box
-              sx={{
-                m: 'auto 0',
-                userSelect: 'none !important',
-                cursor: 'pointer',
-                '& > p': {
-                  cursor: 'pointer',
-                  userSelect: 'none !important',
-                },
-              }}
-              display={'flex'}
-              onClick={() => setIsOpenStatDashboard((p) => !p)}
-            >
-              {isOpenStatDashboard ? <ArrowUp color='#111217' /> : <ArrowDown />}
-              <Typography sx={{ fontWeight: '600', whiteSpace: 'pre' }}>{isOpenStatDashboard ? 'Скрыть статистику' : 'Показать статистику'}</Typography>
-            </Box>
-          </Box>
+        <Box display='flex' flexDirection='column' position='relative' px={'24px'} pt={0}>
+          {/* page-header wrapper using reusable MgPageHeader */}
+          <MgPageHeader
+            title={t('page.catalog.title')}
+            subtitle={`${t('catalog.total', 'Всего:')} ${new Intl.NumberFormat('ru-UZ').format(productsList?.data?.data?._meta?.total_count || 0)}`}
+            onTitleClick={() => navigate('/products/all-by-import')}
+            showStatsToggle
+            isOpenStats={isOpenStatDashboard}
+            onStatsToggle={() => setIsOpenStatDashboard((p) => !p)}
+            showExport
+            onExport={() => productsExcelReport(productsListFilter)}
+            exportLoading={isproductsExcelReport}
+            showCreate
+            onCreate={() => navigate('/products/create')}
+            createLabel={t('button.add_new.text') || 'Добавить продукт'}
+            createPermissionId="product-create"
+          />
+
           {isOpenStatDashboard && <ProductDashboard data={get(statusCountList, 'data.data', 0)} />}
 
-          <Box minWidth={320} mt={'10px'} sx={{ display: 'flex' }}>
-            <InputSwitch
-              uncontrolled
-              id='app-type'
-              name='app-type'
-              value={appType}
-              defaultValue='ALL'
-              onChange={(e) => setAppType(e)}
-              options={[
-                { title: t('switch.title.all'), value: 'ALL', count: thousandDivider(get(statusCountList, 'data.data.total_count', 0)) },
-                { title: t('switch.title.active'), value: 'active', count: thousandDivider(get(statusCountList, 'data.data.active_count', 0)) },
+          {/* Table Card wrapper */}
+          <div className='mg-table-card' style={{ marginTop: '12px' }}>
+            {/* Tabs container using reusable MgTabs component */}
+            <MgTabs
+              activeTab={appType}
+              onChange={setAppType}
+              tabs={[
                 {
-                  title: t('switch.title.less_amount'),
+                  value: 'ALL',
+                  title: t('switch.title.all', 'Все'),
+                  count: get(statusCountList, 'data.data.total_count', 0)
+                },
+                {
+                  value: 'active',
+                  title: t('switch.title.active', 'Активные'),
+                  count: get(statusCountList, 'data.data.active_count', 0)
+                },
+                {
                   value: 'low-stock',
-                  count: (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <Box />({thousandDivider(get(statusCountList, 'data.data.low_stock_count', 0))})
-                      <StyledTooltip title={'В аптеке осталось менее 10 лекарств'}>
-                        <Info sx={{ color: 'bunker.300' }} />
-                      </StyledTooltip>
-                    </Box>
-                  ),
+                  title: t('switch.title.less_amount', 'Мало на складе'),
+                  count: get(statusCountList, 'data.data.low_stock_count', 0),
+                  tooltip: 'В аптеке осталось менее 10 лекарств'
                 },
                 {
-                  title: t('switch.title.empty'),
                   value: 'zero-stock',
-                  count: (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <Box />({thousandDivider(get(statusCountList, 'data.data.zero_stock_count', 0))})
-                      <StyledTooltip title={'Лекарства, которые не остались в аптеке'}>
-                        <Info sx={{ color: 'bunker.300' }} />
-                      </StyledTooltip>
-                    </Box>
-                  ),
+                  title: t('switch.title.empty', 'Нет в наличии'),
+                  count: get(statusCountList, 'data.data.zero_stock_count', 0),
+                  tooltip: 'Лекарства, которые не остались в аптеке'
                 },
                 {
-                  title: t('switch.title.less_date'),
                   value: 'imminent',
-                  count: (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <Box />({thousandDivider(get(statusCountList, 'data.data.imminent_count', 0))})
-                      <StyledTooltip title={'Товары со сроком годности менее 3 месяцев'}>
-                        <Info sx={{ color: 'bunker.300' }} />
-                      </StyledTooltip>
-                    </Box>
-                  ),
+                  title: t('switch.title.less_date', 'Истекающие'),
+                  count: get(statusCountList, 'data.data.imminent_count', 0),
+                  tooltip: 'Товары со сроком годности менее 3 месяцев'
                 },
-
-                { title: t('switch.title.outofdate'), value: 'expired', count: thousandDivider(get(statusCountList, 'data.data.expired_count', 0)) },
+                {
+                  value: 'expired',
+                  title: t('switch.title.outofdate', 'Просроченные'),
+                  count: get(statusCountList, 'data.data.expired_count', 0)
+                }
               ]}
             />
-            <Box
-              display={'flex'}
-              sx={{
-                bgcolor: 'bg.10',
-                height: '48px',
-                borderRadius: '24px',
-                mt: '14px',
-                padding: '4px 10px',
-              }}
-            >
-              <CheckAccess id={'banned-product'}>
-                <StyledTooltip title={'Запрещенный продукт'}>
-                  <Box
-                    onClick={() => navigate('/products/banned-product')}
-                    sx={{
-                      backgroundColor: 'bg.10',
-                      padding: '10px',
-                      borderRadius: '50%',
-                      mr: '10px',
-                      display: 'flex',
-                      width: '38px',
-                      height: '38px',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      '&:hover': {
-                        backgroundColor: 'grey.200',
-                      },
-                    }}
-                  >
-                    <Block
-                      sx={(theme) => ({
-                        fill: theme.palette.orange[500],
-                        fontSize: 23,
-                      })}
-                    />
-                  </Box>
-                </StyledTooltip>
-              </CheckAccess>
-              <CheckAccess id={'products-categories'}>
-                <StyledTooltip title={'Управление каталогом'}>
-                  <Box
-                    onClick={() => navigate('/products/categories')}
-                    sx={{
-                      backgroundColor: 'bg.10',
-                      padding: '10px',
-                      borderRadius: '50%',
 
-                      mr: '10px',
-                      display: 'flex',
-                      width: '38px',
-                      height: '38px',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      '&:hover': {
-                        backgroundColor: 'grey.200',
+            {/* Toolbar block matching table-toolbar exactly */}
+            <div className='mg-table-toolbar'>
+              <div className='mg-table-toolbar-left' style={{ width: '100%' }}>
+                {/* Search field */}
+                <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                  <Box
+                    width='100%'
+                    maxWidth={400}
+                    sx={{
+                      '& .MuiFormControl-root': {
+                        backgroundColor: '#ffffff !important',
+                        background: '#ffffff !important',
+                        height: '40px !important',
+                        borderRadius: '8px !important',
+                      },
+                      '& .MuiInputBase-root': {
+                        height: '40px !important',
+                        borderColor: '#E5E7EB !important',
+                        border: '1px solid #E5E7EB !important',
+                        borderRadius: '8px !important',
+                        fontSize: '14px !important',
+                        fontWeight: '500 !important',
+                        color: '#111111 !important',
+                        boxSizing: 'border-box !important',
+                        backgroundColor: '#ffffff !important',
+                        background: '#ffffff !important',
+                      },
+                      '& .MuiOutlinedInput-root': {
+                        backgroundColor: '#ffffff !important',
+                        background: '#ffffff !important',
+                      },
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: 'none !important',
+                        backgroundColor: 'transparent !important',
+                        background: 'transparent !important',
+                      },
+                      '& input': {
+                        fontSize: '14px !important',
+                        fontWeight: '500 !important',
+                        color: '#111111 !important',
+                        backgroundColor: '#ffffff !important',
+                        background: '#ffffff !important',
                       },
                     }}
                   >
-                    <CategoryIcon />
+                    <InputSearch white fullWidth id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
                   </Box>
-                </StyledTooltip>
-              </CheckAccess>
-              <CheckAccess id={'products-bonus-product'}>
-                <StyledTooltip title={'Бонусный продукт'}>
-                  <Box
-                    onClick={() => navigate('/products/bonus-product')}
-                    sx={{
-                      backgroundColor: 'bg.10',
-                      padding: '10px',
-                      borderRadius: '50%',
+                </div>
+              </div>
 
-                      display: 'flex',
-                      width: '38px',
-                      height: '38px',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      '& svg': {
-                        width: '18px',
-                        height: '18px',
-                      },
-                      cursor: 'pointer',
-                      '&:hover': {
-                        backgroundColor: 'grey.200',
-                      },
-                    }}
-                  >
-                    <PrizeBoxIcon color='#FF6018' />
-                  </Box>
-                </StyledTooltip>
-              </CheckAccess>
-              <CheckAccess id={'products-errors'}>
-                <StyledTooltip title={'Ошибки'}>
-                  <Box
-                    onClick={() => navigate('/products/errors')}
-                    sx={{
-                      ml: '10px',
-                      backgroundColor: 'bg.10',
-                      padding: '10px',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      width: '38px',
-                      cursor: 'pointer',
-                      height: '38px',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      '& svg': {
-                        width: '18px',
-                        height: '18px',
-                      },
-                      '&:hover': {
-                        backgroundColor: 'grey.200',
-                      },
-                    }}
-                  >
-                    <Report color='#FF6018' />
-                  </Box>
-                </StyledTooltip>
-              </CheckAccess>
-              <CheckAccess id={'can-get-product-movement-dashboard'}>
-                <StyledTooltip title={'Общий график действий продуктов'}>
-                  <Box
-                    sx={{
-                      ml: '10px',
-                      backgroundColor: 'bg.10',
-                      padding: '10px',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      width: '38px',
-                      cursor: 'pointer',
-                      height: '38px',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      '& svg': {
-                        width: '18px',
-                        height: '18px',
-                      },
-                      '&:hover': {
-                        backgroundColor: 'grey.200',
-                      },
-                    }}
-                    onClick={() => {
-                      getProductMovementDashboardExcel({ store_id: get(values, 'store_id'), limit: 10000, offset: 0 })
-                    }}
-                  >
-                    {isGetProductMovementDashboardExcel ? <CircularProgress size={18} thickness={5} /> : <Download sx={{ color: '#FF6018' }} />}
-                  </Box>
-                </StyledTooltip>
-              </CheckAccess>
-            </Box>
-          </Box>
-          <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
-            <Box width='100%' display={'flex'}>
-              <Box
-                width='100%'
-                sx={{
-                  '& .MuiInputBase-root': { height: 48, borderColor: 'transparent' },
-                  '& .MuiFormControl-root, .MuiFormControl-root:hover': {
-                    background: 'transparent',
-                    height: 48,
-                  },
-                }}
+              {/* Table Toolbar Right */}
+              <div
+                className='mg-table-toolbar-right'
+                style={{ color: 'var(--mg-text-secondary)', fontSize: '13.5px', gap: '16px', display: 'flex', alignItems: 'center' }}
               >
-                <InputSearch fullWidth id='producrs-search' name='search' placeholder={t('input.search.product.multi')} uncontrolled />
-              </Box>
-              <Box minWidth={113} ml={'16px'}>
-                <Button
-                  sx={{
-                    height: '48px',
-                    padding: 0,
-                    bgcolor: '#fff',
-                    border: '1px solid #ECEDF2',
-                    color: 'dark.500',
-                    fontWeight: '500',
-                    fontSize: '16px',
-                    lineHeight: '24px',
-                    '& span': {
-                      mr: '12px',
-                    },
-                  }}
-                  fullWidth
-                  startIcon={<FilterMenuIcon color={theme.palette.black} />}
-                  variant='contained'
-                  color='secondary'
+                {/* Filter button */}
+                <button
+                  type='button'
+                  className='mg-btn mg-btn-secondary mg-btn-sm'
                   onClick={() => setFilterMenu((prev) => !prev)}
+                  style={{
+                    height: '40px',
+                    padding: '0 16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    borderRadius: '8px',
+                    border: '1px solid #E5E7EB',
+                    backgroundColor: '#ffffff',
+                    color: '#111111',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    boxSizing: 'border-box',
+                  }}
                 >
-                  <Typography fontWeight={600} fontSize={'16px'} lineHeight={'25px'}>
-                    {t('filter_dialog.label')}
-                  </Typography>
-                </Button>
-              </Box>
-            </Box>
+                  <FilterMenuIcon color='#111111' />
+                  <span style={{ fontWeight: 500, fontSize: '14px', color: '#111111' }}>{t('filter_dialog.label')}</span>
+                </button>
 
-            <Box display={'flex'} alignItems={'center'}>
-              <CheckAccess id={'products-all-table'}>
-                <Box>
+                <CheckAccess id={'products-all-table'}>
                   <StyledTooltip title={'Настройки таблица'}>
-                    <ColumnsFilterButtonForAll
-                      title={t('ag_grid.table_setting.label')}
-                      columns={tableColumns}
-                      isCatalog={false}
-                      routeString={routeString}
-                      resetTableHeader={resetTableHeader}
-                      changeColumnSequence={changeColumnSequence}
-                    />
+                    <Box style={{ cursor: 'pointer' }}>
+                      <ColumnsFilterButtonForAll
+                        title={t('ag_grid.table_setting.label')}
+                        columns={tableColumns}
+                        isCatalog={false}
+                        routeString={routeString}
+                        resetTableHeader={resetTableHeader}
+                        changeColumnSequence={changeColumnSequence}
+                      />
+                    </Box>
                   </StyledTooltip>
-                </Box>
-              </CheckAccess>
-              <CheckAccess id={'product-create'}>
-                <Box minWidth={156}>
-                  <Button
-                    sx={{ height: '48px' }}
-                    onClick={() => navigate('/products/create')}
-                    fullWidth
-                    startIcon={<PlusIcon color='#fff' />}
-                    variant='contained'
-                    color='primary'
-                  >
-                    {t('button.add_new.text')}
-                  </Button>
-                </Box>
-              </CheckAccess>
-            </Box>
-          </Box>
-          <FilterMenu refetch={refetch} setRegions={setRegions} open={filterMenu} setOpen={setFilterMenu} />
-          <Box
-            sx={{
-              '& .ag-root-wrapper': {
-                // height: 'calc(100vh - 400px) !important',
-                overflowY: 'auto',
-              },
-            }}
-          >
-            <AgGridTable
-              id='products-main-table'
-              alwaysShowHorizontalScroll={true}
-              tableSettings
-              canCellClick={true}
-              hasAADownload={productsListFilter?.store_id}
-              enableFillHandle={true}
-              onCellValueChanged={onCellValueChanged}
-              downloadForAA={() => productsExcelReportForAA({ ...productsListFilter, offset: 0, limit: 6000000 })}
-              fullDownload={() => productsExcelReport({ ...productsListFilter, offset: 0, limit: 6000000 })}
-              downloadByFilter={() => productsExcelReport(productsListFilter)}
-              isDownloading={isproductsExcelReport}
-              columns={tableColumns}
-              data={productsList?.data?.data?.data || []}
-              totalCount={productsList?.data?.data?._meta?.total_count || 0}
-              isDataLoading={isFetchingproductsList || productsListLoading}
-              offsetCount={offsetCount}
-              updaterAction={(newData) => {
-                if (newData) dispatch(updateTableHeader(newData))
-              }}
-              fullInfoAboutCurrentPage
-              resetTable={() => dispatch(resetTableHeader({ refetch }))}
-              status={appType}
-              isRefreshing={loading || isFetchingproductsList || productsListLoading}
-              onGridApiReady={setGridApi}
-            />
-          </Box>
+                </CheckAccess>
+              </div>
+            </div>
+
+            {/* Ag Grid wrapper */}
+            <div style={{ padding: '0px' }}>
+              <AgGridTable
+                id='products-main-table'
+                alwaysShowHorizontalScroll={true}
+                tableSettings
+                rowHeight={64}
+                canCellClick={true}
+                hasAADownload={productsListFilter?.store_id}
+                enableFillHandle={true}
+                onCellValueChanged={onCellValueChanged}
+                downloadForAA={() => productsExcelReportForAA({ ...productsListFilter, offset: 0, limit: 6000000 })}
+                fullDownload={() => productsExcelReport({ ...productsListFilter, offset: 0, limit: 6000000 })}
+                downloadByFilter={() => productsExcelReport(productsListFilter)}
+                isDownloading={isproductsExcelReport}
+                columns={tableColumns}
+                data={productsList?.data?.data?.data || []}
+                totalCount={productsList?.data?.data?._meta?.total_count || 0}
+                isDataLoading={isFetchingproductsList || productsListLoading}
+                offsetCount={offsetCount}
+                updaterAction={(newData) => {
+                  if (newData) dispatch(updateTableHeader(newData))
+                }}
+                fullInfoAboutCurrentPage
+                resetTable={() => dispatch(resetTableHeader({ refetch }))}
+                status={appType}
+                isRefreshing={loading || isFetchingproductsList || productsListLoading}
+                onGridApiReady={setGridApi}
+              />
+            </div>
+          </div>
         </Box>
         <ProductDrawer
           ids={(productsList?.data?.data?.data || []).map(({ id }) => id)}
@@ -731,6 +588,7 @@ export default function ProductsPage() {
           onClose={setOpenProductDrawer}
         />
         <ChangeUnitPerPack refetch={refetch} open={openPerPack} setOpen={setOpenPerPack} />
+        <FilterMenu refetch={refetch} open={filterMenu} setOpen={setFilterMenu} setRegions={setRegions} />
         <AddNewBarcodeToProduct open={openAddBarcode} refetch={refetch} setOpen={setOpenAddBarcode} />
         <SendToErrorWithReason open={openErrorReason} setOpen={setOpenErrorReason} />
         <ImageGallery canAlert={setOpenErrorReason} open={openImageGallery} setOpen={setOpenImageGallery} imagesArr={openImageGallery.data} />

@@ -65,7 +65,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
   }
 
   useEffect(() => {
-    const { supply_price_to, no_barcode,is_return, retail_price_to, supply_price_from, retail_price_from, category_id, store_id, producer_id } = values
+    const { supply_price_to, no_barcode, is_return, retail_price_to, supply_price_from, retail_price_from, category_id, store_id, producer_id } = values
 
     reset(
       {
@@ -76,10 +76,10 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
         retail_price_to: retail_price_to || null,
         supply_price_from: supply_price_from || null,
         retail_price_from: retail_price_from || null,
-        referral: is_return ?{ name: 'Возврат доступен', id: 'true' }:{ name: 'Без возврата', id: 'false' },
+        referral: is_return ? { name: 'Возврат доступен', id: 'true' } : { name: 'Без возврата', id: 'false' },
         no_barcode: no_barcode ? getOptionsFromUrlParam(no_barcode, barcodeFilterList, 'name')[0] : null,
       },
-      { keepDirty: true }
+      { keepDirty: true },
     )
   }, [
     values?.producer_id,
@@ -106,7 +106,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
         supply_price_from: null,
         retail_price_from: null,
       },
-      { keepDirty: true }
+      { keepDirty: true },
     )
     reset()
     methods.setValue('')
@@ -162,7 +162,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                   id='store'
                   name='store_id'
                   isMulti={false}
-                  placeholder={t('Выберите Аптека')}
+                  placeholder={t('Выберите Магазин')}
                   minWidth='auto'
                   isClearable={true}
                   label={t('input.store.label')}
@@ -218,19 +218,20 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
 
                 <Box width={'20px'} />
 
-                 <SelectSimple
-                                  fullWidth
-                                  id='is_return'
-                                  name='is_return'
-                                  white
-                                  minWidth='auto'
-                                  label={'Возврат'}
-                                  placeholder={t('Выберите')}
-                                  getOptionLabel={(el) => el.name}
-                                  options={[
-                                   { name: 'Возврат доступен', id: 'true' },{ name: 'Без возврата', id: 'false' }
-                                  ]}
-                                />
+                <SelectSimple
+                  fullWidth
+                  id='is_return'
+                  name='is_return'
+                  white
+                  minWidth='auto'
+                  label={'Возврат'}
+                  placeholder={t('Выберите')}
+                  getOptionLabel={(el) => el.name}
+                  options={[
+                    { name: 'Возврат доступен', id: 'true' },
+                    { name: 'Без возврата', id: 'false' },
+                  ]}
+                />
                 <Box width={'20px'} />
 
                 <LazySelect

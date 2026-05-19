@@ -64,7 +64,7 @@ const TextField = ({
         sx={(theme) => ({
           '& .MuiInputLabel-root.Mui-disabled': {
             fontSize: 22,
-            fontFamily: 'Gilroy',
+
             left: -14,
             top: 8,
             fontWeight: 400,
@@ -72,7 +72,7 @@ const TextField = ({
           '& .MuiOutlinedInput-root': {
             mt: label ? (onlyDisplay ? 3.5 : '4px') : 0,
             boxShadow: withShadow && '0px 0px 24px rgba(0, 0, 0, 0.08)',
-            fontFamily: 'Gilroy',
+
             fontWeight: 400,
             fontSize: 18,
             lineHeight: '24px',
@@ -106,7 +106,7 @@ const TextField = ({
             '-webkit-text-fill-color': onlyDisplay && `${theme.palette.gray[600]} !important`,
             '&::placeholder': {
               color: disabled ? 'gray.100' : 'secondary.light',
-              fontFamily: 'Gilroy',
+
               fontWeight: 600,
               fontSize: 18,
               lineHeight: '26px',

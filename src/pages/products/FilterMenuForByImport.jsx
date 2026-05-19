@@ -76,7 +76,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
         retail_price_from: retail_price_from || null,
         no_barcode: no_barcode ? getOptionsFromUrlParam(no_barcode, barcodeFilterList, 'name')[0] : null,
       },
-      { keepDirty: true }
+      { keepDirty: true },
     )
   }, [
     values?.producer_id,
@@ -102,7 +102,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
         supply_price_from: null,
         retail_price_from: null,
       },
-      { keepDirty: true }
+      { keepDirty: true },
     )
     reset()
     methods.setValue('')
@@ -158,7 +158,7 @@ export default function FilterMenu({ refetch, open, setOpen, setRegions }) {
                 id='store'
                 name='store_id'
                 isMulti={false}
-                placeholder={t('Выберите Аптека')}
+                placeholder={t('Выберите Магазин')}
                 minWidth='auto'
                 isClearable={true}
                 label={t('input.store.label')}

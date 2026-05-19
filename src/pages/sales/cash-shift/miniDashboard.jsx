@@ -1,8 +1,7 @@
-import { Box, Grid, Typography } from '@mui/material';
-import thousandDivider from '@utils/thousandDivider';
-import IncomeIcon from '@icons/IncomeIcon';
-import { get } from 'lodash';
-
+import { Box, Grid, Typography } from '@mui/material'
+import thousandDivider from '@utils/thousandDivider'
+import IncomeIcon from '@icons/IncomeIcon'
+import { get } from 'lodash'
 
 function MiniDashboard({ cashShiftStat }) {
   const getMiniStat = ({
@@ -61,7 +60,7 @@ function MiniDashboard({ cashShiftStat }) {
               <Box
                 sx={{
                   borderRadius: '12px',
-                  backgroundColor: '#FF60180D',
+                  backgroundColor: '#1111110D',
                   padding: '10px',
                   width: '40px',
                   height: '40px',

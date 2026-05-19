@@ -177,7 +177,7 @@ export default function ProductsPage() {
                   id='store'
                   name='store_id'
                   isMulti={false}
-                  placeholder={t('Выберите Аптека')}
+                  placeholder={t('Выберите Магазин')}
                   minWidth='auto'
                   isClearable={false}
                   required

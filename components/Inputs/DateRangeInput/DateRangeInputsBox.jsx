@@ -54,8 +54,8 @@ export default function DateRangeInputsBox({ dateState }) {
       >
         <StyledTooltip title={'Нажмите, чтобы добавить временной фильтр'}>
           <Box mr={2} display={'flex'} flexDirection={'column'} alignItems={'center'} onClick={() => setShowTime((p) => !p)}>
-            {/* <AccessTime sx={{ fontSize: 40, color: '#fe5000' }} /> */}
-            {!showTime ? <ExpandMore sx={{ fontSize: 40, color: '#fe5000' }} /> : <ExpandLess sx={{ fontSize: 40, color: '#fe5000' }} />}
+            {/* <AccessTime sx={{ fontSize: 40, color: '#111111' }} /> */}
+            {!showTime ? <ExpandMore sx={{ fontSize: 40, color: '#111111' }} /> : <ExpandLess sx={{ fontSize: 40, color: '#111111' }} />}
           </Box>
         </StyledTooltip>
         <Box display='flex' flexDirection={'column'} alignItems='center'>

@@ -39,7 +39,7 @@ export default function FilterMenu({ open, setOpen }) {
       {
         store_id: store_id ? { name: values?.store_name, value: values?.store_id } : null,
       },
-      { keepDirty: true }
+      { keepDirty: true },
     )
   }, [values?.store_id])
 
@@ -81,7 +81,7 @@ export default function FilterMenu({ open, setOpen }) {
               id='store'
               name='store_id'
               isMulti={false}
-              placeholder={t('Выберите Аптека')}
+              placeholder={t('Выберите Магазин')}
               minWidth='auto'
               isClearable={true}
               label={t('input.store.label')}
