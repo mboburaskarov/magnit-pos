@@ -156,10 +156,13 @@ export default function MagnitLayout({ hasHeader = true }) {
     navigate('/login')
   }
 
+  const isPosRoute = location.pathname.startsWith('/sales/pos')
+  const showSidebar = !isWebview && !isPosRoute
+
   return (
     <div className='mg-layout'>
       {/* Sidebar */}
-      {!isWebview && (
+      {showSidebar && (
         <aside className={`mg-sidebar${collapsed ? ' collapsed' : ''}`}>
           <div className='mg-sidebar-logo' style={{ padding: collapsed ? '0px 0' : '0px 20px', justifyContent: collapsed ? 'center' : 'flex-start' }}>
             <img
@@ -197,7 +200,7 @@ export default function MagnitLayout({ hasHeader = true }) {
 
       {/* Main */}
       <div className='mg-main'>
-        {!isWebview && hasHeader && (
+        {!isWebview && hasHeader && !isPosRoute && (
           <header className='mg-header'>
             <button className='mg-header-btn' onClick={() => setCollapsed((c) => !c)}>
               <Menu size={17} />
@@ -253,7 +256,7 @@ export default function MagnitLayout({ hasHeader = true }) {
           </header>
         )}
 
-        <main className='mg-content'>
+        <main className='mg-content' style={isPosRoute ? { padding: 0, overflow: 'hidden', background: 'var(--sap-bg)' } : undefined}>
           <Outlet />
         </main>
       </div>

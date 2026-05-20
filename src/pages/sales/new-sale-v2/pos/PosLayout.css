@@ -61,10 +61,47 @@ body {
 
 .pos-topbar-info {
   display: flex;
-  flex-direction: column;
-  font-size: 11px;
+  align-items: center;
+  font-size: 12px;
   color: #CCCCCC;
-  line-height: 1.4;
+  gap: 12px;
+}
+
+.pos-info-item {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #E2E8F0;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pos-topbar-search-container {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  padding: 4px 10px;
+  margin-right: 8px;
+  height: 34px;
+  box-sizing: border-box;
+}
+
+.pos-topbar-search-input {
+  background: transparent;
+  border: none;
+  color: white;
+  outline: none;
+  font-size: 13px;
+  width: 180px;
+}
+
+.pos-topbar-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .pos-topbar-actions {
@@ -78,13 +115,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--sap-blue);
+  background: #222222;
   color: white;
   border: none;
   cursor: pointer;
   border-left: 1px solid rgba(255,255,255,0.1);
 }
-.pos-topbar-btn:hover { background: var(--sap-blue-hover); }
+.pos-topbar-btn:hover { background: #333333; }
 
 .pos-topbar-tab {
   height: 100%;
@@ -190,7 +227,7 @@ body {
 
 /* ── Left Bottom (Summary + Tabs) ──────────────────────────── */
 .pos-left-bottom {
-  height: 260px;
+  height: 320px;
   display: flex;
   flex-direction: column;
   background: var(--sap-surface);
@@ -270,10 +307,10 @@ body {
   grid-template-columns: repeat(5, 1fr);
   gap: 10px;
   background: #F7F7F7;
-  overflow-y: auto;
+  overflow: hidden;
 }
 .pos-action-btn {
-  height: 60px;
+  height: 52px;
   background: #EAF7EC; /* Default pastel green */
   border: 1px solid #D1E5D5;
   border-radius: 4px;
@@ -367,7 +404,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
   color: #333;
   cursor: pointer;
@@ -382,7 +419,9 @@ body {
   bottom: 0;
   width: 8px;
 }
+.pos-cash-bill.uzs-5k::before { background: #81C784; }
 .pos-cash-bill.uzs-10k::before { background: #56A0D3; }
+.pos-cash-bill.uzs-20k::before { background: #D7CCC8; }
 .pos-cash-bill.uzs-50k::before { background: #B388FF; }
 .pos-cash-bill.uzs-100k::before { background: #FFAB40; }
 .pos-cash-bill.uzs-200k::before { background: #69F0AE; }
