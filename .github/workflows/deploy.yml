@@ -73,7 +73,7 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          printf '%b' "$SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keygen -l -f ~/.ssh/deploy_key
           ssh-keyscan -p ${{ secrets.PROD_SERVER_PORT || '22' }} -H "${{ secrets.PROD_SERVER_HOST }}" >> ~/.ssh/known_hosts
