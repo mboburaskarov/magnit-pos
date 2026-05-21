@@ -23,24 +23,22 @@ export default function ProductTable({ cartItems = [], selectedId, onSelectRow, 
           <tr>
             <th className='col-num'>#</th>
             <th className='col-barcode'>{t('table_columns.barcode')}</th>
-            <th className='col-name'>{t('create_new_product.product_name')}</th>
+            <th className='col-name'>{t('pos.product_name_header')}</th>
             <th className='col-qty'>{t('table_columns.quantity')}</th>
-            <th className='col-unit'>{t('unit_short')}</th>
             <th className='col-price text-right'>{t('price')}</th>
-            <th className='col-discount text-right'>{t('discount')}</th>
             <th className='col-total text-right'>{t('total')}</th>
           </tr>
         </thead>
         <tbody>
           {isLoading ? (
             <tr>
-              <td colSpan={8} className='pos-table-loading'>
+              <td colSpan={6} className='pos-table-loading'>
                 <div className='loading-spinner-placeholder'>{t('pos.loading')}</div>
               </td>
             </tr>
           ) : cartItems.length === 0 ? (
             <tr>
-              <td colSpan={8} className='pos-table-empty'>
+              <td colSpan={6} className='pos-table-empty'>
                 <div className='empty-state-container'>
                   <div className='scanner-glowing-wrapper'>
                     <div className='scanner-target-box'>
@@ -72,13 +70,12 @@ export default function ProductTable({ cartItems = [], selectedId, onSelectRow, 
                     </div>
                   </td>
                   <td className='col-qty'>
-                    <QuantityStepper item={item} onIncrease={onQtyIncrease} onDecrease={handleDecrease} />
-                  </td>
-                  <td className='col-unit'>
-                    <span className='unit-badge'>{item.unit_per_pack > 1 && item.unit_quantity > 0 ? `${item.unit_quantity} шт` : 'уп'}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <QuantityStepper item={item} onIncrease={onQtyIncrease} onDecrease={handleDecrease} />
+                      <span className='unit-badge'>{item.unit_per_pack > 1 && item.unit_quantity > 0 ? `${item.unit_quantity} шт` : 'уп'}</span>
+                    </div>
                   </td>
                   <td className='col-price text-right'>{thousandDivider(item.unit_price)}</td>
-                  <td className='col-discount text-right text-muted'>{item.discount_price > 0 ? thousandDivider(item.discount_price) : '0.00'}</td>
                   <td className='col-total text-right font-bold'>{thousandDivider(item.total_price)}</td>
                 </tr>
               )

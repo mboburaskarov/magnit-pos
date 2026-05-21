@@ -43,10 +43,6 @@ export default function CheckoutSidebar({
           <span className='info-label'>{t('pos.receipt_id')}</span>
           <span className='info-value font-bold'>{receiptNumber}</span>
         </div>
-        <div className='info-row'>
-          <span className='info-label'>{t('pos.price_list')}</span>
-          <span className='info-value'>{t('pos.standard')}</span>
-        </div>
       </div>
 
       {/* Customer Search Card */}

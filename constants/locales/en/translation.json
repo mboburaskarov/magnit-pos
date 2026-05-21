@@ -404,7 +404,7 @@
   "pos.loading": "Loading...",
   "pos.scan_barcode": "Scan Barcode",
   "pos.scan_barcode_hint": "Scan the product barcode or use the search bar above to add products to the receipt",
-  "pos.scanner_ready": "Scanner ready",
+  "pos.scanner_ready": "Scanner",
   "pos.enter_barcode": "Enter barcode...",
   "pos.search_title": "Search (F7)",
   "pos.keyboard_status": "Keyboard status",
@@ -426,5 +426,6 @@
   "pos.security.error_short": "QR code is too short.",
   "pos.security.error_invalid": "QR code is too short. Please scan a valid code.",
   "pos.security.help": "Esc – cancel • Enter – confirm",
-  "pos.select_product_to_delete": "Select a product to delete"
+  "pos.select_product_to_delete": "Select a product to delete",
+  "pos.product_name_header": "Name"
 }

@@ -506,7 +506,7 @@
   "pos.loading": "Загрузка...",
   "pos.scan_barcode": "Отсканируйте штрих-код",
   "pos.scan_barcode_hint": "Отсканируйте штрих-код товара или воспользуйтесь поиском сверху, чтобы добавить товар",
-  "pos.scanner_ready": "Сканер готов",
+  "pos.scanner_ready": "Сканер",
   "pos.enter_barcode": "Введите штрих-код...",
   "pos.search_title": "Поиск (F7)",
   "pos.keyboard_status": "Статус клавиатуры",
@@ -528,5 +528,6 @@
   "pos.security.error_short": "QR-код слишком короткий.",
   "pos.security.error_invalid": "QR-код слишком короткий. Пожалуйста, отсканируйте корректный код.",
   "pos.security.help": "Esc – отмена • Enter – подтвердить",
-  "pos.select_product_to_delete": "Выберите товар для удаления"
+  "pos.select_product_to_delete": "Выберите товар для удаления",
+  "pos.product_name_header": "Названия"
 }

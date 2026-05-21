@@ -420,7 +420,7 @@
   "pos.loading": "Yuklanmoqda...",
   "pos.scan_barcode": "Shtrix-kodni skanerlang",
   "pos.scan_barcode_hint": "Sotuvga tovar qo'shish uchun mahsulot shtrix-kodini skanerlang yoki tepadagi qidiruvdan foydalaning",
-  "pos.scanner_ready": "Skaner tayyor",
+  "pos.scanner_ready": "Skaner",
   "pos.enter_barcode": "Shtrix-kod kiriting...",
   "pos.search_title": "Qidirish (F7)",
   "pos.keyboard_status": "Klaviatura holati",
@@ -442,5 +442,6 @@
   "pos.security.error_short": "QR kod juda qisqa.",
   "pos.security.error_invalid": "QR kod juda qisqa. Iltimos, to'g'ri scan qiling.",
   "pos.security.help": "Esc – bekor qilish • Enter – tasdiqlash",
-  "pos.select_product_to_delete": "O'chirish uchun mahsulotni tanlang"
+  "pos.select_product_to_delete": "O'chirish uchun mahsulotni tanlang",
+  "pos.product_name_header": "Nomi"
 }

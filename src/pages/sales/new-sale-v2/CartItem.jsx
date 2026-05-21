@@ -390,8 +390,6 @@ export default function CartItem({ index, searchRef, packRef = () => {}, unitRef
               height: '23px',
               lineHeight: '20px',
               fontWeight: '500',
-              height: '25px',
-
               color: 'bunker.950',
             },
             '& .MuiFormControl-root > .MuiOutlinedInput-root.Mui-focused': {
