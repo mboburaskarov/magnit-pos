@@ -97,6 +97,7 @@ jobs:
             echo ${GHCR_TOKEN} | docker login ghcr.io -u ${GHCR_USER} --password-stdin
             export DOCKER_IMAGE=${DOCKER_IMAGE}
             docker compose -f compose.prod.yml pull
+            echo "Deploying image: ${DOCKER_IMAGE}"
             docker compose -f compose.prod.yml up -d --force-recreate
             docker image prune -f
             echo "Deployed ${DOCKER_IMAGE} successfully"
