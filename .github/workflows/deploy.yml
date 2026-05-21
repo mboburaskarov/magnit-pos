@@ -28,13 +28,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set environment based on branch
-        id: env
-        run: |
-          echo "VITE_API_BASE_URL=${{ secrets.PROD_VITE_API_BASE_URL }}" >> $GITHUB_OUTPUT
-          echo "VITE_MEDIA_BASE_URL=${{ secrets.PROD_VITE_MEDIA_BASE_URL }}" >> $GITHUB_OUTPUT
-          echo "tag=prod-${{ github.sha }}" >> $GITHUB_OUTPUT
-
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -48,8 +41,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=${{ steps.env.outputs.tag }}
-            type=raw,value=${{ github.ref_name }}-latest
+            type=raw,value=prod-${{ github.sha }}
+            type=raw,value=prod-latest
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -60,8 +53,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            VITE_API_BASE_URL=${{ steps.env.outputs.VITE_API_BASE_URL }}
-            VITE_MEDIA_BASE_URL=${{ steps.env.outputs.VITE_MEDIA_BASE_URL }}
+            VITE_API_BASE_URL=${{ secrets.PROD_VITE_API_BASE_URL }}
+            VITE_MEDIA_BASE_URL=${{ secrets.PROD_VITE_MEDIA_BASE_URL }}
             VITE_USE_MOCKS=false
 
   # ─────────────────────────────────────────
@@ -80,56 +73,33 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set deploy variables
-        id: vars
-        run: |
-          echo "host=${{ secrets.PROD_SERVER_HOST }}" >> $GITHUB_OUTPUT
-          echo "user=${{ secrets.PROD_SERVER_USER }}" >> $GITHUB_OUTPUT
-          echo "key<<EOF" >> $GITHUB_OUTPUT
-          echo "${{ secrets.PROD_SSH_PRIVATE_KEY }}" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          echo "port=${{ secrets.PROD_SERVER_PORT }}" >> $GITHUB_OUTPUT
-          echo "deploy_path=${{ secrets.PROD_DEPLOY_PATH }}" >> $GITHUB_OUTPUT
-          echo "image_tag=prod-latest" >> $GITHUB_OUTPUT
-
       - name: Copy compose file to server
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ steps.vars.outputs.host }}
-          username: ${{ steps.vars.outputs.user }}
-          key: ${{ steps.vars.outputs.key }}
-          port: ${{ steps.vars.outputs.port || '22' }}
+          host: ${{ secrets.PROD_SERVER_HOST }}
+          username: ${{ secrets.PROD_SERVER_USER }}
+          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PROD_SERVER_PORT || '22' }}
           source: 'compose.prod.yml'
-          target: ${{ steps.vars.outputs.deploy_path }}
+          target: ${{ secrets.PROD_DEPLOY_PATH }}
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_USER: ${{ github.actor }}
-          DOCKER_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.image_tag }}
+          DOCKER_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:prod-latest
         with:
-          host: ${{ steps.vars.outputs.host }}
-          username: ${{ steps.vars.outputs.user }}
-          key: ${{ steps.vars.outputs.key }}
-          port: ${{ steps.vars.outputs.port || '22' }}
+          host: ${{ secrets.PROD_SERVER_HOST }}
+          username: ${{ secrets.PROD_SERVER_USER }}
+          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PROD_SERVER_PORT || '22' }}
           envs: GHCR_TOKEN,GHCR_USER,DOCKER_IMAGE
           script: |
-            cd ${{ steps.vars.outputs.deploy_path }}
-
-            # Login to GHCR using the passed token
+            cd ${{ secrets.PROD_DEPLOY_PATH }}
             echo ${GHCR_TOKEN} | docker login ghcr.io -u ${GHCR_USER} --password-stdin
-
-            # Set image variable for compose
             export DOCKER_IMAGE=${DOCKER_IMAGE}
-
-            # Pull latest image
             docker compose -f compose.prod.yml pull
-
-            # Restart with new image
             docker compose -f compose.prod.yml up -d --force-recreate
-
-            # Cleanup old images
             docker image prune -f
-
             echo "✅ Deployed ${DOCKER_IMAGE} successfully"
