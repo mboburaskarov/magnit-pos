@@ -15,8 +15,7 @@ export default function ProductTable({ cartItems = [], selectedId, onSelectRow, 
       onQtyDecrease?.(item)
     }
   }
-  // Sd
-  // Sd
+
   return (
     <div className='pos-table-wrapper'>
       <table className='pos-table-premium'>
