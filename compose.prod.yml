@@ -1,8 +1,7 @@
 services:
   app:
-    build:
-      dockerfile: docker/Dockerfile
-    container_name: magnit-management
-    command: /bin/sh -c "yarn install && yarn build"
-    volumes:
-      - .:/app
+    image: ${DOCKER_IMAGE}
+    container_name: magnit-adminpanel
+    restart: unless-stopped
+    ports:
+      - "3100:80"
