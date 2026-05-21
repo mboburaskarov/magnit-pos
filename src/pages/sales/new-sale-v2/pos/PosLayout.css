@@ -1292,7 +1292,6 @@ body {
   border-radius: var(--pos-radius-lg);
   border: 1px solid var(--pos-border);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
 }
 
 /* ── Glowing Barcode Scanner Empty State ── */

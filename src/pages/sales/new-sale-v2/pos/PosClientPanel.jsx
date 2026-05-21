@@ -11,13 +11,6 @@ import { useEffect, useRef, useState } from 'react'
 import Highlighter from 'react-highlight-words'
 import './PosLayout.css'
 
-const UserIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-    <circle cx="12" cy="7" r="4"/>
-  </svg>
-)
-
 const XIcon = ({ size = 16 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
     <line x1="18" y1="6" x2="6" y2="18"/>
@@ -32,7 +25,6 @@ function PosClientPanel({
   setSearchTerm,
   setCustomerId,
   onCreateClient,
-  removeClient,
   isSearching,
   t,
 }) {
@@ -40,6 +32,20 @@ function PosClientPanel({
   const inputRef = useRef(null)
 
   const showDropdown = focused && searchTerm?.length >= 3
+  const selectCustomer = (item) => {
+    setCustomerId({
+      id:   item.id,
+      name: `${item.first_name} ${item.last_name}`,
+      balance: item.balance,
+      phone: item.phone_numbers?.[0] || '',
+      barcode: item.discount_card,
+      discount_card_percent: item.discount_percent,
+      discount_card_barcode: searchTerm === item.discount_card ? item.discount_card : null,
+      loyalty_card_percent: searchTerm === item.loyalty_card_barcode ? item.loyalty_card_percent : null,
+      loyalty_card_barcode: searchTerm === item.loyalty_card_barcode ? item.loyalty_card_barcode : null,
+    })
+    setSearchTerm('')
+  }
 
   // F3 shortcut to focus client search
   useEffect(() => {
@@ -118,6 +124,12 @@ function PosClientPanel({
         value={searchTerm || ''}
         placeholder={t('pos.search_client_placeholder')}
         onChange={(e) => setSearchTerm(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && customers?.[0]) {
+            e.preventDefault()
+            selectCustomer(customers[0])
+          }
+        }}
         onFocus={() => setFocused(true)}
         onBlur={() => setTimeout(() => setFocused(false), 200)}
         autoComplete='off'
@@ -142,35 +154,22 @@ function PosClientPanel({
               {t('pos.searching')}
             </div>
           )}
-          {!isSearching && customers.length === 0 && (
+          {!isSearching && customers?.length === 0 && (
             <div
               style={{ padding: '12px 16px', cursor: 'pointer', color: '#374151', fontSize: 14 }}
               onClick={() => onCreateClient?.(searchTerm)}
             >
               <span style={{ color: '#FE5000', fontWeight: 700 }}>+ {t('pos.add_new')}:</span>{' '}
-              "{searchTerm}"
+              &quot;{searchTerm}&quot;
             </div>
           )}
-          {customers.map((item, idx) => (
+          {customers?.map((item, idx) => (
             <div
               key={item.id || idx}
               style={{
                 padding: '12px 16px', cursor: 'pointer', borderTop: idx > 0 ? '1px solid #F3F4F6' : 'none',
               }}
-              onClick={() => {
-                setCustomerId({
-                  id:   item.id,
-                  name: `${item.first_name} ${item.last_name}`,
-                  balance: item.balance,
-                  phone: item.phone_numbers?.[0] || '',
-                  barcode: item.discount_card,
-                  discount_card_percent: item.discount_percent,
-                  discount_card_barcode: searchTerm === item.discount_card ? item.discount_card : null,
-                  loyalty_card_percent: searchTerm === item.loyalty_card_barcode ? item.loyalty_card_percent : null,
-                  loyalty_card_barcode: searchTerm === item.loyalty_card_barcode ? item.loyalty_card_barcode : null,
-                })
-                setSearchTerm('')
-              }}
+              onClick={() => selectCustomer(item)}
               onMouseEnter={(e) => e.currentTarget.style.background = '#F9FAFB'}
               onMouseLeave={(e) => e.currentTarget.style.background = ''}
             >

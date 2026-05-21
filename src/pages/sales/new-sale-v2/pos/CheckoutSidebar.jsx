@@ -73,7 +73,7 @@ export default function CheckoutSidebar({
             className='customer-remove-btn'
             onClick={(e) => {
               e.stopPropagation()
-              removeDiscountCard({ sale_id: saleId })
+              removeDiscountCard({ data: { sale_id: saleId, customer_id: customerId.id } })
             }}
             title={t('pos.remove_customer')}
           >
