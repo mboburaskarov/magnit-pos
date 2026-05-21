@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -7,78 +7,131 @@ import { useMutation } from 'react-query'
 import { useDispatch } from 'react-redux'
 import PhoneNumber from '../../../components/Inputs/PhoneNumber'
 import { requests } from '../../../utils/requests'
-import { error } from '../../../utils/toast'
+import { error, success } from '../../../utils/toast'
 import { countries } from '../../assets/data/countries'
-import BrandLogo from '../../assets/icons/BrandLogo'
-import LoginBg from '../../assets/icons/loginBg'
+import LogoMain from '../../assets/icons/LogoMain'
 import { setUserData } from '../../redux-toolkit/userSlice'
 import InputPassword from '/components/Inputs/InputPassword'
 import LoadingContainer from '/components/LoadingContainer'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.paper,
-    height: '100vh',
-    minWidth: '1300px',
+    backgroundColor: '#F7F9FC', // Premium light background
+    minHeight: '100vh',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '30px 100px 30px 30px',
-    '& .MuiOutlinedInput-root': {
-      backgroundColor: 'white',
-      border: '1px solid ',
+    padding: '20px',
+
+    // Consistent input styling for both Phone (Outlined) and Password (Filled)
+    '& .MuiFilledInput-root, & .MuiOutlinedInput-root': {
+      backgroundColor: '#F3F4F6',
+      borderRadius: '16px !important',
+      transition: 'all 0.2s ease',
+      border: '1px solid transparent !important',
+      overflow: 'hidden',
+
+      '&:hover': {
+        backgroundColor: '#E5E7EB',
+        '& fieldset': {
+          borderColor: 'transparent !important',
+        }
+      },
+      '&.Mui-focused': {
+        backgroundColor: '#FFFFFF',
+        border: `1px solid ${theme.palette.primary.main} !important`,
+        boxShadow: `0 0 0 4px ${theme.palette.primary.main}20`,
+        '& fieldset': {
+          borderColor: 'transparent !important',
+        }
+      },
+      '&:before, &:after': {
+        display: 'none', // Remove filled input bottom lines
+      },
+      '& fieldset': {
+        border: 'none !important', // Remove outlined input default borders
+      }
     },
-    '& .MuiInputBase-root': {
-      border: `1px solid ${theme.palette.bunker[100]} `,
-    },
-  },
-  description: {
-    marginBottom: 30,
-    fontSize: 18,
-    fontWeight: 400,
-    lineHeight: '24px',
-    color: theme.palette.gray[500],
-    fontFamily: theme.fontFamily.Gilroy,
-  },
-  bgContainer: {
-    display: 'flex',
-    justifyContent: 'end',
-    backgroundColor: theme.palette.orange[100],
-    padding: '93px 0 93px 130px',
-    height: '100%',
-    alignItems: 'center',
-    borderRadius: '30px',
-  },
-  container: {
-    backgroundColor: theme.palette.background.paper,
-    height: 'auto',
-    borderRadius: 32,
-    paddingLeft: 50,
-    transition: 'all 0.3s ease-in-out',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    '& > div': {
-      width: '100%',
-      transition: 'all 0.3s ease-in-out',
-    },
+
+    // Adjust Phone input inner text area
     '& .MuiOutlinedInput-input': {
       paddingTop: '18px',
+      paddingBottom: '18px',
+      height: 'auto',
+      fontWeight: 500,
     },
+
+    // Adjust Password input inner text area
+    '& .MuiFilledInput-input': {
+      paddingTop: '18px !important',
+      paddingBottom: '18px !important',
+      fontWeight: 500,
+    },
+
+    '& .MuiInputLabel-root': {
+      display: 'none', // Hide standard labels to keep UI clean like reference
+    }
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 32,
+    padding: '50px 60px',
+    boxShadow: '0px 20px 60px rgba(0, 0, 0, 0.04)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 480,
+  },
+  header: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginBottom: 40,
+    width: '100%',
+  },
+  logoWrapper: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    marginBottom: 32,
   },
   title: {
-    marginBottom: 5,
-    marginTop: 40,
-    fontSize: 36,
+    fontSize: 32,
+    fontWeight: 700,
+    lineHeight: '1.2',
+    color: '#111827',
+    fontFamily: theme.fontFamily.Gilroy,
+    textAlign: 'left',
+  },
+  subtitle: {
+    marginTop: 8,
+    fontSize: 16,
+    fontWeight: 500,
+    color: '#6B7280',
+    textAlign: 'left',
+  },
+  inputGroup: {
+    width: '100%',
+    marginBottom: '16px',
+    '& .MuiFormControl-root': {
+      width: '100%', // Make password full width
+      margin: 0,
+    }
+  },
+  inputLabel: {
+    fontSize: 14,
     fontWeight: 600,
-    lineHeight: '42px',
-    color: theme.palette.black,
+    color: '#374151',
+    marginBottom: 8,
     fontFamily: theme.fontFamily.Gilroy,
   },
-  link: {
-    fontSize: 16,
-    fontWeight: 400,
-  },
+  loginButton: {
+    height: 56,
+    borderRadius: 16,
+    fontSize: 18,
+    fontWeight: 600,
+    textTransform: 'none',
+  }
 }))
 
 export default function LoginPage() {
@@ -103,8 +156,8 @@ export default function LoginPage() {
         token: 'mock-dev-token-999',
         employee: {
           id: 1,
-          first_name: 'PharmaCosmos',
-          last_name: 'Kassir',
+          first_name: 'Magnit',
+          last_name: 'Admin',
           store: {
             id: 1,
             name: 'Magnit Go - Chilonzor',
@@ -144,36 +197,58 @@ export default function LoginPage() {
   return (
     <LoadingContainer boxStyle={{ height: '100%' }} readyState={!false}>
       <Box className={classes.root}>
-        <Box className={classes.bgContainer} sx={{ height: 'auto', width: '55%' }}>
-          <LoginBg />
-        </Box>
-        <Box className={classes.container} sx={{ height: 686, width: '45%' }}>
+        <Box className={classes.card}>
+          <Box className={classes.header}>
+            <Box className={classes.logoWrapper}>
+              <img src="/MagnitManagementLogo.svg" alt="Magnit Management" style={{ height: '36px', width: 'auto' }} />
+            </Box>
+            <Typography className={classes.title}>Вход</Typography>
+            <Typography className={classes.subtitle}>Добро пожаловать! Пожалуйста, введите ваши данные.</Typography>
+          </Box>
+
           <FormProvider {...methods}>
-            <Box component='form' onSubmit={methods.handleSubmit(onSubmit, onError)}>
-              <BrandLogo />
-              <h1 className={classes.title}>Добро пожаловать 👋</h1>
-              <h4 className={classes.description}>Пожалуйста, войдите сюда</h4>
-              <Box width='100%'>
-                <Box minWidth={'445px'}>
-                  <PhoneNumber
-                    fullWidth
-                    name='phone_number'
-                    placeholder='Введите номер телефона'
-                    secondary
-                    required
-                    login={false}
-                    country={country}
-                    setCountry={setCountry}
-                  />
-                </Box>
-                <Box sx={{ marginTop: '20px' }}>
-                  <InputPassword id='password' name='password' label={'Password'} autoCompleteOff required fullWidth minLength={8} secondary />
-                </Box>
+            <Box component='form' onSubmit={methods.handleSubmit(onSubmit, onError)} width="100%">
+
+              <Box className={classes.inputGroup}>
+                <Typography className={classes.inputLabel}>Номер телефона</Typography>
+                <PhoneNumber
+                  fullWidth
+                  name='phone_number'
+                  placeholder='Введите номер телефона'
+                  secondary
+                  required
+                  login={false}
+                  country={country}
+                  setCountry={setCountry}
+                />
+              </Box>
+
+              <Box className={classes.inputGroup}>
+                <Typography className={classes.inputLabel} sx={{ mb: '-8px !important' }}>Пароль</Typography>
+                <InputPassword
+                  id='password'
+                  name='password'
+                  placeholder='Введите пароль'
+                  autoCompleteOff
+                  required
+                  fullWidth
+                  minLength={8}
+                  secondary
+                />
               </Box>
 
               <Box width='100%' mt={4}>
-                <LoadingButton variant='contained' size='large' type='submit' fullWidth loading={logInLoading} onClick={onSubmit} id='login-button'>
-                  Login
+                <LoadingButton
+                  className={classes.loginButton}
+                  variant='contained'
+                  size='large'
+                  type='submit'
+                  fullWidth
+                  loading={logInLoading}
+                  onClick={onSubmit}
+                  id='login-button'
+                >
+                  Войти
                 </LoadingButton>
               </Box>
             </Box>
