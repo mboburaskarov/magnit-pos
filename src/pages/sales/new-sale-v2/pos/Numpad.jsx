@@ -1,4 +1,3 @@
-import React from 'react'
 import { Delete } from 'lucide-react'
 import './PosLayout.css'
 
@@ -27,6 +26,7 @@ export default function Numpad({ onKeyPress }) {
             key={index}
             type='button'
             className={`pos-numpad-btn ${isAction ? 'is-action' : ''}`}
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => onKeyPress?.(btn.value)}
           >
             {btn.value === 'backspace' ? <Delete size={20} /> : btn.label}

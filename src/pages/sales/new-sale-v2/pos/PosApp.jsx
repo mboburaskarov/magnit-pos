@@ -1,18 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { get } from 'lodash'
-import { Trash2 } from 'lucide-react'
 
 import { requests } from '@utils/requests'
 import { error, success } from '@utils/toast'
-import thousandDivider from '@utils/thousandDivider'
 import { extractNumbers, checkBarcodeWithMarking } from '@utils/checkingMarkingWithBarcode'
 import { containsCyrillic, convertoRuOrEngToEng } from '@utils/convertoRuOrEngToEng'
 
 import { useBarcodeScanner } from '@/hooks/pos/useBarcodeScanner'
+import { useSaleOperations } from '@/hooks/sale/useSaleOperations'
+import { usePrintOperations } from '@/hooks/sale/usePrintOperations'
+import { RippedPaperItem } from '@components/RippedPaperList'
 import PosClientPanel from './PosClientPanel'
 import POSHeader from './POSHeader'
 import ProductTable from './ProductTable'
@@ -21,6 +22,8 @@ import ProductSummary from './ProductSummary'
 import PosQuickProducts from './PosQuickProducts'
 import ActionBar from './ActionBar'
 import PosSecurityQrModal from './PosSecurityQrModal'
+import PosAppScanModal from './PosAppScanModal'
+import SaleProgressSteps from '../saleStepLoading'
 import './PosLayout.css'
 
 export default function PosApp() {
@@ -32,7 +35,6 @@ export default function PosApp() {
   // ── States ──
   const [customerId, setCustomerId] = useState(null)
   const [selectedId, setSelectedId] = useState(null)
-  const [activeTab, setActiveTab] = useState('SALES ITEM')
   const [showLangDropdown, setShowLangDropdown] = useState(false)
   const [showQuickProducts, setShowQuickProducts] = useState(false)
   const [securityItem, setSecurityItem] = useState(null)
@@ -40,14 +42,26 @@ export default function PosApp() {
 
   // Payment states
   const [showPaymentView, setShowPaymentView] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState('cash')
+  const [paymentMethod, setPaymentMethod] = useState(null)
+  const [cashPaymentSelected, setCashPaymentSelected] = useState(false)
   const [receivedAmount, setReceivedAmount] = useState('')
+  const [cardPaymentSelected, setCardPaymentSelected] = useState(false)
+  const [cardPaymentAmount, setCardPaymentAmount] = useState('')
+  const [secondaryPaymentMethod, setSecondaryPaymentMethod] = useState(null)
+  const [secondaryPaymentAmount, setSecondaryPaymentAmount] = useState('')
+  const [focusedPaymentInput, setFocusedPaymentInput] = useState('cash')
+  const [showAppScanModal, setShowAppScanModal] = useState(false)
 
   // Customer selection & topbar search states
   const [customerSearchTerm, setCustomerSearchTerm] = useState('')
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false)
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [topbarSearchTerm, setTopbarSearchTerm] = useState('')
+  const [newSaleId, setNewSaleId] = useState(null)
+  const [qrcodeUrl, setQrcodeUrl] = useState({})
+  const [openRefreshDialog, setOpenRefreshDialog] = useState(false)
+  const [dmedPrescriptionsList, setDmedPrescriptionsList] = useState([])
+  const [dmedOrganizedList, setDmedOrganizedList] = useState([])
 
   useEffect(() => {
     const updateTime = () => {
@@ -67,6 +81,7 @@ export default function PosApp() {
 
   // ── Queries ──
   const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
+  const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
 
   const {
     data: cartItemsRes,
@@ -82,6 +97,78 @@ export default function PosApp() {
 
   const cartItems = get(cartItemsRes, 'data.data.data', [])
   const totalAmount = get(cartItemsRes, 'data.data.total_amount', 0)
+  const posCartItemsList = useMemo(
+    () => ({
+      data: cartItems,
+      total_amount: totalAmount,
+      sum: get(cartItemsRes, 'data.data.sum', totalAmount),
+      discount_amount: get(cartItemsRes, 'data.data.discount_amount', 0),
+      vat_sum: get(cartItemsRes, 'data.data.vat_sum', 0),
+    }),
+    [cartItemsRes],
+  )
+
+  const getPaymentTypeId = (names = []) => {
+    const paymentTypes = get(paymentTypesList, 'data.data', [])
+    return paymentTypes.find((item) => names.includes(item.name) || names.includes(item.front_name))?.id
+  }
+
+  const paymentsList = useMemo(() => {
+    const payments = []
+
+    if (cashPaymentSelected && Number(receivedAmount) > 0) {
+      payments.push({
+        amount: Number(receivedAmount),
+        payment_type_id: getPaymentTypeId(['Naqd', 'cash']),
+        type: 'cash',
+        name: 'Naqd',
+        app_type: 'naqd',
+        front_name: 'cash',
+      })
+    }
+
+    if (cardPaymentSelected && Number(cardPaymentAmount) > 0) {
+      payments.push({
+        amount: Number(cardPaymentAmount),
+        payment_type_id: getPaymentTypeId(['Uzcard', 'Humo', 'card']),
+        type: 'card',
+        name: 'Uzcard',
+        app_type: 'Uzcard',
+        front_name: 'card',
+      })
+    }
+
+    if (secondaryPaymentMethod && Number(secondaryPaymentAmount) > 0) {
+      const appNameByMethod = {
+        click: 'Click',
+        payme: 'Payme',
+        uzum: 'Uzum',
+      }
+      const appName = appNameByMethod[secondaryPaymentMethod]
+
+      payments.push({
+        amount: Number(secondaryPaymentAmount),
+        payment_type_id: getPaymentTypeId([appName, secondaryPaymentMethod]),
+        type: 'app',
+        name: appName,
+        app_type: secondaryPaymentMethod,
+        front_name: secondaryPaymentMethod,
+      })
+    }
+
+    return payments
+  }, [
+    cashPaymentSelected,
+    receivedAmount,
+    cardPaymentSelected,
+    cardPaymentAmount,
+    secondaryPaymentMethod,
+    secondaryPaymentAmount,
+    paymentTypesList,
+  ])
+
+  const paymentAmount = paymentsList.reduce((sum, item) => sum + Number(item.amount || 0), 0)
+  const maxAmount = Number(totalAmount || 0) - paymentAmount
 
   // Calculate totals
   const totalDiscount = cartItems.reduce((acc, item) => acc + (item.discount_price || 0), 0)
@@ -107,18 +194,36 @@ export default function PosApp() {
     },
   })
 
-  const { mutate: saleCreate, isLoading: isCheckoutLoading } = useMutation(requests.saleCreate, {
-    onSuccess: ({ data }) => {
-      success('Sotuv muvaffaqiyatli yakunlandi')
-      // In POS, after completing sale, we should open print receipt in new tab or just navigate back to create
-      window.open(`/sales/new-sale/${get(data, 'data.id')}`, '_blank', 'rel=noopener noreferrer')
-      navigate('/sales/create')
-    },
-    onError: (err) => {
-      error(get(err, 'response.data.message', 'Sotuvni yakunlashda xatolik yuz berdi'))
-      console.error(err)
-    },
+  const {
+    submitSale,
+    isFinishSaleWithoutAppPaymentType,
+    isSendToEPOS,
+    isGelOldEposCheck,
+    isSendEPOSresponseToBackend,
+    hasError,
+    setHasError,
+  } = useSaleOperations({
+    cartItemsList: posCartItemsList,
+    markingsList: {},
+    dmedOrganizedList,
+    dmedPrescriptionsList,
+    serviceType: 'other',
+    cashBoxDetails,
+    customerId,
+    setNewSaleId,
+    setQrcodeUrl,
+    setOpenRefreshDialog,
+    setDmedPrescriptionsList,
+    setDmedOrganizedList,
+    setCustomerId,
+    paymentsList,
+    maxAmount,
+    cartOwnerType: 'personal',
+    cartItemsListLoading: isCartLoading,
   })
+console.log(posCartItemsList);
+
+  const isCheckoutLoading = isFinishSaleWithoutAppPaymentType || isSendToEPOS || isGelOldEposCheck || isSendEPOSresponseToBackend
 
   const { mutate: addProduct } = useMutation(
     (params) => {
@@ -215,17 +320,138 @@ export default function PosApp() {
 
   // ── Handlers ──
   const handleQuickCash = (amount) => {
-    setReceivedAmount((prev) => {
-      const current = Number(prev) || 0
-      return String(current + amount)
-    })
+    if (focusedPaymentInput === 'secondary' && secondaryPaymentMethod) {
+      setSecondaryPaymentAmount(String(amount))
+    } else if (focusedPaymentInput === 'card' && cardPaymentSelected) {
+      setCardPaymentAmount(String(amount))
+    } else {
+      setCashPaymentSelected(true)
+      setReceivedAmount(String(amount))
+      setFocusedPaymentInput('cash')
+      setPaymentMethod('cash')
+    }
+  }
+
+  const handleStartPaymentView = () => {
+    setCashPaymentSelected(false)
+    setReceivedAmount('')
+    setCardPaymentSelected(false)
+    setCardPaymentAmount('')
+    setSecondaryPaymentMethod(null)
+    setSecondaryPaymentAmount('')
+    setFocusedPaymentInput(null)
+    setPaymentMethod(null)
+    setShowPaymentView(true)
+  }
+
+  const handleSelectCashPayment = () => {
+    if (cashPaymentSelected) {
+      setCashPaymentSelected(false)
+      setReceivedAmount('')
+      if (cardPaymentSelected) {
+        setFocusedPaymentInput('card')
+        setPaymentMethod('card')
+      } else if (secondaryPaymentMethod) {
+        setFocusedPaymentInput('secondary')
+        setPaymentMethod(secondaryPaymentMethod)
+      } else {
+        setFocusedPaymentInput(null)
+        setPaymentMethod(null)
+      }
+      return
+    }
+
+    const remainingAmount = Math.max(
+      Number(totalAmount) - Number(cardPaymentAmount || 0) - Number(secondaryPaymentAmount || 0),
+      0,
+    )
+    if (remainingAmount <= 0) return
+
+    setCashPaymentSelected(true)
+    setReceivedAmount(String(remainingAmount))
+    setFocusedPaymentInput('cash')
+    setPaymentMethod('cash')
+  }
+
+  const handleSelectCardPayment = () => {
+    if (cardPaymentSelected) {
+      setCardPaymentSelected(false)
+      setCardPaymentAmount('')
+      if (cashPaymentSelected) {
+        setFocusedPaymentInput('cash')
+        setPaymentMethod('cash')
+      } else if (secondaryPaymentMethod) {
+        setFocusedPaymentInput('secondary')
+        setPaymentMethod(secondaryPaymentMethod)
+      } else {
+        setFocusedPaymentInput(null)
+        setPaymentMethod(null)
+      }
+      return
+    }
+
+    const remainingAmount = Math.max(
+      Number(totalAmount) - (cashPaymentSelected ? Number(receivedAmount || 0) : 0) - Number(secondaryPaymentAmount || 0),
+      0,
+    )
+    if (remainingAmount <= 0) return
+
+    setCardPaymentSelected(true)
+    setCardPaymentAmount(String(remainingAmount))
+    setFocusedPaymentInput('card')
+    setPaymentMethod('card')
+  }
+
+  const handleSelectSecondaryPayment = (method) => {
+    if (secondaryPaymentMethod === method) {
+      setSecondaryPaymentMethod(null)
+      setSecondaryPaymentAmount('')
+      if (cashPaymentSelected) {
+        setFocusedPaymentInput('cash')
+        setPaymentMethod('cash')
+      } else if (cardPaymentSelected) {
+        setFocusedPaymentInput('card')
+        setPaymentMethod('card')
+      } else {
+        setFocusedPaymentInput(null)
+        setPaymentMethod(null)
+      }
+      return
+    }
+
+    const cashAmount = cashPaymentSelected ? Number(receivedAmount || 0) : 0
+    const remainingAmount = Math.max(Number(totalAmount) - cashAmount - Number(cardPaymentAmount || 0), 0)
+    if (remainingAmount <= 0) return
+
+    setSecondaryPaymentMethod(method)
+    setSecondaryPaymentAmount(String(remainingAmount))
+    setFocusedPaymentInput('secondary')
+    setPaymentMethod(method)
   }
 
   const handleCheckout = () => {
-    saleCreate({
-      cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
-      store_id: get(userData, 'store.id'),
-    })
+    if (!paymentsList.length) {
+      error("To'lov turini tanlang")
+      return
+    }
+
+    if (paymentAmount < Number(totalAmount || 0)) {
+      error("To'lov summasi yetarli emas")
+      return
+    }
+
+    const hasAppPayment = paymentsList.some((p) => p.type === 'app')
+    if (hasAppPayment) {
+      setShowAppScanModal(true)
+      return
+    }
+
+    submitSale(paymentsList, undefined, maxAmount, 'personal')
+  }
+
+  const handleAppScanSubmit = () => {
+    setShowAppScanModal(false)
+    submitSale(paymentsList, undefined, maxAmount, 'personal')
   }
 
   const handleBarcodeScan = async (scannedBarcode) => {
@@ -356,16 +582,38 @@ export default function PosApp() {
     }
   }
 
-  const handleSecurityApproved = (qrCode) => {
+  const handleSecurityApproved = () => {
     if (securityItem) {
       deleteItem(securityItem.id)
       setSecurityItem(null)
     }
   }
 
-  const handlePrint = () => {
-    success("Chek chop etish navbatiga qo'shildi")
+  const resetPaymentState = () => {
+    setCashPaymentSelected(false)
+    setReceivedAmount('')
+    setCardPaymentSelected(false)
+    setCardPaymentAmount('')
+    setSecondaryPaymentMethod(null)
+    setSecondaryPaymentAmount('')
+    setShowPaymentView(false)
   }
+
+  const { handlePrint, printContainer } = usePrintOperations({
+    newSaleId,
+    setNewSaleId,
+    setQrcodeUrl,
+    setPaymentsList: resetPaymentState,
+    defaultPaymentTypes: [],
+    setMarkingList: () => {},
+    sendToEpos: localStorage.getItem('send_to_epos'),
+  })
+
+  useEffect(() => {
+    if (newSaleId && qrcodeUrl.qr !== 'pending') {
+      handlePrint()
+    }
+  }, [newSaleId, qrcodeUrl])
 
   const handleDiscount = () => {
     setIsCustomerModalOpen(true)
@@ -375,13 +623,6 @@ export default function PosApp() {
     success("Sotuv vaqtincha saqlandi (Otlozhen)")
   }
 
-  const handleContinue = () => {
-    setShowPaymentView(true)
-  }
-
-  const handleNotProduct = () => {
-    success("Noma'lum tovar tanlandi")
-  }
 
   const handleCancelSale = () => {
     success("Sotuv bekor qilindi")
@@ -401,16 +642,18 @@ export default function PosApp() {
     success("Qaytarish jarayoni boshlandi")
   }
 
-  const handleExchange = () => {
-    success("Ayirboshlash jarayoni boshlandi")
-  }
-
-  const handleChangeCount = () => {
-    success("Miqdorni o'zgartirish rejimi")
-  }
 
   return (
     <div className='pos-shell'>
+      <SaleProgressSteps
+        isFinishSaleWithoutAppPaymentType={isFinishSaleWithoutAppPaymentType}
+        isSendToEPOS={isSendToEPOS}
+        isGelOldEposCheck={isGelOldEposCheck}
+        isSendEPOSresponseToBackend={isSendEPOSresponseToBackend}
+        hasError={hasError}
+        setHasError={setHasError}
+      />
+
       {/* ── Top Header ── */}
       <POSHeader
         time={time}
@@ -462,6 +705,18 @@ export default function PosApp() {
               hasSelectedProduct={!!selectedId}
               showQuickProducts={showQuickProducts}
               onToggleQuickProducts={() => setShowQuickProducts(!showQuickProducts)}
+              showPaymentView={showPaymentView}
+              paymentMethod={paymentMethod}
+              cashPaymentSelected={cashPaymentSelected}
+              cardPaymentSelected={cardPaymentSelected}
+              cardPaymentAmount={cardPaymentAmount}
+              secondaryPaymentMethod={secondaryPaymentMethod}
+              secondaryPaymentAmount={secondaryPaymentAmount}
+              onSelectCashPayment={handleSelectCashPayment}
+              onSelectCardPayment={handleSelectCardPayment}
+              onSelectSecondaryPayment={handleSelectSecondaryPayment}
+              receivedAmount={receivedAmount}
+              totalAmount={totalAmount}
               t={t}
             />
 
@@ -485,10 +740,18 @@ export default function PosApp() {
           removeDiscountCard={removeDiscountCard}
           showPaymentView={showPaymentView}
           setShowPaymentView={setShowPaymentView}
-          paymentMethod={paymentMethod}
-          setPaymentMethod={setPaymentMethod}
+          onStartPaymentView={handleStartPaymentView}
+          cashPaymentSelected={cashPaymentSelected}
           receivedAmount={receivedAmount}
           setReceivedAmount={setReceivedAmount}
+          cardPaymentSelected={cardPaymentSelected}
+          cardPaymentAmount={cardPaymentAmount}
+          setCardPaymentAmount={setCardPaymentAmount}
+          secondaryPaymentMethod={secondaryPaymentMethod}
+          secondaryPaymentAmount={secondaryPaymentAmount}
+          setSecondaryPaymentAmount={setSecondaryPaymentAmount}
+          focusedPaymentInput={focusedPaymentInput}
+          setFocusedPaymentInput={setFocusedPaymentInput}
           totalAmount={totalAmount}
           handleQuickCash={handleQuickCash}
           handleCheckout={handleCheckout}
@@ -548,6 +811,34 @@ export default function PosApp() {
         productName={securityItem?.name}
         onApprove={handleSecurityApproved}
         onCancel={() => setSecurityItem(null)}
+        t={t}
+      />
+
+      {/* Hidden print container */}
+      <div style={{ display: 'none' }}>
+        <div ref={printContainer}>
+          <RippedPaperItem
+            qrcodeUrl={qrcodeUrl}
+            qrcode='pending'
+            markingsList={{}}
+            paymentsList={paymentsList}
+            cartItemsList={posCartItemsList}
+            id='cheque_of_orders'
+            cashBoxDetails={cashBoxDetails}
+            customerId={customerId}
+            noFormControl
+            newSaleId={newSaleId}
+            printContainer={printContainer}
+          />
+        </div>
+      </div>
+
+      {/* App Payment Scan Modal */}
+      <PosAppScanModal
+        open={showAppScanModal}
+        paymentName={paymentsList.find((p) => p.type === 'app')?.name}
+        onSubmit={handleAppScanSubmit}
+        onCancel={() => setShowAppScanModal(false)}
         t={t}
       />
     </div>

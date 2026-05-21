@@ -1,5 +1,4 @@
-import React from 'react'
-import { Printer, Percent, Pause, Ban, Trash2, RotateCcw, Zap } from 'lucide-react'
+import { Printer, Percent, Pause, Ban, Trash2, Zap } from 'lucide-react'
 import './PosLayout.css'
 
 export default function ActionBar({
@@ -8,12 +7,80 @@ export default function ActionBar({
   onPostpone,
   onCancelSale,
   onDeleteProduct,
-  onReturn,
   hasSelectedProduct,
   showQuickProducts,
   onToggleQuickProducts,
+  showPaymentView,
+  cashPaymentSelected,
+  cardPaymentSelected,
+  cardPaymentAmount,
+  secondaryPaymentMethod,
+  secondaryPaymentAmount,
+  onSelectCashPayment,
+  onSelectCardPayment,
+  onSelectSecondaryPayment,
+  receivedAmount,
+  totalAmount,
   t,
 }) {
+  const selectedPaymentCount = [cashPaymentSelected, cardPaymentSelected, Boolean(secondaryPaymentMethod)]
+    .filter(Boolean).length
+  const totalPaid =
+    (cashPaymentSelected ? Number(receivedAmount || 0) : 0) +
+    (cardPaymentSelected ? Number(cardPaymentAmount || 0) : 0) +
+    Number(secondaryPaymentAmount || 0)
+  const isPaymentAmountEnough = totalPaid >= Number(totalAmount) && Number(totalAmount) > 0
+  const shouldDisableInactive = isPaymentAmountEnough || selectedPaymentCount >= 2
+
+  if (showPaymentView) {
+    return (
+      <div className='pos-action-bar-premium payment-methods-action-grid'>
+        <div className='payment-methods-action-row'>
+          <button
+            className={`method-select-btn ${cashPaymentSelected ? 'is-active' : ''}`}
+            onClick={onSelectCashPayment}
+            disabled={shouldDisableInactive && !cashPaymentSelected}
+            type='button'
+          >
+            {t('pos.cash_payment')}
+          </button>
+          <button
+            className={`method-select-btn ${cardPaymentSelected ? 'is-active' : ''}`}
+            onClick={onSelectCardPayment}
+            disabled={shouldDisableInactive && !cardPaymentSelected}
+            type='button'
+          >
+            {t('pos.card_payment')}
+          </button>
+          <button
+            className={`provider-select-btn click ${secondaryPaymentMethod === 'click' ? 'is-active' : ''}`}
+            onClick={() => onSelectSecondaryPayment('click')}
+            disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'click') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'click')}
+            type='button'
+          >
+            Click
+          </button>
+          <button
+            className={`provider-select-btn payme ${secondaryPaymentMethod === 'payme' ? 'is-active' : ''}`}
+            onClick={() => onSelectSecondaryPayment('payme')}
+            disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'payme') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'payme')}
+            type='button'
+          >
+            Payme
+          </button>
+          <button
+            className={`provider-select-btn uzum ${secondaryPaymentMethod === 'uzum' ? 'is-active' : ''}`}
+            onClick={() => onSelectSecondaryPayment('uzum')}
+            disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'uzum') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'uzum')}
+            type='button'
+          >
+            Uzum
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className='pos-action-bar-premium'>
       {/* General Actions */}

@@ -1,5 +1,5 @@
-import React from 'react'
-import { User, CreditCard, ChevronRight, CornerDownLeft, Sparkles } from 'lucide-react'
+import { useEffect, useRef } from 'react'
+import { User, ChevronRight, CornerDownLeft } from 'lucide-react'
 import thousandDivider from '@utils/thousandDivider'
 import Numpad from './Numpad'
 import './PosLayout.css'
@@ -12,10 +12,18 @@ export default function CheckoutSidebar({
   removeDiscountCard,
   showPaymentView,
   setShowPaymentView,
-  paymentMethod,
-  setPaymentMethod,
+  onStartPaymentView,
+  cashPaymentSelected,
   receivedAmount,
   setReceivedAmount,
+  cardPaymentSelected,
+  cardPaymentAmount,
+  setCardPaymentAmount,
+  secondaryPaymentMethod,
+  secondaryPaymentAmount,
+  setSecondaryPaymentAmount,
+  focusedPaymentInput,
+  setFocusedPaymentInput,
   totalAmount,
   handleQuickCash,
   handleCheckout,
@@ -24,16 +32,51 @@ export default function CheckoutSidebar({
   t,
 }) {
   const receiptNumber = cashBoxDetails?.data?.data?.sale_number || '--'
+  const receivedAmountInputRef = useRef(null)
+  const cardPaymentInputRef = useRef(null)
+  const secondaryPaymentInputRef = useRef(null)
+  const totalPaid =
+    (cashPaymentSelected ? Number(receivedAmount || 0) : 0) +
+    (cardPaymentSelected ? Number(cardPaymentAmount || 0) : 0) +
+    Number(secondaryPaymentAmount || 0)
+  const paymentLabels = {
+    card: t('pos.card_payment'),
+    click: 'Click',
+    payme: 'Payme',
+    uzum: 'Uzum',
+  }
+
+  const setFocusedAmount = (updater) => {
+    if (focusedPaymentInput === 'secondary' && secondaryPaymentMethod) {
+      setSecondaryPaymentAmount(updater)
+    } else if (focusedPaymentInput === 'card' && cardPaymentSelected) {
+      setCardPaymentAmount(updater)
+    } else if (focusedPaymentInput === 'cash' && cashPaymentSelected) {
+      setReceivedAmount(updater)
+    }
+  }
 
   const handleNumpadPress = (val) => {
     if (val === 'clear') {
-      setReceivedAmount('')
+      setFocusedAmount('')
     } else if (val === 'backspace') {
-      setReceivedAmount((prev) => prev.slice(0, -1))
+      setFocusedAmount((prev) => prev.slice(0, -1))
     } else {
-      setReceivedAmount((prev) => prev + String(val))
+      setFocusedAmount((prev) => prev + String(val))
     }
   }
+
+  useEffect(() => {
+    if (!showPaymentView) return
+
+    if (focusedPaymentInput === 'secondary' && secondaryPaymentMethod) {
+      secondaryPaymentInputRef.current?.focus()
+    } else if (focusedPaymentInput === 'card' && cardPaymentSelected) {
+      cardPaymentInputRef.current?.focus()
+    } else if (focusedPaymentInput === 'cash' && cashPaymentSelected) {
+      receivedAmountInputRef.current?.focus()
+    }
+  }, [cardPaymentSelected, cashPaymentSelected, focusedPaymentInput, secondaryPaymentMethod, showPaymentView])
 
   return (
     <aside className='pos-sidebar-premium'>
@@ -95,7 +138,7 @@ export default function CheckoutSidebar({
           {/* Primary Checkout Button */}
           <button 
             className='pos-primary-checkout-btn'
-            onClick={() => setShowPaymentView(true)}
+            onClick={onStartPaymentView}
             disabled={cartItems.length === 0}
           >
             <span>{t('pos.go_to_payment')}</span>
@@ -111,106 +154,117 @@ export default function CheckoutSidebar({
               <span className='payment-val total'>{thousandDivider(totalAmount)} UZS</span>
             </div>
 
-            {paymentMethod === 'cash' && (
-              <>
-                <div className='payment-row border-top-dashed'>
-                  <span className='payment-label'>{t('pos.customer_received')}</span>
-                  <div className='payment-input-wrapper'>
-                    <input
-                      type='number'
-                      value={receivedAmount}
-                      onChange={(e) => setReceivedAmount(e.target.value)}
-                      placeholder={String(totalAmount)}
-                      className='received-amount-input'
-                    />
-                    <button
-                      className='received-amount-clear'
-                      onClick={() => setReceivedAmount('')}
-                    >
-                      C
-                    </button>
-                  </div>
+            {cashPaymentSelected && (
+              <div className='payment-row border-top-dashed'>
+                <span className='payment-label'>{t('pos.cash_payment')}:</span>
+                <div className='payment-input-wrapper'>
+                  <input
+                    ref={receivedAmountInputRef}
+                    type='number'
+                    value={receivedAmount}
+                    onChange={(e) => setReceivedAmount(e.target.value)}
+                    onFocus={() => setFocusedPaymentInput('cash')}
+                    placeholder={String(totalAmount)}
+                    className='received-amount-input'
+                  />
+                  <button
+                    className='received-amount-clear'
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => setReceivedAmount('')}
+                  >
+                    C
+                  </button>
                 </div>
+              </div>
+            )}
 
-                {Number(receivedAmount) > totalAmount && (
-                  <div className='payment-row result-row success'>
-                    <span>{t('pos.change')}</span>
-                    <span className='monospace'>{thousandDivider(Number(receivedAmount) - totalAmount)} UZS</span>
-                  </div>
-                )}
+            {cardPaymentSelected && (
+              <div className={`payment-row ${cashPaymentSelected ? '' : 'border-top-dashed'}`}>
+                <span className='payment-label'>{t('pos.card_payment')}:</span>
+                <div className='payment-input-wrapper'>
+                  <input
+                    ref={cardPaymentInputRef}
+                    type='number'
+                    value={cardPaymentAmount}
+                    onChange={(e) => setCardPaymentAmount(e.target.value)}
+                    onFocus={() => setFocusedPaymentInput('card')}
+                    placeholder={String(Math.max(totalAmount - Number(receivedAmount || 0) - Number(secondaryPaymentAmount || 0), 0))}
+                    className='received-amount-input'
+                  />
+                  <button
+                    className='received-amount-clear'
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => setCardPaymentAmount('')}
+                  >
+                    C
+                  </button>
+                </div>
+              </div>
+            )}
 
-                {Number(receivedAmount) > 0 && Number(receivedAmount) < totalAmount && (
-                  <div className='payment-row result-row danger'>
-                    <span>{t('pos.remaining')}</span>
-                    <span className='monospace'>{thousandDivider(totalAmount - Number(receivedAmount))} UZS</span>
-                  </div>
-                )}
-              </>
+            {secondaryPaymentMethod && (
+              <div className={`payment-row ${cashPaymentSelected || cardPaymentSelected ? '' : 'border-top-dashed'}`}>
+                <span className='payment-label'>{paymentLabels[secondaryPaymentMethod]}:</span>
+                <div className='payment-input-wrapper'>
+                  <input
+                    ref={secondaryPaymentInputRef}
+                    type='number'
+                    value={secondaryPaymentAmount}
+                    onChange={(e) => setSecondaryPaymentAmount(e.target.value)}
+                    onFocus={() => setFocusedPaymentInput('secondary')}
+                    placeholder={String(Math.max(totalAmount - Number(receivedAmount || 0) - Number(cardPaymentAmount || 0), 0))}
+                    className='received-amount-input'
+                  />
+                  <button
+                    className='received-amount-clear'
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => setSecondaryPaymentAmount('')}
+                  >
+                    C
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {totalPaid > totalAmount && (
+              <div className='payment-row result-row success'>
+                <span>{t('pos.change')}</span>
+                <span className='monospace'>{thousandDivider(totalPaid - totalAmount)} UZS</span>
+              </div>
+            )}
+
+            {totalPaid > 0 && totalPaid < totalAmount && (
+              <div className='payment-row result-row danger'>
+                <span>{t('pos.remaining')}</span>
+                <span className='monospace'>{thousandDivider(totalAmount - totalPaid)} UZS</span>
+              </div>
             )}
           </div>
 
-          {/* Payment Method Selector */}
-          <div className='payment-methods-grid'>
-            <button
-              className={`method-select-btn ${paymentMethod === 'cash' ? 'is-active' : ''}`}
-              onClick={() => setPaymentMethod('cash')}
-            >
-              {t('pos.cash_payment')}
-            </button>
-            <button
-              className={`method-select-btn ${paymentMethod === 'card' ? 'is-active' : ''}`}
-              onClick={() => setPaymentMethod('card')}
-            >
-              {t('pos.card_payment')}
-            </button>
-          </div>
-
-          {/* Online Provider Tabs */}
-          <div className='online-providers-grid'>
-            <button
-              className={`provider-select-btn click ${paymentMethod === 'click' ? 'is-active' : ''}`}
-              onClick={() => setPaymentMethod('click')}
-            >
-              Click
-            </button>
-            <button
-              className={`provider-select-btn payme ${paymentMethod === 'payme' ? 'is-active' : ''}`}
-              onClick={() => setPaymentMethod('payme')}
-            >
-              Payme
-            </button>
-            <button
-              className={`provider-select-btn uzum ${paymentMethod === 'uzum' ? 'is-active' : ''}`}
-              onClick={() => setPaymentMethod('uzum')}
-            >
-              Uzum
-            </button>
-          </div>
-
           {/* Cash Bills Quick Select */}
-          {paymentMethod === 'cash' && (
-            <div className='cash-bills-grid'>
-              {[5000, 10000, 20000, 50000, 100000, 200000].map((val) => {
-                let billClass = 'uzs-5k'
-                if (val === 10000) billClass = 'uzs-10k'
-                if (val === 20000) billClass = 'uzs-20k'
-                if (val === 50000) billClass = 'uzs-50k'
-                if (val === 100000) billClass = 'uzs-100k'
-                if (val === 200000) billClass = 'uzs-200k'
+          <div className='cash-bills-grid'>
+            {[5000, 10000, 20000, 50000, 100000, 200000].map((val) => {
+              let billClass = 'uzs-5k'
+              if (val === 10000) billClass = 'uzs-10k'
+              if (val === 20000) billClass = 'uzs-20k'
+              if (val === 50000) billClass = 'uzs-50k'
+              if (val === 100000) billClass = 'uzs-100k'
+              if (val === 200000) billClass = 'uzs-200k'
 
-                return (
-                  <button
-                    key={val}
-                    type='button'
-                    className={`cash-bill-btn ${billClass}`}
-                    onClick={() => handleQuickCash(val)}
-                  >
-                    {thousandDivider(val)}
-                  </button>
-                )
-              })}
-            </div>
-          )}
+              return (
+                <button
+                  key={val}
+                  type='button'
+                  className={`cash-bill-btn ${billClass}`}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => handleQuickCash(val)}
+                >
+                  {thousandDivider(val)}
+                </button>
+              )
+            })}
+          </div>
+          <Numpad onKeyPress={handleNumpadPress} />
 
           {/* Action Buttons: Confirm & Back */}
           <div className='payment-action-buttons'>

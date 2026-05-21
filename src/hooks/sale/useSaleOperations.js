@@ -1,7 +1,7 @@
 import { requests } from '@utils/requests'
 import { error, success } from '@utils/toast'
 import { get } from 'lodash'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMutation } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -51,7 +51,6 @@ export const useSaleOperations = ({
   const {
     mutate: finishSaleWithoutAppPaymentType,
     isLoading: isFinishSaleWithoutAppPaymentType,
-
     isError: isSaleError,
   } = useMutation(requests.addToOrderPayment, {
     onSuccess: (data) => {
@@ -64,7 +63,7 @@ export const useSaleOperations = ({
         setNewSaleId('888')
         setQrcodeUrl({ qr: 'pharma-cosmos.uz', fiscal: 'No', cardType: cartOwnerType })
       } else {
-        sendEPOSData(data)
+        sendEPOSDataRef.current(data)
       }
     },
     onError: (err) => {
@@ -231,10 +230,13 @@ export const useSaleOperations = ({
 
   const getReadyDataForOFD = (data) => {
     const readyData = []
-
     let leftLoayCardSum = paymentsList?.find((el) => el.front_name == 'loyalty_card')?.amount
-    get(cartItemsList, 'data', []).map((el) => {
-      if (el?.is_marking == false) {
+    const cartItemsArray = Array.isArray(get(cartItemsList, 'data'))
+    ? get(cartItemsList, 'data')
+    : get(cartItemsList, 'data.data.data', [])
+    console.log(cartItemsArray,paymentsList)
+    cartItemsArray.map((el) => {
+      if (!el?.is_marking) {
         let leftPrice = el.total_price
         const price = el.total_price
         let otherSum = 0
@@ -267,6 +269,36 @@ export const useSaleOperations = ({
           classCode: data.find((final) => final.cart_item_id === el.id)?.classCode,
           packageCode: data.find((final) => final.cart_item_id === el.id)?.packageCode,
           other: parseFloat(other),
+          ownerType: 0,
+        })
+      } else if (Object.keys(markingsList[el.id] || {}).length === 0) {
+        // marking items without markingsList data — treat as regular item
+        const price = el.total_price
+        const discount = get(el, 'discount_amount') * el.quantity + el.discount_unit_amount * el.unit_quantity
+        const discountSum = parseFloat((discount * 100).toFixed(2))
+        let otherSum = 0
+        if (leftLoayCardSum > 0) {
+          if (price >= leftLoayCardSum) {
+            otherSum = leftLoayCardSum
+            leftLoayCardSum = 0
+          } else {
+            otherSum = price
+            leftLoayCardSum = leftLoayCardSum - price
+          }
+        }
+        const other = parseFloat((otherSum * 100).toFixed(2))
+        readyData.push({
+          barcode: data.find((final) => final.cart_item_id === el.id)?.barcode || el.barcode,
+          amount: (el.quantity + el.unit_amount) * 1000,
+          price: parseFloat((price * 100).toFixed(2)),
+          discount: discountSum,
+          vatPercent: get(el, 'vat_percent'),
+          vat: parseFloat(((((price - discount - otherSum) * get(el, 'vat_percent')) / (get(el, 'vat_percent') + 100)) * 100).toFixed(2)),
+          label: '',
+          name: el.name,
+          classCode: data.find((final) => final.cart_item_id === el.id)?.classCode || el.class_code,
+          packageCode: data.find((final) => final.cart_item_id === el.id)?.packageCode || el.package_code,
+          other,
           ownerType: 0,
         })
       } else {
@@ -377,6 +409,11 @@ export const useSaleOperations = ({
     [prepareEPOSData, paymentsList, maxAmount, sendToEPOS, SALE_TYPE, userData, customerId, cartItemsList, cashBoxDetails],
   )
 
+  const sendEPOSDataRef = useRef(sendEPOSData)
+  useEffect(() => {
+    sendEPOSDataRef.current = sendEPOSData
+  })
+
   const submitSale = useCallback(
     (paymentsList, otpData, maxAmount, cartOwnerType) => {
       if (cartItemsListLoading) {
@@ -400,7 +437,10 @@ export const useSaleOperations = ({
           }
         })
 
-      const markingData = get(cartItemsList, 'data', []).map((el) => ({
+      const cartItemsForMarking = Array.isArray(get(cartItemsList, 'data'))
+        ? get(cartItemsList, 'data')
+        : get(cartItemsList, 'data.data.data', [])
+      const markingData = cartItemsForMarking.map((el) => ({
         id: el.id,
         dmed_id: dmedOrganizedList.find((dmed) => dmed.id === el.id)?.dmedId,
         marking_list: Object.values(markingsList[el.id] || {}).filter((a) => a.length),
@@ -416,7 +456,7 @@ export const useSaleOperations = ({
         store_id: get(userData, 'store.id'),
         customer_id: get(customerId, 'id'),
         loyalty_card_barcode: customerId?.loyalty_card_barcode, // Add loyalty card support
-        total_amount: get(cartItemsList, 'total_amount'),
+        total_amount: get(cartItemsList, 'total_amount') ?? get(cartItemsList, 'data.data.total_amount'),
         tax_free: !sendToEpos,
         is_corporate: cartOwnerType == 'corporative',
         marking_data: markingData,
