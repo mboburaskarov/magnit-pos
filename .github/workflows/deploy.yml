@@ -73,6 +73,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Verify secrets are set
+        run: |
+          if [ -z "$SSH_KEY" ]; then
+            echo "ERROR: PROD_SSH_PRIVATE_KEY is empty"
+            exit 1
+          else
+            echo "Key length: ${#SSH_KEY} chars"
+            echo "Key header: $(echo "$SSH_KEY" | head -1)"
+          fi
+        env:
+          SSH_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+
       - name: Copy compose file to server
         uses: appleboy/scp-action@v0.1.7
         with:
