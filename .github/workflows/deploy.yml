@@ -21,9 +21,6 @@ jobs:
       contents: read
       packages: write
 
-    outputs:
-      image_tag: ${{ steps.meta.outputs.tags }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -73,45 +70,37 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify secrets are set
+      - name: Setup SSH
         run: |
-          if [ -z "$SSH_KEY" ]; then
-            echo "ERROR: PROD_SSH_PRIVATE_KEY is empty"
-            exit 1
-          else
-            echo "Key length: ${#SSH_KEY} chars"
-            echo "Key header: $(echo "$SSH_KEY" | head -1)"
-          fi
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p ${{ secrets.PROD_SERVER_PORT || '22' }} -H "${{ secrets.PROD_SERVER_HOST }}" >> ~/.ssh/known_hosts
         env:
           SSH_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
 
       - name: Copy compose file to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.PROD_SERVER_HOST }}
-          username: ${{ secrets.PROD_SERVER_USER }}
-          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
-          port: ${{ secrets.PROD_SERVER_PORT || '22' }}
-          source: 'compose.prod.yml'
-          target: ${{ secrets.PROD_DEPLOY_PATH }}
+        run: |
+          scp -i ~/.ssh/deploy_key \
+            -P ${{ secrets.PROD_SERVER_PORT || '22' }} \
+            compose.prod.yml \
+            ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:${{ secrets.PROD_DEPLOY_PATH }}/
 
       - name: Deploy to server
-        uses: appleboy/ssh-action@v1
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            -p ${{ secrets.PROD_SERVER_PORT || '22' }} \
+            ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }} \
+            "
+              cd ${{ secrets.PROD_DEPLOY_PATH }}
+              echo $GHCR_TOKEN | docker login ghcr.io -u $GHCR_USER --password-stdin
+              export DOCKER_IMAGE=$DOCKER_IMAGE
+              docker compose -f compose.prod.yml pull
+              docker compose -f compose.prod.yml up -d --force-recreate
+              docker image prune -f
+              echo 'Deployed $DOCKER_IMAGE successfully'
+            "
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_USER: ${{ github.actor }}
           DOCKER_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:prod-latest
-        with:
-          host: ${{ secrets.PROD_SERVER_HOST }}
-          username: ${{ secrets.PROD_SERVER_USER }}
-          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
-          port: ${{ secrets.PROD_SERVER_PORT || '22' }}
-          envs: GHCR_TOKEN,GHCR_USER,DOCKER_IMAGE
-          script: |
-            cd ${{ secrets.PROD_DEPLOY_PATH }}
-            echo ${GHCR_TOKEN} | docker login ghcr.io -u ${GHCR_USER} --password-stdin
-            export DOCKER_IMAGE=${DOCKER_IMAGE}
-            docker compose -f compose.prod.yml pull
-            docker compose -f compose.prod.yml up -d --force-recreate
-            docker image prune -f
-            echo "✅ Deployed ${DOCKER_IMAGE} successfully"
