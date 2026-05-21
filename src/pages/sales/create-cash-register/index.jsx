@@ -108,8 +108,8 @@ function NewCashRegister() {
   const { mutate: checkSaleExist, isLoading: isCheckSaleExist } = useMutation(requests.checkSaleExist, {
     onSuccess: ({ data }) => {
       if (get(data, 'data.is_open', false)) {
-        navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
-        navigate(`/sales/new-sale/${get(data, 'data.sale_id')}`)
+        navigate(`/sales/pos/${get(data, 'data.sale_id')}`)
+        navigate(`/sales/pos/${get(data, 'data.sale_id')}`)
         if (window.parent) {
           window.parent.postMessage(
             {
@@ -160,7 +160,7 @@ function NewCashRegister() {
           '*',
         )
       }
-      navigate(`/sales/new-sale/${saleId}`)
+      navigate(`/sales/pos/${saleId}`)
     },
     onError: (err) => {
       error('Ошибка при создании кассы!')

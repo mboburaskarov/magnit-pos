@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './PosLayout.css'
 
-function PosSecurityQrModal({ open, productName, onApprove, onCancel }) {
+function PosSecurityQrModal({ open, productName, onApprove, onCancel, t }) {
   const inputRef = useRef(null)
   const [value, setValue] = useState('')
   const [error, setError] = useState('')
@@ -23,7 +23,7 @@ function PosSecurityQrModal({ open, productName, onApprove, onCancel }) {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       if (value.trim().length < 4) {
-        setError("QR kod juda qisqa. Iltimos, to'g'ri scan qiling.")
+        setError(t('pos.security.error_invalid'))
         return
       }
       onApprove(value.trim())
@@ -37,33 +37,24 @@ function PosSecurityQrModal({ open, productName, onApprove, onCancel }) {
 
   return (
     <div className='pos-modal-overlay' role='dialog' aria-modal='true'>
-      <div className='pos-modal'>
+      <div className='pos-security-modal'>
         {/* Icon */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
-          <div style={{
-            width: 64, height: 64, borderRadius: '50%',
-            background: '#FEF2F2',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.2">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-          </div>
+        <div className='pos-security-icon-container'>
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
         </div>
 
-        <div className='pos-modal-title' style={{ textAlign: 'center' }}>
-          Xavfsizlik tasdiqlanishi
+        <div className='pos-security-title'>
+          {t('pos.security.title')}
         </div>
-        <div className='pos-modal-desc' style={{ textAlign: 'center', marginBottom: 6 }}>
-          Mahsulotni olib tashlash uchun admin QR ni scan qiling:
+        
+        <div className='pos-security-desc'>
+          {t('pos.security.desc')}
         </div>
+
         {productName && (
-          <div style={{
-            background: '#FFF7F0', border: '1px solid #FE5000',
-            borderRadius: 8, padding: '8px 12px',
-            fontSize: 14, fontWeight: 600, color: '#FE5000',
-            textAlign: 'center', marginBottom: 16,
-          }}>
+          <div className='pos-security-product-box'>
             {productName}
           </div>
         )}
@@ -74,49 +65,42 @@ function PosSecurityQrModal({ open, productName, onApprove, onCancel }) {
           value={value}
           onChange={(e) => { setValue(e.target.value); setError('') }}
           onKeyDown={handleKeyDown}
-          placeholder="QR kodni bu yerga scan qiling..."
-          className='pos-cash-input'
-          style={{ textAlign: 'left', fontSize: 15 }}
+          placeholder={t('pos.security.placeholder')}
+          className='pos-security-input'
           autoComplete='off'
         />
 
         {error && (
-          <div style={{ color: '#DC2626', fontSize: 13, marginTop: 6, textAlign: 'center' }}>
+          <div className='pos-security-error'>
             {error}
           </div>
         )}
 
-        <div className='pos-modal-actions'>
+        <div className='pos-security-actions'>
           <button
+            type='button'
             onClick={onCancel}
-            style={{
-              flex: 1, height: 48, borderRadius: 8,
-              border: '1px solid #E0E3E8', background: '#F4F5F7',
-              fontSize: 15, fontWeight: 600, cursor: 'pointer',
-            }}
+            className='pos-security-btn-cancel'
           >
-            Bekor qilish
+            {t('pos.security.cancel')}
           </button>
           <button
+            type='button'
             onClick={() => {
               if (value.trim().length < 4) {
-                setError("QR kod juda qisqa.")
+                setError(t('pos.security.error_short'))
                 return
               }
               onApprove(value.trim())
             }}
-            style={{
-              flex: 1, height: 48, borderRadius: 8,
-              border: 'none', background: '#DC2626', color: '#fff',
-              fontSize: 15, fontWeight: 700, cursor: 'pointer',
-            }}
+            className='pos-security-btn-confirm'
           >
-            Tasdiqlash
+            {t('pos.security.confirm')}
           </button>
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: 12, fontSize: 12, color: '#9CA3AF' }}>
-          Esc – bekor qilish • Enter – tasdiqlash
+        <div className='pos-security-help'>
+          {t('pos.security.help')}
         </div>
       </div>
     </div>

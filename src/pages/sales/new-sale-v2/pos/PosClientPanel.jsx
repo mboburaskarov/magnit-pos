@@ -34,6 +34,7 @@ function PosClientPanel({
   onCreateClient,
   removeClient,
   isSearching,
+  t,
 }) {
   const [focused, setFocused] = useState(false)
   const inputRef = useRef(null)
@@ -69,7 +70,7 @@ function PosClientPanel({
             )}
             {customerId.balance !== undefined && (
               <div style={{ fontSize: 12, color: '#16A34A', fontWeight: 700, marginTop: 2 }}>
-                Balans: {thousandDivider(customerId.balance, 'сум')}
+                {t('pos.balance')}: {thousandDivider(customerId.balance, t('pos.currency_short'))}
               </div>
             )}
           </div>
@@ -84,7 +85,7 @@ function PosClientPanel({
                 borderRadius: 6, background: '#F4F5F7', cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
-              title="Mijozni olib tashlash"
+              title={t('pos.remove_client')}
             >
               <XIcon />
             </button>
@@ -97,7 +98,7 @@ function PosClientPanel({
             borderRadius: 8, display: 'flex', alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-            <span style={{ fontSize: 12, color: '#fff', fontWeight: 600 }}>Chegirma kartasi</span>
+            <span style={{ fontSize: 12, color: '#fff', fontWeight: 600 }}>{t('pos.discount_card')}</span>
             <span style={{ fontSize: 16, color: '#fff', fontWeight: 800 }}>
               {customerId.discount_card_percent}%
             </span>
@@ -115,7 +116,7 @@ function PosClientPanel({
         className='pos-client-search'
         type='text'
         value={searchTerm || ''}
-        placeholder="Mijoz ismi yoki telefon raqamini kiriting"
+        placeholder={t('pos.search_client_placeholder')}
         onChange={(e) => setSearchTerm(e.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setTimeout(() => setFocused(false), 200)}
@@ -138,7 +139,7 @@ function PosClientPanel({
         }}>
           {isSearching && (
             <div style={{ padding: 12, color: '#9CA3AF', fontSize: 13, textAlign: 'center' }}>
-              Qidirilmoqda...
+              {t('pos.searching')}
             </div>
           )}
           {!isSearching && customers.length === 0 && (
@@ -146,7 +147,7 @@ function PosClientPanel({
               style={{ padding: '12px 16px', cursor: 'pointer', color: '#374151', fontSize: 14 }}
               onClick={() => onCreateClient?.(searchTerm)}
             >
-              <span style={{ color: '#FE5000', fontWeight: 700 }}>+ Qo'shish:</span>{' '}
+              <span style={{ color: '#FE5000', fontWeight: 700 }}>+ {t('pos.add_new')}:</span>{' '}
               "{searchTerm}"
             </div>
           )}
@@ -191,7 +192,7 @@ function PosClientPanel({
 
       {searchTerm?.length > 0 && searchTerm.length < 3 && (
         <div style={{ fontSize: 12, color: '#DC2626', marginTop: 4, paddingLeft: 2 }}>
-          Kamida 3 ta belgi kiriting
+          {t('pos.min_char_warning')}
         </div>
       )}
     </div>
