@@ -3,5 +3,9 @@ services:
     image: ${DOCKER_IMAGE}
     container_name: magnit-adminpanel
     restart: unless-stopped
-    ports:
-      - "3100:80"
+    networks:
+      - magnit
+
+networks:
+  magnit:
+    external: true
