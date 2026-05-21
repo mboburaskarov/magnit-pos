@@ -3,6 +3,7 @@ import thousandDivider from '@utils/thousandDivider'
 import { ScanBarcode } from 'lucide-react'
 import QuantityStepper from './QuantityStepper'
 import './PosLayout.css'
+import { Sd } from '@mui/icons-material'
 
 export default function ProductTable({ cartItems = [], selectedId, onSelectRow, onQtyIncrease, onQtyDecrease, onQtyDecreaseRequestSecurity, isLoading }) {
   const { t } = useTranslation()
@@ -14,7 +15,8 @@ export default function ProductTable({ cartItems = [], selectedId, onSelectRow, 
       onQtyDecrease?.(item)
     }
   }
-
+  // Sd
+  // Sd
   return (
     <div className='pos-table-wrapper'>
       <table className='pos-table-premium'>
