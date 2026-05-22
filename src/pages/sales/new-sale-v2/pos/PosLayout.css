@@ -417,6 +417,8 @@ body {
 .pos-table-empty {
   padding: 32px 20px !important;
   text-align: center;
+  height: 55vh;
+  vertical-align: middle;
 }
 
 .loading-spinner-placeholder {
@@ -446,6 +448,7 @@ body {
 .empty-state-subtitle {
   font-size: 13px;
   color: var(--pos-text-muted);
+  max-width: 400px;
 }
 
 /* ── Quantity Stepper Component ── */
@@ -671,6 +674,7 @@ body {
 .quick-products-grid::-webkit-scrollbar {
   height: 4px;
 }
+
 .quick-products-grid::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 4px;
@@ -721,7 +725,7 @@ body {
   width: 100%;
   gap: 6px;
   background-color: var(--pos-surface);
-  padding: 8px 12px;
+  padding: 8px;
   border-radius: var(--pos-radius-lg);
   border: 1px solid var(--pos-border);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
@@ -974,7 +978,6 @@ body {
 
 /* Primary checkout button */
 .pos-primary-checkout-btn {
-  margin-top: 16px;
   height: 100%;
   flex: 1;
   border: none;
@@ -982,13 +985,12 @@ body {
   color: #ffffff;
   font-size: 20px;
   font-weight: 700;
-  border-radius: var(--pos-radius-lg);
+  border-radius: var(--pos-radius-md);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-  transition: background-color 0.2s;
+
 }
 
 .pos-primary-checkout-btn:hover {
@@ -1132,6 +1134,7 @@ body {
   color: #00a3ff;
   border: 1px solid #bce3ff;
 }
+
 .provider-select-btn.click.is-active {
   background-color: #00a3ff;
   color: #ffffff;
@@ -1143,6 +1146,7 @@ body {
   color: #139d8e;
   border: 1px solid #ccfbf1;
 }
+
 .provider-select-btn.payme.is-active {
   background-color: #14b8a6;
   color: #ffffff;
@@ -1154,6 +1158,7 @@ body {
   color: #6d28d9;
   border: 1px solid #e0e7ff;
 }
+
 .provider-select-btn.uzum.is-active {
   background-color: #7c3aed;
   color: #ffffff;
@@ -1195,18 +1200,23 @@ body {
 .cash-bill-btn.uzs-5k::before {
   background-color: #81c784;
 }
+
 .cash-bill-btn.uzs-10k::before {
   background-color: #56a0d3;
 }
+
 .cash-bill-btn.uzs-20k::before {
   background-color: #d7ccc8;
 }
+
 .cash-bill-btn.uzs-50k::before {
   background-color: #b388ff;
 }
+
 .cash-bill-btn.uzs-100k::before {
   background-color: #ffab40;
 }
+
 .cash-bill-btn.uzs-200k::before {
   background-color: #69f0ae;
 }
@@ -1404,10 +1414,12 @@ body {
     top: 12%;
     opacity: 0.2;
   }
+
   50% {
     top: 86%;
     opacity: 1;
   }
+
   100% {
     top: 12%;
     opacity: 0.2;
@@ -1415,11 +1427,13 @@ body {
 }
 
 @keyframes barcode-pulse {
+
   0%,
   100% {
     transform: scale(1);
     color: var(--pos-text-muted);
   }
+
   50% {
     transform: scale(1.05);
     color: var(--pos-accent);
