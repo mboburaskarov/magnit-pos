@@ -1,5 +1,6 @@
 import React from 'react'
 import thousandDivider from '@utils/thousandDivider'
+import { PackageSearch } from 'lucide-react'
 import './PosLayout.css'
 
 export default function ProductSummary({
@@ -48,7 +49,7 @@ export default function ProductSummary({
           </div>
         ) : (
           <div className='active-product-card-placeholder'>
-            {t('pos.selected_item_placeholder')}
+            <span style={{ maxWidth: '200px' }}>{t('pos.selected_item_placeholder')}</span>
           </div>
         )}
       </div>

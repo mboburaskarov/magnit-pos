@@ -48,6 +48,7 @@ body {
 
 /* ── POS Header Premium ── */
 .pos-header-premium {
+  position: relative;
   display: flex;
   height: 60px;
   background-color: var(--pos-header-bg);
@@ -85,6 +86,13 @@ body {
 .pos-header-center {
   display: flex;
   align-items: center;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.pos-header-center.hide-for-search {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95);
 }
 
 .pos-status-bar {
@@ -150,25 +158,52 @@ body {
 }
 
 .pos-header-search-wrapper {
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: var(--pos-radius-sm);
-  padding: 4px 12px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  width: 50vw;
+  max-width: 600px;
+  height: 42px;
+  background-color: rgba(17, 24, 39, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--pos-radius-md);
+  padding: 0 16px;
   display: flex;
   align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 50;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.pos-header-search-wrapper.is-active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .pos-header-search-input {
   background: transparent;
   border: none;
   color: #ffffff;
-  font-size: 13px;
+  font-size: 15px;
   outline: none;
-  width: 200px;
+  width: 100%;
 }
 
 .pos-header-search-input::placeholder {
   color: rgba(255, 255, 255, 0.4);
+}
+
+.search-hint {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  padding: 2px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  margin-left: 8px;
 }
 
 .pos-header-btn {
@@ -417,7 +452,7 @@ body {
 .pos-table-empty {
   padding: 32px 20px !important;
   text-align: center;
-  height: 55vh;
+  height: 320px;
   vertical-align: middle;
 }
 
@@ -581,15 +616,19 @@ body {
 
 .active-product-card-placeholder {
   background-color: var(--pos-surface);
-  border: 1px dashed var(--pos-border);
+  border: 1px solid var(--pos-border);
   border-radius: var(--pos-radius-lg);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--pos-text-muted);
-  font-size: 13px;
-  font-style: italic;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
   height: 100%;
+  padding: 16px;
+  text-align: center;
+  transition: all 0.2s ease;
 }
 
 .pos-receipt-totals {

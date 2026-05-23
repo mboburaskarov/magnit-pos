@@ -28,7 +28,7 @@ export default function POSHeader({
       </div>
 
       {/* Terminal status, cashier name, shift time */}
-      <div className='pos-header-center'>
+      <div className={`pos-header-center ${showSearchInput ? 'hide-for-search' : ''}`}>
         <div className='pos-status-bar'>
           <div className='pos-status-pill'>
             <span className='pos-status-pulse green'></span>
@@ -54,29 +54,6 @@ export default function POSHeader({
       {/* Actions and logout */}
       <div className='pos-header-right'>
         <div className='pos-header-actions'>
-          {showSearchInput && (
-            <div className='pos-header-search-wrapper'>
-              <input
-                type='text'
-                className='pos-header-search-input'
-                placeholder={t('pos.enter_barcode')}
-                autoFocus
-                value={topbarSearchTerm}
-                onChange={(e) => setTopbarSearchTerm(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleBarcodeScan(topbarSearchTerm)
-                    setTopbarSearchTerm('')
-                    setShowSearchInput(false)
-                  }
-                  if (e.key === 'Escape') {
-                    setShowSearchInput(false)
-                  }
-                }}
-              />
-            </div>
-          )}
-
           <button
             className={`pos-header-btn ${showSearchInput ? 'is-active' : ''}`}
             onClick={() => setShowSearchInput(!showSearchInput)}
@@ -135,6 +112,42 @@ export default function POSHeader({
             <Power size={18} />
           </button>
         </div>
+      </div>
+
+      <div className={`pos-header-search-wrapper ${showSearchInput ? 'is-active' : ''}`}>
+        <Search size={18} style={{ color: '#9ca3af', flexShrink: 0, marginRight: '12px' }} />
+        {showSearchInput && (
+          <input
+            type='search'
+            id='posSearchQuery'
+            name='posSearchQuery'
+            className='pos-header-search-input'
+            placeholder={t('pos.enter_barcode')}
+            autoFocus
+            autoComplete='off'
+            autoCorrect='off'
+            autoCapitalize='off'
+            spellCheck={false}
+            inputMode='search'
+            data-lpignore='true'
+            data-1p-ignore='true'
+            data-bwignore='true'
+            data-form-type='other'
+            value={topbarSearchTerm}
+            onChange={(e) => setTopbarSearchTerm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleBarcodeScan(topbarSearchTerm)
+                setTopbarSearchTerm('')
+                setShowSearchInput(false)
+              }
+              if (e.key === 'Escape') {
+                setShowSearchInput(false)
+              }
+            }}
+          />
+        )}
+        <div className='search-hint'>Esc</div>
       </div>
     </header>
   )
