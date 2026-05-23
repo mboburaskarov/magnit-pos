@@ -1,11 +1,10 @@
-import LayoutWithHeaderNavbar from '../../layouts/LayoutWithHeaderNavbar'
+import MainLayout from '@/layouts/MainLayout'
 import CashShiftHistoryPage from '../../pages/sales/cash-shift-history'
 import CasShiftsPage from '../../pages/sales/cash-shift/index'
 
 const salesWithHeaderRoutes = {
   path: 'sales',
-  element: <LayoutWithHeaderNavbar hasHeader={true} />,
-
+  element: <MainLayout />,
   children: [
     {
       path: 'cash-shifts',

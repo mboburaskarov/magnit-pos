@@ -287,7 +287,7 @@ export const headerStyles = makeStyles((theme) => {
       margin: 0,
       lineHeight: '20px',
       fontWeight: 600,
-      fontFamily: "'Gilroy', sans-serif",
+      fontFamily: "'Euclid Circular B', sans-serif",
       color: theme.palette.bunker[400],
       fontSize: 14,
       transition: 'all .2s',

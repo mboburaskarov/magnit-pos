@@ -9,7 +9,6 @@ import PhoneNumber from '../../../components/Inputs/PhoneNumber'
 import { requests } from '../../../utils/requests'
 import { error, success } from '../../../utils/toast'
 import { countries } from '../../assets/data/countries'
-import LogoMain from '../../assets/icons/LogoMain'
 import { setUserData } from '../../redux-toolkit/userSlice'
 import InputPassword from '/components/Inputs/InputPassword'
 import LoadingContainer from '/components/LoadingContainer'
@@ -200,7 +199,7 @@ export default function LoginPage() {
         <Box className={classes.card}>
           <Box className={classes.header}>
             <Box className={classes.logoWrapper}>
-              <img src="/MagnitManagementLogo.svg" alt="Magnit Management" style={{ height: '36px', width: 'auto' }} />
+              <img src="/MagnitPOS.svg" alt="Magnit POS" style={{ height: '36px', width: 'auto' }} />
             </Box>
             <Typography className={classes.title}>Вход</Typography>
             <Typography className={classes.subtitle}>Добро пожаловать! Пожалуйста, введите ваши данные.</Typography>

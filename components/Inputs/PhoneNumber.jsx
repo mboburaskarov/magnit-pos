@@ -15,7 +15,7 @@ const PhoneNumber = ({
   required,
   country = countries[0],
   setCountry,
-  setValue = () => {},
+  setValue = () => { },
   label,
   fullWidth,
   defaultValue = '',
@@ -53,7 +53,7 @@ const PhoneNumber = ({
               alignItems='center'
               justifyContent='center'
               textAlign='center'
-              fontFamily='Gilroy'
+              fontFamily='Euclid Circular B'
               fontWeight={500}
               fontSize={18}
               lineHeight='26px'
@@ -101,7 +101,7 @@ const PhoneNumber = ({
                   py={2}
                   px={3}
                   color='dark.500'
-                  fontFamily='Gilroy'
+                  fontFamily='Euclid Circular B'
                   fontWeight={600}
                   fontSize={16}
                   lineHeight='20px'

@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
 import LoadingContainer from '../../components/LoadingContainer'
+
 export default function Redirect() {
   useEffect(() => {
     if (localStorage.getItem('access_token')) {
       setTimeout(() => {
-        window.location.replace('/dashboard') //change
+        window.location.replace('/sales/create')
       }, 400)
     } else {
       window.location.replace(`/login`)

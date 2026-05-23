@@ -2,20 +2,24 @@
   position: relative;
   display: inline-block;
   width: 100% !important;
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Euclid Circular B', sans-serif;
 }
+
 .select:focus {
   outline: 0;
 }
+
 .select:focus .selection {
   border: 2px solid #111111 !important;
 }
+
 .label {
   display: block;
   margin-bottom: 16px;
   font-weight: 600;
   color: #6f6f6f;
 }
+
 .selection {
   position: relative;
   padding: 5px;
@@ -29,6 +33,7 @@
   display: flex;
   align-items: center;
 }
+
 .selectionError {
   position: relative;
   padding: 5px;
@@ -43,13 +48,14 @@
 .value {
   position: relative;
   display: inline-block;
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Euclid Circular B', sans-serif;
   color: #111217 !important;
   font-size: 14px !important;
 }
+
 .multiple {
   font-weight: 500;
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Euclid Circular B', sans-serif;
   line-height: 1.8;
   display: -webkit-box;
   padding-right: 32px;
@@ -61,6 +67,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .delete {
   position: absolute;
   top: 0;
@@ -71,12 +78,14 @@
   font-size: 10px;
   cursor: pointer;
 }
+
 .placeholder {
   padding: 5px 10px;
   color: #bdbdbd;
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Euclid Circular B', sans-serif;
   font-weight: 600;
 }
+
 .arrow {
   position: absolute;
   top: 50%;
@@ -87,6 +96,7 @@
   font-size: 10px;
   color: #898989;
 }
+
 .options {
   z-index: 1;
   background-color: #fff !important;
@@ -97,35 +107,41 @@
   padding: 0;
   border-width: 0 1px;
   border-radius: 16px;
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Euclid Circular B', sans-serif;
   height: 226px;
   overflow-y: auto;
 }
+
 .options.no-option {
   padding: 0;
   top: calc(100% + 6px);
 }
+
 .option {
   padding: 10px 16px;
   height: 56px;
   cursor: pointer;
   display: flex;
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Euclid Circular B', sans-serif;
   align-items: center;
   user-select: none;
   justify-content: space-between;
   font-weight: 600;
 }
+
 .option.all {
   border-bottom: 2px dashed;
 }
+
 .option svg {
   margin-left: 6px;
 }
+
 .option.no-option {
   cursor: default;
   color: #a3a3a3;
 }
+
 .option.no-option:hover {
   background: transparent;
 }

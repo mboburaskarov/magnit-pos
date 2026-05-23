@@ -288,7 +288,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     lineHeight: '19px',
     fontWeight: 600,
-    fontFamily: "'Gilroy', sans-serif",
+    fontFamily: "'Euclid Circular B', sans-serif",
     color: theme.palette.orange[500],
     fontSize: 16,
     transition: 'all .2s',
@@ -301,7 +301,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     lineHeight: '20px',
     fontWeight: 600,
-    fontFamily: "'Gilroy', sans-serif",
+    fontFamily: "'Euclid Circular B', sans-serif",
     color: theme.palette.bunker[400],
     fontSize: 14,
     transition: 'all .2s',
@@ -341,11 +341,11 @@ export default function ResultItem({ index, setOpenRejectConfirmDialog, itemRef,
         '&:focus': isSimilar
           ? {}
           : {
-              '& .main-Box': {
-                border: '2px solid #fe5000',
-                bgcolor: '#ccc !important',
-              },
+            '& .main-Box': {
+              border: '2px solid #fe5000',
+              bgcolor: '#ccc !important',
             },
+          },
       }}
       tabIndex={index}
       key={index}

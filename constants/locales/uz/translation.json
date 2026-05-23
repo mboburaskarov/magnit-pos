@@ -6,7 +6,6 @@
   "filter_dialog.reset.label": "Standart sozlamalar",
   "filter_dialog.save.label": "Saqlash",
   "filter_dialog.label": "Filtr",
-
   "input.category.label": "Kategoriya",
   "input.category.placeholder": "Kategoriyani tanlang",
   "input.store.label": "Do‘kon",
@@ -26,10 +25,8 @@
   "input.price.to": "gacha",
   "input.search.product.multi": "Qidiruv: mahsulot, kategoriya, shtrix-kod",
   "input.search.product": "Qidiruv",
-
   "page.catalog.title": "Katalog",
   "page.role.title": "Rollar",
-
   "table_columns.type": "Turi",
   "menu.sales.shifts.get": "Keldi",
   "menu.sales.shifts.gone": "Ketdi",
@@ -68,10 +65,8 @@
   "menu.sales.shortcuts.select_uzcard": "UZCARD tanlash",
   "menu.sales.shortcuts.select_payme": "PAYME tanlash",
   "menu.sales.shortcuts.select_click": "CLICK tanlash",
-
   "table_columns.difference": "Farq",
   "menu.settings.shops.shop_create.ripped_paper_check_infos.total": "JAMI",
-
   "switch.title.all": "Hammasi",
   "switch.title.active": "Faol",
   "switch.title.inactive": "Faol emas",
@@ -88,7 +83,6 @@
   "switch.title.searching_courier": "Kuryer qidirish",
   "switch.title.completed": "Yakunlangan",
   "switch.title.cancelled": "Bekorqilingan",
-
   "table_columns.photo": "Rasm",
   "table_columns.name": "Nomi",
   "table_columns.price": "Narx",
@@ -102,11 +96,10 @@
   "table_columns.manufacturer": "Ishlab chiqaruvchi",
   "table_columns.vat_price": "QQS narxi",
   "table_columns.vat": "QQS",
-  "table_columns.barcode": "Shtrix-kod",
+  "table_columns.barcode": "Shtrix",
   "table_columns.quantity": "Soni",
   "table_columns.actions": "Harakatlar",
   "table_columns.expire_date": "Muddati",
-
   "navbar.dashboard": "Bosh sahifa",
   "navbar.catalog": "Katalog",
   "navbar.products": "Barcha mahsulotlar",
@@ -138,12 +131,10 @@
   "navbar.activity": "Harakat jurnallari",
   "navbar.ostatki": "Dorixona tovar aylanmasi",
   "navbar.online_orders": "Online buyurtmalar",
-
   "change_password.label": "Parolni o‘zgartirish",
   "menu.clients.new.male": "Erkak",
   "menu.clients.new.female": "Ayol",
   "menu.clients.new.phone": "Telefon",
-
   "menu.finance.categories.new": "Yangi kategoriya",
   "alerts.enter_category_data": "Kategoriya ma‘lumotlarini kiriting",
   "placeholders.enter_category_name": "Kategoriya nomini kiriting",
@@ -168,13 +159,10 @@
   "create_new_product.retail_price.placeholder": "Sotuv narxini kiriting",
   "create_new_product.supply_price": "Sotib olish narxi",
   "create_new_product.supply_price.placeholder": "Sotib olish narxini kiriting",
-
   "create_new_product.amount_section.label": "Soni",
-
   "create_new_product.features.label": "Xususiyatlar",
   "create_new_product.features.manufacturer": "Ishlab chiqaruvchi",
   "create_new_product.features.manufacturer.placeholder": "Ishlab chiqaruvchini kiriting",
-
   "create_new_product.top.new_product": "Katalog",
   "create_new_product.products_set_section.image": "Rasm",
   "create_new_product.products_set_section.photo_first": "Rasmni bu yerga o‘tkazing",
@@ -185,7 +173,6 @@
   "menu.finance.categories.delete_subcattegory.title": "Subkategoriyani o‘chirish?",
   "menu.products.import.nav.show_by": "Bunga ko‘ra ko‘rsatish",
   "menu.products.import.nav.lines": " qatorlar",
-
   "create_new_product.additional_information.category": "Kategoriya",
   "create_new_product.create_packages.price": "Narx",
   "buttons.apply": "Qo‘llash",
@@ -193,7 +180,6 @@
   "menu.finance.categories.delete_subcattegory.desc": "Subkategoriyani o‘chirishga ishonchingiz komilmi? Unga moliyaviy tranzaksiyalarni bog‘lay olmaysiz",
   "buttons.cancel": "Bekor qilish",
   "buttons.delete": "O‘chirish",
-
   "page.new_sale.label": "Sotuv",
   "page.new_sale.empty_cart_title": "Savat hozircha bo‘sh",
   "page.new_sale.empty_cart_desc": "Mahsulotlarni qidiruv satri orqali qo‘shing yoki mahsulotlarni skanerlang",
@@ -301,7 +287,6 @@
   "role.name.placeholder": "Rol nomini kiriting",
   "role.description": "Rol tavsifi",
   "role.description.placeholder": "Tavsifni kiriting",
-
   "table.data.empty.title": "Mahsulot mavjud emas",
   "table.data.empty.description": "Agar siz qidirayotgan mahsulotni topa olmasangiz, «Yangi qo‘shish» tugmasini bosing va kerakli ma‘lumotlarni kiriting.",
   "menu.orders.all.all_orders_container.amount": "Almashtirish summasi",
@@ -381,7 +366,6 @@
   "return": "Qaytish",
   "scanner": "Skaner",
   "scanned_code.placeholder": "skanner qilingan ko'd",
-
   "new_order.app.pass_scan": "Toʻlovni yakunlash uchun mijozning QR kodini skanerlang.",
   "payment_type": "To'lov turi",
   "new_order.marking_dialog_info": "Barcha qo'shilgan mahsulotlarda markirofka mavjud emas. Savdo uchun barcha markirofkalarni kiriting.",
@@ -390,7 +374,7 @@
   "pos.price_list": "Narxlar ro'yxati",
   "pos.standard": "Standart",
   "pos.customer_placeholder": "Mijoz ismi yoki raqami",
-  "pos.customer_hint": "Sodiqlik QR-kodi yoki shtrix-kod skaneri",
+  "pos.customer_hint": "Sodiqlik karta skaneri",
   "pos.remove_customer": "Mijozni o'chirish",
   "pos.numpad_title": "Klaviatura / Numpad kiritish",
   "pos.go_to_payment": "To'lovga o'tish",
@@ -401,7 +385,7 @@
   "pos.cash_payment": "💵 Naqd",
   "pos.card_payment": "💳 Plastik",
   "pos.payment_processing": "To'lov qilinmoqda...",
-  "pos.complete_payment": "TO'LOVNI YAKUNLASH",
+  "pos.complete_payment": "YAKUNLASH",
   "pos.back": "ORQAGA",
   "pos.selected_item": "Tanlangan mahsulot",
   "pos.discount_label": "Chegirma",

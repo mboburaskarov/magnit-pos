@@ -1,4 +1,3 @@
-@import './assets/fonts/stylesheet.css';
 @import './assets/ag_grid.css';
 @import './assets/datepicker.css';
 @import './assets/magnit.css';
@@ -7,27 +6,36 @@
 @font-face {
   font-family: 'Euclid Circular B';
   src: url('/fonts/EuclidCircularBLight.ttf') format('truetype');
-  font-weight: 300; font-style: normal;
+  font-weight: 300;
+  font-style: normal;
 }
+
 @font-face {
   font-family: 'Euclid Circular B';
   src: url('/fonts/EuclidCircularBRegular.ttf') format('truetype');
-  font-weight: 400; font-style: normal;
+  font-weight: 400;
+  font-style: normal;
 }
+
 @font-face {
   font-family: 'Euclid Circular B';
   src: url('/fonts/EuclidCircularBMedium.ttf') format('truetype');
-  font-weight: 500; font-style: normal;
+  font-weight: 500;
+  font-style: normal;
 }
+
 @font-face {
   font-family: 'Euclid Circular B';
   src: url('/fonts/EuclidCircularBSemiBold.ttf') format('truetype');
-  font-weight: 600; font-style: normal;
+  font-weight: 600;
+  font-style: normal;
 }
+
 @font-face {
   font-family: 'Euclid Circular B';
   src: url('/fonts/EuclidCircularBBold.ttf') format('truetype');
-  font-weight: 700; font-style: normal;
+  font-weight: 700;
+  font-style: normal;
 }
 
 /* ── Design Tokens ─────────────────────────────────────────────────────── */
@@ -65,12 +73,12 @@
   --mg-radius-lg: 20px;
   --mg-radius-xl: 24px;
 
-  --mg-shadow-sm: 0 2px 4px rgba(0,0,0,.03);
-  --mg-shadow: 0 4px 12px rgba(0,0,0,.05);
-  --mg-shadow-lg: 0 8px 24px rgba(0,0,0,.06);
+  --mg-shadow-sm: 0 2px 4px rgba(0, 0, 0, .03);
+  --mg-shadow: 0 4px 12px rgba(0, 0, 0, .05);
+  --mg-shadow-lg: 0 8px 24px rgba(0, 0, 0, .06);
 
-  --mg-transition: 0.2s cubic-bezier(0.4,0,0.2,1);
-  --mg-font: 'Euclid Circular B', 'Gilroy', system-ui, sans-serif;
+  --mg-transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --mg-font: 'Euclid Circular B', 'Euclid Circular B', system-ui, sans-serif;
 }
 
 [data-theme="dark"] {
@@ -85,15 +93,15 @@
   --mg-accent: #FFFFFF;
   --mg-accent-light: #2A2A2A;
   --mg-accent-hover: #E0E0E0;
-  --mg-shadow-sm: 0 2px 4px rgba(0,0,0,.2);
-  --mg-shadow: 0 4px 12px rgba(0,0,0,.3);
-  --mg-shadow-lg: 0 8px 24px rgba(0,0,0,.4);
+  --mg-shadow-sm: 0 2px 4px rgba(0, 0, 0, .2);
+  --mg-shadow: 0 4px 12px rgba(0, 0, 0, .3);
+  --mg-shadow-lg: 0 8px 24px rgba(0, 0, 0, .4);
 }
 
 /* ── Existing pharma resets ────────────────────────────────────────────── */
 
 :root {
-  font-family: 'Euclid Circular B', 'Gilroy', sans-serif;
+  font-family: 'Euclid Circular B', 'Euclid Circular B', sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -118,14 +126,17 @@ optgroup {
   font-weight: inherit;
   line-height: inherit;
 }
+
 p {
   /* user-select: none; */
 }
+
 a {
   font-weight: 500;
   color: #fe5000cc;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #fe5000;
 }
@@ -148,13 +159,16 @@ body {
   background-color: transparent;
   padding: 0;
 }
+
 .Toastify__toast-body {
   padding: 0;
 }
+
 .highlighter-preline {
   white-space: pre-line;
 }
-.highlighter-preline > span {
+
+.highlighter-preline>span {
   white-space: pre-line;
 }
 
@@ -162,12 +176,13 @@ body {
   position: relative;
 }
 
-.dot-flashing > span {
+.dot-flashing>span {
   display: inline-block;
   position: absolute;
   top: 0;
 }
-.dot-flashing > span:nth-child(1) {
+
+.dot-flashing>span:nth-child(1) {
   left: -32px;
   width: 12px;
   height: 12px;
@@ -177,7 +192,8 @@ body {
   animation: dotFlashing 1s infinite alternate;
   animation-delay: 0s;
 }
-.dot-flashing > span:nth-child(2) {
+
+.dot-flashing>span:nth-child(2) {
   left: -14px;
   width: 12px;
   height: 12px;
@@ -187,7 +203,8 @@ body {
   animation: dotFlashing 1s infinite linear alternate;
   animation-delay: 0.5s;
 }
-.dot-flashing > span:nth-child(3) {
+
+.dot-flashing>span:nth-child(3) {
   left: 4px;
   width: 12px;
   height: 12px;
@@ -197,7 +214,8 @@ body {
   animation: dotFlashing 1s infinite alternate;
   animation-delay: 1s;
 }
-.dot-flashing > span:nth-child(4) {
+
+.dot-flashing>span:nth-child(4) {
   left: 22px;
   width: 12px;
   height: 12px;
@@ -207,10 +225,12 @@ body {
   animation: dotFlashing 1s infinite alternate;
   animation-delay: 1.5s;
 }
+
 @keyframes dotFlashing {
   0% {
     background-color: #bdbdbd;
   }
+
   50%,
   100% {
     background-color: #d4d4d4;
@@ -239,6 +259,7 @@ input[type='number'] {
   outline: none;
   cursor: pointer;
 }
+
 .customCheckbox:checked {
   appearance: auto;
   -webkit-appearance: auto;
@@ -246,13 +267,17 @@ input[type='number'] {
   clippath: inset(1px round 4px);
   background-color: '#2558FF';
 }
+
 .loading-container {
-  width: 100%; /* Full width */
-  height: 200px; /* Fixed height */
+  width: 100%;
+  /* Full width */
+  height: 200px;
+  /* Fixed height */
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fff; /* Optional: Background color */
+  background-color: #fff;
+  /* Optional: Background color */
   position: relative;
   overflow: hidden;
 }
@@ -260,16 +285,20 @@ input[type='number'] {
 .loading-bar {
   width: 100%;
   height: 10px;
-  background-color: #ddd; /* Bar background */
+  background-color: #ddd;
+  /* Bar background */
   position: relative;
   overflow: hidden;
-  border-radius: 5px; /* Rounded corners */
+  border-radius: 5px;
+  /* Rounded corners */
 }
 
 .animated-bar {
   height: 100%;
-  width: 50%; /* Width of the animated bar */
-  background-color: #119676; /* Bar color */
+  width: 50%;
+  /* Width of the animated bar */
+  background-color: #119676;
+  /* Bar color */
   position: absolute;
   top: 0;
   left: 0;
@@ -282,16 +311,20 @@ input[type='number'] {
   0% {
     left: -50%;
   }
+
   50% {
     left: 50%;
   }
+
   100% {
     left: 100%;
   }
 }
+
 div[role='row'][row-id='ag-grid-footer'] {
   background-color: #f8f8f9;
 }
+
 /* width */
 .ag-root.ag-layout-normal,
 .ag-root.ag-layout-auto-height::-webkit-scrollbar {
@@ -322,9 +355,11 @@ div[role='row'][row-id='ag-grid-footer'] {
 .ag-root.ag-layout-auto-height::-webkit-scrollbar-thumb:hover {
   background: #fff;
 }
+
 .ag-body-viewport-wrapper.ag-layout-normal {
   overflow-x: scroll;
 }
+
 .img {
   /* background-color: transparent; */
 }

@@ -2473,9 +2473,7 @@
   "navbar.cashbox_operations": "Naqd pul operatsiyalari",
   "navbar.cashbox_state": "Hisob holati",
   "navbar.cashboxes": "Kassalar",
-
   "navbar.catalog": "Katalog",
-
   "navbar.certificates": "Sertifikatlar",
   "navbar.cheques": "Cheklar",
   "navbar.clients": "Mijozlar",
@@ -2510,9 +2508,7 @@
   "navbar.ordered": "Buyurtma berildi",
   "navbar.orders": "Buyurtmalar",
   "navbar.products": "Tovarlar",
-
   "navbar.all.products": "Barcha tavarlar",
-
   "navbar.profile": "Profil",
   "navbar.promo-codes": "Promo kodlari",
   "navbar.promotions": "Aksiyalar",
@@ -2521,11 +2517,9 @@
   "navbar.return": "Tovar qaytishi",
   "navbar.revaluation": "Qayta baholash",
   "navbar.roles": "Rollar",
-
   "navbar.sales": "Sotuvlar",
   "navbar.all.sales": "Barcha sotuvlar",
   "navbar.new.sales": "Yangi sotuv",
-
   "navbar.sellers": "Sotuvchilar",
   "navbar.settings": "Sozlamalar",
   "navbar.shop": "Do'kon",

@@ -1,1 +1,1 @@
-Magnit management
+Magnit POS

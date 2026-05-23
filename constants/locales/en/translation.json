@@ -385,7 +385,7 @@
   "pos.cash_payment": "💵 Cash",
   "pos.card_payment": "💳 Card",
   "pos.payment_processing": "Processing payment...",
-  "pos.complete_payment": "COMPLETE PAYMENT",
+  "pos.complete_payment": "COMPLETE",
   "pos.back": "BACK",
   "pos.selected_item": "Selected Item",
   "pos.discount_label": "Discount",
