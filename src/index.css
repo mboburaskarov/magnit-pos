@@ -40,29 +40,29 @@
 
 /* ── Design Tokens ─────────────────────────────────────────────────────── */
 :root {
-  --mg-bg: #F6F7F9;
-  --mg-surface: #FFFFFF;
-  --mg-surface-2: #F1F3F5;
-  --mg-border: #E6E8EC;
-  --mg-border-2: #F0F0F0;
-  --mg-text-primary: #0F1115;
+  --mg-bg: #f6f7f9;
+  --mg-surface: #ffffff;
+  --mg-surface-2: #f1f3f5;
+  --mg-border: #e6e8ec;
+  --mg-border-2: #f0f0f0;
+  --mg-text-primary: #0f1115;
   --mg-text-secondary: #667085;
-  --mg-text-muted: #98A2B3;
+  --mg-text-muted: #98a2b3;
 
   --mg-accent: #111111;
-  --mg-accent-light: #F1F3F5;
+  --mg-accent-light: #f1f3f5;
   --mg-accent-hover: #333333;
 
-  --mg-success: #16A34A;
-  --mg-success-light: #DCFCE7;
-  --mg-danger: #EF4444;
-  --mg-danger-light: #FEF2F2;
-  --mg-warning: #F59E0B;
-  --mg-warning-light: #FFFBEB;
-  --mg-info: #2563EB;
-  --mg-info-light: #EFF6FF;
-  --mg-purple: #7C3AED;
-  --mg-purple-light: #F5F3FF;
+  --mg-success: #16a34a;
+  --mg-success-light: #dcfce7;
+  --mg-danger: #ef4444;
+  --mg-danger-light: #fef2f2;
+  --mg-warning: #f59e0b;
+  --mg-warning-light: #fffbeb;
+  --mg-info: #2563eb;
+  --mg-info-light: #eff6ff;
+  --mg-purple: #7c3aed;
+  --mg-purple-light: #f5f3ff;
 
   --mg-sidebar-w: 260px;
   --mg-sidebar-w-collapsed: 72px;
@@ -73,29 +73,29 @@
   --mg-radius-lg: 20px;
   --mg-radius-xl: 24px;
 
-  --mg-shadow-sm: 0 2px 4px rgba(0, 0, 0, .03);
-  --mg-shadow: 0 4px 12px rgba(0, 0, 0, .05);
-  --mg-shadow-lg: 0 8px 24px rgba(0, 0, 0, .06);
+  --mg-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.03);
+  --mg-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --mg-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.06);
 
   --mg-transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --mg-font: 'Euclid Circular B', 'Euclid Circular B', system-ui, sans-serif;
 }
 
-[data-theme="dark"] {
-  --mg-bg: #09090B;
+[data-theme='dark'] {
+  --mg-bg: #09090b;
   --mg-surface: #111113;
-  --mg-surface-2: #18181B;
-  --mg-border: #27272A;
+  --mg-surface-2: #18181b;
+  --mg-border: #27272a;
   --mg-border-2: #222222;
-  --mg-text-primary: #F4F4F5;
-  --mg-text-secondary: #A1A1AA;
-  --mg-text-muted: #71717A;
-  --mg-accent: #FFFFFF;
-  --mg-accent-light: #2A2A2A;
-  --mg-accent-hover: #E0E0E0;
-  --mg-shadow-sm: 0 2px 4px rgba(0, 0, 0, .2);
-  --mg-shadow: 0 4px 12px rgba(0, 0, 0, .3);
-  --mg-shadow-lg: 0 8px 24px rgba(0, 0, 0, .4);
+  --mg-text-primary: #f4f4f5;
+  --mg-text-secondary: #a1a1aa;
+  --mg-text-muted: #71717a;
+  --mg-accent: #ffffff;
+  --mg-accent-light: #2a2a2a;
+  --mg-accent-hover: #e0e0e0;
+  --mg-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --mg-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --mg-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 /* ── Existing pharma resets ────────────────────────────────────────────── */
@@ -168,7 +168,7 @@ body {
   white-space: pre-line;
 }
 
-.highlighter-preline>span {
+.highlighter-preline > span {
   white-space: pre-line;
 }
 
@@ -176,13 +176,13 @@ body {
   position: relative;
 }
 
-.dot-flashing>span {
+.dot-flashing > span {
   display: inline-block;
   position: absolute;
   top: 0;
 }
 
-.dot-flashing>span:nth-child(1) {
+.dot-flashing > span:nth-child(1) {
   left: -32px;
   width: 12px;
   height: 12px;
@@ -193,7 +193,7 @@ body {
   animation-delay: 0s;
 }
 
-.dot-flashing>span:nth-child(2) {
+.dot-flashing > span:nth-child(2) {
   left: -14px;
   width: 12px;
   height: 12px;
@@ -204,7 +204,7 @@ body {
   animation-delay: 0.5s;
 }
 
-.dot-flashing>span:nth-child(3) {
+.dot-flashing > span:nth-child(3) {
   left: 4px;
   width: 12px;
   height: 12px;
@@ -215,7 +215,7 @@ body {
   animation-delay: 1s;
 }
 
-.dot-flashing>span:nth-child(4) {
+.dot-flashing > span:nth-child(4) {
   left: 22px;
   width: 12px;
   height: 12px;

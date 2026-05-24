@@ -166,15 +166,7 @@ export default function PosApp() {
     }
 
     return payments
-  }, [
-    cashPaymentSelected,
-    receivedAmount,
-    cardPaymentSelected,
-    cardPaymentAmount,
-    secondaryPaymentMethod,
-    secondaryPaymentAmount,
-    paymentTypesList,
-  ])
+  }, [cashPaymentSelected, receivedAmount, cardPaymentSelected, cardPaymentAmount, secondaryPaymentMethod, secondaryPaymentAmount, paymentTypesList])
 
   const paymentAmount = paymentsList.reduce((sum, item) => sum + Number(item.amount || 0), 0)
   const maxAmount = Number(totalAmount || 0) - paymentAmount
@@ -203,34 +195,27 @@ export default function PosApp() {
     },
   })
 
-  const {
-    submitSale,
-    isFinishSaleWithoutAppPaymentType,
-    isSendToEPOS,
-    isGelOldEposCheck,
-    isSendEPOSresponseToBackend,
-    hasError,
-    setHasError,
-  } = useSaleOperations({
-    cartItemsList: posCartItemsList,
-    markingsList: {},
-    dmedOrganizedList,
-    dmedPrescriptionsList,
-    serviceType: 'other',
-    cashBoxDetails,
-    customerId,
-    setNewSaleId,
-    setQrcodeUrl,
-    setOpenRefreshDialog,
-    setDmedPrescriptionsList,
-    setDmedOrganizedList,
-    setCustomerId,
-    paymentsList,
-    maxAmount,
-    cartOwnerType: 'personal',
-    cartItemsListLoading: isCartLoading,
-  })
-  console.log(posCartItemsList);
+  const { submitSale, isFinishSaleWithoutAppPaymentType, isSendToEPOS, isGelOldEposCheck, isSendEPOSresponseToBackend, hasError, setHasError } =
+    useSaleOperations({
+      cartItemsList: posCartItemsList,
+      markingsList: {},
+      dmedOrganizedList,
+      dmedPrescriptionsList,
+      serviceType: 'other',
+      cashBoxDetails,
+      customerId,
+      setNewSaleId,
+      setQrcodeUrl,
+      setOpenRefreshDialog,
+      setDmedPrescriptionsList,
+      setDmedOrganizedList,
+      setCustomerId,
+      paymentsList,
+      maxAmount,
+      cartOwnerType: 'personal',
+      cartItemsListLoading: isCartLoading,
+    })
+  console.log(posCartItemsList)
 
   const isCheckoutLoading = isFinishSaleWithoutAppPaymentType || isSendToEPOS || isGelOldEposCheck || isSendEPOSresponseToBackend
 
@@ -330,12 +315,12 @@ export default function PosApp() {
   // ── Handlers ──
   const handleQuickCash = (amount) => {
     if (focusedPaymentInput === 'secondary' && secondaryPaymentMethod) {
-      setSecondaryPaymentAmount(prev => String(Number(prev || 0) + amount))
+      setSecondaryPaymentAmount((prev) => String(Number(prev || 0) + amount))
     } else if (focusedPaymentInput === 'card' && cardPaymentSelected) {
-      setCardPaymentAmount(prev => String(Number(prev || 0) + amount))
+      setCardPaymentAmount((prev) => String(Number(prev || 0) + amount))
     } else {
       setCashPaymentSelected(true)
-      setReceivedAmount(prev => String(Number(prev || 0) + amount))
+      setReceivedAmount((prev) => String(Number(prev || 0) + amount))
       setFocusedPaymentInput('cash')
       setPaymentMethod('cash')
     }
@@ -370,10 +355,7 @@ export default function PosApp() {
       return
     }
 
-    const remainingAmount = Math.max(
-      Number(totalAmount) - Number(cardPaymentAmount || 0) - Number(secondaryPaymentAmount || 0),
-      0,
-    )
+    const remainingAmount = Math.max(Number(totalAmount) - Number(cardPaymentAmount || 0) - Number(secondaryPaymentAmount || 0), 0)
     if (remainingAmount <= 0) return
 
     setCashPaymentSelected(true)
@@ -399,10 +381,7 @@ export default function PosApp() {
       return
     }
 
-    const remainingAmount = Math.max(
-      Number(totalAmount) - (cashPaymentSelected ? Number(receivedAmount || 0) : 0) - Number(secondaryPaymentAmount || 0),
-      0,
-    )
+    const remainingAmount = Math.max(Number(totalAmount) - (cashPaymentSelected ? Number(receivedAmount || 0) : 0) - Number(secondaryPaymentAmount || 0), 0)
     if (remainingAmount <= 0) return
 
     setCardPaymentSelected(true)
@@ -614,7 +593,7 @@ export default function PosApp() {
     setQrcodeUrl,
     setPaymentsList: resetPaymentState,
     defaultPaymentTypes: [],
-    setMarkingList: () => { },
+    setMarkingList: () => {},
     sendToEpos: localStorage.getItem('send_to_epos'),
   })
 
@@ -633,25 +612,28 @@ export default function PosApp() {
     },
     onAfterPrint: () => {
       success('Печать чека запущена')
-    }
+    },
   })
 
   const { mutate: holdSale, isLoading: isHoldingSale } = useMutation(requests.saleMoveToPending, {
     onSuccess: () => {
       success(t('pos.sale_held_success') || 'Продажа успешно отложена')
-      requests.saleCreate({
-        cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
-        store_id: get(userData, 'store.id')
-      }).then(({ data: newSaleData }) => {
-        navigate(`/sales/pos/${get(newSaleData, 'data.id')}`)
-        window.location.reload()
-      }).catch((err) => {
-        error(t('pos.error_creating_sale') || 'Ошибка при создании новой продажи')
-      })
+      requests
+        .saleCreate({
+          cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
+          store_id: get(userData, 'store.id'),
+        })
+        .then(({ data: newSaleData }) => {
+          navigate(`/sales/pos/${get(newSaleData, 'data.id')}`)
+          window.location.reload()
+        })
+        .catch((err) => {
+          error(t('pos.error_creating_sale') || 'Ошибка при создании новой продажи')
+        })
     },
     onError: (err) => {
       error(t('pos.error_holding_sale') || 'Ошибка при откладывании продажи')
-    }
+    },
   })
 
   const handleHold = () => {
@@ -679,7 +661,7 @@ export default function PosApp() {
           }
         }
       }
-      
+
       const { data: newSaleRes } = await requests.saleCreate({
         cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
         store_id: get(userData, 'store.id'),
@@ -713,7 +695,6 @@ export default function PosApp() {
   const handleReturn = () => {
     setShowReturnDrawer(true)
   }
-
 
   return (
     <div className='pos-shell'>
@@ -761,13 +742,7 @@ export default function PosApp() {
 
           {/* Left Bottom Summary & Actions */}
           <div className='pos-left-bottom'>
-            <ProductSummary
-              cartItems={cartItems}
-              selectedId={selectedId}
-              totalAmount={totalAmount}
-              totalDiscount={totalDiscount}
-              t={t}
-            />
+            <ProductSummary cartItems={cartItems} selectedId={selectedId} totalAmount={totalAmount} totalDiscount={totalDiscount} t={t} />
 
             <ActionBar
               customerId={customerId}
@@ -797,7 +772,6 @@ export default function PosApp() {
             />
 
             {/* Row 2: Conditional Tezkor Panel */}
-
           </div>
         </main>
 
@@ -838,7 +812,11 @@ export default function PosApp() {
           onClick={() => setIsCustomerModalOpen(false)}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
-          <div className='pos-modal' onClick={(e) => e.stopPropagation()} style={{ width: '450px', maxWidth: '90%', maxHeight: '90vh', overflowY: 'auto', padding: '24px' }}>
+          <div
+            className='pos-modal'
+            onClick={(e) => e.stopPropagation()}
+            style={{ width: '450px', maxWidth: '90%', maxHeight: '90vh', overflowY: 'auto', padding: '24px' }}
+          >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <h3 style={{ margin: 0, fontSize: 18, color: '#333' }}>{t('menu.clients.new_client')}</h3>
               <button
@@ -929,60 +907,42 @@ export default function PosApp() {
       />
 
       {/* Fullscreen Lock Screen */}
-      <POSLockScreen
-        open={isLocked}
-        onUnlock={() => setIsLocked(false)}
-        t={t}
-      />
+      <POSLockScreen open={isLocked} onUnlock={() => setIsLocked(false)} t={t} />
 
       {/* Return Exchange Drawer */}
-      <ReturnExchangeDrawer
-        open={showReturnDrawer}
-        setOpen={setShowReturnDrawer}
-        cashBoxDetails={cashBoxDetails}
-      />
+      <ReturnExchangeDrawer open={showReturnDrawer} setOpen={setShowReturnDrawer} cashBoxDetails={cashBoxDetails} />
 
       {/* Held Sales (Draft) Drawer */}
-      <DraftDrawer
-        open={showHeldSalesDrawer}
-        setOpen={setShowHeldSalesDrawer}
-        cashBoxDetails={cashBoxDetails}
-      />
+      <DraftDrawer open={showHeldSalesDrawer} setOpen={setShowHeldSalesDrawer} cashBoxDetails={cashBoxDetails} />
 
       {/* Quick Select Drawer */}
-      <PosQuickSelectDrawer
-        open={showQuickProducts}
-        onClose={() => setShowQuickProducts(false)}
-        onQuickAdd={handleQuickAdd}
-        isLoading={isCartLoading}
-        t={t}
-      />
+      <PosQuickSelectDrawer open={showQuickProducts} onClose={() => setShowQuickProducts(false)} onQuickAdd={handleQuickAdd} isLoading={isCartLoading} t={t} />
 
       {/* Cancel Receipt Confirmation Dialog Overlay */}
       {showCancelConfirmation && (
-        <div className="touch-modal-overlay" onClick={() => setShowCancelConfirmation(false)}>
-          <div className="touch-modal-card" onClick={(e) => e.stopPropagation()} style={{ width: '400px', textAlign: 'center' }}>
-            <div className="touch-modal-header" style={{ justifyContent: 'center' }}>
-              <div className="touch-modal-username" style={{ color: '#ffffff', fontSize: '20px' }}>
+        <div className='touch-modal-overlay' onClick={() => setShowCancelConfirmation(false)}>
+          <div className='touch-modal-card' onClick={(e) => e.stopPropagation()} style={{ width: '400px', textAlign: 'center' }}>
+            <div className='touch-modal-header' style={{ justifyContent: 'center' }}>
+              <div className='touch-modal-username' style={{ color: '#ffffff', fontSize: '20px' }}>
                 Cancel receipt?
               </div>
             </div>
-            <div className="touch-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '24px' }}>
+            <div className='touch-modal-body' style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '24px' }}>
               <div style={{ fontSize: '16px', color: 'var(--pos-text-secondary)' }}>
                 Are you sure you want to cancel the current receipt and clear the cart?
               </div>
               <div style={{ display: 'flex', gap: '12px' }}>
                 <button
-                  type="button"
-                  className="btn-secondary-touch"
+                  type='button'
+                  className='btn-secondary-touch'
                   style={{ flex: 1, height: '48px', borderRadius: '24px' }}
                   onClick={() => setShowCancelConfirmation(false)}
                 >
                   No
                 </button>
                 <button
-                  type="button"
-                  className="btn-orange-touch"
+                  type='button'
+                  className='btn-orange-touch'
                   style={{ flex: 1, height: '48px', borderRadius: '24px', backgroundColor: '#dc2626' }}
                   onClick={handleCancelConfirm}
                 >
