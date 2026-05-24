@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import GlobalStyles from './assets/GlobalStyles'
 import Providers from './Providers'
 import Routes from './Routes'
+import PwaUpdatesAndOffline from '@components/Pwa/PwaUpdatesAndOffline'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Routes />
       <GlobalStyles />
       <ToastContainer limit={3} position='top-center' autoClose={3000} hideProgressBar closeOnClick pauseOnHover draggable closeButton={false} />
+      <PwaUpdatesAndOffline />
     </Providers>
   )
 }
