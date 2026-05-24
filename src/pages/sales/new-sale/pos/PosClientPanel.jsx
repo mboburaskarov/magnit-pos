@@ -59,6 +59,13 @@ function PosClientPanel({
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
+  // Autofocus when mounted or when customerId changes to null
+  useEffect(() => {
+    if (!customerId) {
+      inputRef.current?.focus()
+    }
+  }, [customerId])
+
   if (customerId) {
     // ── Client selected state ──
     const initials = (customerId.name || 'M').charAt(0).toUpperCase()
@@ -71,31 +78,22 @@ function PosClientPanel({
             <div className='pos-client-name'>
               {customerId.name}
             </div>
-            {customerId.phone && (
-              <div className='pos-client-meta'>{customerId.phone}</div>
-            )}
             {customerId.balance !== undefined && (
-              <div style={{ fontSize: 12, color: '#16A34A', fontWeight: 700, marginTop: 2 }}>
+              <div className='pos-client-balance'>
                 {t('pos.balance')}: {thousandDivider(customerId.balance, t('pos.currency_short'))}
               </div>
             )}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flexShrink: 0 }}>
-            <button
-              onClick={() => {
-                setCustomerId(null)
-                setSearchTerm?.('')
-              }}
-              style={{
-                width: 32, height: 32, border: '1px solid #E0E3E8',
-                borderRadius: 6, background: '#F4F5F7', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}
-              title={t('pos.remove_client')}
-            >
-              <XIcon />
-            </button>
-          </div>
+          <button
+            className='pos-client-remove-btn'
+            onClick={() => {
+              setCustomerId(null)
+              setSearchTerm?.('')
+            }}
+            title={t('pos.remove_client')}
+          >
+            <XIcon size={16} />
+          </button>
         </div>
         {customerId.discount_card_percent > 0 && (
           <div style={{
@@ -173,7 +171,7 @@ function PosClientPanel({
               onMouseEnter={(e) => e.currentTarget.style.background = '#F9FAFB'}
               onMouseLeave={(e) => e.currentTarget.style.background = ''}
             >
-              <div style={{ fontWeight: 600, fontSize: 14 }}>
+              <div style={{ fontWeight: 600, fontSize: 14, color: '#111827' }}>
                 <Highlighter
                   highlightStyle={{ background: '#FFF3E0', padding: '1px 0' }}
                   searchWords={searchTerm ? searchTerm.split(' ') : []}
@@ -181,9 +179,11 @@ function PosClientPanel({
                   textToHighlight={`${item.first_name} ${item.last_name}`}
                 />
               </div>
-              <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>
-                {item.phone_numbers?.join(', ') || ''}
-              </div>
+              {item.balance !== undefined && (
+                <div style={{ fontSize: 12, color: '#16A34A', fontWeight: 600, marginTop: 2 }}>
+                  {t('pos.balance')}: {thousandDivider(item.balance, t('pos.currency_short'))}
+                </div>
+              )}
             </div>
           ))}
         </div>

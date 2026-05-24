@@ -94,9 +94,11 @@ export default function CheckoutSidebar({
           {customerId ? (
             <>
               <div className='customer-name'>{customerId.name}</div>
-              <div className='customer-card-num'>
-                {t('card')}: {customerId.barcode || `ID: ${customerId.id}`}
-              </div>
+              {customerId.balance !== undefined && (
+                <div style={{ fontSize: 11, color: '#16A34A', fontWeight: 600, marginTop: 2 }}>
+                  {t('pos.balance')}: {thousandDivider(customerId.balance, t('pos.currency_short'))}
+                </div>
+              )}
             </>
           ) : (
             <>

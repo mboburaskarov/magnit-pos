@@ -1,11 +1,12 @@
 import React from 'react'
 import LogoMain from '@icons/LogoMain'
-import { Search, Keyboard, User, Power, ShieldAlert, Cpu } from 'lucide-react'
+import { Search, User, Power, X } from 'lucide-react'
 import './PosLayout.css'
 
 export default function POSHeader({
   time,
   cashierName,
+  userData,
   showSearchInput,
   setShowSearchInput,
   topbarSearchTerm,
@@ -18,6 +19,40 @@ export default function POSHeader({
   onLogout,
   receiptNumber,
 }) {
+  const getShortName = (first, last) => {
+    if (!first) return cashierName || 'Magnit'
+    const cleanFirst = first.replace(/[()]/g, '').trim()
+    const cleanLast = last ? last.replace(/[()]/g, '').trim() : ''
+
+    const firstTokens = cleanFirst.split(/(?=[A-Z])|\s+/).filter(Boolean)
+    if (firstTokens.length > 1) {
+      return `${firstTokens[0]} ${firstTokens[1][0].toUpperCase()}.`
+    }
+
+    if (cleanLast) {
+      const lastTokens = cleanLast.split(/(?=[A-Z])|\s+/).filter(Boolean)
+      if (lastTokens.length > 0) {
+        const lastToken = lastTokens[lastTokens.length - 1]
+        return `${cleanFirst} ${lastToken[0].toUpperCase()}.`
+      }
+    }
+
+    return cleanFirst
+  }
+
+  const getFullName = (first, last) => {
+    if (!first) return cashierName || 'Magnit'
+    const cleanFirst = first.replace(/[()]/g, '').trim()
+    const cleanLast = last ? last.replace(/[()]/g, '').trim() : ''
+    if (cleanLast) {
+      return `${cleanFirst} (${cleanLast})`
+    }
+    return cleanFirst
+  }
+
+  const formattedShortName = getShortName(userData?.first_name, userData?.last_name)
+  const formattedFullName = getFullName(userData?.first_name, userData?.last_name)
+
   return (
     <header className='pos-header-premium'>
       {/* Brand block */}
@@ -42,7 +77,7 @@ export default function POSHeader({
           <div className='pos-header-divider'></div>
           <div className='pos-status-item'>
             <User size={14} style={{ marginRight: 6, color: '#9CA3AF' }} />
-            <span className='status-val'>{cashierName || 'Magnit'}</span>
+            <span className='status-val'>{formattedShortName}</span>
           </div>
           <div className='pos-header-divider'></div>
           <div className='pos-status-item monospace'>
@@ -62,10 +97,6 @@ export default function POSHeader({
             <Search size={18} />
           </button>
 
-          <button className='pos-header-btn' title={t('pos.keyboard_status')}>
-            <Keyboard size={18} />
-          </button>
-
           <div className='pos-lang-container'>
             <button
               className={`pos-header-btn ${showLangDropdown ? 'is-active' : ''}`}
@@ -75,40 +106,83 @@ export default function POSHeader({
               <User size={18} />
             </button>
             {showLangDropdown && (
-              <div className='pos-lang-dropdown'>
-                <div className='dropdown-title'>{t('language')}</div>
-                <button
-                  onClick={() => {
-                    i18n.changeLanguage('uz')
-                    setShowLangDropdown(false)
-                  }}
-                  className={`dropdown-item ${i18n.language === 'uz' ? 'active' : ''}`}
-                >
-                  🇺🇿 O&apos;zbekcha
-                </button>
-                <button
-                  onClick={() => {
-                    i18n.changeLanguage('ru')
-                    setShowLangDropdown(false)
-                  }}
-                  className={`dropdown-item ${i18n.language === 'ru' ? 'active' : ''}`}
-                >
-                  🇷🇺 Русский
-                </button>
-                <button
-                  onClick={() => {
-                    i18n.changeLanguage('en')
-                    setShowLangDropdown(false)
-                  }}
-                  className={`dropdown-item ${i18n.language === 'en' ? 'active' : ''}`}
-                >
-                  🇬🇧 English
-                </button>
+              <div className='touch-modal-overlay' onClick={() => setShowLangDropdown(false)}>
+                <div className='touch-modal-card' onClick={(e) => e.stopPropagation()}>
+                  <div className='touch-modal-header'>
+                    <div className='touch-modal-userinfo'>
+                      <div className='touch-modal-avatar'>
+                        <User size={20} />
+                      </div>
+                      <div>
+                        <div className='touch-modal-username'>{formattedFullName}</div>
+                        <div className='touch-modal-userrole'>
+                          {userData?.type === 'SUPER_ADMIN' || userData?.type === 'SUPERADMIN' ? 'Administrator' : (userData?.position || 'Cashier')}
+                        </div>
+                      </div>
+                    </div>
+                    <button className='touch-modal-close-btn' onClick={() => setShowLangDropdown(false)}>
+                      <X size={20} />
+                    </button>
+                  </div>
+                  
+                  <div className='touch-modal-body'>
+                    <div className='touch-modal-section-title'>{t('language')}</div>
+                    <div className='touch-lang-options'>
+                      <button
+                        onClick={() => {
+                          i18n.changeLanguage('uz')
+                          setShowLangDropdown(false)
+                        }}
+                        className={`touch-lang-btn ${i18n.language === 'uz' ? 'is-active' : ''}`}
+                      >
+                        <div className='touch-lang-flag-name'>
+                          <span className='touch-lang-flag'>🇺🇿</span>
+                          <span>O&apos;zbekcha</span>
+                        </div>
+                        {i18n.language === 'uz' && (
+                          <div className='touch-lang-checkmark'>✓</div>
+                        )}
+                      </button>
+                      
+                      <button
+                        onClick={() => {
+                          i18n.changeLanguage('ru')
+                          setShowLangDropdown(false)
+                        }}
+                        className={`touch-lang-btn ${i18n.language === 'ru' ? 'is-active' : ''}`}
+                      >
+                        <div className='touch-lang-flag-name'>
+                          <span className='touch-lang-flag'>🇷🇺</span>
+                          <span>Русский</span>
+                        </div>
+                        {i18n.language === 'ru' && (
+                          <div className='touch-lang-checkmark'>✓</div>
+                        )}
+                      </button>
+                      
+                      <button
+                        onClick={() => {
+                          i18n.changeLanguage('en')
+                          setShowLangDropdown(false)
+                        }}
+                        className={`touch-lang-btn ${i18n.language === 'en' ? 'is-active' : ''}`}
+                      >
+                        <div className='touch-lang-flag-name'>
+                          <span className='touch-lang-flag'>🇬🇧</span>
+                          <span>English</span>
+                        </div>
+                        {i18n.language === 'en' && (
+                          <div className='touch-lang-checkmark'>✓</div>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
 
-          <button className='pos-header-btn logout' onClick={onLogout} title={t('pos.logout')}>
+          <button className='pos-header-btn logout' onClick={onLogout} title={t('pos.cashier_session')}>
             <Power size={18} />
           </button>
         </div>

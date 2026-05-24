@@ -12,14 +12,18 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '16px',
-    backgroundColor: ({ type }) => (type == 'success' ? theme.palette.green[10] : type == 'warning' ? '#FFF9E9' : '#FFEDEB'),
+    padding: '16px 24px',
+    backgroundColor: ({ type }) => {
+      if (type === 'success') return '#16a34a'
+      if (type === 'warning') return '#d97706'
+      if (type === 'error') return '#dc2626'
+      return '#374151'
+    },
     minHeight: 60,
-    boxShadow: theme.boxShadow['32-12'],
-    borderRadius: '32px',
-    color: ({ type }) => (type == 'success' ? theme.palette.green[700] : type == 'warning' ? '#FFC120' : '#FF4639'),
-    border: '1px solid ',
-    borderColor: ({ type }) => (type == 'success' ? theme.palette.green[700] : type == 'warning' ? '#FFC120' : '#FF4639'),
+    boxShadow: 'none',
+    borderRadius: '0px',
+    color: '#ffffff',
+    border: 'none',
     '& button': {
       background: 'transparent',
       border: 0,
@@ -27,9 +31,15 @@ const useStyles = makeStyles((theme) => ({
       height: 24,
       outline: 0,
       cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     '& svg': {
       minWidth: 24,
+      '& path': {
+        fill: '#ffffff !important',
+      }
     },
   },
   message: {
@@ -38,12 +48,13 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '19px',
     display: 'flex',
     fontFamily: theme.fontFamily.Gilroy,
-    color: ({ type }) => (type == 'success' ? theme.palette.green[700] : type == 'warning' ? '#FFC120' : '#FF4639'),
+    color: '#ffffff',
     textAlign: 'left',
     '& a': {
-      color: theme.palette.green[500],
+      color: '#ffffff',
+      textDecoration: 'underline',
       '&:hover': {
-        color: theme.palette.green[600],
+        color: '#f3f4f6',
       },
     },
   },

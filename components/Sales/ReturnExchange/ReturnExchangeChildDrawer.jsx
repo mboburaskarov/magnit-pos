@@ -17,6 +17,7 @@ import { error, success } from '../../../utils/toast'
 import CustomImg from '../../CustomImg'
 import LoadingContainer from '../../LoadingContainer'
 import ReturnExchangeChildItemBox from './ReturnExchangeChildItemBox'
+import RippedPaperCheckReturn from '../../ChequePaper/RippedPaperCheckReturn'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -53,6 +54,8 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
   const printContainer = useRef()
   const userData = useSelector((state) => state.user)
   const [selectedReturnItems, setSelectedReturnItems] = useState([])
+  const [returnedSale, setReturnedSale] = useState(null)
+  const [returnedSaleId, setReturnedSaleId] = useState(null)
 
   const documentName = useRef('Cheque')
   const navigate = useNavigate()
@@ -88,10 +91,36 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
   }
 
   const handlePrint = useReactToPrint({
-    content: reactToPrintContent, // This should be a function
+    content: reactToPrintContent,
     documentTitle: documentName.current,
     removeAfterPrint: true,
+    onAfterPrint: () => {
+      setChildOpen(false)
+      setOpen(false)
+      if (returnedSaleId) {
+        navigate(`/sales/pos/${returnedSaleId}`)
+        window.location.reload()
+      }
+    },
+    onPrintError: (err) => {
+      error('Ошибка при печати чека возврата: ' + err)
+      setChildOpen(false)
+      setOpen(false)
+      if (returnedSaleId) {
+        navigate(`/sales/pos/${returnedSaleId}`)
+        window.location.reload()
+      }
+    }
   })
+
+  useEffect(() => {
+    if (returnedSale) {
+      setTimeout(() => {
+        handlePrint()
+      }, 300)
+    }
+  }, [returnedSale])
+
   const classes = useStyles()
   const { mutate: deleteDraft, isLoading: isDeleteDraft } = useMutation(requests.deleteDraft, {
     onSuccess: ({ data }) => {
@@ -106,13 +135,13 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
   })
   const { mutate: returnSaleItem, isLoading: isreturnSaleItem } = useMutation(requests.returnSaleItem, {
     onSuccess: ({ data }) => {
-      // ()
-      setChildOpen(false)
-      setOpen(false)
-      navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+      const resData = get(data, 'data')
+      setReturnedSale(resData)
+      setReturnedSaleId(resData?.id)
+      success('Возврат успешно создан!')
     },
     onError: (err) => {
-      error('Ошибка при создании Черновик!')
+      error('Ошибка при создании возврата!')
       console.error('err', err)
     },
   })
@@ -271,6 +300,19 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
             )}
           </Box>
         </Box>
+        {/* Hidden print container */}
+        <div style={{ display: 'none' }}>
+          <div ref={printContainer}>
+            {returnedSale && (
+              <RippedPaperCheckReturn
+                saleDetailsList={returnedSale}
+                qrCodeUrl={returnedSale.fiscal_sign || 'https://-cosmos.uz'}
+                customerId={returnedSale.customer}
+                noSticky
+              />
+            )}
+          </div>
+        </div>
       </Box>
     </LoadingContainer>
   )

@@ -1,11 +1,13 @@
-import { Printer, Percent, Pause, Ban, Trash2, Zap } from 'lucide-react'
+import { Printer, RotateCcw, Pause, History, Percent, Ban, Trash2, Zap, CreditCard } from 'lucide-react'
 import './PosLayout.css'
 
 export default function ActionBar({
   customerId,
   onPrint,
+  onReturn,
+  onHold,
+  onOpenHeldSales,
   onDiscount,
-  onPostpone,
   onCancelSale,
   onDeleteProduct,
   hasSelectedProduct,
@@ -79,7 +81,7 @@ export default function ActionBar({
             disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'uzum') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'uzum')}
             type='button'
           >
-            <span style={{ fontSize: 18, marginRight: 6 }}>🟣</span>
+            <img src="/uzum.png" alt="Uzum" className="payment-icon" />
             Uzum
           </button>
           <button
@@ -88,7 +90,7 @@ export default function ActionBar({
             disabled={!customerId || (shouldDisableInactive && secondaryPaymentMethod !== 'loyaltycard') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'loyaltycard')}
             type='button'
           >
-            <span style={{ fontSize: 18, marginRight: 6 }}>🎁</span>
+            <CreditCard size={18} className="payment-icon-svg" style={{ marginRight: 6 }} />
             Balans {customerId ? `(${customerId.balance || 0})` : ''}
           </button>
         </div>
@@ -98,38 +100,44 @@ export default function ActionBar({
 
   return (
     <div className='pos-action-bar-premium'>
-      {/* General Actions */}
+      {/* 1. Print */}
       <button className='action-btn neutral-btn' onClick={onPrint} type='button'>
         <Printer size={16} />
         <span>{t('print')}</span>
       </button>
 
-      <button className='action-btn neutral-btn' onClick={onDiscount} type='button'>
-        <Percent size={16} />
-        <span>{t('menu.orders.new_order.cart_container.discount')}</span>
+      {/* 2. Return */}
+      <button className='action-btn neutral-btn' onClick={onReturn} type='button'>
+        <RotateCcw size={16} />
+        <span>{t('navbar.return') || 'Возврат'}</span>
       </button>
 
-      <button className='action-btn neutral-btn' onClick={onPostpone} type='button'>
+      {/* 3. Hold */}
+      <button className='action-btn neutral-btn' onClick={onHold} type='button'>
         <Pause size={16} />
-        <span>{t('menu.orders.all.postpone')}</span>
+        <span>{t('menu.orders.all.postpone') || 'Отложить'}</span>
       </button>
 
-      {/* Tezkor Toggle Button */}
-      <button 
-        className={`action-btn ${showQuickProducts ? 'active-quick-btn' : 'neutral-btn'}`}
-        onClick={onToggleQuickProducts} 
-        type='button'
-      >
-        <Zap size={16} />
-        <span>{t('pos.quick_select')}</span>
+      {/* 4. Held sales */}
+      <button className='action-btn neutral-btn' onClick={onOpenHeldSales} type='button'>
+        <History size={16} />
+        <span>{t('pos.held_sales') || 'Отложенные'}</span>
       </button>
 
-      {/* Danger/Cancel buttons */}
+      {/* 5. Discount (with Soon Badge) */}
+      <button className='action-btn neutral-btn' onClick={onDiscount} type='button' style={{ position: 'relative' }}>
+        <Percent size={16} />
+        <span>{t('menu.orders.new_order.cart_container.discount') || 'Скидка'}</span>
+        <span className="soon-badge">Soon</span>
+      </button>
+
+      {/* 6. Cancel receipt */}
       <button className='action-btn danger-outline-btn' onClick={onCancelSale} type='button'>
         <Ban size={16} />
-        <span>{t('pos.cancel_receipt')}</span>
+        <span>{t('pos.cancel_receipt') || 'Аннулировать'}</span>
       </button>
 
+      {/* 7. Storno / Remove item */}
       <button 
         className={`action-btn ${hasSelectedProduct ? 'danger-btn-active' : 'danger-btn-disabled'}`}
         onClick={onDeleteProduct} 
@@ -137,7 +145,17 @@ export default function ActionBar({
         type='button'
       >
         <Trash2 size={16} />
-        <span>{t('pos.remove_item')}</span>
+        <span>{t('pos.remove_item') || 'Убрать товар'}</span>
+      </button>
+
+      {/* 8. Quick select */}
+      <button 
+        className={`action-btn ${showQuickProducts ? 'active-quick-btn' : 'neutral-btn'}`}
+        onClick={onToggleQuickProducts} 
+        type='button'
+      >
+        <Zap size={16} />
+        <span>{t('pos.quick_select') || 'Быстрый выбор'}</span>
       </button>
     </div>
   )

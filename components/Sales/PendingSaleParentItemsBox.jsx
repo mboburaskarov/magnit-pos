@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import ArrowRightIcon from '../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../src/assets/icons/BagOutline'
@@ -36,6 +37,35 @@ const useStyles = makeStyles((theme) => ({
 function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
   const { t } = useTranslation()
   const classes = useStyles()
+  const [elapsed, setElapsed] = useState('')
+
+  useEffect(() => {
+    const updateTimer = () => {
+      const created = get(item, 'created_at')
+      if (!created) return
+      const diffMs = new Date() - new Date(created)
+      if (diffMs < 0) {
+        setElapsed('00:00')
+        return
+      }
+      const diffSecs = Math.floor(diffMs / 1000)
+      const secs = diffSecs % 60
+      const mins = Math.floor(diffSecs / 60) % 60
+      const hours = Math.floor(diffSecs / 3600)
+      
+      const pad = (num) => String(num).padStart(2, '0')
+      if (hours > 0) {
+        setElapsed(`${pad(hours)}:${pad(mins)}:${pad(secs)}`)
+      } else {
+        setElapsed(`${pad(mins)}:${pad(secs)}`)
+      }
+    }
+    
+    updateTimer()
+    const timerId = setInterval(updateTimer, 1000)
+    return () => clearInterval(timerId)
+  }, [item])
+
   return (
     <Box
       onClick={() => setIsOpenChild({ item, type: 'sale' })}
@@ -63,9 +93,14 @@ function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
           <Typography mb={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
             {t('pending_sales')} #{get(item, 'sale_number')}
           </Typography>
-          <Typography fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'} color={'bunker.500'}>
-            {dayjs(get(item, 'created_at')).format('DD.MM.YYYY | HH:mm:ss')}
-          </Typography>
+          <Box display="flex" alignItems="center" gap="10px">
+            <Typography fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'} color={'bunker.500'}>
+              {dayjs(get(item, 'created_at')).format('DD.MM.YYYY | HH:mm:ss')}
+            </Typography>
+            <span style={{ fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: '3px', padding: '1px 5px', backgroundColor: '#fee2e2', color: '#ef4444', borderRadius: '4px', fontWeight: 'bold' }}>
+              ⏱️ {elapsed}
+            </span>
+          </Box>
         </Box>
       </Box>
       <Box display={'flex'}>

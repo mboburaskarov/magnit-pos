@@ -15,14 +15,19 @@ import { RippedPaperItem } from '@components/RippedPaperList'
 import PosClientPanel from './PosClientPanel'
 import POSHeader from './POSHeader'
 import ProductTable from './ProductTable'
+import CashierSessionModal from './CashierSessionModal'
+import POSLockScreen from './POSLockScreen'
 import CheckoutSidebar from './CheckoutSidebar'
 import ProductSummary from './ProductSummary'
-import PosQuickProducts from './PosQuickProducts'
+import PosQuickSelectDrawer from './PosQuickSelectDrawer'
 import ActionBar from './ActionBar'
 import PosSecurityQrModal from './PosSecurityQrModal'
 import PosAppScanModal from './PosAppScanModal'
 import SaleProgressSteps from '../saleStepLoading'
 import './PosLayout.css'
+import { useReactToPrint } from 'react-to-print'
+import ReturnExchangeDrawer from '@components/Sales/ReturnExchange/ReturnExchangeDrawer'
+import DraftDrawer from '@components/Sales/DraftDrawer'
 
 export default function PosApp() {
   const { id } = useParams()
@@ -37,6 +42,11 @@ export default function PosApp() {
   const [showQuickProducts, setShowQuickProducts] = useState(false)
   const [securityItem, setSecurityItem] = useState(null)
   const [time, setTime] = useState('')
+  const [showCashierSession, setShowCashierSession] = useState(false)
+  const [isLocked, setIsLocked] = useState(false)
+  const [showReturnDrawer, setShowReturnDrawer] = useState(false)
+  const [showHeldSalesDrawer, setShowHeldSalesDrawer] = useState(false)
+  const [showCancelConfirmation, setShowCancelConfirmation] = useState(false)
 
   // Payment states
   const [showPaymentView, setShowPaymentView] = useState(false)
@@ -554,7 +564,7 @@ export default function PosApp() {
 
   useBarcodeScanner({
     onScan: handleBarcodeScan,
-    enabled: true,
+    enabled: !isLocked,
   })
 
   const handleQtyIncrease = (item) => {
@@ -614,18 +624,81 @@ export default function PosApp() {
     }
   }, [newSaleId, qrcodeUrl])
 
+  const handlePrintCurrentCheck = useReactToPrint({
+    content: () => printContainer.current,
+    documentTitle: 'Pharma CHEQUE',
+    removeAfterPrint: true,
+    onPrintError: (err) => {
+      error('Ошибка печати чека: ' + err)
+    },
+    onAfterPrint: () => {
+      success('Печать чека запущена')
+    }
+  })
+
+  const { mutate: holdSale, isLoading: isHoldingSale } = useMutation(requests.saleMoveToPending, {
+    onSuccess: () => {
+      success(t('pos.sale_held_success') || 'Продажа успешно отложена')
+      requests.saleCreate({
+        cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
+        store_id: get(userData, 'store.id')
+      }).then(({ data: newSaleData }) => {
+        navigate(`/sales/pos/${get(newSaleData, 'data.id')}`)
+        window.location.reload()
+      }).catch((err) => {
+        error(t('pos.error_creating_sale') || 'Ошибка при создании новой продажи')
+      })
+    },
+    onError: (err) => {
+      error(t('pos.error_holding_sale') || 'Ошибка при откладывании продажи')
+    }
+  })
+
+  const handleHold = () => {
+    if (cartItems.length === 0) {
+      error(t('pos.cart_empty_cannot_hold') || 'Корзина пуста, невозможно отложить')
+      return
+    }
+    holdSale(id)
+  }
+
+  const handleCancelConfirm = async () => {
+    setShowCancelConfirmation(false)
+    try {
+      if (cartItems.length > 0) {
+        const itemIds = cartItems.map((item) => item.id)
+        try {
+          await requests.deleteAll({ ids: itemIds })
+        } catch (e) {
+          try {
+            await requests.deleteAll(itemIds)
+          } catch (e2) {
+            for (const item of cartItems) {
+              await requests.deleteCartItem(item.id)
+            }
+          }
+        }
+      }
+      
+      const { data: newSaleRes } = await requests.saleCreate({
+        cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
+        store_id: get(userData, 'store.id'),
+      })
+      success(t('pos.receipt_cancelled') || 'Чек аннулирован')
+      navigate(`/sales/pos/${get(newSaleRes, 'data.id')}`)
+      window.location.reload()
+    } catch (err) {
+      error(t('pos.error_cancelling_receipt') || 'Ошибка при аннулировании чека')
+      console.error(err)
+    }
+  }
+
   const handleDiscount = () => {
     setIsCustomerModalOpen(true)
   }
 
-  const handlePostpone = () => {
-    success("Sotuv vaqtincha saqlandi (Otlozhen)")
-  }
-
-
   const handleCancelSale = () => {
-    success("Sotuv bekor qilindi")
-    navigate('/sales/create')
+    setShowCancelConfirmation(true)
   }
 
   const handleDeleteProduct = () => {
@@ -638,7 +711,7 @@ export default function PosApp() {
   }
 
   const handleReturn = () => {
-    success("Qaytarish jarayoni boshlandi")
+    setShowReturnDrawer(true)
   }
 
 
@@ -657,6 +730,7 @@ export default function PosApp() {
       <POSHeader
         time={time}
         cashierName={`${get(userData, 'first_name')} ${get(userData, 'last_name') ? `(${get(userData, 'last_name')})` : ''}`}
+        userData={userData}
         showSearchInput={showSearchInput}
         setShowSearchInput={setShowSearchInput}
         topbarSearchTerm={topbarSearchTerm}
@@ -666,7 +740,7 @@ export default function PosApp() {
         setShowLangDropdown={setShowLangDropdown}
         t={t}
         i18n={i18n}
-        onLogout={() => navigate('/sales/create')}
+        onLogout={() => setShowCashierSession(true)}
         receiptNumber={cashBoxDetails?.data?.data?.sale_number || '--'}
       />
 
@@ -697,12 +771,13 @@ export default function PosApp() {
 
             <ActionBar
               customerId={customerId}
-              onPrint={handlePrint}
+              onPrint={handlePrintCurrentCheck}
+              onReturn={handleReturn}
+              onHold={handleHold}
+              onOpenHeldSales={() => setShowHeldSalesDrawer(true)}
               onDiscount={handleDiscount}
-              onPostpone={handlePostpone}
               onCancelSale={handleCancelSale}
               onDeleteProduct={handleDeleteProduct}
-              onReturn={handleReturn}
               hasSelectedProduct={!!selectedId}
               showQuickProducts={showQuickProducts}
               onToggleQuickProducts={() => setShowQuickProducts(!showQuickProducts)}
@@ -722,13 +797,7 @@ export default function PosApp() {
             />
 
             {/* Row 2: Conditional Tezkor Panel */}
-            {showQuickProducts && (
-              <PosQuickProducts
-                onQuickAdd={handleQuickAdd}
-                isLoading={isCartLoading}
-                t={t}
-              />
-            )}
+
           </div>
         </main>
 
@@ -842,6 +911,88 @@ export default function PosApp() {
         onCancel={() => setShowAppScanModal(false)}
         t={t}
       />
+
+      {/* Cashier Session Modal */}
+      <CashierSessionModal
+        open={showCashierSession}
+        onClose={() => setShowCashierSession(false)}
+        onTempLogout={() => setIsLocked(true)}
+        onCloseSession={() => {
+          const operationId = get(cashBoxDetails, 'data.data.cash_box_operation_id')
+          if (operationId) {
+            navigate(`/sales/cash-shift-detail/${operationId}?sale_id=${id}`)
+          } else {
+            error(t('operation_not_found') || 'Смена не найдена')
+          }
+        }}
+        t={t}
+      />
+
+      {/* Fullscreen Lock Screen */}
+      <POSLockScreen
+        open={isLocked}
+        onUnlock={() => setIsLocked(false)}
+        t={t}
+      />
+
+      {/* Return Exchange Drawer */}
+      <ReturnExchangeDrawer
+        open={showReturnDrawer}
+        setOpen={setShowReturnDrawer}
+        cashBoxDetails={cashBoxDetails}
+      />
+
+      {/* Held Sales (Draft) Drawer */}
+      <DraftDrawer
+        open={showHeldSalesDrawer}
+        setOpen={setShowHeldSalesDrawer}
+        cashBoxDetails={cashBoxDetails}
+      />
+
+      {/* Quick Select Drawer */}
+      <PosQuickSelectDrawer
+        open={showQuickProducts}
+        onClose={() => setShowQuickProducts(false)}
+        onQuickAdd={handleQuickAdd}
+        isLoading={isCartLoading}
+        t={t}
+      />
+
+      {/* Cancel Receipt Confirmation Dialog Overlay */}
+      {showCancelConfirmation && (
+        <div className="touch-modal-overlay" onClick={() => setShowCancelConfirmation(false)}>
+          <div className="touch-modal-card" onClick={(e) => e.stopPropagation()} style={{ width: '400px', textAlign: 'center' }}>
+            <div className="touch-modal-header" style={{ justifyContent: 'center' }}>
+              <div className="touch-modal-username" style={{ color: '#ffffff', fontSize: '20px' }}>
+                Cancel receipt?
+              </div>
+            </div>
+            <div className="touch-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '24px' }}>
+              <div style={{ fontSize: '16px', color: 'var(--pos-text-secondary)' }}>
+                Are you sure you want to cancel the current receipt and clear the cart?
+              </div>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button
+                  type="button"
+                  className="btn-secondary-touch"
+                  style={{ flex: 1, height: '48px', borderRadius: '24px' }}
+                  onClick={() => setShowCancelConfirmation(false)}
+                >
+                  No
+                </button>
+                <button
+                  type="button"
+                  className="btn-orange-touch"
+                  style={{ flex: 1, height: '48px', borderRadius: '24px', backgroundColor: '#dc2626' }}
+                  onClick={handleCancelConfirm}
+                >
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
