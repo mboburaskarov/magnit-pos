@@ -15,11 +15,13 @@ import { error, success } from '@utils/toast'
 import { requests } from '@utils/requests'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
+import { Check, X } from 'lucide-react'
+import '../new-sale/pos/PosLayout.css'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
     '& .MuiDrawer-paper': {
-      borderRadius: '24px 24px 0 0',
+      borderRadius: '0px !important',
       overflow: 'hidden',
       backgroundColor: theme.palette.background.default,
     },
@@ -28,65 +30,123 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: '24px 0 0 24px',
+    borderRadius: '0px',
     width: '100%',
   },
   wrapper: {
     width: '100vw',
     minHeight: '540px',
-
     display: 'flex',
     flexDirection: 'column',
     '& h5': {
       marginBottom: '4px',
     },
     '& .MuiInputBase-root': {
-      height: '48px',
-      borderRadius: '40px !important',
+      height: '56px',
+      borderRadius: '12px !important',
       marginTop: '0px',
     },
   },
-  card_box: {
-    border: '1px solid',
+  header: {
+    backgroundColor: '#111827',
+    color: '#ffffff',
+    padding: '20px 24px',
+    display: 'flex',
+    alignItems: 'center',
+    borderTopLeftRadius: '0px',
+    borderTopRightRadius: '0px',
+  },
+  touchOptionCard: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    minHeight: '64px',
+    padding: '16px 20px',
+    backgroundColor: '#ffffff',
+    border: '2px solid #cbd5e1',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    textAlign: 'left',
+    userSelect: 'none',
+    transition: 'all 0.15s ease',
+    marginBottom: '16px',
+    boxSizing: 'border-box',
+    '&:active': {
+      backgroundColor: '#f8fafc',
+      transform: 'scale(0.99)',
+    },
+    '&.selected': {
+      backgroundColor: '#eff6ff',
+      borderColor: '#2563eb',
+    },
+  },
+  optionText: {
+    fontSize: '16px',
+    fontWeight: '700',
+    color: '#0f172a',
+    lineHeight: '1.4',
+  },
+  compactCard: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '16px 20px',
+    border: '2px solid',
     borderColor: theme.palette.bunker[100],
-    borderRadius: '16px',
-    padding: '24px',
-    marginTop: '16px',
-    boxShadow: ' 0px 2px 8px 0px #0000000A',
+    borderRadius: '12px',
+    backgroundColor: '#ffffff',
+    boxShadow: 'none',
+    marginBottom: '16px',
   },
   iconBox: {
     width: '48px',
     height: '48px',
     marginRight: 12,
     padding: '12px',
-    backgroundColor: theme.palette.orange[500],
+    backgroundColor: '#eff6ff',
+    color: '#2563eb',
     borderRadius: '50%',
-  },
-  closeStoreDot: {
-    width: 30,
-    height: 30,
-    display: 'flex',
-    borderRadius: '50%',
-    backgroundColor: 'red',
-    marginRight: '10px',
-    marginBottom: '5px',
-  },
-  switchBox: {
-    padding: '10px 20px',
-    height: '48px',
-    borderRadius: '24px',
-    marginBottom: '24px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontWeight: 500,
-    fontSize: '16px',
-    color: theme.palette.bunker[950],
-    lineHeight: '28px',
-    backgroundColor: theme.palette.bg[10],
-    border: '2px solid tranparent',
+  },
+  formField: {
+    mt: '16px',
+    '& .MuiInputBase-root': {
+      height: '56px !important',
+      borderRadius: '12px !important',
+    },
+    '& .MuiOutlinedInput-root': {
+      borderRadius: '12px !important',
+    }
+  },
+  closeButton: {
+    height: '56px',
+    borderRadius: '0px !important',
+    backgroundColor: '#2563eb !important',
+    color: '#ffffff !important',
+    fontWeight: '700 !important',
+    fontSize: '16px !important',
+    boxShadow: 'none !important',
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: 'none',
+    outline: 'none',
+    cursor: 'pointer',
+    '&:active': {
+      backgroundColor: '#1d4ed8 !important',
+    },
+    '&:disabled': {
+      backgroundColor: '#e2e8f0 !important',
+      color: '#94a3b8 !important',
+      cursor: 'not-allowed !important',
+    },
   },
 }))
+
 function CashCloseDrawer({ open, setOpen }) {
   const classes = useStyles()
   const { id } = useParams()
@@ -175,6 +235,7 @@ function CashCloseDrawer({ open, setOpen }) {
       },
     })
   }
+
   const onError = (err) => {
     console.error('err', err)
     error('Пожалуйста, заполните все поля!')
@@ -186,123 +247,123 @@ function CashCloseDrawer({ open, setOpen }) {
         <FormProvider {...methods}>
           <Box className={classes.box}>
             <Box className={classes.wrapper}>
-              <Typography
-                borderBottom={'1px solid'}
-                borderColor={'bunker.100'}
-                display={'flex'}
-                alignItems={'center'}
-                fontSize={'32px'}
-                lineHeight={'48px'}
-                fontWeight={'700'}
-                color={'bunker.950'}
-                p={'24px'}
-              >
-                Закрыть кассу
-              </Typography>
-              <Box width={'80vw'} margin={'auto'} display={'flex'} p={'40px'}>
-                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <Box sx={{ '& div': { backgroundColor: 'transparent' } }}>
-                    <Box>
-                      <Typography
-                        onClick={() => setCompany(1)}
-                        sx={{ border: `2px solid ${company == 1 ? '#fe5003' : 'transparent'}` }}
-                        className={classes.switchBox}
-                      >
-                        Оставьте всю сумму на кассе
-                      </Typography>
-                      <Typography
-                        onClick={() => setCompany(2)}
-                        sx={{ border: `2px solid ${company == 2 ? '#fe5003' : 'transparent'}` }}
-                        className={classes.switchBox}
-                      >
-                        Переведите всю сумму на счет компании
-                      </Typography>
-                      <Typography
-                        onClick={() => setCompany(3)}
-                        sx={{ border: `2px solid ${company == 3 ? '#fe5003' : 'transparent'}` }}
-                        className={classes.switchBox}
-                      >
-                        Оставьте часть в кассе и передайте остальную часть
-                      </Typography>
-                    </Box>
-                    {company === 3 && (
-                      <>
-                        <NumberFormatInput
-                          endAdornmentText={'UZS'}
-                          end
-                          type={'number'}
-                          fullWidth
-                          name='closed_amount'
-                          label='Оставшаяся сумма'
-                          placeholder='Введите оставшуюся сумму'
-                        />
-                      </>
-                    )}
-                  </Box>
-                </Box>
-                <Box sx={{ border: '1px solid', mx: '40px', borderColor: 'bunker.100' }} />
+              <Box className="pos-std-header">
+                <Typography className="pos-std-title">
+                  Закрыть кассу
+                </Typography>
+                <button type="button" className="pos-std-close-btn" onClick={() => setOpen(false)}>
+                  <X size={20} />
+                </button>
+              </Box>
 
-                <Box sx={{ width: '100%' }}>
-                  <Typography fontSize={'16px'} lineHeight={'24px'} fontWeight={'600'} color={'bunker.700'}>
+              <Box display={'flex'} p={'32px 32px 0'} gap={'32px'}>
+                {/* Left side touchscreen options */}
+                <Box sx={{ width: '55%', display: 'flex', flexDirection: 'column' }}>
+                  <Box>
+                    <div
+                      onClick={() => setCompany('1')}
+                      className={`${classes.touchOptionCard} ${company === '1' ? 'selected' : ''}`}
+                    >
+                      <span className={classes.optionText}>Оставьте всю сумму на кассе</span>
+                      {company === '1' && <Check size={20} color="#2563eb" />}
+                    </div>
+
+                    <div
+                      onClick={() => setCompany('2')}
+                      className={`${classes.touchOptionCard} ${company === '2' ? 'selected' : ''}`}
+                    >
+                      <span className={classes.optionText}>Переведите всю сумму на счет компании</span>
+                      {company === '2' && <Check size={20} color="#2563eb" />}
+                    </div>
+
+                    <div
+                      onClick={() => setCompany('3')}
+                      className={`${classes.touchOptionCard} ${company === '3' ? 'selected' : ''}`}
+                    >
+                      <span className={classes.optionText}>Оставьте часть в кассе и передайте остальную часть</span>
+                      {company === '3' && <Check size={20} color="#2563eb" />}
+                    </div>
+                  </Box>
+
+                  {company === '3' && (
+                    <Box className={classes.formField}>
+                      <NumberFormatInput
+                        endAdornmentText={'UZS'}
+                        end
+                        type={'number'}
+                        fullWidth
+                        name='closed_amount'
+                        label='Оставшаяся сумма'
+                        placeholder='Введите оставшуюся сумму'
+                      />
+                    </Box>
+                  )}
+                </Box>
+
+                {/* Vertical Divider */}
+                <Box sx={{ borderLeft: '2px solid', borderColor: 'bunker.100', mx: '8px' }} />
+
+                {/* Right side compact payment summaries */}
+                <Box sx={{ width: '45%' }}>
+                  <Typography fontSize={'15px'} fontWeight={'700'} color={'#475569'} mb={'16px'}>
                     Доступно на кассе:
                   </Typography>
-                  <Box className={classes.card_box}>
+
+                  <Box className={classes.compactCard}>
                     <Box display={'flex'} alignItems={'center'}>
                       <Box className={classes.iconBox}>
                         <MoneyOutlineIcon />
                       </Box>
-                      <Typography fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.950'}>
+                      <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
                         Наличные
                       </Typography>
                     </Box>
-                    <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
-                    <Box display={'flex'} justifyContent={'end'}>
-                      <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
-                        {thousandDivider(get(closeCashboxPaymentsInfo, 'data.data.cash_amount', null))}
-                        <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
-                          UZS
-                        </Typography>
-                      </Typography>
-                    </Box>
+                    <Typography fontSize={'20px'} fontWeight={'800'} color={'#2563eb'} display="flex" alignItems="center">
+                      {thousandDivider(get(closeCashboxPaymentsInfo, 'data.data.cash_amount', null)) || 0}
+                      <span style={{ marginLeft: '4px', fontSize: '14px', color: '#94a3b8', fontWeight: 600 }}>UZS</span>
+                    </Typography>
                   </Box>
-                  <Box className={classes.card_box}>
+
+                  <Box className={classes.compactCard}>
                     <Box display={'flex'} alignItems={'center'}>
                       <Box className={classes.iconBox}>
                         <CartOutlineIcon />
                       </Box>
-                      <Typography fontSize={'24px'} lineHeight={'48px'} fontWeight={'700'} color={'bunker.950'}>
+                      <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
                         Карта
                       </Typography>
                     </Box>
-                    <Box my={'16px'} border={'1px solid'} borderColor={'bunker.100'} />
-                    <Box display={'flex'} justifyContent={'end'}>
-                      <Typography display={'flex'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'orange.500'}>
-                        {thousandDivider(get(closeCashboxPaymentsInfo, 'data.data.cashless_amount', null))}
-                        <Typography mx={'4px'} fontSize={'24px'} lineHeight={'32px'} fontWeight={'700'} color={'bunker.400'}>
-                          UZS
-                        </Typography>
-                      </Typography>
-                    </Box>
+                    <Typography fontSize={'20px'} fontWeight={'800'} color={'#2563eb'} display="flex" alignItems="center">
+                      {thousandDivider(get(closeCashboxPaymentsInfo, 'data.data.cashless_amount', null)) || 0}
+                      <span style={{ marginLeft: '4px', fontSize: '14px', color: '#94a3b8', fontWeight: 600 }}>UZS</span>
+                    </Typography>
                   </Box>
                 </Box>
               </Box>
+
+              {/* Flex Spacer to push button down */}
+              <Box flexGrow={1} minHeight="24px" />
+
+              {/* Bottom fixed full-width button */}
+              <Button
+                disabled={iscloseZReport}
+                type='button'
+                onClick={() => {
+                  closeZReport({
+                    token: 'DXJFX32CN1296678504F2',
+                    method: 'closeZreport',
+                  })
+                }}
+                className={classes.closeButton}
+                fullWidth
+              >
+                Закрыть кассу <ArrowRightIcon color="#fff" />
+              </Button>
             </Box>
           </Box>
-          <Button
-            disabled={iscloseZReport}
-            type='submit'
-            onClick={() => {
-              closeZReport({
-                token: 'DXJFX32CN1296678504F2', // Токен всегда равен DXJFX32CN1296678504F2, используется везде, Обязательное поле, String
-                method: 'closeZreport', // Название метода, Обязательное поле, String
-              })
-            }}
-            sx={{ bottom: 0, margin: '0 24px 24px', '& > svg': { width: 24, height: 24, ml: '12px' } }}
-          >
-            Закрыть кассу <ArrowRightIcon color={!true ? '#111111' : '#fff'} />
-          </Button>
         </FormProvider>
       </LoadingContainer>
+
       <Box
         maxWidth='400px'
         sx={{

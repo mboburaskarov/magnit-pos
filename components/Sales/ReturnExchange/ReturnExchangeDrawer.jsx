@@ -5,7 +5,7 @@ import { get } from 'lodash'
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import CloseIcon from '../../../src/assets/icons/CloseIcon'
+import { X } from 'lucide-react'
 import FilterMenuIcon from '../../../src/assets/icons/FilterMenuIcon'
 import { useQueryParams } from '../../../src/hooks/useQueryParams'
 import { requests } from '../../../utils/requests'
@@ -20,15 +20,46 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiDrawer-paper': {
       width: '660px',
       overflow: 'hidden',
-      borderRadius: '24px 0 0 24px',
+      borderRadius: '0px !important',
       backgroundColor: theme.palette.background.default,
     },
   },
   drawerHeader: {
-    padding: '40px 40px 24px 40px',
-    borderBottom: `1px solid ${theme.palette.bunker[100]}`,
+    padding: '12px 24px',
+    height: '72px',
+    backgroundColor: '#111827',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    boxSizing: 'border-box',
+  },
+  drawerTitle: {
+    fontSize: '20px',
+    fontWeight: '700',
+    color: '#ffffff',
+  },
+  closeButton: {
+    width: '48px',
+    height: '48px',
+    borderRadius: '8px',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    color: '#ffffff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    transition: 'all 0.15s ease',
+    padding: 0,
+    outline: 'none',
+    '&:active': {
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+      transform: 'scale(0.96)',
+    },
   },
 }))
+
 function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
   const { t } = useTranslation()
   const classes = useStyles()
@@ -48,32 +79,55 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
   }, [values?.customer_id, values?.returnLimit, values?.draft_date, values?.page, values?.search])
 
   const theme = useTheme()
+
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
       {!isOpenChild ? (
         <Box>
-          <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
-            <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
+          <Box className={classes.drawerHeader}>
+            <Typography className={classes.drawerTitle}>
               {t('navbar.return')}
             </Typography>
-            <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
+            <button type="button" className={classes.closeButton} onClick={() => setOpen(false)}>
+              <X size={20} />
+            </button>
           </Box>
-          <Box display={'flex'} py={'24px'} px={'40px'}>
-            <InputSearch fullWidth uncontrolled placeholder={'Поиск: ID'} />
+          
+          <Box display={'flex'} py={'24px'} px={'40px'} alignItems={'center'}>
+            <InputSearch
+              fullWidth
+              uncontrolled
+              placeholder={'Поиск: ID'}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  height: '40px !important',
+                  borderRadius: '8px !important',
+                },
+                '& .MuiInputBase-root': {
+                  height: '40px !important',
+                  borderRadius: '8px !important',
+                }
+              }}
+            />
             <Box minWidth={113} ml={'16px'}>
               <Button
                 sx={{
-                  height: '48px',
+                  height: '40px !important',
                   padding: 0,
                   bgcolor: '#fff',
-                  border: '1px solid #ECEDF2',
+                  border: '2px solid #cbd5e1',
                   color: 'dark.500',
-                  fontWeight: '500',
-                  fontSize: '16px',
-                  lineHeight: '24px',
+                  fontWeight: '600',
+                  fontSize: '15px',
+                  borderRadius: '8px !important',
+                  boxShadow: 'none',
+                  textTransform: 'none',
                   '& span': {
-                    mr: '12px',
+                    mr: '8px',
                   },
+                  '&:active': {
+                    backgroundColor: '#f1f5f9',
+                  }
                 }}
                 fullWidth
                 startIcon={<FilterMenuIcon />}
@@ -81,7 +135,7 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
                 color='secondary'
                 onClick={() => setDraftFilter((prev) => !prev)}
               >
-                <Typography fontWeight={500} fontSize={'16px'} lineHeight={'25px'}>
+                <Typography fontWeight={600} fontSize={'15px'}>
                   {t('filter')}
                 </Typography>
               </Button>
@@ -90,15 +144,12 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
 
           <Box py={'0px'} px={'40px'}>
             <ListWithPagination
-              maxHeight='calc(100vh - 300px)'
+              maxHeight='calc(100vh - 220px)'
               limitQuery='returnLimit'
               request={(filter) => requests.getAllSales(filter)}
               customFilter={returnExchangeListFilter}
               renderItem={(item) => <ReturnExchangeParentItemBox item={item} setIsOpenChild={setIsOpenChild} />}
             />
-            {/* {draftListData.map((item, index) => {
-              return <ReturnExchangeParentItemBox key={index} item={item} setIsOpenChild={setIsOpenChild} />
-            })} */}
           </Box>
         </Box>
       ) : (

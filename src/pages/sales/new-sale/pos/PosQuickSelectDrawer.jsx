@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Drawer } from '@mui/material'
-import { X } from 'lucide-react'
+import { X, Check } from 'lucide-react'
 import thousandDivider from '@utils/thousandDivider'
 import './PosLayout.css'
 
@@ -50,8 +50,17 @@ const PRODUCTS_DATA = {
 
 export default function PosQuickSelectDrawer({ open, onClose, onQuickAdd, isLoading, t }) {
   const [activeCategory, setActiveCategory] = useState('most_sold')
+  const [addedProductId, setAddedProductId] = useState(null)
 
   const products = PRODUCTS_DATA[activeCategory] || []
+
+  const handleQuickAdd = (prod) => {
+    onQuickAdd(prod.query)
+    setAddedProductId(prod.id)
+    setTimeout(() => {
+      setAddedProductId(null)
+    }, 800)
+  }
 
   return (
     <Drawer
@@ -62,10 +71,10 @@ export default function PosQuickSelectDrawer({ open, onClose, onQuickAdd, isLoad
       classes={{ paper: 'pos-quick-drawer-paper' }}
     >
       {/* Header */}
-      <div className="pos-quick-drawer-header">
-        <span className="pos-quick-drawer-title">{t('pos.quick_select') || 'Quick select'}</span>
-        <button type="button" className="pos-quick-drawer-close-btn" onClick={onClose}>
-          <X size={24} />
+      <div className="pos-quick-drawer-header pos-std-header">
+        <span className="pos-std-title">{t('pos.quick_select') || 'Quick select'}</span>
+        <button type="button" className="pos-std-close-btn" onClick={onClose}>
+          <X size={20} />
         </button>
       </div>
 
@@ -73,24 +82,33 @@ export default function PosQuickSelectDrawer({ open, onClose, onQuickAdd, isLoad
       <div className="pos-quick-drawer-body">
         {/* Left Side: Product Grid */}
         <div className="pos-quick-grid-area">
-          {products.map((prod) => (
-            <button
-              key={prod.id}
-              type="button"
-              className="pos-quick-card"
-              onClick={() => onQuickAdd(prod.query)}
-              disabled={isLoading}
-            >
-              <div className="pos-quick-card-img-wrapper">
-                <span className="pos-quick-card-img">{prod.emoji}</span>
-              </div>
-              <span className="pos-quick-card-name">{prod.name}</span>
-              <div className="pos-quick-card-price-row">
-                <span className="pos-quick-card-price">{thousandDivider(prod.price)} UZS</span>
-                <span className="pos-quick-card-unit">{prod.unit}</span>
-              </div>
-            </button>
-          ))}
+          {products.map((prod) => {
+            const isAdded = addedProductId === prod.id
+            return (
+              <button
+                key={prod.id}
+                type="button"
+                className={`pos-quick-card ${isAdded ? 'is-added' : ''}`}
+                onClick={() => handleQuickAdd(prod)}
+                disabled={isLoading}
+              >
+                <div className="pos-quick-card-img-wrapper">
+                  <span className="pos-quick-card-img">{prod.emoji}</span>
+                </div>
+                <span className="pos-quick-card-name">{prod.name}</span>
+                {isAdded ? (
+                  <div className="pos-quick-card-added-badge">
+                    <Check size={16} /> Added!
+                  </div>
+                ) : (
+                  <div className="pos-quick-card-price-row">
+                    <span className="pos-quick-card-price">{thousandDivider(prod.price)} UZS</span>
+                    <span className="pos-quick-card-unit">{prod.unit}</span>
+                  </div>
+                )}
+              </button>
+            )
+          })}
         </div>
 
         {/* Right Side: Category List */}

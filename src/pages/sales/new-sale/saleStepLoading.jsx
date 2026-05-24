@@ -3,7 +3,7 @@ import SuccessIcon from '@icons/SuccessIcon'
 import { useEffect, useState } from 'react'
 import ErrorIcon from '@icons/ErrorIcon'
 
-export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, isGelOldEposCheck,setHasError, isSendToEPOS, isSendEPOSresponseToBackend, hasError }) {
+export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, isGelOldEposCheck, setHasError, isSendToEPOS, isSendEPOSresponseToBackend, hasError }) {
   const [showModal, setShowModal] = useState(false)
   const [currentStep, setCurrentStep] = useState(null)
 
@@ -11,7 +11,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
 
   useEffect(() => {
     // Agar xato bo'lsa yoki jarayon davom etsa modal ko'rsatiladi
-    if (hasError || isFinishSaleWithoutAppPaymentType || isSendToEPOS ||isGelOldEposCheck|| isSendEPOSresponseToBackend) {
+    if (hasError || isFinishSaleWithoutAppPaymentType || isSendToEPOS || isGelOldEposCheck || isSendEPOSresponseToBackend) {
       setShowModal(true)
     }
 
@@ -24,7 +24,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
       }, 1000)
       return () => clearTimeout(timer)
     }
-  }, [isFinishSaleWithoutAppPaymentType, isSendToEPOS,isGelOldEposCheck, isSendEPOSresponseToBackend, allDone, hasError])
+  }, [isFinishSaleWithoutAppPaymentType, isSendToEPOS, isGelOldEposCheck, isSendEPOSresponseToBackend, allDone, hasError])
 
   useEffect(() => {
     // Xato holatini birinchi tekshirish
@@ -52,7 +52,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
       })
     } else if (isSendToEPOS || isGelOldEposCheck) {
       setCurrentStep({
-        label: 'Отправляется в EPOS',
+        label: 'Sending to EPOS',
         progress: 45,
         startProgress: 30,
         endProgress: 60,
@@ -81,7 +81,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
 
   return (
     <>
-      {/* Modal backdrop */}
+      {/* Modal backdrop with blur */}
       <Box
         sx={{
           position: 'fixed',
@@ -89,7 +89,8 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backgroundColor: 'rgba(17, 24, 39, 0.75)',
+          backdropFilter: 'blur(8px)',
           zIndex: 9998,
         }}
       />
@@ -102,22 +103,23 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
           left: '50%',
           transform: 'translate(-50%, -50%)',
           width: '90%',
-          maxWidth: 480,
-          borderRadius: '20px',
-          boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+          maxWidth: 440,
+          backgroundColor: '#ffffff',
+          borderRadius: '16px',
+          border: '2px solid #cbd5e1',
+          boxShadow: 'none',
           zIndex: 9999,
+          overflow: 'hidden',
         }}
       >
         {isCompleted ? (
           <Box
             sx={{
-              backgroundColor: '#fff',
-              borderRadius: '12px',
-              padding: '30px 20px',
+              padding: '32px 24px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: '12px',
+              gap: '16px',
             }}
           >
             <Box
@@ -125,21 +127,21 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                backgroundColor: hasError ? '#FF4639' : '#28B95E',
+                backgroundColor: hasError ? '#ef4444' : '#22c55e',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              {hasError ? <ErrorIcon sx={{ color: '#fff', fontSize: 40 }} /> : <SuccessIcon sx={{ color: '#fff', fontSize: 40 }} />}
+              {hasError ? <ErrorIcon sx={{ color: '#fff', fontSize: 36 }} /> : <SuccessIcon sx={{ color: '#fff', fontSize: 36 }} />}
             </Box>
 
             <Typography
               sx={{
-                fontSize: '16px',
+                fontSize: '18px',
                 textAlign: 'center',
-                fontWeight: 600,
-                color: '#1a1a1a',
+                fontWeight: 700,
+                color: '#0f172a',
                 marginTop: '8px',
               }}
             >
@@ -149,39 +151,33 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
         ) : (
           <Box
             sx={{
-              backgroundColor: '#fff',
-              borderRadius: '12px',
-              padding: '24px',
+              padding: '32px 24px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
             }}
           >
             <Typography
               sx={{
-                fontSize: '48px',
-                fontWeight: 700,
+                fontSize: '56px',
+                fontWeight: 800,
                 textAlign: 'center',
-                lineHeight: '64px',
-                color: '#1a1a1a',
-                marginBottom: '12px',
+                lineHeight: '1',
+                color: '#2563eb',
+                marginBottom: '20px',
               }}
             >
               {currentStep.progress}%
             </Typography>
 
-            <Box sx={{ position: 'relative', marginBottom: '16px' }}>
+            <Box sx={{ width: '100%', position: 'relative', marginBottom: '24px' }}>
               <Box
                 sx={{
                   height: 12,
                   borderRadius: '100px',
-                  backgroundColor: '#f0f0f0',
+                  backgroundColor: '#f1f5f9',
                   overflow: 'hidden',
                   position: 'relative',
-                  background: `repeating-linear-gradient(
-                    45deg,
-                    #f0f0f0,
-                    #f0f0f0 10px,
-                    #e8e8e8 10px,
-                    #e8e8e8 20px
-                  )`,
                 }}
               >
                 <LinearProgress
@@ -197,9 +193,9 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
                     borderRadius: '100px',
                     backgroundColor: 'transparent',
                     '& .MuiLinearProgress-bar': {
-                      backgroundColor: '#ff6b35',
+                      backgroundColor: '#2563eb',
                       borderRadius: '100px',
-                      transition: 'transform 0.4s ease-in-out',
+                      transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                     },
                   }}
                 />
@@ -209,9 +205,9 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
             <Typography
               sx={{
                 fontSize: '20px',
-                fontWeight: 600,
-                color: '#111217',
-                lineHeight: '32px',
+                fontWeight: 700,
+                color: '#0f172a',
+                lineHeight: '28px',
                 marginBottom: '8px',
                 textAlign: 'center',
               }}
@@ -222,13 +218,13 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
             <Typography
               sx={{
                 fontSize: '14px',
-                color: '#677190',
-                fontWeight: '500',
+                color: '#475569',
+                fontWeight: '600',
                 lineHeight: '20px',
                 textAlign: 'center',
               }}
             >
-              Не обновляйте страницу, пока процесс не завершится, иначе он не будет сохранён!
+              Do not refresh the page until the process is complete.
             </Typography>
           </Box>
         )}

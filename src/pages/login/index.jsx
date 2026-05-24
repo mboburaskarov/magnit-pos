@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     // Consistent input styling for both Phone (Outlined) and Password (Filled)
     '& .MuiFilledInput-root, & .MuiOutlinedInput-root': {
       backgroundColor: '#F3F4F6',
-      borderRadius: '16px !important',
+      borderRadius: '8px !important',
       transition: 'all 0.2s ease',
       border: '1px solid transparent !important',
       overflow: 'hidden',
@@ -74,9 +74,9 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 32,
-    padding: '50px 60px',
-    boxShadow: '0px 20px 60px rgba(0, 0, 0, 0.04)',
+    borderRadius: 8,
+    padding: '32px 40px',
+    border: '1px solid #e5e7eb',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -87,16 +87,16 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    marginBottom: 40,
+    marginBottom: 20,
     width: '100%',
   },
   logoWrapper: {
     display: 'flex',
     alignItems: 'flex-start',
-    marginBottom: 32,
+    marginBottom: 20,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 700,
     lineHeight: '1.2',
     color: '#111827',
@@ -127,7 +127,7 @@ const useStyles = makeStyles((theme) => ({
   },
   loginButton: {
     height: 56,
-    borderRadius: 16,
+    borderRadius: 8,
     fontSize: 18,
     fontWeight: 600,
     textTransform: 'none',
@@ -150,9 +150,9 @@ const useStyles = makeStyles((theme) => ({
   },
   keypadCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 32,
-    padding: '40px 44px',
-    boxShadow: '0px 20px 60px rgba(0, 0, 0, 0.04)',
+    borderRadius: 8,
+    padding: '32px',
+    border: '1px solid #e5e7eb',
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
@@ -160,7 +160,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   keypadHeader: {
-    marginBottom: 20,
+    marginBottom: 16,
     width: '100%',
     textAlign: 'left',
   },
@@ -185,7 +185,7 @@ const useStyles = makeStyles((theme) => ({
   },
   keypadBtn: {
     height: '60px',
-    borderRadius: '16px',
+    borderRadius: '8px',
     fontSize: '22px',
     fontWeight: 700,
     backgroundColor: '#F3F4F6',
@@ -345,7 +345,6 @@ export default function LoginPage() {
                 <img src="/MagnitPOS.svg" alt="Magnit POS" style={{ height: '36px', width: 'auto' }} />
               </Box>
               <Typography className={classes.title}>Вход</Typography>
-              <Typography className={classes.subtitle}>Добро пожаловать! Пожалуйста, введите ваши данные.</Typography>
             </Box>
 
             <FormProvider {...methods}>
@@ -370,7 +369,7 @@ export default function LoginPage() {
                   <InputPassword
                     id='password'
                     name='password'
-                    placeholder='Введите пароль'
+                    placeholder='********'
                     autoCompleteOff
                     required
                     fullWidth

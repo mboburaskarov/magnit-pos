@@ -108,7 +108,7 @@ export default function POSHeader({
             {showLangDropdown && (
               <div className='touch-modal-overlay' onClick={() => setShowLangDropdown(false)}>
                 <div className='touch-modal-card' onClick={(e) => e.stopPropagation()}>
-                  <div className='touch-modal-header'>
+                  <div className='touch-modal-header pos-std-header'>
                     <div className='touch-modal-userinfo'>
                       <div className='touch-modal-avatar'>
                         <User size={20} />
@@ -120,7 +120,7 @@ export default function POSHeader({
                         </div>
                       </div>
                     </div>
-                    <button className='touch-modal-close-btn' onClick={() => setShowLangDropdown(false)}>
+                    <button type='button' className='pos-std-close-btn' onClick={() => setShowLangDropdown(false)}>
                       <X size={20} />
                     </button>
                   </div>

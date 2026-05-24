@@ -18,7 +18,7 @@ const MultiOptionSelectNewV2 = ({
   onChange,
   multiple,
   placeholder,
-  notShowedPharmaCosmos = true,
+  notShowedMagnit = true,
   selectAllLabel,
   countLabel,
   label,
@@ -110,7 +110,7 @@ const MultiOptionSelectNewV2 = ({
         ...customFilter,
       })
 
-      const newData = get(response, 'data.data.data', []).filter((item) => (notShowedPharmaCosmos ? item?.name != 'MAGNIT ' : true))
+      const newData = get(response, 'data.data.data', []).filter((item) => (notShowedMagnit ? item?.name != 'MAGNIT ' : true))
 
       if (pagination.offset === 0) {
         setOptions(newData) // Replace options for new search

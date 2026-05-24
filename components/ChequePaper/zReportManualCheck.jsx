@@ -1,8 +1,7 @@
-import { Box, Divider, Typography } from '@mui/material';
-import thousandDivider from '@utils/thousandDivider';
-import { useSelector } from 'react-redux';
-import { get } from 'lodash';
-
+import { Box, Divider, Typography } from '@mui/material'
+import thousandDivider from '@utils/thousandDivider'
+import { useSelector } from 'react-redux'
+import { get } from 'lodash'
 
 function ZReportManualCheck({ data, printContainer }) {
   const userData = useSelector((state) => state.user)
@@ -95,7 +94,7 @@ function ZReportManualCheck({ data, printContainer }) {
             <Divider sx={{ my: 2 }} />
 
             <Typography fontWeight={'600'} fontStyle='italic' mt={2}>
-              Отчет сформирован и напечатан в PharmaCosmos
+              Отчет сформирован и напечатан в Magnit
             </Typography>
           </Box>
         </Box>
