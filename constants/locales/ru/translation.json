@@ -476,7 +476,7 @@
   "pos.price_list": "Прайс-лист",
   "pos.standard": "Стандартный",
   "pos.customer_placeholder": "Имя или телефон клиента",
-  "pos.customer_hint": "Сканируйте QR или штрих-код карты",
+  "pos.customer_hint": "Сканируйте штрих-код карты",
   "pos.remove_customer": "Удалить клиента",
   "pos.numpad_title": "Клавиатура / Ввод с Numpad",
   "pos.go_to_payment": "Перейти к оплате",

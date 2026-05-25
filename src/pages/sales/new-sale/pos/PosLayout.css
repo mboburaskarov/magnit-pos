@@ -1401,13 +1401,14 @@ body {
   inset: 0;
   background-color: rgba(17, 24, 39, 0.7);
   backdrop-filter: blur(4px);
-  z-index: 9999;
+  z-index: 9000;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .pos-modal {
+  z-index: 9100;
   background-color: var(--pos-surface);
   border-radius: var(--pos-radius-lg);
   border: 1px solid var(--pos-border);
@@ -1793,7 +1794,7 @@ body {
   inset: 0;
   background-color: rgba(17, 24, 39, 0.75);
   backdrop-filter: blur(8px);
-  z-index: 10000;
+  z-index: 9000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1801,6 +1802,7 @@ body {
 }
 
 .touch-modal-card {
+  z-index: 9100;
   width: 440px;
   max-width: 90%;
   background-color: var(--pos-surface);
@@ -1978,7 +1980,10 @@ body {
   cursor: pointer;
   text-align: left;
   min-height: 56px;
-  transition: background-color 0.15s, border-color 0.15s, transform 0.15s;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
   user-select: none;
 }
 
@@ -1998,7 +2003,9 @@ body {
   background-color: #eff6ff;
   color: var(--pos-accent);
   flex-shrink: 0;
-  transition: background-color 0.15s, color 0.15s;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
 }
 
 .cashier-option-card:active .cashier-option-icon {
@@ -2320,7 +2327,6 @@ body {
   border-color: var(--pos-accent);
 }
 
-
 /* Fullscreen Screen Lock */
 .pos-lock-overlay {
   position: fixed;
@@ -2328,7 +2334,7 @@ body {
   background-color: rgba(17, 24, 39, 0.85);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  z-index: 20000;
+  z-index: 9200;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2481,9 +2487,10 @@ body {
 
 /* POS Toastify Custom Style Overrides */
 .Toastify__toast-container {
+  z-index: 99999 !important;
   width: 100% !important;
   max-width: 100% !important;
-  top: 0 !important;
+  top: -2px !important;
   left: 0 !important;
   right: 0 !important;
   padding: 0 !important;
@@ -2496,7 +2503,6 @@ body {
 .Toastify__toast {
   border-radius: 0 !important;
   margin-bottom: 0 !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
   width: 100% !important;
   max-width: 100% !important;
   padding: 0 !important;
@@ -2769,4 +2775,3 @@ body {
   background-color: rgba(255, 255, 255, 0.2);
   transform: scale(0.96);
 }
-

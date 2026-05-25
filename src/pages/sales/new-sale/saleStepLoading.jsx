@@ -91,7 +91,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
           bottom: 0,
           backgroundColor: 'rgba(17, 24, 39, 0.75)',
           backdropFilter: 'blur(8px)',
-          zIndex: 9998,
+          zIndex: 9000,
         }}
       />
 
@@ -108,7 +108,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
           borderRadius: '16px',
           border: '2px solid #cbd5e1',
           boxShadow: 'none',
-          zIndex: 9999,
+          zIndex: 9100,
           overflow: 'hidden',
         }}
       >

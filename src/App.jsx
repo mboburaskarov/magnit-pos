@@ -1,5 +1,6 @@
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
+import { createPortal } from 'react-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import GlobalStyles from './assets/GlobalStyles'
@@ -12,7 +13,10 @@ function App() {
     <Providers>
       <Routes />
       <GlobalStyles />
-      <ToastContainer limit={3} position='top-center' autoClose={3000} hideProgressBar closeOnClick pauseOnHover draggable closeButton={false} />
+      {createPortal(
+        <ToastContainer limit={3} position='top-center' autoClose={3000} hideProgressBar closeOnClick pauseOnHover draggable closeButton={false} />,
+        document.body
+      )}
       <PwaUpdatesAndOffline />
     </Providers>
   )

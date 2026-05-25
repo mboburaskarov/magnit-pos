@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useQuery, useMutation } from 'react-query'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { get } from 'lodash'
@@ -25,15 +25,17 @@ import PosSecurityQrModal from './PosSecurityQrModal'
 import PosAppScanModal from './PosAppScanModal'
 import SaleProgressSteps from '../saleStepLoading'
 import './PosLayout.css'
-import { useReactToPrint } from 'react-to-print'
 import ReturnExchangeDrawer from '@components/Sales/ReturnExchange/ReturnExchangeDrawer'
 import DraftDrawer from '@components/Sales/DraftDrawer'
+import axios from 'axios'
+import PosPrinterSettings from './PosPrinterSettings'
 
 export default function PosApp() {
   const { id } = useParams()
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
   const { t, i18n } = useTranslation()
+  const queryClient = useQueryClient()
 
   // ── States ──
   const [customerId, setCustomerId] = useState(null)
@@ -43,6 +45,7 @@ export default function PosApp() {
   const [securityItem, setSecurityItem] = useState(null)
   const [time, setTime] = useState('')
   const [showCashierSession, setShowCashierSession] = useState(false)
+  const [showPrinterSettings, setShowPrinterSettings] = useState(false)
   const [isLocked, setIsLocked] = useState(false)
   const [showReturnDrawer, setShowReturnDrawer] = useState(false)
   const [showHeldSalesDrawer, setShowHeldSalesDrawer] = useState(false)
@@ -66,6 +69,7 @@ export default function PosApp() {
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [topbarSearchTerm, setTopbarSearchTerm] = useState('')
   const [newSaleId, setNewSaleId] = useState(null)
+  const [saleCreationError, setSaleCreationError] = useState(false)
   const [qrcodeUrl, setQrcodeUrl] = useState({})
   const [openRefreshDialog, setOpenRefreshDialog] = useState(false)
   const [dmedPrescriptionsList, setDmedPrescriptionsList] = useState([])
@@ -587,7 +591,7 @@ export default function PosApp() {
     setShowPaymentView(false)
   }
 
-  const { handlePrint, printContainer } = usePrintOperations({
+  const { printContainer } = usePrintOperations({
     newSaleId,
     setNewSaleId,
     setQrcodeUrl,
@@ -597,23 +601,123 @@ export default function PosApp() {
     sendToEpos: localStorage.getItem('send_to_epos'),
   })
 
+  const handleSaleTransition = async (finalNewSaleId) => {
+    let nextSaleId = finalNewSaleId
+
+    // 1. Immediately invalidate/remove old sale queries to prevent showing old items
+    queryClient.removeQueries(['cartItemsList', id])
+    queryClient.removeQueries(['cashBoxDetails', id])
+    queryClient.setQueryData(['cartItemsList', id], { data: { data: [] } })
+
+    // 2. Reset local component states
+    setCustomerId(null)
+    setSelectedId(null)
+    setSecurityItem(null)
+    setTopbarSearchTerm('')
+    setCustomerSearchTerm('')
+    setDmedPrescriptionsList([])
+    setDmedOrganizedList([])
+    resetPaymentState()
+    setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
+    setNewSaleId(null)
+
+    // 3. Create or fetch a new sale check if needed (e.g. if finalNewSaleId is null/false or '888')
+    if (!nextSaleId || nextSaleId === '888') {
+      try {
+        const { data: newSaleRes } = await requests.saleCreate({
+          cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
+          store_id: get(userData, 'store.id'),
+        })
+        nextSaleId = get(newSaleRes, 'data.id')
+        if (!nextSaleId) {
+          throw new Error('No sale ID returned from saleCreate')
+        }
+        setSaleCreationError(false)
+      } catch (err) {
+        console.error('Failed to create new sale:', err)
+        setSaleCreationError(true)
+        error(t('pos.error_creating_sale') || 'Ошибка при создании новой продажи')
+        return
+      }
+    } else {
+      setSaleCreationError(false)
+    }
+
+    // 4. Navigate/update POS view to the new sale ID
+    navigate(`/sales/pos/${nextSaleId}`)
+
+    // Refetch the new queries
+    queryClient.invalidateQueries(['cartItemsList', nextSaleId])
+    queryClient.invalidateQueries(['cashBoxDetails', nextSaleId])
+  }
+
+  const handleLocalPrint = async () => {
+    const finalNewSaleId = newSaleId
+    const isPostPayment = !!finalNewSaleId
+
+    try {
+      let paymentType = 'cash'
+      if (cardPaymentSelected) {
+        paymentType = 'card'
+      } else if (secondaryPaymentMethod) {
+        paymentType = secondaryPaymentMethod
+      }
+
+      const cashierNameStr = `${userData?.first_name || ''} ${userData?.last_name || ''}`.trim() || 'Кассир'
+
+      const itemsPayload = cartItems.map((item) => ({
+        name: item.name || 'Товар',
+        qty: Number(item.quantity || 1),
+        price: Number(item.unit_price || 0),
+        total: Number(item.total_price || 0),
+      }))
+
+      const payload = {
+        saleId: String(finalNewSaleId || id || ''),
+        cashier: cashierNameStr,
+        paymentType: paymentType,
+        items: itemsPayload,
+        subtotal: Number(cartItems.reduce((acc, item) => acc + item.unit_price * item.quantity, 0)),
+        discount: Number(totalDiscount || 0),
+        totalAmount: Number(totalAmount || 0),
+        paidAmount: Number(receivedAmount || cardPaymentAmount || secondaryPaymentAmount || totalAmount || 0),
+        changeAmount: Math.max(Number(receivedAmount || 0) - Number(totalAmount || 0), 0),
+        vatAmount: Number(posCartItemsList.vat_sum || 0),
+        chequeType: 'sale',
+        fiscalSign: qrcodeUrl.fiscal && qrcodeUrl.fiscal !== 'pending' ? String(qrcodeUrl.fiscal) : '',
+        fiscalNumber: qrcodeUrl.terminalId && qrcodeUrl.terminalId !== 'pending' ? String(qrcodeUrl.terminalId) : '',
+        customer: customerId?.name ? String(customerId.name) : '',
+      }
+
+      const res = await axios.post('http://127.0.0.1:7777/print/receipt', payload)
+      if (res.data && res.data.ok) {
+        success('Чек напечатан!')
+      } else {
+        error('Ошибка печати: ' + (res.data.message || ''))
+      }
+    } catch (err) {
+      console.error('Failed to print receipt locally:', err)
+      error('Принтер чеков не отвечает. Проверьте агент печати.')
+    } finally {
+      if (isPostPayment) {
+        await handleSaleTransition(finalNewSaleId)
+      } else {
+        setNewSaleId(false)
+        resetPaymentState()
+        setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
+      }
+    }
+  }
+
   useEffect(() => {
     if (newSaleId && qrcodeUrl.qr !== 'pending') {
-      handlePrint()
+      handleLocalPrint()
     }
   }, [newSaleId, qrcodeUrl])
 
-  const handlePrintCurrentCheck = useReactToPrint({
-    content: () => printContainer.current,
-    documentTitle: 'Pharma CHEQUE',
-    removeAfterPrint: true,
-    onPrintError: (err) => {
-      error('Ошибка печати чека: ' + err)
-    },
-    onAfterPrint: () => {
-      success('Печать чека запущена')
-    },
-  })
+  const handlePrintCurrentCheck = () => {
+    handleLocalPrint()
+  }
 
   const { mutate: holdSale, isLoading: isHoldingSale } = useMutation(requests.saleMoveToPending, {
     onSuccess: () => {
@@ -723,7 +827,65 @@ export default function PosApp() {
         i18n={i18n}
         onLogout={() => setShowCashierSession(true)}
         receiptNumber={cashBoxDetails?.data?.data?.sale_number || '--'}
+        onOpenPrinterSettings={() => setShowPrinterSettings(true)}
       />
+
+      {saleCreationError && (
+        <div style={{
+          width: '100%',
+          backgroundColor: '#fef2f2',
+          borderBottom: '2px solid #ef4444',
+          padding: '16px 24px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          boxSizing: 'border-box',
+          zIndex: 999
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{ fontSize: '20px' }}>⚠️</span>
+            <div>
+              <div style={{ fontWeight: '700', color: '#991b1b', fontSize: '15px' }}>
+                Ошибка создания нового чека / Yangi chek yaratishda xatolik yuz berdi
+              </div>
+              <div style={{ fontSize: '13px', color: '#7f1d1d', marginTop: '2px' }}>
+                Продажа успешно завершена, но не удалось автоматически создать новый пустой чек. Пожалуйста, обновите страницу или создайте чек вручную.
+              </div>
+            </div>
+          </div>
+          <button 
+            type="button" 
+            onClick={async () => {
+              try {
+                const { data: newSaleRes } = await requests.saleCreate({
+                  cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
+                  store_id: get(userData, 'store.id'),
+                })
+                const nextId = get(newSaleRes, 'data.id')
+                if (nextId) {
+                  setSaleCreationError(false)
+                  navigate(`/sales/pos/${nextId}`)
+                }
+              } catch (e) {
+                error('Не удалось создать новый чек. Проверьте интернет-соединение.')
+              }
+            }}
+            style={{
+              padding: '10px 18px',
+              backgroundColor: '#ef4444',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '6px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              fontSize: '14px',
+              transition: 'background-color 0.2s'
+            }}
+          >
+            Повторить попытку
+          </button>
+        </div>
+      )}
 
       <div className='pos-main-wrapper'>
         {/* ── Left Section ── */}
@@ -917,6 +1079,9 @@ export default function PosApp() {
 
       {/* Quick Select Drawer */}
       <PosQuickSelectDrawer open={showQuickProducts} onClose={() => setShowQuickProducts(false)} onQuickAdd={handleQuickAdd} isLoading={isCartLoading} t={t} />
+
+      {/* Printer Settings Modal */}
+      <PosPrinterSettings open={showPrinterSettings} onClose={() => setShowPrinterSettings(false)} t={t} />
 
       {/* Cancel Receipt Confirmation Dialog Overlay */}
       {showCancelConfirmation && (

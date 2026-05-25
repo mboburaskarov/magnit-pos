@@ -1,6 +1,6 @@
 import React from 'react'
 import LogoMain from '@icons/LogoMain'
-import { Search, User, Power, X } from 'lucide-react'
+import { Search, User, Power, X, Printer } from 'lucide-react'
 import './PosLayout.css'
 
 export default function POSHeader({
@@ -18,6 +18,7 @@ export default function POSHeader({
   i18n,
   onLogout,
   receiptNumber,
+  onOpenPrinterSettings,
 }) {
   const getShortName = (first, last) => {
     if (!first) return cashierName || 'Magnit'
@@ -95,6 +96,15 @@ export default function POSHeader({
             title={t('pos.search_title')}
           >
             <Search size={18} />
+          </button>
+
+          <button
+            type="button"
+            className='pos-header-btn'
+            onClick={onOpenPrinterSettings}
+            title="Настройки принтера"
+          >
+            <Printer size={18} />
           </button>
 
           <div className='pos-lang-container'>
