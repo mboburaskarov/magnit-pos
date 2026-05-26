@@ -16,7 +16,6 @@ export const authRequest = axios.create({
 export const request = axios.create({
   baseURL: import.meta.env.VITE_MODE == 'dev' ? import.meta.env.VITE_BASE_API_URL_DEV : import.meta.env.VITE_BASE_API_URL,
   headers: {
-    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     Accept: 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json; charset=utf-8',
@@ -32,7 +31,6 @@ export const request = axios.create({
 export const requestEXCEL = axios.create({
   baseURL: import.meta.env.VITE_MODE == 'dev' ? import.meta.env.VITE_BASE_API_URL_DEV : import.meta.env.VITE_BASE_API_URL,
   headers: {
-    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     Accept: 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json; charset=utf-8',
@@ -48,7 +46,6 @@ export const requestEXCEL = axios.create({
 export const eposRequest = axios.create({
   baseURL: import.meta.env.VITE_MODE == 'dev' ? import.meta.env.VITE_EPOS_BASE_API_URL_DEV : import.meta.env.VITE_EPOS_BASE_API_URL,
   headers: {
-    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     Accept: 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json; charset=utf-8',
@@ -63,10 +60,26 @@ export const eposRequest = axios.create({
 export const fileUploadRequest = axios.create({
   baseURL: import.meta.env.VITE_MODE == 'dev' ? import.meta.env.VITE_FILE_API_URL_DEV : import.meta.env.VITE_FILE_API_URL,
   headers: {
-    Authorization: localStorage.getItem('access_token'),
     'Content-Type': 'multipart/form-data',
     accept: '*/*',
   },
+})
+
+const addAuthToken = (config) => {
+  const token = localStorage.getItem('access_token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+}
+
+request.interceptors.request.use(addAuthToken)
+requestEXCEL.interceptors.request.use(addAuthToken)
+eposRequest.interceptors.request.use(addAuthToken)
+fileUploadRequest.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token')
+  if (token) config.headers.Authorization = token
+  return config
 })
 
 export const yandexMapsRequest = axios.create({
@@ -89,9 +102,12 @@ request.interceptors.response.use(
     }
 
     if (err.response.status === 401 || err.response.status === 403) {
-      // localStorage.clear()
       localStorage.removeItem('access_token')
-      window.location.replace('/login')
+      if (window.location.protocol === 'file:') {
+        window.location.hash = '#/login'
+      } else {
+        window.location.replace('/login')
+      }
     }
 
     return Promise.reject(err)

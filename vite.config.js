@@ -3,11 +3,14 @@ import * as path from 'path'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const isElectron = process.env.ELECTRON === 'true'
+
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: isElectron ? './' : '/',
   plugins: [
     react(),
-    VitePWA({
+    ...(isElectron ? [] : [VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['faviconpos.svg', 'MagnitLogo.svg', 'MagnitManagementLogo.svg', 'MagnitPOS.svg', 'no-img.png', 'uzum.png'],
       manifest: {
@@ -49,7 +52,7 @@ export default defineConfig({
           },
         ],
       },
-    }),
+    })]),
   ],
   server: { port: 8000, host: true },
   resolve: {
@@ -60,6 +63,7 @@ export default defineConfig({
       '@constants': path.resolve(__dirname, 'constants'),
       '@icons': path.resolve(__dirname, 'src/assets/icons'),
       '@hooks': path.resolve(__dirname, 'src/hooks'),
+      ...(isElectron ? { 'virtual:pwa-register/react': path.resolve(__dirname, 'utils/pwa-stub.js') } : {}),
     },
   },
   checkjs: true,

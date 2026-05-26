@@ -7,23 +7,45 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Build output
 dist
 dist-ssr
 *.local
 
+# Electron build output
+release/
+out/
+
+# Tauri build output
+src-tauri/target/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.vite/
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Vite cache
+.vite/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Environment files
 .env
+.env.local
 .env.development
 .env.production
+.env.*.local
+
+# Misc
 .sixth
+*.tsbuildinfo

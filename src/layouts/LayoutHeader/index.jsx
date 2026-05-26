@@ -94,7 +94,6 @@ function LayoutHeader() {
   const classes = headerStyles({ isOpen })
   const logout = () => {
     clearAuthSession()
-    window.location.replace('/login')
     navigate('/login')
   }
   const ramadan = false

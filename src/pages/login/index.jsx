@@ -2,6 +2,7 @@ import { LoadingButton } from '@mui/lab'
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import { useDispatch } from 'react-redux'
@@ -229,6 +230,7 @@ export default function LoginPage() {
   const classes = useStyles()
   const methods = useForm()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [country, setCountry] = useState(countries[0])
   const [activeField, setActiveField] = useState('phone_number')
 
@@ -284,7 +286,7 @@ export default function LoginPage() {
       localStorage.setItem('user_data', JSON.stringify(userData.employee))
       dispatch(setUserData(userData?.employee))
       setTimeout(() => {
-        window.location.replace('/redirect')
+        navigate('/redirect', { replace: true })
       }, 300)
     },
     onError: (err) => {
@@ -309,7 +311,7 @@ export default function LoginPage() {
       dispatch(setUserData(mockUserData.employee))
       success('Bypassing offline API...')
       setTimeout(() => {
-        window.location.replace('/redirect')
+        navigate('/redirect', { replace: true })
       }, 300)
     },
   })
