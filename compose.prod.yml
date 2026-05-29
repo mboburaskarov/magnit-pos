@@ -1,11 +1,11 @@
-services:
-  app:
-    image: ${DOCKER_IMAGE}
-    container_name: magnit-adminpanel
-    restart: unless-stopped
-    networks:
-      - magnit
-
 networks:
   magnit:
     external: true
+
+services:
+  app:
+    image: ${APP_IMAGE:-ghcr.io/nagaimatsuge/magnit-pos:latest}
+    container_name: pos-frontend
+    restart: unless-stopped
+    networks:
+      - magnit
