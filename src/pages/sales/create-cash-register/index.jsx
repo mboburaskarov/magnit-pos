@@ -289,10 +289,10 @@ function NewCashRegister() {
   const methods = useForm()
   const dispatch = useDispatch()
   const [isEposTurnOn, setisEposTurnOn] = useState({ is_open: true, message: '' })
-  
+
   // Focused Input Tracking
   const [focusedInput, setFocusedInput] = useState('opened_amout')
-  
+
   // Touch register list picker states
   const [showRegisterList, setShowRegisterList] = useState(false)
   const [registerSearchQuery, setRegisterSearchQuery] = useState('')
@@ -305,10 +305,11 @@ function NewCashRegister() {
       error('Ошибка получения пользовательских данных.!')
     },
   })
+
   useEffect(() => {
     getUserInfo()
   }, [])
-  
+
   const { data: registerCashList } = useQuery(['registerCashList', userData], () =>
     requests.getAllCashBoxList({ store_id: get(userData, 'store.id'), limit: 20, offset: 0 }),
   )
@@ -479,7 +480,7 @@ function NewCashRegister() {
     if (!focusedInput) return
     const currentVal = methods.getValues(focusedInput) || ''
     const currentString = String(currentVal)
-    
+
     if (val === 'clear') {
       methods.setValue(focusedInput, '', { shouldValidate: true })
     } else if (val === 'backspace') {
@@ -495,9 +496,7 @@ function NewCashRegister() {
   }
 
   const registers = registerCashList?.data?.data?.data || []
-  const filteredRegisters = registers.filter((reg) =>
-    (reg.full_name || reg.name || '').toLowerCase().includes(registerSearchQuery.toLowerCase())
-  )
+  const filteredRegisters = registers.filter((reg) => (reg.full_name || reg.name || '').toLowerCase().includes(registerSearchQuery.toLowerCase()))
 
   const selectedRegister = methods.watch('registerCash_id')
   const isSubmitDisabled = get(canCreate, 'is_open') || isopenZReport || isCreatingCashbox || !selectedRegister
@@ -533,14 +532,14 @@ function NewCashRegister() {
                     <Typography fontSize={'14px'} fontWeight={'700'} color={'#475569'} mb={'8px'}>
                       Kassa *
                     </Typography>
-                    
+
                     {showRegisterList ? (
                       <Box>
                         <Box className={classes.registerSearchWrapper}>
                           <input
-                            type="text"
+                            type='text'
                             className={classes.registerSearchInput}
-                            placeholder="Kassani qidirish..."
+                            placeholder='Kassani qidirish...'
                             value={registerSearchQuery}
                             onChange={(e) => setRegisterSearchQuery(e.target.value)}
                             autoFocus
@@ -558,13 +557,9 @@ function NewCashRegister() {
                             >
                               <div className={classes.registerDetails}>
                                 <span className={classes.registerName}>{reg.full_name || reg.name}</span>
-                                <span className={classes.registerMeta}>
-                                  Status: {reg.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}
-                                </span>
+                                <span className={classes.registerMeta}>Status: {reg.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}</span>
                               </div>
-                              {selectedRegister?.id === reg.id && (
-                                <Check color="#2563eb" size={20} />
-                              )}
+                              {selectedRegister?.id === reg.id && <Check color='#2563eb' size={20} />}
                             </div>
                           ))}
                         </Box>
@@ -575,24 +570,14 @@ function NewCashRegister() {
                           <div className={classes.selectedRegisterCard}>
                             <div className={classes.registerDetails}>
                               <span className={classes.registerName}>{selectedRegister.full_name || selectedRegister.name}</span>
-                              <span className={classes.registerMeta}>
-                                Status: {selectedRegister.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}
-                              </span>
+                              <span className={classes.registerMeta}>Status: {selectedRegister.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}</span>
                             </div>
-                            <button
-                              type="button"
-                              className={classes.changeRegisterBtn}
-                              onClick={() => setShowRegisterList(true)}
-                            >
+                            <button type='button' className={classes.changeRegisterBtn} onClick={() => setShowRegisterList(true)}>
                               O'zgartirish
                             </button>
                           </div>
                         ) : (
-                          <button
-                            type="button"
-                            className={classes.touchSelectTrigger}
-                            onClick={() => setShowRegisterList(true)}
-                          >
+                          <button type='button' className={classes.touchSelectTrigger} onClick={() => setShowRegisterList(true)}>
                             <span>Kassirni tanlang</span>
                             <ChevronRight size={20} />
                           </button>
@@ -601,7 +586,7 @@ function NewCashRegister() {
                     )}
 
                     <Box height={'24px'} />
-                    
+
                     <Box className={classes.formField}>
                       <NumberFormatInput
                         endAdornmentText={'UZS'}
@@ -616,7 +601,7 @@ function NewCashRegister() {
                     </Box>
                   </Box>
 
-                  <Box display="flex" gap="16px" mt="20px">
+                  <Box display='flex' gap='16px' mt='20px'>
                     <Box className={classes.card_box} flex={1}>
                       <Box display={'flex'} alignItems={'center'}>
                         <Box className={classes.iconBox}>
@@ -658,13 +643,7 @@ function NewCashRegister() {
                     </Box>
                   </Box>
 
-                  <Button
-                    type='button'
-                    onClick={handleOpenCashbox}
-                    disabled={isSubmitDisabled}
-                    className={classes.submitButton}
-                    fullWidth
-                  >
+                  <Button type='button' onClick={handleOpenCashbox} disabled={isSubmitDisabled} className={classes.submitButton} fullWidth>
                     Kassani oching <ArrowRightIcon color={isSubmitDisabled ? '#94a3b8' : '#fff'} />
                   </Button>
                 </Box>
@@ -681,7 +660,7 @@ function NewCashRegister() {
                         return (
                           <button
                             key={key}
-                            type="button"
+                            type='button'
                             className={btnClass}
                             onClick={() => handleKeypadPress(key === 'C' ? 'clear' : key === '⌫' ? 'backspace' : key)}
                           >
@@ -690,12 +669,7 @@ function NewCashRegister() {
                         )
                       })}
                     </div>
-                    <button
-                      type="button"
-                      className={classes.enterBtn}
-                      disabled={isSubmitDisabled}
-                      onClick={() => handleKeypadPress('enter')}
-                    >
+                    <button type='button' className={classes.enterBtn} disabled={isSubmitDisabled} onClick={() => handleKeypadPress('enter')}>
                       Kassani oching (Enter)
                     </button>
                   </div>

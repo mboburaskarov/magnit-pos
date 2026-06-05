@@ -74,6 +74,30 @@ export default function PosApp() {
   const [openRefreshDialog, setOpenRefreshDialog] = useState(false)
   const [dmedPrescriptionsList, setDmedPrescriptionsList] = useState([])
   const [dmedOrganizedList, setDmedOrganizedList] = useState([])
+  const [isAgentRunning, setIsAgentRunning] = useState(true)
+  const [activeAgentUrl, setActiveAgentUrl] = useState('http://localhost:7788')
+
+  const checkAgentHealth = async () => {
+    try {
+      await axios.get('http://localhost:7788/health', { timeout: 2000 })
+      setActiveAgentUrl('http://localhost:7788')
+      setIsAgentRunning(true)
+    } catch (e) {
+      try {
+        await axios.get('http://127.0.0.1:7777/health', { timeout: 2000 })
+        setActiveAgentUrl('http://127.0.0.1:7777')
+        setIsAgentRunning(true)
+      } catch (e2) {
+        setIsAgentRunning(false)
+      }
+    }
+  }
+
+  useEffect(() => {
+    checkAgentHealth()
+    const interval = setInterval(checkAgentHealth, 10000)
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     const updateTime = () => {
@@ -689,7 +713,7 @@ export default function PosApp() {
         customer: customerId?.name ? String(customerId.name) : '',
       }
 
-      const res = await axios.post('http://127.0.0.1:7777/print/receipt', payload)
+      const res = await axios.post(`${activeAgentUrl}/print/receipt`, payload)
       if (res.data && res.data.ok) {
         success('Чек напечатан!')
       } else {
@@ -800,6 +824,20 @@ export default function PosApp() {
     setShowReturnDrawer(true)
   }
 
+  const handleOpenCashDrawer = async () => {
+    try {
+      const res = await axios.post(`${activeAgentUrl}/cash-drawer/open`)
+      if (res.data && res.data.ok) {
+        success('Денежный ящик открыт')
+        // Optional: log to backend here if required by the API
+      } else {
+        error('Ошибка открытия денежного ящика')
+      }
+    } catch (err) {
+      error('Ошибка: ' + (err.response?.data?.message || err.message))
+    }
+  }
+
   return (
     <div className='pos-shell'>
       <SaleProgressSteps
@@ -828,6 +866,8 @@ export default function PosApp() {
         onLogout={() => setShowCashierSession(true)}
         receiptNumber={cashBoxDetails?.data?.data?.sale_number || '--'}
         onOpenPrinterSettings={() => setShowPrinterSettings(true)}
+        isAgentRunning={isAgentRunning}
+        onOpenCashDrawer={handleOpenCashDrawer}
       />
 
       {saleCreationError && (

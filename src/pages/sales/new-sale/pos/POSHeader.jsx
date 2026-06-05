@@ -1,6 +1,6 @@
 import React from 'react'
 import LogoMain from '@icons/LogoMain'
-import { Search, User, Power, X, Printer } from 'lucide-react'
+import { Search, User, Power, X, Printer, Banknote } from 'lucide-react'
 import './PosLayout.css'
 
 export default function POSHeader({
@@ -19,6 +19,8 @@ export default function POSHeader({
   onLogout,
   receiptNumber,
   onOpenPrinterSettings,
+  isAgentRunning,
+  onOpenCashDrawer,
 }) {
   const getShortName = (first, last) => {
     if (!first) return cashierName || 'Magnit'
@@ -98,13 +100,36 @@ export default function POSHeader({
             <Search size={18} />
           </button>
 
+          {/* Open cash drawer button */}
+          <button
+            type="button"
+            className='pos-header-btn'
+            onClick={onOpenCashDrawer}
+            title="Открыть денежный ящик"
+          >
+            <Banknote size={18} />
+          </button>
+
           <button
             type="button"
             className='pos-header-btn'
             onClick={onOpenPrinterSettings}
             title="Настройки принтера"
+            style={{ position: 'relative' }}
           >
             <Printer size={18} />
+            {!isAgentRunning && (
+              <span style={{
+                position: 'absolute',
+                top: -4,
+                right: -4,
+                width: 10,
+                height: 10,
+                backgroundColor: '#dc2626',
+                borderRadius: '50%',
+                border: '2px solid #111827'
+              }} />
+            )}
           </button>
 
           <div className='pos-lang-container'>
