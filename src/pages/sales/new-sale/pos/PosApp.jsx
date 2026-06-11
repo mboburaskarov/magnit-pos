@@ -482,32 +482,43 @@ export default function PosApp() {
       }
     }
 
-    // 2. Check if product already exists in cart items list
-    const existing = cartItems.find((item) => item.barcode === searchBarcode)
-    if (existing) {
-      changeQty({
-        id: existing.id,
-        data: {
-          quantity: existing.quantity + 1,
-          unit_quantity: existing.unit_quantity,
-          store_product_id: existing.store_product_id,
-        },
-      })
-
-      // Save marking to existing item if it was scanned
-      if (scannedBarcode.length > 37) {
-        const marking = containsCyrillic(scannedBarcode) ? convertoRuOrEngToEng(scannedBarcode) : scannedBarcode
-        saveMarkingToCartItem({
-          id: existing.store_product_id,
-          data: {
-            marking: marking,
-          },
-        })
+    // 2. Parse scale barcode (prefix 26 or 27 → 5-digit product code + weight in grams)
+    let weightGrams = null
+    if (searchBarcode.startsWith('26') || searchBarcode.startsWith('27')) {
+      const productCode = searchBarcode.slice(2, 7)
+      const parsed = parseInt(searchBarcode.slice(7), 10)
+      if (productCode.length === 5 && !isNaN(parsed) && parsed > 0) {
+        searchBarcode = productCode
+        weightGrams = parsed
       }
-      return
     }
 
-    // 3. Otherwise search store products to get store_product_id
+    // 3. Check if product already exists in cart (only for non-scale barcodes;
+    //    scale barcodes are checked by store_product_id after the API lookup below)
+    if (weightGrams === null) {
+      const existing = cartItems.find((item) => item.barcode === searchBarcode)
+      if (existing) {
+        changeQty({
+          id: existing.id,
+          data: {
+            quantity: existing.quantity + 1,
+            unit_quantity: existing.unit_quantity,
+            store_product_id: existing.store_product_id,
+          },
+        })
+
+        if (scannedBarcode.length > 37) {
+          const marking = containsCyrillic(scannedBarcode) ? convertoRuOrEngToEng(scannedBarcode) : scannedBarcode
+          saveMarkingToCartItem({
+            id: existing.store_product_id,
+            data: { marking },
+          })
+        }
+        return
+      }
+    }
+
+    // 4. Search store products to get store_product_id
     try {
       const storeId = get(userData, 'store.id')
       if (!storeId) {
@@ -524,16 +535,33 @@ export default function PosApp() {
         return
       }
 
-      // Take the first matching product
       const product = productsList[0]
 
-      // 4. Add product to cart with store_product_id!
+      // 5. For scale products: if already in cart accumulate the new weight, otherwise create fresh
+      if (weightGrams !== null) {
+        const existingScaleItem = cartItems.find((item) => item.store_product_id === product.id)
+        if (existingScaleItem) {
+          const currentGrams = existingScaleItem.quantity * existingScaleItem.unit_per_pack + existingScaleItem.unit_quantity
+          changeQty({
+            id: existingScaleItem.id,
+            data: {
+              quantity: 0,
+              unit_quantity: currentGrams + weightGrams,
+              store_product_id: existingScaleItem.store_product_id,
+            },
+          })
+          return
+        }
+      }
+
+      // 6. Add product to cart
       addProduct({
         sale_id: id,
         barcode: product.barcode,
         store_product_id: product.id,
         discount_type: 'percent',
         discount_value: 0,
+        ...(weightGrams !== null && { weight_grams: weightGrams }),
         originalScannedValue: scannedBarcode,
       })
     } catch (err) {
