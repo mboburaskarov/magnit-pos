@@ -4,7 +4,7 @@ import LoadingContainer from '@components/LoadingContainer'
 import ArrowRightIcon from '@icons/ArrowRightIcon'
 import CartOutlineIcon from '@icons/CartOutline'
 import MoneyOutlineIcon from '@icons/MoneyOutline'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Typography, Dialog } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import hasAccess from '@utils/hasAccess'
 import { requests } from '@utils/requests'
@@ -16,7 +16,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { Check, ChevronRight } from 'lucide-react'
+import { Check, ChevronRight, AlertCircle } from 'lucide-react'
 
 const useStyles = makeStyles((theme) => ({
   box: {
@@ -279,6 +279,88 @@ const useStyles = makeStyles((theme) => ({
       color: '#94a3b8 !important',
     },
   },
+  eposDialogRoot: {
+    '& .MuiDialog-paper.MuiDialog-paper': {
+      width: '100%',
+      maxWidth: 480,
+      padding: '40px 32px',
+      borderRadius: 24,
+      boxShadow: '0px 20px 50px rgba(0, 0, 0, 0.15) !important',
+      border: `1px solid ${theme.palette.bunker[100]}`,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      textAlign: 'center',
+      gap: 16,
+    },
+    '& .MuiBackdrop-root': {
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      backdropFilter: 'blur(4px)',
+    },
+    zIndex: 1400,
+  },
+  eposIconContainer: {
+    width: 64,
+    height: 64,
+    borderRadius: '50%',
+    backgroundColor: theme.palette.red[10] || '#FFF1F2',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: theme.palette.red[500] || '#F45B69',
+    marginBottom: 8,
+  },
+  eposTitle: {
+    fontSize: '24px !important',
+    fontWeight: '800 !important',
+    color: (theme.palette.black || '#111217') + ' !important',
+    margin: '0 !important',
+  },
+  eposDescription: {
+    fontSize: '16px !important',
+    color: (theme.palette.gray[600] || '#6F6F6F') + ' !important',
+    lineHeight: '1.5 !important',
+    margin: '0 !important',
+  },
+  eposStatusRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    padding: '10px 16px',
+    backgroundColor: theme.palette.background.gray || '#F9F9FA',
+    borderRadius: 12,
+    border: `1px solid ${theme.palette.bunker[100]}`,
+    width: '100%',
+    boxSizing: 'border-box',
+    marginTop: 8,
+  },
+  eposStatusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: '50%',
+    backgroundColor: theme.palette.bunker[300] || '#B1B7C8',
+    animation: '$pulse 2s infinite ease-in-out',
+  },
+  eposStatusText: {
+    fontSize: '14px !important',
+    fontWeight: '600 !important',
+    color: (theme.palette.gray[600] || '#6F6F6F') + ' !important',
+  },
+  '@keyframes pulse': {
+    '0%': {
+      transform: 'scale(0.9)',
+      opacity: 0.6,
+    },
+    '50%': {
+      transform: 'scale(1.1)',
+      opacity: 1,
+    },
+    '100%': {
+      transform: 'scale(0.9)',
+      opacity: 0.6,
+    },
+  },
 }))
 
 function NewCashRegister() {
@@ -459,6 +541,26 @@ function NewCashRegister() {
     checkEPOSTurnOn(EPOS_STATUS_PAYLOAD)
   }, [])
 
+  const isEposDisconnected = !isEposTurnOn.is_open && (!isEposTurnOn.message || !isEposTurnOn.message.includes('филиале'))
+
+  useEffect(() => {
+    if (!isEposDisconnected) return
+
+    const interval = setInterval(async () => {
+      try {
+        const response = await requests.checkEPOSTurnOn(EPOS_STATUS_PAYLOAD)
+        if (response && !get(response, 'data.error', true)) {
+          checkEPOSTurnOn(EPOS_STATUS_PAYLOAD)
+          clearInterval(interval)
+        }
+      } catch (err) {
+        // Silent catch during polling
+      }
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [isEposDisconnected, checkEPOSTurnOn])
+
   const handleOpenCashbox = () => {
     const selectedRegister = methods.watch('registerCash_id')
     if (!selectedRegister) {
@@ -504,184 +606,204 @@ function NewCashRegister() {
   return (
     <LoadingContainer readyState={!isCheckSaleExist && !iscloseCheckZReport && !ischeckEPOSTurnOn}>
       <FormProvider {...methods}>
-        {isEposTurnOn?.is_open ? (
-          <Box className={classes.box}>
-            <Box className={classes.wrapper}>
-              <Box className={classes.header}>
-                {get(canCreate, 'is_open') ? (
-                  <>
-                    <span className={classes.openStoreDot} />
-                    <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
-                      Kassa Ochiq ({get(registerCashList, 'data.data.data', null).find((a) => a.id == get(methods.watch('registerCash_id'), 'id'))?.full_name})
-                    </Typography>
-                  </>
-                ) : (
-                  <>
-                    <span className={classes.closeStoreDot} />
-                    <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
-                      Kassa Yopiq
-                    </Typography>
-                  </>
-                )}
+        <Box className={classes.box}>
+          <Box className={classes.wrapper}>
+            <Box className={classes.header}>
+              {get(canCreate, 'is_open') ? (
+                <>
+                  <span className={classes.openStoreDot} />
+                  <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
+                    Kassa Ochiq ({get(registerCashList, 'data.data.data', null).find((a) => a.id == get(methods.watch('registerCash_id'), 'id'))?.full_name})
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <span className={classes.closeStoreDot} />
+                  <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
+                    Kassa Yopiq
+                  </Typography>
+                </>
+              )}
+            </Box>
+
+            <Box display={'flex'} p={'32px'} gap={'32px'} alignItems={'stretch'}>
+              {/* Left side inputs and summary */}
+              <Box sx={{ width: '55%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <Box>
+                  <Typography fontSize={'14px'} fontWeight={'700'} color={'#475569'} mb={'8px'}>
+                    Kassa *
+                  </Typography>
+
+                  {showRegisterList ? (
+                    <Box>
+                      <Box className={classes.registerSearchWrapper}>
+                        <input
+                          type='text'
+                          className={classes.registerSearchInput}
+                          placeholder='Kassani qidirish...'
+                          value={registerSearchQuery}
+                          onChange={(e) => setRegisterSearchQuery(e.target.value)}
+                          autoFocus
+                        />
+                      </Box>
+                      <Box className={classes.registerListScroll}>
+                        {filteredRegisters.map((reg) => (
+                          <div
+                            key={reg.id}
+                            className={`${classes.registerRow} ${selectedRegister?.id === reg.id ? classes.selectedRow : ''}`}
+                            onClick={() => {
+                              methods.setValue('registerCash_id', reg, { shouldValidate: true })
+                              setShowRegisterList(false)
+                            }}
+                          >
+                            <div className={classes.registerDetails}>
+                              <span className={classes.registerName}>{reg.full_name || reg.name}</span>
+                              <span className={classes.registerMeta}>Status: {reg.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}</span>
+                            </div>
+                            {selectedRegister?.id === reg.id && <Check color='#2563eb' size={20} />}
+                          </div>
+                        ))}
+                      </Box>
+                    </Box>
+                  ) : (
+                    <Box>
+                      {selectedRegister ? (
+                        <div className={classes.selectedRegisterCard}>
+                          <div className={classes.registerDetails}>
+                            <span className={classes.registerName}>{selectedRegister.full_name || selectedRegister.name}</span>
+                            <span className={classes.registerMeta}>Status: {selectedRegister.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}</span>
+                          </div>
+                          <button type='button' className={classes.changeRegisterBtn} onClick={() => setShowRegisterList(true)}>
+                            O&apos;zgartirish
+                          </button>
+                        </div>
+                      ) : (
+                        <button type='button' className={classes.touchSelectTrigger} onClick={() => setShowRegisterList(true)}>
+                          <span>Kassirni tanlang</span>
+                          <ChevronRight size={20} />
+                        </button>
+                      )}
+                    </Box>
+                  )}
+
+                  <Box height={'24px'} />
+
+                  <Box className={classes.formField}>
+                    <NumberFormatInput
+                      endAdornmentText={'UZS'}
+                      end
+                      type='number'
+                      fullWidth
+                      name='opened_amout'
+                      label='Ochilish miqdori'
+                      placeholder='Miqdorni kiriting'
+                      onFocus={() => setFocusedInput('opened_amout')}
+                    />
+                  </Box>
+                </Box>
+
+                <Box display='flex' gap='16px' mt='20px'>
+                  <Box className={classes.card_box} flex={1}>
+                    <Box display={'flex'} alignItems={'center'}>
+                      <Box className={classes.iconBox}>
+                        <MoneyOutlineIcon />
+                      </Box>
+                      <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
+                        Naqd
+                      </Typography>
+                    </Box>
+                    <Box my={'12px'} border={'1px solid'} borderColor={'#f1f5f9'} />
+                    <Box display={'flex'} justifyContent={'end'}>
+                      <Typography display={'flex'} fontSize={'20px'} fontWeight={'700'} color={'#2563eb'}>
+                        {get(registerCashData, 'data.data.closed_amount', null) || 0}
+                        <Typography mx={'4px'} fontSize={'20px'} fontWeight={'700'} color={'#94a3b8'}>
+                          UZS
+                        </Typography>
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Box className={classes.card_box} flex={1}>
+                    <Box display={'flex'} alignItems={'center'}>
+                      <Box className={classes.iconBox}>
+                        <CartOutlineIcon />
+                      </Box>
+                      <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
+                        Karta
+                      </Typography>
+                    </Box>
+                    <Box my={'12px'} border={'1px solid'} borderColor={'#f1f5f9'} />
+                    <Box display={'flex'} justifyContent={'end'}>
+                      <Typography display={'flex'} fontSize={'20px'} fontWeight={'700'} color={'#2563eb'}>
+                        0
+                        <Typography mx={'4px'} fontSize={'20px'} fontWeight={'700'} color={'#94a3b8'}>
+                          UZS
+                        </Typography>
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+
+                <Button type='button' onClick={handleOpenCashbox} disabled={isSubmitDisabled} className={classes.submitButton} fullWidth>
+                  Kassani oching <ArrowRightIcon color={isSubmitDisabled ? '#94a3b8' : '#fff'} />
+                </Button>
               </Box>
 
-              <Box display={'flex'} p={'32px'} gap={'32px'} alignItems={'stretch'}>
-                {/* Left side inputs and summary */}
-                <Box sx={{ width: '55%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <Box>
-                    <Typography fontSize={'14px'} fontWeight={'700'} color={'#475569'} mb={'8px'}>
-                      Kassa *
-                    </Typography>
-
-                    {showRegisterList ? (
-                      <Box>
-                        <Box className={classes.registerSearchWrapper}>
-                          <input
-                            type='text'
-                            className={classes.registerSearchInput}
-                            placeholder='Kassani qidirish...'
-                            value={registerSearchQuery}
-                            onChange={(e) => setRegisterSearchQuery(e.target.value)}
-                            autoFocus
-                          />
-                        </Box>
-                        <Box className={classes.registerListScroll}>
-                          {filteredRegisters.map((reg) => (
-                            <div
-                              key={reg.id}
-                              className={`${classes.registerRow} ${selectedRegister?.id === reg.id ? classes.selectedRow : ''}`}
-                              onClick={() => {
-                                methods.setValue('registerCash_id', reg, { shouldValidate: true })
-                                setShowRegisterList(false)
-                              }}
-                            >
-                              <div className={classes.registerDetails}>
-                                <span className={classes.registerName}>{reg.full_name || reg.name}</span>
-                                <span className={classes.registerMeta}>Status: {reg.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}</span>
-                              </div>
-                              {selectedRegister?.id === reg.id && <Check color='#2563eb' size={20} />}
-                            </div>
-                          ))}
-                        </Box>
-                      </Box>
-                    ) : (
-                      <Box>
-                        {selectedRegister ? (
-                          <div className={classes.selectedRegisterCard}>
-                            <div className={classes.registerDetails}>
-                              <span className={classes.registerName}>{selectedRegister.full_name || selectedRegister.name}</span>
-                              <span className={classes.registerMeta}>Status: {selectedRegister.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}</span>
-                            </div>
-                            <button type='button' className={classes.changeRegisterBtn} onClick={() => setShowRegisterList(true)}>
-                              O'zgartirish
-                            </button>
-                          </div>
-                        ) : (
-                          <button type='button' className={classes.touchSelectTrigger} onClick={() => setShowRegisterList(true)}>
-                            <span>Kassirni tanlang</span>
-                            <ChevronRight size={20} />
-                          </button>
-                        )}
-                      </Box>
-                    )}
-
-                    <Box height={'24px'} />
-
-                    <Box className={classes.formField}>
-                      <NumberFormatInput
-                        endAdornmentText={'UZS'}
-                        end
-                        type='number'
-                        fullWidth
-                        name='opened_amout'
-                        label='Ochilish miqdori'
-                        placeholder='Miqdorni kiriting'
-                        onFocus={() => setFocusedInput('opened_amout')}
-                      />
-                    </Box>
-                  </Box>
-
-                  <Box display='flex' gap='16px' mt='20px'>
-                    <Box className={classes.card_box} flex={1}>
-                      <Box display={'flex'} alignItems={'center'}>
-                        <Box className={classes.iconBox}>
-                          <MoneyOutlineIcon />
-                        </Box>
-                        <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
-                          Naqd
-                        </Typography>
-                      </Box>
-                      <Box my={'12px'} border={'1px solid'} borderColor={'#f1f5f9'} />
-                      <Box display={'flex'} justifyContent={'end'}>
-                        <Typography display={'flex'} fontSize={'20px'} fontWeight={'700'} color={'#2563eb'}>
-                          {get(registerCashData, 'data.data.closed_amount', null) || 0}
-                          <Typography mx={'4px'} fontSize={'20px'} fontWeight={'700'} color={'#94a3b8'}>
-                            UZS
-                          </Typography>
-                        </Typography>
-                      </Box>
-                    </Box>
-
-                    <Box className={classes.card_box} flex={1}>
-                      <Box display={'flex'} alignItems={'center'}>
-                        <Box className={classes.iconBox}>
-                          <CartOutlineIcon />
-                        </Box>
-                        <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
-                          Karta
-                        </Typography>
-                      </Box>
-                      <Box my={'12px'} border={'1px solid'} borderColor={'#f1f5f9'} />
-                      <Box display={'flex'} justifyContent={'end'}>
-                        <Typography display={'flex'} fontSize={'20px'} fontWeight={'700'} color={'#2563eb'}>
-                          0
-                          <Typography mx={'4px'} fontSize={'20px'} fontWeight={'700'} color={'#94a3b8'}>
-                            UZS
-                          </Typography>
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-
-                  <Button type='button' onClick={handleOpenCashbox} disabled={isSubmitDisabled} className={classes.submitButton} fullWidth>
-                    Kassani oching <ArrowRightIcon color={isSubmitDisabled ? '#94a3b8' : '#fff'} />
-                  </Button>
-                </Box>
-
-                {/* Right side numeric keypad */}
-                <Box sx={{ width: '45%', display: 'flex', flexDirection: 'column' }}>
-                  <div className={classes.keypadContainer}>
-                    <div className={classes.keypadGrid}>
-                      {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', '0', '⌫'].map((key) => {
-                        let btnClass = classes.keypadBtn
-                        if (key === 'C' || key === '⌫') {
-                          btnClass = `${classes.keypadBtn} ${classes.actionBtn}`
-                        }
-                        return (
-                          <button
-                            key={key}
-                            type='button'
-                            className={btnClass}
-                            onClick={() => handleKeypadPress(key === 'C' ? 'clear' : key === '⌫' ? 'backspace' : key)}
-                          >
-                            {key}
-                          </button>
-                        )
-                      })}
-                    </div>
-                    <button type='button' className={classes.enterBtn} disabled={isSubmitDisabled} onClick={() => handleKeypadPress('enter')}>
-                      Kassani oching (Enter)
-                    </button>
+              {/* Right side numeric keypad */}
+              <Box sx={{ width: '45%', display: 'flex', flexDirection: 'column' }}>
+                <div className={classes.keypadContainer}>
+                  <div className={classes.keypadGrid}>
+                    {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', '0', '⌫'].map((key) => {
+                      let btnClass = classes.keypadBtn
+                      if (key === 'C' || key === '⌫') {
+                        btnClass = `${classes.keypadBtn} ${classes.actionBtn}`
+                      }
+                      return (
+                        <button
+                          key={key}
+                          type='button'
+                          className={btnClass}
+                          onClick={() => handleKeypadPress(key === 'C' ? 'clear' : key === '⌫' ? 'backspace' : key)}
+                        >
+                          {key}
+                        </button>
+                      )
+                    })}
                   </div>
-                </Box>
+                  <button type='button' className={classes.enterBtn} disabled={isSubmitDisabled} onClick={() => handleKeypadPress('enter')}>
+                    Kassani oching (Enter)
+                  </button>
+                </div>
               </Box>
             </Box>
           </Box>
-        ) : (
-          <Box display={'flex'} alignItems={'center'} color={'#ef4444'} fontSize={'20px'} fontWeight={'700'} justifyContent={'center'} height={'100vh'}>
-            {get(isEposTurnOn, 'message')}
+        </Box>
+
+        <Dialog
+          open={!isEposTurnOn?.is_open}
+          disableEscapeKeyDown
+          onClose={() => {}}
+          className={classes.eposDialogRoot}
+          disableScrollLock
+        >
+          <Box className={classes.eposIconContainer}>
+            <AlertCircle size={36} strokeWidth={2} />
           </Box>
-        )}
+          <Typography className={classes.eposTitle}>
+            {isEposTurnOn.message?.includes('филиале') ? 'Неверный филиал' : 'EPOS не запущен'}
+          </Typography>
+          <Typography className={classes.eposDescription}>
+            {isEposTurnOn.message?.includes('филиале')
+              ? isEposTurnOn.message
+              : 'Для продолжения работы запустите программу EPOS на этом компьютере.'}
+          </Typography>
+          <Box className={classes.eposStatusRow}>
+            <span className={classes.eposStatusDot} />
+            <Typography className={classes.eposStatusText}>
+              {isEposTurnOn.message?.includes('филиале') ? 'Статус: ошибка терминала' : 'Статус: отключено'}
+            </Typography>
+          </Box>
+        </Dialog>
       </FormProvider>
     </LoadingContainer>
   )
