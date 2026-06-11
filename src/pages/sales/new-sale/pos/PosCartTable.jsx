@@ -79,7 +79,7 @@ function PosCartTable({
                       <button className='pos-qty-btn' onClick={() => onQtyIncrease?.(item)}>+</button>
                     </div>
                   </td>
-                  <td>{item.unit_per_pack > 1 && item.unit_quantity > 0 ? `${item.unit_quantity} шт` : 'уп'}</td>
+                  <td>{item.unit_per_pack > 1 && item.unit_quantity > 0 ? `${item.unit_quantity} ${item.unit_per_pack === 1000 ? 'г' : 'шт'}` : 'уп'}</td>
                   <td style={{ textAlign: 'right' }}>{thousandDivider(item.unit_price)}</td>
                   <td style={{ textAlign: 'right' }}>
                     {item.discount_price > 0 ? thousandDivider(item.discount_price) : '0.00'}

@@ -72,7 +72,7 @@ export default function ProductTable({ cartItems = [], selectedId, onSelectRow, 
                   <td className='col-qty'>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <QuantityStepper item={item} onIncrease={onQtyIncrease} onDecrease={handleDecrease} />
-                      <span className='unit-badge'>{item.unit_per_pack > 1 && item.unit_quantity > 0 ? `${item.unit_quantity} шт` : 'уп'}</span>
+                      <span className='unit-badge'>{item.unit_per_pack > 1 && item.unit_quantity > 0 ? `${item.unit_quantity} ${item.unit_per_pack === 1000 ? 'г' : 'шт'}` : 'уп'}</span>
                     </div>
                   </td>
                   <td className='col-price text-right'>{thousandDivider(item.unit_price)}</td>

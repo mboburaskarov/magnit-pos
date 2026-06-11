@@ -31,7 +31,7 @@ export default function ProductSummary({
             <div className='active-product-calc'>
               <span className='calc-math'>
                 {selectedItem.unit_per_pack > 1 && selectedItem.unit_quantity > 0 ? (
-                  `${selectedItem.unit_quantity} шт × `
+                  `${selectedItem.unit_quantity} ${selectedItem.unit_per_pack === 1000 ? 'г' : 'шт'} × `
                 ) : (
                   `${selectedItem.quantity} уп × `
                 )}
