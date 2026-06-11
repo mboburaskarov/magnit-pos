@@ -317,6 +317,10 @@ export const requests = {
   getAllProductsByImport: (filter) => request.get(`v1/product/list-by-import${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllProductsStatusCount: (filter) => request.get(`v1/product/total-status-count${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllStoreProducts: (data, filter) => request.get(`v1/product/store/${get(data, 'id')}${qs.stringify(filter, { addQueryPrefix: true })}`),
+
+  // Fast select
+  getFastSelectGroups: (filter) => request.get(`v1/fast-select-group/list${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getFastSelectProducts: (filter) => request.get(`v1/fast-select-product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createProduct: (data) => request.post(`v1/product`, data),
   createProductBarcode: ({data,id}) => request.post(`v1/product/${id}/barcodes`, data),
   changeBarcode: ({ id, barcode, unit_code, mxik, unit_label }) => request.put(`v1/product/update-barcode/${id}`, { id, barcode, unit_label, unit_code, mxik }),
