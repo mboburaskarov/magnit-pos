@@ -78,6 +78,10 @@ export default function Routes() {
       return routes
     }
 
+    if (urls.length === 0) {
+      return routes
+    }
+
     return routes.reduce((acc, route) => {
       let parentMatches = urls.includes(`/${route.path}`)
 
