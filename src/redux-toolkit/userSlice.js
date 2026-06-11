@@ -18,14 +18,14 @@ const userData = createSlice({
       state.first_name = action.payload.first_name
       state.last_name = action.payload.last_name
       state.photo = action.payload.photo
-      state.type = action.payload.role_type
+      state.type = action.payload.role_type || action.payload.type || state.type
       state.phone = action.payload.phone
       state.companyID = action.payload.companyID
       state.id = action.payload.id
       state.company = action.payload.company
       state.store = action.payload.store
       state.cashbox = action.payload.cashbox
-      state.role_actions = action.payload.permissions
+      state.role_actions = action.payload.permissions || []
       state.position = action.payload.position || ''
     },
   },
