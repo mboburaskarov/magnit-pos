@@ -465,9 +465,9 @@ export default function PosApp() {
     submitSale(paymentsList, undefined, maxAmount, 'personal')
   }
 
-  const handleAppScanSubmit = () => {
+  const handleAppScanSubmit = (scannedToken) => {
     setShowAppScanModal(false)
-    submitSale(paymentsList, undefined, maxAmount, 'personal')
+    submitSale(paymentsList, scannedToken, maxAmount, 'personal')
   }
 
   const handleBarcodeScan = async (scannedBarcode) => {
