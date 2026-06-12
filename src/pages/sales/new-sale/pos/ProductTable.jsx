@@ -87,19 +87,41 @@ export default function ProductTable({
                       </div>
                     </td>
                     <td className='col-qty'>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <QuantityStepper
-                          item={item}
-                          onIncrease={onQtyIncrease}
-                          onDecrease={handleDecrease}
-                          isLoading={isUpdating}
-                        />
-                        <span className='unit-badge'>
-                          {item.unit_per_pack > 1 && item.unit_quantity > 0
-                            ? `${item.unit_quantity} ${item.unit_per_pack === 1000 ? 'г' : 'шт'}`
-                            : 'уп'}
-                        </span>
-                      </div>
+                      {item.unit_per_pack === 1000 ? (
+                        <div style={{ 
+                          display: 'inline-flex', 
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: '6px 12px',
+                          backgroundColor: '#f1f5f9',
+                          borderRadius: '8px',
+                          fontWeight: '700',
+                          fontSize: '14px',
+                          color: '#0f172a',
+                          border: '1px solid #e2e8f0',
+                          minWidth: '60px',
+                          textAlign: 'center'
+                        }}>
+                          {(() => {
+                            const grams = (item.quantity || 0) * 1000 + (item.unit_quantity || 0)
+                            return `${(grams / 1000).toFixed(3).replace('.', ',')} кг`
+                          })()}
+                        </div>
+                      ) : (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <QuantityStepper
+                            item={item}
+                            onIncrease={onQtyIncrease}
+                            onDecrease={handleDecrease}
+                            isLoading={isUpdating}
+                          />
+                          <span className='unit-badge'>
+                            {item.unit_per_pack > 1 && item.unit_quantity > 0
+                              ? `${item.unit_quantity} шт`
+                              : 'уп'}
+                          </span>
+                        </div>
+                      )}
                     </td>
                     <td className='col-price text-right'>{thousandDivider(item.unit_price)}</td>
                     <td className='col-total text-right font-bold'>{thousandDivider(item.total_price)}</td>

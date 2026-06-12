@@ -31,6 +31,7 @@ import ReturnExchangeDrawer from '@components/Sales/ReturnExchange/ReturnExchang
 import DraftDrawer from '@components/Sales/DraftDrawer'
 import axios from 'axios'
 import PosPrinterSettings from './PosPrinterSettings'
+import POSLoadingOverlay from './POSLoadingOverlay'
 
 export default function PosApp() {
   const { id } = useParams()
@@ -128,14 +129,33 @@ export default function PosApp() {
   }, [])
 
   // ── Queries ──
-  const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
-  const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
+  const {
+    data: cashBoxDetails,
+    isLoading: isCashBoxLoading,
+    isError: isCashBoxError,
+    refetch: refetchCashBox,
+  } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id), {
+    keepPreviousData: true,
+    refetchOnWindowFocus: false,
+  })
+
+  const {
+    data: paymentTypesList,
+    isLoading: isPaymentTypesLoading,
+    isError: isPaymentTypesError,
+    refetch: refetchPaymentTypes,
+  } = useQuery('paymentTypesList', () => requests.getPaymentTypesList(), {
+    refetchOnWindowFocus: false,
+  })
 
   const {
     data: cartItemsRes,
     refetch: refetchCart,
     isLoading: isCartLoading,
+    isError: isCartError,
   } = useQuery(['cartItemsList', id], () => requests.getCartItemList({ sale_id: id, limit: 100, offset: 0 }), {
+    keepPreviousData: true,
+    refetchOnWindowFocus: false,
     onError: (e) => {
       if (get(e, 'response.data.code') == '409') {
         navigate('/sales/create')
@@ -378,7 +398,7 @@ export default function PosApp() {
         refetchCart()
         error(get(err, 'response.data.message', 'Miqdorni o`zgartirishda xatolik yuz berdi'))
       },
-    }
+    },
   )
 
   const { mutate: deleteItem } = useMutation(requests.deleteCartItem, {
@@ -636,7 +656,7 @@ export default function PosApp() {
       if (scannedBarcode) {
         pendingProductUpdatesRef.current[scannedBarcode] = true
       }
-      
+
       // Set states to trigger skeleton row loading
       setPendingAddBarcode(searchBarcode)
       setPendingNewItems((prev) => ({ ...prev, [searchBarcode]: true }))
@@ -705,7 +725,7 @@ export default function PosApp() {
       const existingScaleItem = cartItems.find((item) => item.store_product_id === product.id)
       if (existingScaleItem) {
         const currentGrams = existingScaleItem.quantity * existingScaleItem.unit_per_pack + existingScaleItem.unit_quantity
-        
+
         // Clear new item state/locks because this is an update to an existing row
         if (product.barcode) {
           delete pendingProductUpdatesRef.current[product.barcode]
@@ -914,14 +934,23 @@ export default function PosApp() {
         date: new Date().toISOString(),
         items: cartItems.map((item) => ({
           name: item.name || 'Товар',
-          mxik: item.mxik || item.code || '', 
-          qty: Number(item.quantity || 1),
+          mxik: item.mxik || item.code || '',
+          qty: item.unit_per_pack === 1000 
+            ? ((item.quantity || 0) * 1000 + (item.unit_quantity || 0)) / 1000
+            : Number(item.quantity || 1),
           price: Number(item.unit_price || 0),
           total: Number(item.total_price || 0),
           vatPercent: item.vat_percent || (posCartItemsList.vat_sum > 0 ? 12 : 0),
-          vatAmount: item.vat_amount || 0
+          vatAmount: item.vat_amount || 0,
         })),
-        subtotal: Number(cartItems.reduce((acc, item) => acc + item.unit_price * item.quantity, 0)),
+        subtotal: Number(
+          cartItems.reduce((acc, item) => {
+            const qty = item.unit_per_pack === 1000 
+              ? ((item.quantity || 0) * 1000 + (item.unit_quantity || 0)) / 1000
+              : (item.quantity || 0)
+            return acc + item.unit_price * qty
+          }, 0)
+        ),
         discount: Number(totalDiscount || 0),
         totalAmount: Number(totalAmount || 0),
         paidAmount: Number(receivedAmount || cardPaymentAmount || secondaryPaymentAmount || totalAmount || 0),
@@ -936,10 +965,10 @@ export default function PosApp() {
       }
 
       const layoutLines = buildReceiptLayout(payloadData, {})
-      
+
       const reqPayload = {
         lines: layoutLines,
-        paymentType: paymentType
+        paymentType: paymentType,
       }
 
       const res = await axios.post(`${activeAgentUrl}/print/raw-template`, reqPayload)
@@ -1091,6 +1120,39 @@ export default function PosApp() {
     }
   }
 
+  const hasData = Boolean(cashBoxDetails && cartItemsRes && paymentTypesList)
+  const isPageLoading = isCashBoxLoading || isCartLoading || isPaymentTypesLoading || (cashBoxDetails && String(cashBoxDetails.data?.data?.id) !== String(id))
+  const hasLoadError = isCashBoxError || isCartError || isPaymentTypesError
+
+  const currentLang = i18n.language || 'ru'
+  const lang = ['ru', 'uz', 'en'].includes(currentLang) ? currentLang : 'ru'
+
+  if (hasLoadError && !hasData) {
+    return (
+      <POSLoadingOverlay
+        isError={true}
+        lang={lang}
+        fullScreen={true}
+        onRetry={() => {
+          refetchCashBox()
+          refetchCart()
+          refetchPaymentTypes()
+        }}
+        onBack={() => navigate('/sales/create')}
+      />
+    )
+  }
+
+  if (isPageLoading && !hasData) {
+    return (
+      <POSLoadingOverlay
+        isLoading={true}
+        lang={lang}
+        fullScreen={true}
+      />
+    )
+  }
+
   return (
     <div className='pos-shell'>
       <SaleProgressSteps
@@ -1125,30 +1187,30 @@ export default function PosApp() {
       />
 
       {saleCreationError && (
-        <div style={{
-          width: '100%',
-          backgroundColor: '#fef2f2',
-          borderBottom: '2px solid #ef4444',
-          padding: '16px 24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          boxSizing: 'border-box',
-          zIndex: 999
-        }}>
+        <div
+          style={{
+            width: '100%',
+            backgroundColor: '#fef2f2',
+            borderBottom: '2px solid #ef4444',
+            padding: '16px 24px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            boxSizing: 'border-box',
+            zIndex: 999,
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span style={{ fontSize: '20px' }}>⚠️</span>
             <div>
-              <div style={{ fontWeight: '700', color: '#991b1b', fontSize: '15px' }}>
-                Ошибка создания нового чека / Yangi chek yaratishda xatolik yuz berdi
-              </div>
+              <div style={{ fontWeight: '700', color: '#991b1b', fontSize: '15px' }}>Ошибка создания нового чека / Yangi chek yaratishda xatolik yuz berdi</div>
               <div style={{ fontSize: '13px', color: '#7f1d1d', marginTop: '2px' }}>
                 Продажа успешно завершена, но не удалось автоматически создать новый пустой чек. Пожалуйста, обновите страницу или создайте чек вручную.
               </div>
             </div>
           </div>
-          <button 
-            type="button" 
+          <button
+            type='button'
             onClick={async () => {
               try {
                 const { data: newSaleRes } = await requests.saleCreate({
@@ -1173,7 +1235,7 @@ export default function PosApp() {
               fontWeight: '700',
               cursor: 'pointer',
               fontSize: '14px',
-              transition: 'background-color 0.2s'
+              transition: 'background-color 0.2s',
             }}
           >
             Повторить попытку
@@ -1390,15 +1452,25 @@ export default function PosApp() {
 
       {/* Cancel Receipt Confirmation Dialog Overlay */}
       {showHardRefreshConfirmation && (
-        <div className='pos-modal-overlay' onClick={() => setShowHardRefreshConfirmation(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div
+          className='pos-modal-overlay'
+          onClick={() => setShowHardRefreshConfirmation(false)}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
           <div className='pos-modal' onClick={(e) => e.stopPropagation()} style={{ width: '400px', maxWidth: '90%', padding: '24px', textAlign: 'center' }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: 18, color: '#333' }}>
-              Обновить POS? Текущий чек может быть потерян.
-            </h3>
+            <h3 style={{ margin: '0 0 16px', fontSize: 18, color: '#333' }}>Обновить POS? Текущий чек может быть потерян.</h3>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <button
                 onClick={() => setShowHardRefreshConfirmation(false)}
-                style={{ padding: '10px 20px', background: '#F3F4F6', color: '#4B5563', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
+                style={{
+                  padding: '10px 20px',
+                  background: '#F3F4F6',
+                  color: '#4B5563',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                }}
               >
                 Отмена
               </button>
@@ -1449,6 +1521,30 @@ export default function PosApp() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Dimmed Loading Overlay on top of the active layout */}
+      {isPageLoading && (
+        <POSLoadingOverlay
+          isLoading={true}
+          lang={lang}
+          fullScreen={false}
+        />
+      )}
+
+      {/* Dimmed Error Overlay on top of the active layout */}
+      {hasLoadError && (
+        <POSLoadingOverlay
+          isError={true}
+          lang={lang}
+          fullScreen={false}
+          onRetry={() => {
+            refetchCashBox()
+            refetchCart()
+            refetchPaymentTypes()
+          }}
+          onBack={() => navigate('/sales/create')}
+        />
       )}
     </div>
   )
