@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { X, Users, Lock, FileText, ChevronLeft, ChevronRight, Check } from 'lucide-react'
+import { X, Users, Lock, FileText, ChevronLeft, ChevronRight, Check, LogOut } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
@@ -20,13 +21,16 @@ export default function CashierSessionModal({
   const [cashierSearchQuery, setCashierSearchQuery] = useState('')
   const userData = useSelector((state) => state.user)
   const methods = useForm()
+  const navigate = useNavigate()
   const { reset, handleSubmit } = methods
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
 
   useEffect(() => {
     if (open) {
       setView('options')
       setShowCashierList(false)
       setCashierSearchQuery('')
+      setShowLogoutConfirm(false)
       reset({ employee_id: null, password: '' })
     }
   }, [open, reset])
@@ -93,7 +97,32 @@ export default function CashierSessionModal({
         </div>
 
         <div className="touch-modal-body">
-          {view === 'options' ? (
+          {showLogoutConfirm ? (
+            <div style={{ textAlign: 'center', padding: '24px 0' }}>
+              <h3 style={{ margin: '0 0 16px', fontSize: 18, color: '#333' }}>Выйти из аккаунта?</h3>
+              <p style={{ margin: '0 0 24px', color: '#6B7280', fontSize: 14 }}>
+                Текущая сессия пользователя будет завершена. Для продолжения потребуется войти заново.
+              </p>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                <button
+                  onClick={() => setShowLogoutConfirm(false)}
+                  style={{ padding: '10px 20px', background: '#F3F4F6', color: '#4B5563', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
+                >
+                  Отмена
+                </button>
+                <button
+                  onClick={() => {
+                    localStorage.clear()
+                    sessionStorage.clear()
+                    navigate('/login', { replace: true })
+                  }}
+                  style={{ padding: '10px 20px', background: '#EF4444', color: '#FFF', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
+                >
+                  Выйти
+                </button>
+              </div>
+            </div>
+          ) : view === 'options' ? (
             <div className="cashier-session-options">
               {/* Option 1: Transfer Shift */}
               <button className="cashier-option-card" onClick={() => setView('transfer')}>
@@ -135,8 +164,22 @@ export default function CashierSessionModal({
                   <FileText size={24} />
                 </div>
                 <div className="cashier-option-info">
-                  <div className="cashier-option-title">{t('pos.close_session')}</div>
-                  <div className="cashier-option-desc">{t('pos.close_session_desc')}</div>
+                  <div className="cashier-option-title">{t('pos.close_session') || 'Закрыть сессию + Z-отчет'}</div>
+                  <div className="cashier-option-desc">{t('pos.close_session_desc') || 'Конец смены, печать Z-отчета'}</div>
+                </div>
+              </button>
+
+              {/* Option 4: Full Logout */}
+              <button
+                className="cashier-option-card"
+                onClick={() => setShowLogoutConfirm(true)}
+              >
+                <div className="cashier-option-icon" style={{ color: '#ef4444', backgroundColor: '#fef2f2' }}>
+                  <LogOut size={24} />
+                </div>
+                <div className="cashier-option-info">
+                  <div className="cashier-option-title" style={{ color: '#ef4444' }}>Выйти из аккаунта</div>
+                  <div className="cashier-option-desc">Полностью завершить сеанс и перейти на страницу входа</div>
                 </div>
               </button>
             </div>
