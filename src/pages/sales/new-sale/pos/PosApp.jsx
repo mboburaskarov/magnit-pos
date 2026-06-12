@@ -24,6 +24,7 @@ import PosQuickSelectDrawer from './PosQuickSelectDrawer'
 import ActionBar from './ActionBar'
 import PosSecurityQrModal from './PosSecurityQrModal'
 import PosAppScanModal from './PosAppScanModal'
+import PosProductSelectModal from './PosProductSelectModal'
 import SaleProgressSteps from '../saleStepLoading'
 import './PosLayout.css'
 import ReturnExchangeDrawer from '@components/Sales/ReturnExchange/ReturnExchangeDrawer'
@@ -64,6 +65,9 @@ export default function PosApp() {
   const [secondaryPaymentAmount, setSecondaryPaymentAmount] = useState('')
   const [focusedPaymentInput, setFocusedPaymentInput] = useState('cash')
   const [showAppScanModal, setShowAppScanModal] = useState(false)
+  const [productSelectList, setProductSelectList] = useState([])
+  const [pendingWeightGrams, setPendingWeightGrams] = useState(null)
+  const [pendingScannedValue, setPendingScannedValue] = useState(null)
 
   // Customer selection & topbar search states
   const [customerSearchTerm, setCustomerSearchTerm] = useState('')
@@ -539,39 +543,60 @@ export default function PosApp() {
         return
       }
 
-      const product = productsList[0]
-
-      // 5. For scale products: if already in cart accumulate the new weight, otherwise create fresh
-      if (weightGrams !== null) {
-        const existingScaleItem = cartItems.find((item) => item.store_product_id === product.id)
-        if (existingScaleItem) {
-          const currentGrams = existingScaleItem.quantity * existingScaleItem.unit_per_pack + existingScaleItem.unit_quantity
-          changeQty({
-            id: existingScaleItem.id,
-            data: {
-              quantity: 0,
-              unit_quantity: Math.round(currentGrams + weightGrams),
-              store_product_id: existingScaleItem.store_product_id,
-            },
-          })
-          return
-        }
+      // If multiple products match, let the cashier pick one
+      if (productsList.length > 1) {
+        setPendingWeightGrams(weightGrams)
+        setPendingScannedValue(scannedBarcode)
+        setProductSelectList(productsList)
+        return
       }
 
-      // 6. Add product to cart
-      addProduct({
-        sale_id: id,
-        barcode: product.barcode,
-        store_product_id: product.id,
-        discount_type: 'percent',
-        discount_value: 0,
-        ...(weightGrams !== null && { weight_grams: weightGrams }),
-        originalScannedValue: scannedBarcode,
-      })
+      addProductToCart(productsList[0], weightGrams, scannedBarcode)
     } catch (err) {
       error('Mahsulotni qidirishda xatolik yuz berdi')
       console.error(err)
     }
+  }
+
+  const addProductToCart = (product, weightGrams, originalScannedValue) => {
+    // For scale products already in cart: accumulate weight
+    if (weightGrams !== null) {
+      const existingScaleItem = cartItems.find((item) => item.store_product_id === product.id)
+      if (existingScaleItem) {
+        const currentGrams = existingScaleItem.quantity * existingScaleItem.unit_per_pack + existingScaleItem.unit_quantity
+        changeQty({
+          id: existingScaleItem.id,
+          data: {
+            quantity: 0,
+            unit_quantity: Math.round(currentGrams + weightGrams),
+            store_product_id: existingScaleItem.store_product_id,
+          },
+        })
+        return
+      }
+    }
+    addProduct({
+      sale_id: id,
+      barcode: product.barcode,
+      store_product_id: product.id,
+      discount_type: 'percent',
+      discount_value: 0,
+      ...(weightGrams !== null && { weight_grams: weightGrams }),
+      originalScannedValue,
+    })
+  }
+
+  const handleProductSelect = (product) => {
+    setProductSelectList([])
+    addProductToCart(product, pendingWeightGrams, pendingScannedValue)
+    setPendingWeightGrams(null)
+    setPendingScannedValue(null)
+  }
+
+  const handleProductSelectCancel = () => {
+    setProductSelectList([])
+    setPendingWeightGrams(null)
+    setPendingScannedValue(null)
   }
 
   const handleQuickAdd = async (productSearchQuery) => {
@@ -1190,6 +1215,15 @@ export default function PosApp() {
 
       {/* Printer Settings Modal */}
       <PosPrinterSettings open={showPrinterSettings} onClose={() => setShowPrinterSettings(false)} t={t} />
+
+      {/* Product Select Modal — shown when search returns multiple results */}
+      <PosProductSelectModal
+        open={productSelectList.length > 1}
+        products={productSelectList}
+        onSelect={handleProductSelect}
+        onCancel={handleProductSelectCancel}
+        t={t}
+      />
 
       {/* Cancel Receipt Confirmation Dialog Overlay */}
       {showHardRefreshConfirmation && (
