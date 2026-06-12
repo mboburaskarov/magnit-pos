@@ -2,7 +2,7 @@ import LogoMain from '@icons/LogoMain'
 import { Search, User, Power, X, Printer, Banknote, RefreshCw } from 'lucide-react'
 import './PosLayout.css'
 
-export const APP_VERSION = import.meta.env.VITE_APP_VERSION || '1.0.1'
+export const APP_VERSION = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '1.0.1'
 
 export default function POSHeader({
   time,
