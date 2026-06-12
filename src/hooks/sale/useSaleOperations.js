@@ -29,7 +29,7 @@ export const useSaleOperations = ({
   const { id } = useParams()
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
-  const sendToEpos = JSON.parse(localStorage.getItem('send_to_epos'))
+  const sendToEpos = true
   const [payType, setPayType] = useState(undefined)
   const [hasError, setHasError] = useState(false)
 
@@ -61,7 +61,7 @@ export const useSaleOperations = ({
       if (!JSON.parse(sendToEpos) || get(cashBoxDetails, 'data.data.service_type') === 'uzum') {
         success('Продажа завершена!')
         setNewSaleId('888')
-        setQrcodeUrl({ qr: 'pharma-cosmos.uz', fiscal: 'No', cardType: cartOwnerType })
+        setQrcodeUrl({ qr: '', fiscal: 'No', cardType: cartOwnerType })
       } else {
         sendEPOSDataRef.current(data)
       }
@@ -231,10 +231,8 @@ export const useSaleOperations = ({
   const getReadyDataForOFD = (data) => {
     const readyData = []
     let leftLoayCardSum = paymentsList?.find((el) => el.front_name == 'loyalty_card')?.amount
-    const cartItemsArray = Array.isArray(get(cartItemsList, 'data'))
-    ? get(cartItemsList, 'data')
-    : get(cartItemsList, 'data.data.data', [])
-    console.log(cartItemsArray,paymentsList)
+    const cartItemsArray = Array.isArray(get(cartItemsList, 'data')) ? get(cartItemsList, 'data') : get(cartItemsList, 'data.data.data', [])
+    console.log(cartItemsArray, paymentsList)
     cartItemsArray.map((el) => {
       if (!el?.is_marking) {
         let leftPrice = el.total_price
@@ -437,9 +435,7 @@ export const useSaleOperations = ({
           }
         })
 
-      const cartItemsForMarking = Array.isArray(get(cartItemsList, 'data'))
-        ? get(cartItemsList, 'data')
-        : get(cartItemsList, 'data.data.data', [])
+      const cartItemsForMarking = Array.isArray(get(cartItemsList, 'data')) ? get(cartItemsList, 'data') : get(cartItemsList, 'data.data.data', [])
       const markingData = cartItemsForMarking.map((el) => ({
         id: el.id,
         dmed_id: dmedOrganizedList.find((dmed) => dmed.id === el.id)?.dmedId,
