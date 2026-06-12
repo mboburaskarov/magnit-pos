@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { X, Play, RefreshCw, Server, Wifi, Usb, Search, Box } from 'lucide-react'
+import { X, Play, RefreshCw, Server, Wifi, Usb, Search, Box, Eye } from 'lucide-react'
 import axios from 'axios'
 import { success, error } from '@utils/toast'
+import { buildReceiptLayout } from '@utils/receiptBuilder'
+import ReceiptPreviewCanvas from '@components/ReceiptPreviewCanvas'
 import './PosLayout.css'
 
 const AGENT_URL = 'http://localhost:7788'
@@ -29,6 +31,30 @@ export default function PosPrinterSettings({ open, onClose, t }) {
   const [isTesting, setIsTesting] = useState(false)
   const [isTestingDrawer, setIsTestingDrawer] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
+
+  const dummyData = {
+    saleId: "00084874",
+    cashier: "Amirsaidov Muhammadiso",
+    date: new Date().toISOString(),
+    items: [
+      { name: "FANTA 0.25 STKL (24)", mxik: "00902001002008001", qty: 1, price: 9900, total: 9900, vatPercent: 12, vatAmount: 1060.71 },
+      { name: "MONTELLA 0.5L SWEET LIMON", mxik: "07616003001000002", qty: 1, price: 3990, total: 3990, vatPercent: 12, vatAmount: 427.50 },
+      { name: "PEPSI 0.25L STKL", mxik: "07616003001000002", qty: 1, price: 6990, total: 6990, vatPercent: 12, vatAmount: 748.93 }
+    ],
+    totalAmount: 20880,
+    subtotal: 20880,
+    discount: 0,
+    vatAmount: 2237.14,
+    paymentType: "cash",
+    paidAmount: 20880,
+    changeAmount: 0,
+    fiscalStir: "305445201",
+    fiscalNumber: "VG343420011102",
+    fiscalSign: "146771624678",
+    fiscalDate: "20260612150839",
+    qrData: "https://my.soliq.uz/check?id=123"
+  }
 
   // 1. Check agent status and load settings
   const checkAgentStatus = async (showToasts = false) => {
@@ -268,7 +294,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
 
   return (
     <div className="touch-modal-overlay" onClick={onClose}>
-      <div className="touch-modal-card" onClick={(e) => e.stopPropagation()} style={{ width: '520px' }}>
+      <div className="touch-modal-card" onClick={(e) => e.stopPropagation()} style={{ width: showPreview ? '800px' : '520px', transition: 'width 0.3s ease' }}>
         {/* Header */}
         <div className="touch-modal-header pos-std-header">
           <div className="touch-modal-userinfo">
@@ -580,6 +606,16 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                 <Play size={16} />
                 {isTesting ? 'Печать...' : 'Тест печати'}
               </button>
+
+              <button
+                type="button"
+                className="btn-secondary-touch"
+                style={{ flex: 1, height: '48px', borderRadius: '8px', border: '1px solid #8b5cf6', color: '#8b5cf6', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '14px', fontWeight: '600' }}
+                onClick={() => setShowPreview(!showPreview)}
+              >
+                <Eye size={16} />
+                {showPreview ? 'Скрыть предпросмотр' : 'Предпросмотр'}
+              </button>
             </div>
 
             <button
@@ -592,6 +628,13 @@ export default function PosPrinterSettings({ open, onClose, t }) {
               {isSaving ? 'Сохранение...' : 'Сохранить настройки'}
             </button>
           </div>
+
+          {showPreview && (
+            <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '16px', marginTop: '16px' }}>
+              <h4 style={{ margin: '0 0 16px 0', fontSize: '15px', fontWeight: '700', color: '#374151' }}>Предпросмотр чека (Тестовые данные)</h4>
+              <ReceiptPreviewCanvas lines={buildReceiptLayout(dummyData)} />
+            </div>
+          )}
         </div>
       </div>
     </div>

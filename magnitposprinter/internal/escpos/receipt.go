@@ -297,3 +297,46 @@ func GetDrawerKickCommand(hexCmd string) []byte {
 	}
 	return bytes
 }
+
+type RawTemplateRequest struct {
+	Lines       []string `json:"lines"`
+	PaymentType string   `json:"paymentType"`
+}
+
+func GenerateQRCodeCmd(data string) []byte {
+	var buf bytes.Buffer
+	buf.Write([]byte{0x1b, 0x61, 0x01}) // center align
+	buf.Write([]byte{0x1d, 0x28, 0x6b, 0x03, 0x00, 0x31, 0x43, 0x05}) // module size 5
+	buf.Write([]byte{0x1d, 0x28, 0x6b, 0x03, 0x00, 0x31, 0x45, 0x30}) // L correction
+	dataLen := len(data) + 3
+	pL := byte(dataLen % 256)
+	pH := byte(dataLen / 256)
+	buf.Write([]byte{0x1d, 0x28, 0x6b, pL, pH, 0x31, 0x50, 0x30})
+	buf.Write([]byte(data))
+	buf.Write([]byte{0x1d, 0x28, 0x6b, 0x03, 0x00, 0x31, 0x51, 0x30}) // print
+	buf.Write([]byte{0x1b, 0x61, 0x00}) // left align
+	return buf.Bytes()
+}
+
+func ProcessRawTemplate(req RawTemplateRequest) []byte {
+	var buf bytes.Buffer
+	buf.Write([]byte{0x1b, 0x40})       // Initialize
+	buf.Write([]byte{0x1b, 0x74, 0x07}) // Select CP866
+
+	for _, line := range req.Lines {
+		if line == "[BOLD_START]" {
+			SetBold(&buf, true)
+		} else if line == "[BOLD_END]" {
+			SetBold(&buf, false)
+		} else if line == "[CUT]" {
+			CutPaper(&buf)
+		} else if strings.HasPrefix(line, "[QR:") && strings.HasSuffix(line, "]") {
+			qrData := line[4 : len(line)-1]
+			buf.Write(GenerateQRCodeCmd(qrData))
+		} else {
+			WriteText(&buf, line+"\n")
+		}
+	}
+
+	return buf.Bytes()
+}

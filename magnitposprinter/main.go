@@ -210,6 +210,48 @@ func handlePrintReceipt(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{"ok": true, "message": "Receipt printed successfully"})
 }
 
+func handlePrintRawTemplate(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	pw, err := getPrinterWriter()
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{"ok": false, "message": err.Error()})
+		return
+	}
+	defer pw.Close()
+
+	var req escpos.RawTemplateRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]interface{}{"ok": false, "message": fmt.Sprintf("Invalid request payload: %v", err)})
+		return
+	}
+
+	receiptBytes := escpos.ProcessRawTemplate(req)
+	err = pw.Write(receiptBytes)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadGateway)
+		json.NewEncoder(w).Encode(map[string]interface{}{"ok": false, "message": err.Error()})
+		return
+	}
+
+	if config.AppConfig.CashDrawer.Enabled && (req.PaymentType == "cash" || req.PaymentType == "naqd") && config.AppConfig.CashDrawer.OpenOnCashPayment {
+		time.Sleep(200 * time.Millisecond)
+		drawerBytes := escpos.GetDrawerKickCommand(config.AppConfig.CashDrawer.Command)
+		pw.Write(drawerBytes)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{"ok": true, "message": "Receipt raw template printed successfully"})
+}
+
 func handleCashDrawerOpen(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -279,6 +321,7 @@ func main() {
 	mux.HandleFunc("/printers/test", corsMiddleware(handlePrintTest)) // new alias
 	mux.HandleFunc("/print/test", corsMiddleware(handlePrintTest))
 	mux.HandleFunc("/print/receipt", corsMiddleware(handlePrintReceipt))
+	mux.HandleFunc("/print/raw-template", corsMiddleware(handlePrintRawTemplate))
 	mux.HandleFunc("/cash-drawer/open", corsMiddleware(handleCashDrawerOpen))
 
 	var wg sync.WaitGroup

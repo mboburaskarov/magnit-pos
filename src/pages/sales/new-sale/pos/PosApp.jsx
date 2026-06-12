@@ -11,6 +11,7 @@ import { containsCyrillic, convertoRuOrEngToEng } from '@utils/convertoRuOrEngTo
 import { useBarcodeScanner } from '@/hooks/pos/useBarcodeScanner'
 import { useSaleOperations } from '@/hooks/sale/useSaleOperations'
 import { usePrintOperations } from '@/hooks/sale/usePrintOperations'
+import { buildReceiptLayout } from '@utils/receiptBuilder'
 import { RippedPaperItem } from '@components/RippedPaperList'
 import PosClientPanel from './PosClientPanel'
 import POSHeader from './POSHeader'
@@ -719,18 +720,20 @@ export default function PosApp() {
 
       const cashierNameStr = `${userData?.first_name || ''} ${userData?.last_name || ''}`.trim() || 'Кассир'
 
-      const itemsPayload = cartItems.map((item) => ({
-        name: item.name || 'Товар',
-        qty: Number(item.quantity || 1),
-        price: Number(item.unit_price || 0),
-        total: Number(item.total_price || 0),
-      }))
-
-      const payload = {
+      const payloadData = {
         saleId: String(finalNewSaleId || id || ''),
         cashier: cashierNameStr,
         paymentType: paymentType,
-        items: itemsPayload,
+        date: new Date().toISOString(),
+        items: cartItems.map((item) => ({
+          name: item.name || 'Товар',
+          mxik: item.mxik || item.code || '', 
+          qty: Number(item.quantity || 1),
+          price: Number(item.unit_price || 0),
+          total: Number(item.total_price || 0),
+          vatPercent: item.vat_percent || (posCartItemsList.vat_sum > 0 ? 12 : 0),
+          vatAmount: item.vat_amount || 0
+        })),
         subtotal: Number(cartItems.reduce((acc, item) => acc + item.unit_price * item.quantity, 0)),
         discount: Number(totalDiscount || 0),
         totalAmount: Number(totalAmount || 0),
@@ -740,10 +743,19 @@ export default function PosApp() {
         chequeType: 'sale',
         fiscalSign: qrcodeUrl.fiscal && qrcodeUrl.fiscal !== 'pending' ? String(qrcodeUrl.fiscal) : '',
         fiscalNumber: qrcodeUrl.terminalId && qrcodeUrl.terminalId !== 'pending' ? String(qrcodeUrl.terminalId) : '',
+        fiscalDate: qrcodeUrl.datetime && qrcodeUrl.datetime !== 'pending' ? String(qrcodeUrl.datetime) : '',
+        qrData: qrcodeUrl.qr && qrcodeUrl.qr !== 'pending' ? String(qrcodeUrl.qr) : '',
         customer: customerId?.name ? String(customerId.name) : '',
       }
 
-      const res = await axios.post(`${activeAgentUrl}/print/receipt`, payload)
+      const layoutLines = buildReceiptLayout(payloadData, {})
+      
+      const reqPayload = {
+        lines: layoutLines,
+        paymentType: paymentType
+      }
+
+      const res = await axios.post(`${activeAgentUrl}/print/raw-template`, reqPayload)
       if (res.data && res.data.ok) {
         success('Чек напечатан!')
       } else {
