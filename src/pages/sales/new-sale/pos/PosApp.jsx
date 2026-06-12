@@ -491,7 +491,7 @@ export default function PosApp() {
       const parsed = parseInt(searchBarcode.slice(7, 12), 10)
       if (productCode.length === 5 && !isNaN(parsed) && parsed > 0) {
         searchBarcode = productCode
-        weightGrams = parsed / 10
+        weightGrams = Math.round(parsed / 10)
       }
     }
 
@@ -548,7 +548,7 @@ export default function PosApp() {
             id: existingScaleItem.id,
             data: {
               quantity: 0,
-              unit_quantity: currentGrams + weightGrams,
+              unit_quantity: Math.round(currentGrams + weightGrams),
               store_product_id: existingScaleItem.store_product_id,
             },
           })
