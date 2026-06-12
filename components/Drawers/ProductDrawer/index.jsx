@@ -145,7 +145,7 @@ export default function ProductDrawer({
   }, [productData])
 
   const printContainer = useRef()
-  const documentName = useRef('Pharma CHEQUE')
+  const documentName = useRef('MAGNIT CHEQUE')
   const reactToPrintContent = useCallback(() => printContainer.current, [])
   const handlePrint = useReactToPrint({
     content: reactToPrintContent,

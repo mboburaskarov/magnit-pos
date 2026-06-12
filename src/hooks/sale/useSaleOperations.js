@@ -358,14 +358,13 @@ export const useSaleOperations = ({
         token: 'DXJFX32CN1296678504F2',
         method: payType == 2 ? 'saleEPS' : SALE_TYPE === 'SALE' ? 'fastSale' : 'refund',
         payType: payType,
-        companyName: 'MAGNIT OOO',
+        companyName: '"MUXAYYO   TRADE" MCHJ',
         companyAddress: get(userData, 'store.address'),
-        companyINN: '303970073',
+        companyINN: '305445201',
         staffName: get(userData, 'full_name'),
         printerSize: 58,
         phoneNumber: get(userData, 'store.phone'),
-
-        companyPhoneNumber: '+998772770333',
+        companyPhoneNumber: '+998712916999',
         params: {
           ...(SALE_TYPE === 'SALE' ? { externalId: `${SALE_NUMBER}` } : {}),
           clientName: get(customerId, 'name'),
