@@ -2881,3 +2881,65 @@ body {
   color: var(--mg-text-secondary, #9CA3AF);
   font-family: monospace;
 }
+
+/* ── Skeleton Loading and Stepper Loading Styles ── */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 4px;
+  color: transparent !important;
+  user-select: none;
+}
+
+.pos-table-row.is-skeleton {
+  pointer-events: none;
+  opacity: 0.85;
+  background-color: rgba(243, 244, 246, 0.4);
+}
+
+.pos-table-row.is-skeleton td {
+  border-bottom: 1px dashed var(--pos-border);
+}
+
+.qty-skeleton.skeleton-shimmer {
+  display: inline-block;
+  width: 90px;
+  height: 30px;
+  border-radius: var(--pos-radius-md, 8px);
+}
+
+.pos-qty-stepper.is-loading {
+  position: relative;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%) !important;
+  background-size: 200% 100% !important;
+  animation: shimmer 1.5s infinite linear !important;
+  border: 1px solid var(--pos-border);
+  box-shadow: none;
+}
+
+.pos-qty-stepper.is-loading .pos-qty-stepper-btn {
+  opacity: 0.6;
+  background-color: rgba(255, 255, 255, 0.4) !important;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.pos-qty-stepper.is-loading .pos-qty-stepper-value {
+  opacity: 0.8;
+  color: var(--pos-text-primary) !important;
+  position: relative;
+}
+
+.pos-qty-stepper.is-loading::after {
+  display: none;
+}

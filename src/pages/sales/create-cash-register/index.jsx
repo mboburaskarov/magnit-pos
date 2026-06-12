@@ -1,6 +1,6 @@
 import { setUserData } from '@/redux-toolkit/userSlice'
 import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
-import LoadingContainer from '@components/LoadingContainer'
+import LogoMain from '@icons/LogoMain'
 import ArrowRightIcon from '@icons/ArrowRightIcon'
 import CartOutlineIcon from '@icons/CartOutline'
 import MoneyOutlineIcon from '@icons/MoneyOutline'
@@ -11,7 +11,7 @@ import { requests } from '@utils/requests'
 import { EPOS_STATUS_PAYLOAD, EPOS_TERMINAL_PAYLOAD, getEposTerminalId, isAllowedTerminal } from '@utils/terminalAccess'
 import { error } from '@utils/toast'
 import { get } from 'lodash'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
@@ -372,6 +372,15 @@ function NewCashRegister() {
   const dispatch = useDispatch()
   const [isEposTurnOn, setisEposTurnOn] = useState({ is_open: true, message: '' })
 
+  // Loading, error and status states for the overlay
+  const [initLoading, setInitLoading] = useState(true)
+  const [initChecked, setInitChecked] = useState(false)
+  const [initError, setInitError] = useState(false)
+  const [initErrorMessage, setInitErrorMessage] = useState('')
+  const [statusText, setStatusText] = useState('Подключаем POS и подготавливаем чек')
+  const [showTimerHint, setShowTimerHint] = useState(false)
+  const [retryAction, setRetryAction] = useState(null)
+
   // Focused Input Tracking
   const [focusedInput, setFocusedInput] = useState('opened_amout')
 
@@ -383,8 +392,16 @@ function NewCashRegister() {
     onSuccess: ({ data }) => {
       dispatch(setUserData({ ...data?.data }))
     },
-    onError: () => {
+    onError: (err) => {
       error('Ошибка получения пользовательских данных.!')
+      setInitError(true)
+      setInitLoading(false)
+      setInitErrorMessage('Не удалось загрузить данные пользователя. Проверьте подключение к интернету.')
+      setRetryAction(() => () => {
+        setInitError(false)
+        setInitLoading(true)
+        getUserInfo()
+      })
     },
   })
 
@@ -399,26 +416,138 @@ function NewCashRegister() {
     requests.getRegisterCashData(get(methods.getValues('registerCash_id'), 'id', false)),
   )
 
-  const { mutate: checkSaleExist, isLoading: isCheckSaleExist } = useMutation(requests.checkSaleExist, {
-    onSuccess: ({ data }) => {
-      if (get(data, 'data.is_open', false)) {
-        navigate(`/sales/pos/${get(data, 'data.sale_id')}`)
-        navigate(`/sales/pos/${get(data, 'data.sale_id')}`)
+  const initStartedRef = useRef(false)
+  const abortControllerRef = useRef(null)
+
+  const runInitCheck = useCallback(async () => {
+    if (initStartedRef.current) return
+    initStartedRef.current = true
+
+    setInitLoading(true)
+    setInitError(false)
+    setInitErrorMessage('')
+    setStatusText('Подключаем POS и подготавливаем чек')
+    setShowTimerHint(false)
+
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    const controller = new AbortController()
+    abortControllerRef.current = controller
+    const { signal } = controller
+
+    const timer = setTimeout(() => {
+      if (!signal.aborted) {
+        setShowTimerHint(true)
+      }
+    }, 6000)
+
+    const withTimeout = (promise, ms = 12000) => {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => {
+          const tId = setTimeout(() => reject(new Error('TIMEOUT')), ms)
+          signal.addEventListener('abort', () => clearTimeout(tId))
+        }),
+      ])
+    }
+
+    try {
+      // Step 1: Check EPOS
+      setStatusText('Проверка соединения с EPOS...')
+      const eposStatus = await withTimeout(requests.checkEPOSTurnOn(EPOS_STATUS_PAYLOAD, { signal }))
+
+      if (get(eposStatus, 'data.error', true)) {
+        setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
+        setInitLoading(false)
+        clearTimeout(timer)
+        return
+      }
+
+      // Step 2: Z-Report & Terminal ID check
+      setStatusText('Проверка статуса Z-отчёта...')
+      const zReportStatus = await withTimeout(requests.closeCheckZReport(EPOS_TERMINAL_PAYLOAD, { signal }))
+
+      const terminalID = getEposTerminalId(zReportStatus?.data)
+      const terminalIds = userData?.store?.terminal_ids || []
+      const allowedTerminal = isAllowedTerminal(terminalID, terminalIds)
+
+      if (!allowedTerminal && hasAccess('check-terminal-id', userData)) {
+        setisEposTurnOn({
+          is_open: false,
+          message: `Вы в другом филиале! Epos: ${terminalID} Pharma: ${terminalIds?.join(',')}`,
+        })
+        setInitLoading(false)
+        clearTimeout(timer)
+        return
+      }
+
+      if (get(zReportStatus, 'data.error', true)) {
+        setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
+        setInitLoading(false)
+        clearTimeout(timer)
+        return
+      }
+
+      setisEposTurnOn({ is_open: true, message: '' })
+
+      // Step 3: Check Active Sale
+      setStatusText('Проверка активной кассовой сессии...')
+      const device_id = localStorage.getItem('device_id')
+      const checkSaleResponse = await withTimeout(
+        requests.checkSaleExist({ store_id: get(userData, 'store.id'), device_id }, { signal })
+      )
+
+      if (get(checkSaleResponse, 'data.data.is_open', false)) {
+        const saleId = get(checkSaleResponse, 'data.data.sale_id')
         if (window.parent) {
           window.parent.postMessage(
             {
               type: 'SAVE_CASH_BOX',
-              payload: data?.data,
+              payload: checkSaleResponse?.data?.data,
             },
             '*',
           )
         }
+        navigate(`/sales/pos/${saleId}`, { replace: true })
+        clearTimeout(timer)
+        return
       }
-    },
-    onError: (err) => {
-      console.error('err', err)
-    },
-  })
+
+      // Complete initialization check successfully (show the creation form)
+      setInitChecked(true)
+      setInitLoading(false)
+    } catch (err) {
+      if (signal.aborted) return
+      console.error('Initialization error:', err)
+      setInitError(true)
+      setInitLoading(false)
+      const isTimeout = err?.message === 'TIMEOUT'
+      setInitErrorMessage(
+        isTimeout
+          ? 'Время ожидания запроса истекло. Пожалуйста, проверьте подключение к сети и EPOS.'
+          : err?.response?.data?.message || 'Не удалось связаться с сервером кассы. Проверьте подключение.'
+      )
+      setRetryAction(() => () => {
+        initStartedRef.current = false
+        runInitCheck()
+      })
+    } finally {
+      clearTimeout(timer)
+    }
+  }, [userData, navigate])
+
+  useEffect(() => {
+    if (userData?.store?.id) {
+      runInitCheck()
+    }
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+      initStartedRef.current = false
+    }
+  }, [userData?.store?.id, runInitCheck])
 
   useEffect(() => {
     if (registerCashData) setCanCreate((a) => ({ ...a, canCreate: true }))
@@ -455,6 +584,9 @@ function NewCashRegister() {
     onError: (err) => {
       error('Ошибка при создании кассы!')
       console.error('err', err)
+      setInitError(true)
+      setInitErrorMessage(err?.response?.data?.message || err?.message || 'Ошибка при создании кассы!')
+      setRetryAction(() => () => handleOpenCashbox())
     },
   })
 
@@ -495,51 +627,11 @@ function NewCashRegister() {
     onError: (err) => {
       error('Ошибка при создании кассы! (open z report)')
       console.error('err', err)
+      setInitError(true)
+      setInitErrorMessage(err?.response?.data?.message || err?.message || 'Ошибка при создании кассы! (open z report)')
+      setRetryAction(() => () => handleOpenCashbox())
     },
   })
-
-  const { mutate: checkEPOSTurnOn, isLoading: ischeckEPOSTurnOn } = useMutation(requests.checkEPOSTurnOn, {
-    onSuccess: ({ data }) => {
-      if (get(data, 'error', true)) {
-        setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
-      } else {
-        closeCheckZReport(EPOS_TERMINAL_PAYLOAD)
-      }
-    },
-    onError: (err) => {
-      setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
-      error('Программа EPOS отключена. Запустить программу EPOS')
-      console.error('err', err)
-    },
-  })
-
-  const { mutate: closeCheckZReport, isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
-    onSuccess: ({ data }) => {
-      const terminalID = getEposTerminalId(data)
-      const terminalIds = userData?.store?.terminal_ids || []
-      const allowedTerminal = isAllowedTerminal(terminalID, terminalIds)
-
-      if (!allowedTerminal && hasAccess('check-terminal-id', userData)) {
-        setisEposTurnOn({ is_open: false, message: `Вы в другом филиале! Epos: ${terminalID} Pharma: ${terminalIds?.join(',')}` })
-        return
-      }
-      if (get(data, 'error', true)) {
-        setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
-      } else {
-        const device_id = localStorage.getItem('device_id')
-        checkSaleExist({ store_id: get(userData, 'store.id'), device_id })
-      }
-    },
-    onError: (err) => {
-      setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
-      error('Ошибка закрытия кассы! (close Z info Report)')
-      console.log('err', err)
-    },
-  })
-
-  useEffect(() => {
-    checkEPOSTurnOn(EPOS_STATUS_PAYLOAD)
-  }, [])
 
   const isEposDisconnected = !isEposTurnOn.is_open && (!isEposTurnOn.message || !isEposTurnOn.message.includes('филиале'))
 
@@ -550,7 +642,8 @@ function NewCashRegister() {
       try {
         const response = await requests.checkEPOSTurnOn(EPOS_STATUS_PAYLOAD)
         if (response && !get(response, 'data.error', true)) {
-          checkEPOSTurnOn(EPOS_STATUS_PAYLOAD)
+          initStartedRef.current = false
+          runInitCheck()
           clearInterval(interval)
         }
       } catch (err) {
@@ -559,7 +652,7 @@ function NewCashRegister() {
     }, 3000)
 
     return () => clearInterval(interval)
-  }, [isEposDisconnected, checkEPOSTurnOn])
+  }, [isEposDisconnected, runInitCheck])
 
   const handleOpenCashbox = () => {
     const selectedRegister = methods.watch('registerCash_id')
@@ -603,209 +696,354 @@ function NewCashRegister() {
   const selectedRegister = methods.watch('registerCash_id')
   const isSubmitDisabled = get(canCreate, 'is_open') || isopenZReport || isCreatingCashbox || !selectedRegister
 
-  return (
-    <LoadingContainer readyState={!isCheckSaleExist && !iscloseCheckZReport && !ischeckEPOSTurnOn}>
-      <FormProvider {...methods}>
-        <Box className={classes.box}>
-          <Box className={classes.wrapper}>
-            <Box className={classes.header}>
-              {get(canCreate, 'is_open') ? (
-                <>
-                  <span className={classes.openStoreDot} />
-                  <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
-                    Kassa Ochiq ({get(registerCashList, 'data.data.data', null).find((a) => a.id == get(methods.watch('registerCash_id'), 'id'))?.full_name})
-                  </Typography>
-                </>
-              ) : (
-                <>
-                  <span className={classes.closeStoreDot} />
-                  <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
-                    Kassa Yopiq
-                  </Typography>
-                </>
-              )}
-            </Box>
+  const isPageLoading = initLoading || isopenZReport || isCreatingCashbox
 
-            <Box display={'flex'} p={'32px'} gap={'32px'} alignItems={'stretch'}>
-              {/* Left side inputs and summary */}
-              <Box sx={{ width: '55%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <Box>
-                  <Typography fontSize={'14px'} fontWeight={'700'} color={'#475569'} mb={'8px'}>
-                    Kassa *
-                  </Typography>
+  if (isPageLoading || initError) {
+    return (
+      <Box
+        sx={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 9999,
+          backgroundColor: '#0B1220', // Premium dark navy background
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#ffffff',
+          fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+          p: 3,
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            maxWidth: '480px',
+            width: '100%',
+            textAlign: 'center',
+          }}
+        >
+          {/* Magnit POS Logo */}
+          <Box sx={{ mb: 4, height: '40px', display: 'flex', alignItems: 'center' }}>
+            <LogoMain />
+          </Box>
 
-                  {showRegisterList ? (
-                    <Box>
-                      <Box className={classes.registerSearchWrapper}>
-                        <input
-                          type='text'
-                          className={classes.registerSearchInput}
-                          placeholder='Kassani qidirish...'
-                          value={registerSearchQuery}
-                          onChange={(e) => setRegisterSearchQuery(e.target.value)}
-                          autoFocus
-                        />
-                      </Box>
-                      <Box className={classes.registerListScroll}>
-                        {filteredRegisters.map((reg) => (
-                          <div
-                            key={reg.id}
-                            className={`${classes.registerRow} ${selectedRegister?.id === reg.id ? classes.selectedRow : ''}`}
-                            onClick={() => {
-                              methods.setValue('registerCash_id', reg, { shouldValidate: true })
-                              setShowRegisterList(false)
-                            }}
-                          >
-                            <div className={classes.registerDetails}>
-                              <span className={classes.registerName}>{reg.full_name || reg.name}</span>
-                              <span className={classes.registerMeta}>Status: {reg.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}</span>
-                            </div>
-                            {selectedRegister?.id === reg.id && <Check color='#2563eb' size={20} />}
-                          </div>
-                        ))}
-                      </Box>
-                    </Box>
-                  ) : (
-                    <Box>
-                      {selectedRegister ? (
-                        <div className={classes.selectedRegisterCard}>
-                          <div className={classes.registerDetails}>
-                            <span className={classes.registerName}>{selectedRegister.full_name || selectedRegister.name}</span>
-                            <span className={classes.registerMeta}>Status: {selectedRegister.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}</span>
-                          </div>
-                          <button type='button' className={classes.changeRegisterBtn} onClick={() => setShowRegisterList(true)}>
-                            O&apos;zgartirish
-                          </button>
-                        </div>
-                      ) : (
-                        <button type='button' className={classes.touchSelectTrigger} onClick={() => setShowRegisterList(true)}>
-                          <span>Kassirni tanlang</span>
-                          <ChevronRight size={20} />
-                        </button>
-                      )}
-                    </Box>
-                  )}
-
-                  <Box height={'24px'} />
-
-                  <Box className={classes.formField}>
-                    <NumberFormatInput
-                      endAdornmentText={'UZS'}
-                      end
-                      type='number'
-                      fullWidth
-                      name='opened_amout'
-                      label='Ochilish miqdori'
-                      placeholder='Miqdorni kiriting'
-                      onFocus={() => setFocusedInput('opened_amout')}
-                    />
-                  </Box>
-                </Box>
-
-                <Box display='flex' gap='16px' mt='20px'>
-                  <Box className={classes.card_box} flex={1}>
-                    <Box display={'flex'} alignItems={'center'}>
-                      <Box className={classes.iconBox}>
-                        <MoneyOutlineIcon />
-                      </Box>
-                      <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
-                        Naqd
-                      </Typography>
-                    </Box>
-                    <Box my={'12px'} border={'1px solid'} borderColor={'#f1f5f9'} />
-                    <Box display={'flex'} justifyContent={'end'}>
-                      <Typography display={'flex'} fontSize={'20px'} fontWeight={'700'} color={'#2563eb'}>
-                        {get(registerCashData, 'data.data.closed_amount', null) || 0}
-                        <Typography mx={'4px'} fontSize={'20px'} fontWeight={'700'} color={'#94a3b8'}>
-                          UZS
-                        </Typography>
-                      </Typography>
-                    </Box>
-                  </Box>
-
-                  <Box className={classes.card_box} flex={1}>
-                    <Box display={'flex'} alignItems={'center'}>
-                      <Box className={classes.iconBox}>
-                        <CartOutlineIcon />
-                      </Box>
-                      <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
-                        Karta
-                      </Typography>
-                    </Box>
-                    <Box my={'12px'} border={'1px solid'} borderColor={'#f1f5f9'} />
-                    <Box display={'flex'} justifyContent={'end'}>
-                      <Typography display={'flex'} fontSize={'20px'} fontWeight={'700'} color={'#2563eb'}>
-                        0
-                        <Typography mx={'4px'} fontSize={'20px'} fontWeight={'700'} color={'#94a3b8'}>
-                          UZS
-                        </Typography>
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Box>
-
-                <Button type='button' onClick={handleOpenCashbox} disabled={isSubmitDisabled} className={classes.submitButton} fullWidth>
-                  Kassani oching <ArrowRightIcon color={isSubmitDisabled ? '#94a3b8' : '#fff'} />
+          {initError ? (
+            // Error State UI
+            <>
+              <Box sx={{ color: '#ef4444', mb: 3 }}>
+                <AlertCircle size={64} strokeWidth={1.5} />
+              </Box>
+              <Typography sx={{ fontWeight: 800, fontSize: '28px', mb: 2, color: '#ffffff' }}>
+                Не удалось создать кассу
+              </Typography>
+              <Typography sx={{ color: '#94a3b8', fontSize: '16px', mb: 4, lineHeight: 1.5 }}>
+                {initErrorMessage || 'Проверьте подключение и попробуйте снова.'}
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2, width: '100%', justifyContent: 'center' }}>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    setInitError(false)
+                    if (retryAction) retryAction()
+                  }}
+                  sx={{
+                    backgroundColor: '#2563eb',
+                    color: '#ffffff',
+                    fontWeight: 700,
+                    fontSize: '15px',
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: '12px',
+                    textTransform: 'none',
+                    '&:hover': {
+                      backgroundColor: '#1d4ed8',
+                    }
+                  }}
+                >
+                  Повторить
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => navigate(-1)}
+                  sx={{
+                    borderColor: '#475569',
+                    color: '#cbd5e1',
+                    fontWeight: 700,
+                    fontSize: '15px',
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: '12px',
+                    textTransform: 'none',
+                    '&:hover': {
+                      borderColor: '#94a3b8',
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    }
+                  }}
+                >
+                  Вернуться назад
                 </Button>
               </Box>
+            </>
+          ) : (
+            // Loading State UI
+            <>
+              {/* Spinning Progress Circle */}
+              <Box
+                sx={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: '50%',
+                  border: '4px solid rgba(255, 255, 255, 0.1)',
+                  borderTopColor: '#2563eb',
+                  animation: 'spin 1s linear infinite',
+                  mb: 4,
+                  '@keyframes spin': {
+                    '0%': { transform: 'rotate(0deg)' },
+                    '100%': { transform: 'rotate(360deg)' },
+                  },
+                }}
+              />
+              <Typography sx={{ fontWeight: 800, fontSize: '28px', mb: 1, color: '#ffffff' }}>
+                Создание кассы
+              </Typography>
+              <Typography sx={{ color: '#94a3b8', fontSize: '16px', mb: 2, lineHeight: 1.5 }}>
+                Идёт создание кассовой сессии, пожалуйста подождите…
+              </Typography>
+              <Typography sx={{ color: '#64748b', fontSize: '13px', fontWeight: 500 }}>
+                {statusText || 'Подключаем POS и подготавливаем чек'}
+              </Typography>
 
-              {/* Right side numeric keypad */}
-              <Box sx={{ width: '45%', display: 'flex', flexDirection: 'column' }}>
-                <div className={classes.keypadContainer}>
-                  <div className={classes.keypadGrid}>
-                    {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', '0', '⌫'].map((key) => {
-                      let btnClass = classes.keypadBtn
-                      if (key === 'C' || key === '⌫') {
-                        btnClass = `${classes.keypadBtn} ${classes.actionBtn}`
-                      }
-                      return (
-                        <button
-                          key={key}
-                          type='button'
-                          className={btnClass}
-                          onClick={() => handleKeypadPress(key === 'C' ? 'clear' : key === '⌫' ? 'backspace' : key)}
+              {showTimerHint && (
+                <Typography
+                  sx={{
+                    color: '#475569',
+                    fontSize: '12px',
+                    mt: 3,
+                    animation: 'fadeIn 0.5s ease-in-out',
+                    '@keyframes fadeIn': {
+                      from: { opacity: 0 },
+                      to: { opacity: 1 },
+                    },
+                  }}
+                >
+                  Это может занять несколько секунд
+                </Typography>
+              )}
+            </>
+          )}
+        </Box>
+      </Box>
+    )
+  }
+
+  return (
+    <FormProvider {...methods}>
+      <Box className={classes.box}>
+        <Box className={classes.wrapper}>
+          <Box className={classes.header}>
+            {get(canCreate, 'is_open') ? (
+              <>
+                <span className={classes.openStoreDot} />
+                <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
+                  Kassa Ochiq ({get(registerCashList, 'data.data.data', null).find((a) => a.id == get(methods.watch('registerCash_id'), 'id'))?.full_name})
+                </Typography>
+              </>
+            ) : (
+              <>
+                <span className={classes.closeStoreDot} />
+                <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
+                  Kassa Yopiq
+                </Typography>
+              </>
+            )}
+          </Box>
+
+          <Box display={'flex'} p={'32px'} gap={'32px'} alignItems={'stretch'}>
+            {/* Left side inputs and summary */}
+            <Box sx={{ width: '55%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <Box>
+                <Typography fontSize={'14px'} fontWeight={'700'} color={'#475569'} mb={'8px'}>
+                  Kassa *
+                </Typography>
+
+                {showRegisterList ? (
+                  <Box>
+                    <Box className={classes.registerSearchWrapper}>
+                      <input
+                        type='text'
+                        className={classes.registerSearchInput}
+                        placeholder='Kassani qidirish...'
+                        value={registerSearchQuery}
+                        onChange={(e) => setRegisterSearchQuery(e.target.value)}
+                        autoFocus
+                      />
+                    </Box>
+                    <Box className={classes.registerListScroll}>
+                      {filteredRegisters.map((reg) => (
+                        <div
+                          key={reg.id}
+                          className={`${classes.registerRow} ${selectedRegister?.id === reg.id ? classes.selectedRow : ''}`}
+                          onClick={() => {
+                            methods.setValue('registerCash_id', reg, { shouldValidate: true })
+                            setShowRegisterList(false)
+                          }}
                         >
-                          {key}
+                          <div className={classes.registerDetails}>
+                            <span className={classes.registerName}>{reg.full_name || reg.name}</span>
+                            <span className={classes.registerMeta}>Status: {reg.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}</span>
+                          </div>
+                          {selectedRegister?.id === reg.id && <Check color='#2563eb' size={20} />}
+                        </div>
+                      ))}
+                    </Box>
+                  </Box>
+                ) : (
+                  <Box>
+                    {selectedRegister ? (
+                      <div className={classes.selectedRegisterCard}>
+                        <div className={classes.registerDetails}>
+                          <span className={classes.registerName}>{selectedRegister.full_name || selectedRegister.name}</span>
+                          <span className={classes.registerMeta}>Status: {selectedRegister.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}</span>
+                        </div>
+                        <button type='button' className={classes.changeRegisterBtn} onClick={() => setShowRegisterList(true)}>
+                          O&apos;zgartirish
                         </button>
-                      )
-                    })}
-                  </div>
-                  <button type='button' className={classes.enterBtn} disabled={isSubmitDisabled} onClick={() => handleKeypadPress('enter')}>
-                    Kassani oching (Enter)
-                  </button>
-                </div>
+                      </div>
+                    ) : (
+                      <button type='button' className={classes.touchSelectTrigger} onClick={() => setShowRegisterList(true)}>
+                        <span>Kassirni tanlang</span>
+                        <ChevronRight size={20} />
+                      </button>
+                    )}
+                  </Box>
+                )}
+
+                <Box height={'24px'} />
+
+                <Box className={classes.formField}>
+                  <NumberFormatInput
+                    endAdornmentText={'UZS'}
+                    end
+                    type='number'
+                    fullWidth
+                    name='opened_amout'
+                    label='Ochilish miqdori'
+                    placeholder='Miqdorni kiriting'
+                    onFocus={() => setFocusedInput('opened_amout')}
+                  />
+                </Box>
               </Box>
+
+              <Box display='flex' gap='16px' mt='20px'>
+                <Box className={classes.card_box} flex={1}>
+                  <Box display={'flex'} alignItems={'center'}>
+                    <Box className={classes.iconBox}>
+                      <MoneyOutlineIcon />
+                    </Box>
+                    <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
+                      Naqd
+                    </Typography>
+                  </Box>
+                  <Box my={'12px'} border={'1px solid'} borderColor={'#f1f5f9'} />
+                  <Box display={'flex'} justifyContent={'end'}>
+                    <Typography display={'flex'} fontSize={'20px'} fontWeight={'700'} color={'#2563eb'}>
+                      {get(registerCashData, 'data.data.closed_amount', null) || 0}
+                      <Typography mx={'4px'} fontSize={'20px'} fontWeight={'700'} color={'#94a3b8'}>
+                        UZS
+                      </Typography>
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box className={classes.card_box} flex={1}>
+                  <Box display={'flex'} alignItems={'center'}>
+                    <Box className={classes.iconBox}>
+                      <CartOutlineIcon />
+                    </Box>
+                    <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
+                      Karta
+                    </Typography>
+                  </Box>
+                  <Box my={'12px'} border={'1px solid'} borderColor={'#f1f5f9'} />
+                  <Box display={'flex'} justifyContent={'end'}>
+                    <Typography display={'flex'} fontSize={'20px'} fontWeight={'700'} color={'#2563eb'}>
+                      0
+                      <Typography mx={'4px'} fontSize={'20px'} fontWeight={'700'} color={'#94a3b8'}>
+                        UZS
+                      </Typography>
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+
+              <Button type='button' onClick={handleOpenCashbox} disabled={isSubmitDisabled} className={classes.submitButton} fullWidth>
+                Kassani oching <ArrowRightIcon color={isSubmitDisabled ? '#94a3b8' : '#fff'} />
+              </Button>
+            </Box>
+
+            {/* Right side numeric keypad */}
+            <Box sx={{ width: '45%', display: 'flex', flexDirection: 'column' }}>
+              <div className={classes.keypadContainer}>
+                <div className={classes.keypadGrid}>
+                  {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', '0', '⌫'].map((key) => {
+                    let btnClass = classes.keypadBtn
+                    if (key === 'C' || key === '⌫') {
+                      btnClass = `${classes.keypadBtn} ${classes.actionBtn}`
+                    }
+                    return (
+                      <button
+                        key={key}
+                        type='button'
+                        className={btnClass}
+                        onClick={() => handleKeypadPress(key === 'C' ? 'clear' : key === '⌫' ? 'backspace' : key)}
+                      >
+                        {key}
+                      </button>
+                    )
+                  })}
+                </div>
+                <button type='button' className={classes.enterBtn} disabled={isSubmitDisabled} onClick={() => handleKeypadPress('enter')}>
+                  Kassani oching (Enter)
+                </button>
+              </div>
             </Box>
           </Box>
         </Box>
+      </Box>
 
-        <Dialog
-          open={!isEposTurnOn?.is_open}
-          disableEscapeKeyDown
-          onClose={() => {}}
-          className={classes.eposDialogRoot}
-          disableScrollLock
-        >
-          <Box className={classes.eposIconContainer}>
-            <AlertCircle size={36} strokeWidth={2} />
-          </Box>
-          <Typography className={classes.eposTitle}>
-            {isEposTurnOn.message?.includes('филиале') ? 'Неверный филиал' : 'EPOS не запущен'}
+      <Dialog
+        open={!isEposTurnOn?.is_open}
+        disableEscapeKeyDown
+        onClose={() => {}}
+        className={classes.eposDialogRoot}
+        disableScrollLock
+      >
+        <Box className={classes.eposIconContainer}>
+          <AlertCircle size={36} strokeWidth={2} />
+        </Box>
+        <Typography className={classes.eposTitle}>
+          {isEposTurnOn.message?.includes('филиале') ? 'Неверный филиал' : 'EPOS не запущен'}
+        </Typography>
+        <Typography className={classes.eposDescription}>
+          {isEposTurnOn.message?.includes('филиале')
+            ? isEposTurnOn.message
+            : 'Для продолжения работы запустите программу EPOS на этом компьютере.'}
+        </Typography>
+        <Box className={classes.eposStatusRow}>
+          <span className={classes.eposStatusDot} />
+          <Typography className={classes.eposStatusText}>
+            {isEposTurnOn.message?.includes('филиале') ? 'Статус: ошибка терминала' : 'Статус: отключено'}
           </Typography>
-          <Typography className={classes.eposDescription}>
-            {isEposTurnOn.message?.includes('филиале')
-              ? isEposTurnOn.message
-              : 'Для продолжения работы запустите программу EPOS на этом компьютере.'}
-          </Typography>
-          <Box className={classes.eposStatusRow}>
-            <span className={classes.eposStatusDot} />
-            <Typography className={classes.eposStatusText}>
-              {isEposTurnOn.message?.includes('филиале') ? 'Статус: ошибка терминала' : 'Статус: отключено'}
-            </Typography>
-          </Box>
-        </Dialog>
-      </FormProvider>
-    </LoadingContainer>
+        </Box>
+      </Dialog>
+    </FormProvider>
   )
 }
 

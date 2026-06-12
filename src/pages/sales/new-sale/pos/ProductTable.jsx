@@ -5,7 +5,17 @@ import QuantityStepper from './QuantityStepper'
 import './PosLayout.css'
 import { Sd } from '@mui/icons-material'
 
-export default function ProductTable({ cartItems = [], selectedId, onSelectRow, onQtyIncrease, onQtyDecrease, onQtyDecreaseRequestSecurity, isLoading }) {
+export default function ProductTable({
+  cartItems = [],
+  selectedId,
+  onSelectRow,
+  onQtyIncrease,
+  onQtyDecrease,
+  onQtyDecreaseRequestSecurity,
+  isLoading,
+  pendingQuantityUpdates = {},
+  pendingNewItems = {},
+}) {
   const { t } = useTranslation()
 
   const handleDecrease = (item) => {
@@ -36,7 +46,7 @@ export default function ProductTable({ cartItems = [], selectedId, onSelectRow, 
                 <div className='loading-spinner-placeholder'>{t('pos.loading')}</div>
               </td>
             </tr>
-          ) : cartItems.length === 0 ? (
+          ) : cartItems.length === 0 && Object.keys(pendingNewItems).length === 0 ? (
             <tr>
               <td colSpan={6} className='pos-table-empty'>
                 <div className='empty-state-container'>
@@ -56,30 +66,79 @@ export default function ProductTable({ cartItems = [], selectedId, onSelectRow, 
               </td>
             </tr>
           ) : (
-            cartItems.map((item, index) => {
-              const isSelected = item.id === selectedId
-              return (
-                <tr key={item.id} className={`pos-table-row ${isSelected ? 'is-selected' : ''}`} onClick={() => onSelectRow?.(item.id)}>
-                  <td className='col-num'>{index + 1}</td>
+            <>
+              {cartItems.map((item, index) => {
+                const isSelected = item.id === selectedId
+                const isUpdating = !!(pendingQuantityUpdates[item.id] || pendingQuantityUpdates[item.store_product_id] || pendingQuantityUpdates[item.barcode])
+                return (
+                  <tr
+                    key={item.id}
+                    className={`pos-table-row ${isSelected ? 'is-selected' : ''} ${isUpdating ? 'pos-row-updating' : ''}`}
+                    onClick={() => onSelectRow?.(item.id)}
+                    style={isUpdating ? { opacity: 0.8, backgroundColor: 'rgba(243, 244, 246, 0.2)' } : undefined}
+                  >
+                    <td className='col-num'>{index + 1}</td>
+                    <td className='col-barcode'>
+                      <span className='barcode-text'>{item.barcode || item.store_product_id || '—'}</span>
+                    </td>
+                    <td className='col-name'>
+                      <div className='product-name-container' title={item.name}>
+                        {item.name}
+                      </div>
+                    </td>
+                    <td className='col-qty'>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <QuantityStepper
+                          item={item}
+                          onIncrease={onQtyIncrease}
+                          onDecrease={handleDecrease}
+                          isLoading={isUpdating}
+                        />
+                        <span className='unit-badge'>
+                          {item.unit_per_pack > 1 && item.unit_quantity > 0
+                            ? `${item.unit_quantity} ${item.unit_per_pack === 1000 ? 'г' : 'шт'}`
+                            : 'уп'}
+                        </span>
+                      </div>
+                    </td>
+                    <td className='col-price text-right'>{thousandDivider(item.unit_price)}</td>
+                    <td className='col-total text-right font-bold'>{thousandDivider(item.total_price)}</td>
+                  </tr>
+                )
+              })}
+
+              {/* Pending new items skeletons */}
+              {Object.keys(pendingNewItems).map((pendingBarcode, idx) => (
+                <tr key={`skeleton-${pendingBarcode}`} className="pos-table-row is-skeleton">
+                  <td className='col-num'>{cartItems.length + idx + 1}</td>
                   <td className='col-barcode'>
-                    <span className='barcode-text'>{item.barcode || item.store_product_id || '—'}</span>
+                    <span className='barcode-text skeleton-shimmer' style={{ display: 'inline-block', minWidth: '80px', height: '14px' }}>
+                      {pendingBarcode}
+                    </span>
                   </td>
                   <td className='col-name'>
-                    <div className='product-name-container' title={item.name}>
-                      {item.name}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span className='skeleton-shimmer' style={{ display: 'inline-block', width: '120px', height: '16px' }} />
+                      <span style={{ fontSize: '11px', color: '#94a3b8', fontStyle: 'italic' }}>
+                        (Добавляем товар...)
+                      </span>
                     </div>
                   </td>
                   <td className='col-qty'>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <QuantityStepper item={item} onIncrease={onQtyIncrease} onDecrease={handleDecrease} />
-                      <span className='unit-badge'>{item.unit_per_pack > 1 && item.unit_quantity > 0 ? `${item.unit_quantity} ${item.unit_per_pack === 1000 ? 'г' : 'шт'}` : 'уп'}</span>
+                      <div className='qty-skeleton skeleton-shimmer' />
+                      <span className='unit-badge skeleton-shimmer' style={{ width: '24px', height: '18px' }} />
                     </div>
                   </td>
-                  <td className='col-price text-right'>{thousandDivider(item.unit_price)}</td>
-                  <td className='col-total text-right font-bold'>{thousandDivider(item.total_price)}</td>
+                  <td className='col-price text-right'>
+                    <span className='skeleton-shimmer' style={{ display: 'inline-block', width: '50px', height: '18px' }} />
+                  </td>
+                  <td className='col-total text-right'>
+                    <span className='skeleton-shimmer' style={{ display: 'inline-block', width: '50px', height: '18px' }} />
+                  </td>
                 </tr>
-              )
-            })
+              ))}
+            </>
           )}
         </tbody>
       </table>

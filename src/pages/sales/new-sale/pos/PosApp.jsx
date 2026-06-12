@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import { useSelector } from 'react-redux'
@@ -68,6 +68,12 @@ export default function PosApp() {
   const [productSelectList, setProductSelectList] = useState([])
   const [pendingWeightGrams, setPendingWeightGrams] = useState(null)
   const [pendingScannedValue, setPendingScannedValue] = useState(null)
+
+  // Loading skeleton and scan lock states
+  const [pendingAddBarcode, setPendingAddBarcode] = useState(null)
+  const [pendingNewItems, setPendingNewItems] = useState({})
+  const [pendingQuantityUpdates, setPendingQuantityUpdates] = useState({})
+  const pendingProductUpdatesRef = useRef({})
 
   // Customer selection & topbar search states
   const [customerSearchTerm, setCustomerSearchTerm] = useState('')
@@ -257,17 +263,40 @@ export default function PosApp() {
     (params) => {
       const rest = { ...params }
       delete rest.originalScannedValue
+      const barcode = params.barcode
+      const originalScannedValue = params.originalScannedValue
+      if (barcode) {
+        setPendingAddBarcode(barcode)
+        setPendingNewItems((prev) => ({ ...prev, [barcode]: true }))
+        pendingProductUpdatesRef.current[barcode] = true
+      }
+      if (originalScannedValue) {
+        setPendingNewItems((prev) => ({ ...prev, [originalScannedValue]: true }))
+        pendingProductUpdatesRef.current[originalScannedValue] = true
+      }
       return requests.createCartItem(rest)
     },
     {
       onSuccess: ({ data }, variables) => {
+        const barcode = variables.barcode
+        const originalScannedValue = variables.originalScannedValue
+        setPendingNewItems((prev) => {
+          const next = { ...prev }
+          if (barcode) delete next[barcode]
+          if (originalScannedValue) delete next[originalScannedValue]
+          return next
+        })
+        if (barcode) delete pendingProductUpdatesRef.current[barcode]
+        if (originalScannedValue) delete pendingProductUpdatesRef.current[originalScannedValue]
+        setPendingAddBarcode(null)
+
         refetchCart()
         setSelectedId(data?.data?.id)
 
-        const originalScannedValue = variables.originalScannedValue
-        if (originalScannedValue && originalScannedValue.length > 37 && get(data, 'data.is_marking', false)) {
-          if (checkBarcodeWithMarking(data?.data?.barcode, originalScannedValue) && data?.data?.barcode.length > 0) {
-            const marking = containsCyrillic(originalScannedValue) ? convertoRuOrEngToEng(originalScannedValue) : originalScannedValue
+        const origScanVal = variables.originalScannedValue
+        if (origScanVal && origScanVal.length > 37 && get(data, 'data.is_marking', false)) {
+          if (checkBarcodeWithMarking(data?.data?.barcode, origScanVal) && data?.data?.barcode.length > 0) {
+            const marking = containsCyrillic(origScanVal) ? convertoRuOrEngToEng(origScanVal) : origScanVal
             saveMarkingToCartItem({
               id: data?.data?.store_product_id,
               data: {
@@ -277,24 +306,80 @@ export default function PosApp() {
           }
         }
       },
-      onError: (err) => {
+      onError: (err, variables) => {
+        const barcode = variables.barcode
+        const originalScannedValue = variables.originalScannedValue
+        setPendingNewItems((prev) => {
+          const next = { ...prev }
+          if (barcode) delete next[barcode]
+          if (originalScannedValue) delete next[originalScannedValue]
+          return next
+        })
+        if (barcode) delete pendingProductUpdatesRef.current[barcode]
+        if (originalScannedValue) delete pendingProductUpdatesRef.current[originalScannedValue]
+        setPendingAddBarcode(null)
+
         if (get(err, 'response.data.code') === 406) {
           success('Prodanja yopildi')
           navigate(`/sales/create`)
           return
         }
-        error(get(err, 'response.data.message', 'Mahsulot topilmadi yoki qoldiq yetarli emas'))
+        error(get(err, 'response.data.message', 'Не удалось добавить товар'))
       },
     },
   )
 
-  const { mutate: changeQty } = useMutation(requests.changeCartItemQuantity, {
-    onSuccess: () => refetchCart(),
-    onError: () => {
-      refetchCart()
-      error('Miqdorni o`zgartirishda xatolik yoki qoldiq yetarli emas')
+  const { mutate: changeQty } = useMutation(
+    ({ id, data }) => {
+      setPendingQuantityUpdates((prev) => ({ ...prev, [id]: true }))
+      const item = cartItems.find((el) => el.id === id)
+      if (item && item.barcode) {
+        pendingProductUpdatesRef.current[item.barcode] = true
+      }
+      return requests.changeCartItemQuantity({ id, data })
     },
-  })
+    {
+      onSuccess: (res, variables) => {
+        const id = variables.id
+        setPendingQuantityUpdates((prev) => {
+          const next = { ...prev }
+          delete next[id]
+          return next
+        })
+        const item = cartItems.find((el) => el.id === id)
+        if (item && item.barcode) {
+          delete pendingProductUpdatesRef.current[item.barcode]
+          // Clear matching sub-keys (e.g. raw scanned markings containing the barcode)
+          Object.keys(pendingProductUpdatesRef.current).forEach((key) => {
+            if (key.includes(item.barcode)) {
+              delete pendingProductUpdatesRef.current[key]
+            }
+          })
+        }
+        refetchCart()
+      },
+      onError: (err, variables) => {
+        const id = variables.id
+        setPendingQuantityUpdates((prev) => {
+          const next = { ...prev }
+          delete next[id]
+          return next
+        })
+        const item = cartItems.find((el) => el.id === id)
+        if (item && item.barcode) {
+          delete pendingProductUpdatesRef.current[item.barcode]
+          // Clear matching sub-keys
+          Object.keys(pendingProductUpdatesRef.current).forEach((key) => {
+            if (key.includes(item.barcode)) {
+              delete pendingProductUpdatesRef.current[key]
+            }
+          })
+        }
+        refetchCart()
+        error(get(err, 'response.data.message', 'Miqdorni o`zgartirishda xatolik yuz berdi'))
+      },
+    }
+  )
 
   const { mutate: deleteItem } = useMutation(requests.deleteCartItem, {
     onSuccess: () => {
@@ -488,6 +573,12 @@ export default function PosApp() {
       }
     }
 
+    // Double-scan protection check
+    if (pendingProductUpdatesRef.current[searchBarcode] || pendingProductUpdatesRef.current[scannedBarcode]) {
+      console.log('Barcode scan blocked (already processing):', searchBarcode)
+      return
+    }
+
     // 2. Parse scale barcode (prefix 26 or 27 → 5-digit product code + weight)
     // Weight field is 5 digits (positions 7–11) in milligrams/decigrams; divide by 10 to get grams.
     // position 12 is the EAN check digit and must NOT be included in weight parsing.
@@ -506,6 +597,12 @@ export default function PosApp() {
     if (weightGrams === null) {
       const existing = cartItems.find((item) => item.barcode === searchBarcode)
       if (existing) {
+        // Set update locks for this barcode and scanned value
+        pendingProductUpdatesRef.current[searchBarcode] = true
+        if (scannedBarcode) {
+          pendingProductUpdatesRef.current[scannedBarcode] = true
+        }
+
         changeQty({
           id: existing.id,
           data: {
@@ -534,11 +631,32 @@ export default function PosApp() {
         return
       }
 
+      // Synchronously lock this search barcode and original value
+      pendingProductUpdatesRef.current[searchBarcode] = true
+      if (scannedBarcode) {
+        pendingProductUpdatesRef.current[scannedBarcode] = true
+      }
+      
+      // Set states to trigger skeleton row loading
+      setPendingAddBarcode(searchBarcode)
+      setPendingNewItems((prev) => ({ ...prev, [searchBarcode]: true }))
+
       const res = await requests.getAllStoreProducts({ id: storeId }, { search: searchBarcode, offset: 0, limit: 30 })
 
       const productsList = get(res, 'data.data') || []
 
       if (productsList.length === 0) {
+        // Release locks and reset pending states
+        delete pendingProductUpdatesRef.current[searchBarcode]
+        if (scannedBarcode) {
+          delete pendingProductUpdatesRef.current[scannedBarcode]
+        }
+        setPendingAddBarcode(null)
+        setPendingNewItems((prev) => {
+          const next = { ...prev }
+          delete next[searchBarcode]
+          return next
+        })
         error(t('product_not_found'))
         return
       }
@@ -548,11 +666,34 @@ export default function PosApp() {
         setPendingWeightGrams(weightGrams)
         setPendingScannedValue(scannedBarcode)
         setProductSelectList(productsList)
+
+        // Clear skeletons since search resolves to modal selection
+        delete pendingProductUpdatesRef.current[searchBarcode]
+        if (scannedBarcode) {
+          delete pendingProductUpdatesRef.current[scannedBarcode]
+        }
+        setPendingAddBarcode(null)
+        setPendingNewItems((prev) => {
+          const next = { ...prev }
+          delete next[searchBarcode]
+          return next
+        })
         return
       }
 
       addProductToCart(productsList[0], weightGrams, scannedBarcode)
     } catch (err) {
+      // Clear locks and reset pending states on error
+      delete pendingProductUpdatesRef.current[searchBarcode]
+      if (scannedBarcode) {
+        delete pendingProductUpdatesRef.current[scannedBarcode]
+      }
+      setPendingAddBarcode(null)
+      setPendingNewItems((prev) => {
+        const next = { ...prev }
+        delete next[searchBarcode]
+        return next
+      })
       error('Mahsulotni qidirishda xatolik yuz berdi')
       console.error(err)
     }
@@ -564,6 +705,26 @@ export default function PosApp() {
       const existingScaleItem = cartItems.find((item) => item.store_product_id === product.id)
       if (existingScaleItem) {
         const currentGrams = existingScaleItem.quantity * existingScaleItem.unit_per_pack + existingScaleItem.unit_quantity
+        
+        // Clear new item state/locks because this is an update to an existing row
+        if (product.barcode) {
+          delete pendingProductUpdatesRef.current[product.barcode]
+          setPendingNewItems((prev) => {
+            const next = { ...prev }
+            delete next[product.barcode]
+            return next
+          })
+        }
+        if (originalScannedValue) {
+          delete pendingProductUpdatesRef.current[originalScannedValue]
+          setPendingNewItems((prev) => {
+            const next = { ...prev }
+            delete next[originalScannedValue]
+            return next
+          })
+        }
+        setPendingAddBarcode(null)
+
         changeQty({
           id: existingScaleItem.id,
           data: {
@@ -1032,6 +1193,8 @@ export default function PosApp() {
               onQtyDecrease={handleQtyDecrease}
               onQtyDecreaseRequestSecurity={setSecurityItem}
               isLoading={isCartLoading}
+              pendingQuantityUpdates={pendingQuantityUpdates}
+              pendingNewItems={pendingNewItems}
             />
           </div>
 

@@ -1,12 +1,13 @@
 import './PosLayout.css'
 
-export default function QuantityStepper({ item, onIncrease, onDecrease }) {
+export default function QuantityStepper({ item, onIncrease, onDecrease, isLoading }) {
   return (
-    <div className='pos-qty-stepper' onClick={(e) => e.stopPropagation()}>
+    <div className={`pos-qty-stepper ${isLoading ? 'is-loading' : ''}`} onClick={(e) => e.stopPropagation()}>
       <button
         className='pos-qty-stepper-btn'
         onClick={() => onDecrease(item)}
         type='button'
+        disabled={isLoading}
       >
         −
       </button>
@@ -17,6 +18,7 @@ export default function QuantityStepper({ item, onIncrease, onDecrease }) {
         className='pos-qty-stepper-btn'
         onClick={() => onIncrease(item)}
         type='button'
+        disabled={isLoading}
       >
         +
       </button>

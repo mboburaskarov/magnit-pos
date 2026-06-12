@@ -8,12 +8,12 @@ export const requests = {
   sendToEpos: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
   gelOldEposCheck: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
   closeZReport: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
-  closeCheckZReport: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
+  closeCheckZReport: (data, config) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data, config),
   checkEposFlesh: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
   openZReport: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
   getZReportByDate: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
   sendEPOSresponseToBackend: (data) => request.post(`v1/sale/epos-result`, data),
-  checkEPOSTurnOn: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
+  checkEPOSTurnOn: (data, config) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data, config),
 
   //tags
   getAllTags: (filter) => request.get(`v1/tag/list${qs.stringify(filter, { addQueryPrefix: true })}`),
@@ -151,7 +151,7 @@ export const requests = {
   //cashbox
   getAllCashBoxList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   deleteCashBox: (ids) => request.delete(`v1/cash_box/soft-delete`, ids),
-  checkSaleExist: ({ store_id, device_id }) => request.get(`v1/cash_box/check?store_id=${store_id}&device_id=${device_id}`),
+  checkSaleExist: ({ store_id, device_id }, config) => request.get(`v1/cash_box/check?store_id=${store_id}&device_id=${device_id}`, config),
   createCashBox: (data) => request.post(`v1/cash_box`, data),
   updateCashBox: ({ id, data }) => request.put(`v1/cash_box/${id}`, data),
   getSingleCashBox: (id) => request.get(`v1/cash_box/${id}`),
