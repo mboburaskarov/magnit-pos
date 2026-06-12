@@ -31,7 +31,6 @@ import ReturnExchangeDrawer from '@components/Sales/ReturnExchange/ReturnExchang
 import DraftDrawer from '@components/Sales/DraftDrawer'
 import axios from 'axios'
 import PosPrinterSettings from './PosPrinterSettings'
-import POSLoadingOverlay from './POSLoadingOverlay'
 
 export default function PosApp() {
   const { id } = useParams()
@@ -129,33 +128,14 @@ export default function PosApp() {
   }, [])
 
   // ── Queries ──
-  const {
-    data: cashBoxDetails,
-    isLoading: isCashBoxLoading,
-    isError: isCashBoxError,
-    refetch: refetchCashBox,
-  } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id), {
-    keepPreviousData: true,
-    refetchOnWindowFocus: false,
-  })
-
-  const {
-    data: paymentTypesList,
-    isLoading: isPaymentTypesLoading,
-    isError: isPaymentTypesError,
-    refetch: refetchPaymentTypes,
-  } = useQuery('paymentTypesList', () => requests.getPaymentTypesList(), {
-    refetchOnWindowFocus: false,
-  })
+  const { data: cashBoxDetails } = useQuery(['cashBoxDetails', id], () => requests.getCashBoxDetaildWithSaleId(id))
+  const { data: paymentTypesList } = useQuery('paymentTypesList', () => requests.getPaymentTypesList())
 
   const {
     data: cartItemsRes,
     refetch: refetchCart,
     isLoading: isCartLoading,
-    isError: isCartError,
   } = useQuery(['cartItemsList', id], () => requests.getCartItemList({ sale_id: id, limit: 100, offset: 0 }), {
-    keepPreviousData: true,
-    refetchOnWindowFocus: false,
     onError: (e) => {
       if (get(e, 'response.data.code') == '409') {
         navigate('/sales/create')
@@ -1120,39 +1100,6 @@ export default function PosApp() {
     }
   }
 
-  const hasData = Boolean(cashBoxDetails && cartItemsRes && paymentTypesList)
-  const isPageLoading = isCashBoxLoading || isCartLoading || isPaymentTypesLoading || (cashBoxDetails && String(cashBoxDetails.data?.data?.id) !== String(id))
-  const hasLoadError = isCashBoxError || isCartError || isPaymentTypesError
-
-  const currentLang = i18n.language || 'ru'
-  const lang = ['ru', 'uz', 'en'].includes(currentLang) ? currentLang : 'ru'
-
-  if (hasLoadError && !hasData) {
-    return (
-      <POSLoadingOverlay
-        isError={true}
-        lang={lang}
-        fullScreen={true}
-        onRetry={() => {
-          refetchCashBox()
-          refetchCart()
-          refetchPaymentTypes()
-        }}
-        onBack={() => navigate('/sales/create')}
-      />
-    )
-  }
-
-  if (isPageLoading && !hasData) {
-    return (
-      <POSLoadingOverlay
-        isLoading={true}
-        lang={lang}
-        fullScreen={true}
-      />
-    )
-  }
-
   return (
     <div className='pos-shell'>
       <SaleProgressSteps
@@ -1521,30 +1468,6 @@ export default function PosApp() {
             </div>
           </div>
         </div>
-      )}
-
-      {/* Dimmed Loading Overlay on top of the active layout */}
-      {isPageLoading && (
-        <POSLoadingOverlay
-          isLoading={true}
-          lang={lang}
-          fullScreen={false}
-        />
-      )}
-
-      {/* Dimmed Error Overlay on top of the active layout */}
-      {hasLoadError && (
-        <POSLoadingOverlay
-          isError={true}
-          lang={lang}
-          fullScreen={false}
-          onRetry={() => {
-            refetchCashBox()
-            refetchCart()
-            refetchPaymentTypes()
-          }}
-          onBack={() => navigate('/sales/create')}
-        />
       )}
     </div>
   )
