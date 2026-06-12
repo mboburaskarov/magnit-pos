@@ -491,7 +491,7 @@ export default function PosApp() {
       const parsed = parseInt(searchBarcode.slice(7, 12), 10)
       if (productCode.length === 5 && !isNaN(parsed) && parsed > 0) {
         searchBarcode = productCode
-        weightGrams = Math.round(parsed / 10)
+        weightGrams = parsed
       }
     }
 
