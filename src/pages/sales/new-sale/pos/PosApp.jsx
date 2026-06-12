@@ -482,14 +482,16 @@ export default function PosApp() {
       }
     }
 
-    // 2. Parse scale barcode (prefix 26 or 27 → 5-digit product code + weight in grams)
+    // 2. Parse scale barcode (prefix 26 or 27 → 5-digit product code + weight)
+    // Weight field is 5 digits (positions 7–11) in milligrams/decigrams; divide by 10 to get grams.
+    // position 12 is the EAN check digit and must NOT be included in weight parsing.
     let weightGrams = null
     if (searchBarcode.startsWith('26') || searchBarcode.startsWith('27')) {
       const productCode = searchBarcode.slice(2, 7)
-      const parsed = parseInt(searchBarcode.slice(7), 10)
+      const parsed = parseInt(searchBarcode.slice(7, 12), 10)
       if (productCode.length === 5 && !isNaN(parsed) && parsed > 0) {
         searchBarcode = productCode
-        weightGrams = parsed
+        weightGrams = parsed / 10
       }
     }
 
