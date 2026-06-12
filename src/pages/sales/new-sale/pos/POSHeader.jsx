@@ -1,7 +1,8 @@
-import React from 'react'
 import LogoMain from '@icons/LogoMain'
-import { Search, User, Power, X, Printer, Banknote } from 'lucide-react'
+import { Search, User, Power, X, Printer, Banknote, RefreshCw } from 'lucide-react'
 import './PosLayout.css'
+
+export const APP_VERSION = import.meta.env.VITE_APP_VERSION || '1.0.1'
 
 export default function POSHeader({
   time,
@@ -21,6 +22,7 @@ export default function POSHeader({
   onOpenPrinterSettings,
   isAgentRunning,
   onOpenCashDrawer,
+  onHardRefresh,
 }) {
   const getShortName = (first, last) => {
     if (!first) return cashierName || 'Magnit'
@@ -59,10 +61,32 @@ export default function POSHeader({
   return (
     <header className='pos-header-premium'>
       {/* Brand block */}
-      <div className='pos-header-left'>
+      <div className='pos-header-left' style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <div className='pos-header-brand'>
           <LogoMain />
         </div>
+        <div
+          style={{
+            fontSize: '11px',
+            color: '#9CA3AF',
+            backgroundColor: '#1F2937',
+            padding: '2px 6px',
+            borderRadius: '4px',
+            fontWeight: 600,
+            letterSpacing: '0.5px',
+          }}
+        >
+          v{APP_VERSION}
+        </div>
+        <button
+          type='button'
+          className='pos-header-btn'
+          onClick={onHardRefresh}
+          title='Обновить POS'
+          style={{ width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <RefreshCw size={16} />
+        </button>
       </div>
 
       {/* Terminal status, cashier name, shift time */}
@@ -70,7 +94,6 @@ export default function POSHeader({
         <div className='pos-status-bar'>
           <div className='pos-status-pill'>
             <span className='pos-status-pulse green'></span>
-            <span className='pos-status-text'>{t('pos.scanner_ready')}</span>
           </div>
           <div className='pos-header-divider'></div>
           <div className='pos-status-item'>
@@ -101,34 +124,25 @@ export default function POSHeader({
           </button>
 
           {/* Open cash drawer button */}
-          <button
-            type="button"
-            className='pos-header-btn'
-            onClick={onOpenCashDrawer}
-            title="Открыть денежный ящик"
-          >
+          <button type='button' className='pos-header-btn' onClick={onOpenCashDrawer} title='Открыть денежный ящик'>
             <Banknote size={18} />
           </button>
 
-          <button
-            type="button"
-            className='pos-header-btn'
-            onClick={onOpenPrinterSettings}
-            title="Настройки принтера"
-            style={{ position: 'relative' }}
-          >
+          <button type='button' className='pos-header-btn' onClick={onOpenPrinterSettings} title='Настройки принтера' style={{ position: 'relative' }}>
             <Printer size={18} />
             {!isAgentRunning && (
-              <span style={{
-                position: 'absolute',
-                top: -4,
-                right: -4,
-                width: 10,
-                height: 10,
-                backgroundColor: '#dc2626',
-                borderRadius: '50%',
-                border: '2px solid #111827'
-              }} />
+              <span
+                style={{
+                  position: 'absolute',
+                  top: -4,
+                  right: -4,
+                  width: 10,
+                  height: 10,
+                  backgroundColor: '#dc2626',
+                  borderRadius: '50%',
+                  border: '2px solid #111827',
+                }}
+              />
             )}
           </button>
 
@@ -151,7 +165,7 @@ export default function POSHeader({
                       <div>
                         <div className='touch-modal-username'>{formattedFullName}</div>
                         <div className='touch-modal-userrole'>
-                          {userData?.type === 'SUPER_ADMIN' || userData?.type === 'SUPERADMIN' ? 'Administrator' : (userData?.position || 'Cashier')}
+                          {userData?.type === 'SUPER_ADMIN' || userData?.type === 'SUPERADMIN' ? 'Administrator' : userData?.position || 'Cashier'}
                         </div>
                       </div>
                     </div>
@@ -159,7 +173,7 @@ export default function POSHeader({
                       <X size={20} />
                     </button>
                   </div>
-                  
+
                   <div className='touch-modal-body'>
                     <div className='touch-modal-section-title'>{t('language')}</div>
                     <div className='touch-lang-options'>
@@ -174,11 +188,9 @@ export default function POSHeader({
                           <span className='touch-lang-flag'>🇺🇿</span>
                           <span>O&apos;zbekcha</span>
                         </div>
-                        {i18n.language === 'uz' && (
-                          <div className='touch-lang-checkmark'>✓</div>
-                        )}
+                        {i18n.language === 'uz' && <div className='touch-lang-checkmark'>✓</div>}
                       </button>
-                      
+
                       <button
                         onClick={() => {
                           i18n.changeLanguage('ru')
@@ -190,11 +202,9 @@ export default function POSHeader({
                           <span className='touch-lang-flag'>🇷🇺</span>
                           <span>Русский</span>
                         </div>
-                        {i18n.language === 'ru' && (
-                          <div className='touch-lang-checkmark'>✓</div>
-                        )}
+                        {i18n.language === 'ru' && <div className='touch-lang-checkmark'>✓</div>}
                       </button>
-                      
+
                       <button
                         onClick={() => {
                           i18n.changeLanguage('en')
@@ -206,9 +216,7 @@ export default function POSHeader({
                           <span className='touch-lang-flag'>🇬🇧</span>
                           <span>English</span>
                         </div>
-                        {i18n.language === 'en' && (
-                          <div className='touch-lang-checkmark'>✓</div>
-                        )}
+                        {i18n.language === 'en' && <div className='touch-lang-checkmark'>✓</div>}
                       </button>
                     </div>
                   </div>

@@ -51,6 +51,7 @@ export default function PosApp() {
   const [showReturnDrawer, setShowReturnDrawer] = useState(false)
   const [showHeldSalesDrawer, setShowHeldSalesDrawer] = useState(false)
   const [showCancelConfirmation, setShowCancelConfirmation] = useState(false)
+  const [showHardRefreshConfirmation, setShowHardRefreshConfirmation] = useState(false)
 
   // Payment states
   const [showPaymentView, setShowPaymentView] = useState(false)
@@ -814,6 +815,30 @@ export default function PosApp() {
     holdSale(id)
   }
 
+  const performHardRefresh = () => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => registration.unregister())
+      })
+    }
+    if ('caches' in window) {
+      caches.keys().then((keyList) => {
+        return Promise.all(keyList.map((key) => caches.delete(key)))
+      })
+    }
+    setTimeout(() => {
+      window.location.reload()
+    }, 100)
+  }
+
+  const handleHardRefreshRequest = () => {
+    if (cartItems && cartItems.length > 0) {
+      setShowHardRefreshConfirmation(true)
+    } else {
+      performHardRefresh()
+    }
+  }
+
   const handleCancelConfirm = async () => {
     setShowCancelConfirmation(false)
     try {
@@ -910,6 +935,7 @@ export default function PosApp() {
         onOpenPrinterSettings={() => setShowPrinterSettings(true)}
         isAgentRunning={isAgentRunning}
         onOpenCashDrawer={handleOpenCashDrawer}
+        onHardRefresh={handleHardRefreshRequest}
       />
 
       {saleCreationError && (
@@ -1166,6 +1192,33 @@ export default function PosApp() {
       <PosPrinterSettings open={showPrinterSettings} onClose={() => setShowPrinterSettings(false)} t={t} />
 
       {/* Cancel Receipt Confirmation Dialog Overlay */}
+      {showHardRefreshConfirmation && (
+        <div className='pos-modal-overlay' onClick={() => setShowHardRefreshConfirmation(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className='pos-modal' onClick={(e) => e.stopPropagation()} style={{ width: '400px', maxWidth: '90%', padding: '24px', textAlign: 'center' }}>
+            <h3 style={{ margin: '0 0 16px', fontSize: 18, color: '#333' }}>
+              Обновить POS? Текущий чек может быть потерян.
+            </h3>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <button
+                onClick={() => setShowHardRefreshConfirmation(false)}
+                style={{ padding: '10px 20px', background: '#F3F4F6', color: '#4B5563', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
+              >
+                Отмена
+              </button>
+              <button
+                onClick={() => {
+                  setShowHardRefreshConfirmation(false)
+                  performHardRefresh()
+                }}
+                style={{ padding: '10px 20px', background: '#EF4444', color: '#FFF', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
+              >
+                Обновить
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showCancelConfirmation && (
         <div className='touch-modal-overlay' onClick={() => setShowCancelConfirmation(false)}>
           <div className='touch-modal-card' onClick={(e) => e.stopPropagation()} style={{ width: '400px', textAlign: 'center' }}>
