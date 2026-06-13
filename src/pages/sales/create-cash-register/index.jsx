@@ -493,7 +493,29 @@ function NewCashRegister() {
 
       // Step 3: Check Active Sale
       setStatusText('Проверка активной кассовой сессии...')
-      const device_id = localStorage.getItem('device_id')
+      
+      let device_id = localStorage.getItem('device_id')
+      if (device_id === 'null' || device_id === 'undefined') {
+        device_id = null
+      }
+      if (!device_id) {
+        device_id = terminalID
+      }
+      if (!device_id && userData?.store?.terminal_ids?.length > 0) {
+        device_id = userData.store.terminal_ids[0]
+      }
+
+      // Guard: if device_id is missing, open device/cashbox selection flow instead of calling API with null.
+      if (!device_id) {
+        setInitChecked(true)
+        setInitLoading(false)
+        clearTimeout(timer)
+        return
+      }
+
+      // Store device_id to ensure it's not null on next run
+      localStorage.setItem('device_id', device_id)
+
       const checkSaleResponse = await withTimeout(
         requests.checkSaleExist({ store_id: get(userData, 'store.id'), device_id }, { signal })
       )
@@ -520,6 +542,21 @@ function NewCashRegister() {
     } catch (err) {
       if (signal.aborted) return
       console.error('Initialization error:', err)
+
+      // Handle 404 No Open Cashbox as non-fatal
+      const isNoOpenCashbox =
+        err?.response?.status === 404 ||
+        err?.response?.data?.code === 404 ||
+        (err?.response?.data?.data && String(err.response.data.data).includes('You have no open cashbox operation')) ||
+        (err?.response?.data?.message && String(err.response.data.message).includes('You have no open cashbox operation'))
+
+      if (isNoOpenCashbox) {
+        setInitChecked(true)
+        setInitLoading(false)
+        clearTimeout(timer)
+        return
+      }
+
       setInitError(true)
       setInitLoading(false)
       const isTimeout = err?.message === 'TIMEOUT'
@@ -741,7 +778,7 @@ function NewCashRegister() {
                 <AlertCircle size={64} strokeWidth={1.5} />
               </Box>
               <Typography sx={{ fontWeight: 800, fontSize: '28px', mb: 2, color: '#ffffff' }}>
-                Не удалось создать кассу
+                Не удалось создать продажу
               </Typography>
               <Typography sx={{ color: '#94a3b8', fontSize: '16px', mb: 4, lineHeight: 1.5 }}>
                 {initErrorMessage || 'Проверьте подключение и попробуйте снова.'}
