@@ -11,7 +11,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 
 const SCANNER_MAX_KEY_INTERVAL_MS = 80   // Max ms between scanner keystrokes
-const MIN_BARCODE_LENGTH          = 4    // Min chars to be treated as a barcode
+const MIN_BARCODE_LENGTH          = 3    // Min chars to be treated as a barcode
 
 /**
  * @param {object} options
