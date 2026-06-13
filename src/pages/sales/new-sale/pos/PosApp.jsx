@@ -663,7 +663,7 @@ export default function PosApp() {
       const productCode = searchBarcode.slice(2, 7)
       const parsed = parseInt(searchBarcode.slice(7, 12), 10)
       if (productCode.length === 5 && !isNaN(parsed) && parsed > 0) {
-        searchBarcode = productCode
+        searchBarcode = productCode.replace(/^0+/, '') || productCode
         weightGrams = parsed
       }
     }
