@@ -93,9 +93,13 @@ export function buildReceiptLayout(req, storeInfo = {}) {
   const storeAddress = storeInfo.address || "Shayxontohur\nOlmazor MFY, O'qchi ko'chasi 4, 4A-UY"
   const stir = storeInfo.stir || req.fiscalStir || '305445201'
 
-  add('[BOLD_START]')
-  add(centerText(storeName))
-  add('[BOLD_END]')
+  if (storeInfo.logoHex) {
+    add(storeInfo.logoHex)
+  } else {
+    add('[BOLD_START]')
+    add(centerText(storeName))
+    add('[BOLD_END]')
+  }
   storeAddress.split('\n').forEach((line) => add(centerText(line)))
   add('*'.repeat(WIDTH))
 

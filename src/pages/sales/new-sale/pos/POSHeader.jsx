@@ -65,7 +65,7 @@ export default function POSHeader({
         <div className='pos-header-brand'>
           <LogoMain />
         </div>
-        <div
+        {/* <div
           style={{
             fontSize: '11px',
             color: '#9CA3AF',
@@ -77,7 +77,7 @@ export default function POSHeader({
           }}
         >
           v{APP_VERSION}
-        </div>
+        </div> */}
         <button
           type='button'
           className='pos-header-btn'

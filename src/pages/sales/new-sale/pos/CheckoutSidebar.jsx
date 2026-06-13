@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { User, ChevronRight, CornerDownLeft, ArrowLeft } from 'lucide-react'
 import thousandDivider from '@utils/thousandDivider'
+import { formatUZS, formatNumberUZS } from '@utils/formatUZS'
 import Numpad from './Numpad'
 import './PosLayout.css'
 
@@ -147,7 +148,7 @@ export default function CheckoutSidebar({
           <div className='pos-sidebar-card payment-summary-card'>
             <div className='payment-row'>
               <span className='payment-label'>{t('pos.total_payment')}</span>
-              <span className='payment-val total'>{thousandDivider(totalAmount)} UZS</span>
+              <span className='payment-val total'>{formatUZS(totalAmount)}</span>
             </div>
 
             {cashPaymentSelected && (
@@ -158,10 +159,10 @@ export default function CheckoutSidebar({
                     ref={receivedAmountInputRef}
                     type='text'
                     inputMode='numeric'
-                    value={receivedAmount ? thousandDivider(receivedAmount) : ''}
+                    value={receivedAmount ? formatNumberUZS(receivedAmount) : ''}
                     onChange={(e) => setReceivedAmount(e.target.value.replace(/\D/g, ''))}
                     onFocus={() => setFocusedPaymentInput('cash')}
-                    placeholder={thousandDivider(totalAmount)}
+                    placeholder={formatNumberUZS(totalAmount)}
                     className='received-amount-input'
                   />
                   <button
@@ -183,10 +184,10 @@ export default function CheckoutSidebar({
                     ref={cardPaymentInputRef}
                     type='text'
                     inputMode='numeric'
-                    value={cardPaymentAmount ? thousandDivider(cardPaymentAmount) : ''}
+                    value={cardPaymentAmount ? formatNumberUZS(cardPaymentAmount) : ''}
                     onChange={(e) => setCardPaymentAmount(e.target.value.replace(/\D/g, ''))}
                     onFocus={() => setFocusedPaymentInput('card')}
-                    placeholder={thousandDivider(Math.max(totalAmount - Number(receivedAmount || 0) - Number(secondaryPaymentAmount || 0), 0))}
+                    placeholder={formatNumberUZS(Math.max(totalAmount - Number(receivedAmount || 0) - Number(secondaryPaymentAmount || 0), 0))}
                     className='received-amount-input'
                   />
                   <button
@@ -208,10 +209,10 @@ export default function CheckoutSidebar({
                     ref={secondaryPaymentInputRef}
                     type='text'
                     inputMode='numeric'
-                    value={secondaryPaymentAmount ? thousandDivider(secondaryPaymentAmount) : ''}
+                    value={secondaryPaymentAmount ? formatNumberUZS(secondaryPaymentAmount) : ''}
                     onChange={(e) => setSecondaryPaymentAmount(e.target.value.replace(/\D/g, ''))}
                     onFocus={() => setFocusedPaymentInput('secondary')}
-                    placeholder={thousandDivider(Math.max(totalAmount - Number(receivedAmount || 0) - Number(cardPaymentAmount || 0), 0))}
+                    placeholder={formatNumberUZS(Math.max(totalAmount - Number(receivedAmount || 0) - Number(cardPaymentAmount || 0), 0))}
                     className='received-amount-input'
                   />
                   <button
@@ -225,17 +226,17 @@ export default function CheckoutSidebar({
               </div>
             )}
 
-            {totalPaid >= totalAmount && (
+            {cashPaymentSelected && totalPaid >= totalAmount && (
               <div className='payment-row result-row success'>
                 <span>{t('pos.change')}</span>
-                <span className='monospace'>{thousandDivider(totalPaid - totalAmount)} UZS</span>
+                <span className='monospace'>{formatUZS(totalPaid - totalAmount)}</span>
               </div>
             )}
 
             {totalPaid < totalAmount && (
               <div className='payment-row result-row danger'>
                 <span>{t('pos.remaining')}</span>
-                <span className='monospace'>{thousandDivider(totalAmount - totalPaid)} UZS</span>
+                <span className='monospace'>{formatUZS(totalAmount - totalPaid)}</span>
               </div>
             )}
           </div>
@@ -250,6 +251,9 @@ export default function CheckoutSidebar({
               if (val === 100000) billClass = 'uzs-100k'
               if (val === 200000) billClass = 'uzs-200k'
 
+              const isNonCashFocused = focusedPaymentInput !== 'cash';
+              const isDisabled = isNonCashFocused && val > Number(totalAmount || 0);
+
               return (
                 <button
                   key={val}
@@ -257,8 +261,10 @@ export default function CheckoutSidebar({
                   className={`cash-bill-btn ${billClass}`}
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => handleQuickCash(val)}
+                  disabled={isDisabled}
+                  style={{ opacity: isDisabled ? 0.5 : 1, cursor: isDisabled ? 'not-allowed' : 'pointer' }}
                 >
-                  {thousandDivider(val)}
+                  {formatNumberUZS(val)}
                 </button>
               )
             })}

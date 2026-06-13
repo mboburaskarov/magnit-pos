@@ -1,5 +1,6 @@
 import React from 'react'
 import thousandDivider from '@utils/thousandDivider'
+import { formatUZS, formatNumberUZS } from '@utils/formatUZS'
 import { PackageSearch } from 'lucide-react'
 import './PosLayout.css'
 
@@ -35,15 +36,15 @@ export default function ProductSummary({
                 ) : (
                   `${selectedItem.quantity} уп × `
                 )}
-                {thousandDivider(selectedItem.unit_price)} UZS
+                {formatNumberUZS(selectedItem.unit_price)} UZS
               </span>
               {selectedItem.discount_price > 0 && (
                 <span className='calc-discount'>
-                  ({t('pos.discount_label')}: −{thousandDivider(selectedItem.discount_price)} UZS)
+                  ({t('pos.discount_label')}: −{formatNumberUZS(selectedItem.discount_price)} UZS)
                 </span>
               )}
               <span className='calc-total'>
-                = {thousandDivider(selectedItem.total_price)} UZS
+                = {formatUZS(selectedItem.total_price)}
               </span>
             </div>
           </div>
@@ -58,11 +59,11 @@ export default function ProductSummary({
       <div className='pos-receipt-totals'>
         <div className='totals-line discount'>
           <span className='totals-label'>{t('discount')}:</span>
-          <span className='totals-val'>−{thousandDivider(totalDiscount)} UZS</span>
+          <span className='totals-val'>−{formatUZS(totalDiscount)}</span>
         </div>
         <div className='totals-line grand-total'>
           <span className='totals-label'>{t('pos.receipt_total')}</span>
-          <span className='totals-val'>{thousandDivider(totalAmount)} <span className='currency'>UZS</span></span>
+          <span className='totals-val'>{formatNumberUZS(totalAmount)} <span className='currency'>UZS</span></span>
         </div>
       </div>
     </div>

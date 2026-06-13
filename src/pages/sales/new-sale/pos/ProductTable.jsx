@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import thousandDivider from '@utils/thousandDivider'
+import { formatNumberUZS } from '@utils/formatUZS'
 import { ScanBarcode } from 'lucide-react'
 import QuantityStepper from './QuantityStepper'
 import './PosLayout.css'
@@ -123,8 +124,8 @@ export default function ProductTable({
                         </div>
                       )}
                     </td>
-                    <td className='col-price text-right'>{thousandDivider(item.unit_price)}</td>
-                    <td className='col-total text-right font-bold'>{thousandDivider(item.total_price)}</td>
+                    <td className='col-price text-right'>{formatNumberUZS(item.unit_price)}</td>
+                    <td className='col-total text-right font-bold'>{formatNumberUZS(item.total_price)}</td>
                   </tr>
                 )
               })}

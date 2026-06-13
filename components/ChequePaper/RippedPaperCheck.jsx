@@ -56,16 +56,29 @@ function RippedPaperCheck({
       <Box className={classes.inner}>
         <Box px={'10px'} py={4}>
           <Fragment key={'index0'}>
-            <div className={classes.canvasContainer}>
+            <div className={classes.canvasContainer} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <img
+                src="/MagnitLogoPremiumCheque.svg"
+                alt="Magnit Premium"
+                style={{ width: '200px', display: 'block', margin: '0 auto' }}
+                onError={(e) => {
+                  console.warn('Receipt logo failed to load')
+                  e.target.style.display = 'none'
+                  if (e.target.nextSibling) {
+                    e.target.nextSibling.style.display = 'block'
+                  }
+                }}
+              />
               <p
                 style={{
+                  display: 'none',
                   fontSize: '20px',
                   fontWeight: '600',
                   color: palette.black,
                   textAlign: 'center',
                 }}
               >
-                {get(userData, 'company.legal_name', '" COSMOS" MCHJ')}
+                {get(userData, 'company.legal_name', 'MAGNIT PREMIUM')}
               </p>
             </div>
 

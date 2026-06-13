@@ -12,6 +12,8 @@ import { useBarcodeScanner } from '@/hooks/pos/useBarcodeScanner'
 import { useSaleOperations } from '@/hooks/sale/useSaleOperations'
 import { usePrintOperations } from '@/hooks/sale/usePrintOperations'
 import { buildReceiptLayout } from '@utils/receiptBuilder'
+import { roundToOne } from '@utils/formatUZS'
+import { loadSvgAsEscposHex } from '@utils/escposImage'
 import { RippedPaperItem } from '@components/RippedPaperList'
 import PosClientPanel from './PosClientPanel'
 import POSHeader from './POSHeader'
@@ -60,9 +62,30 @@ export default function PosApp() {
   const [cashPaymentSelected, setCashPaymentSelected] = useState(false)
   const [receivedAmount, setReceivedAmount] = useState('')
   const [cardPaymentSelected, setCardPaymentSelected] = useState(false)
-  const [cardPaymentAmount, setCardPaymentAmount] = useState('')
+  const [cardPaymentAmount, setRawCardPaymentAmount] = useState('')
+  const setCardPaymentAmount = useCallback((val) => {
+    setRawCardPaymentAmount((prev) => {
+      let nextVal = typeof val === 'function' ? val(prev) : val
+      const numTotal = Number(totalAmount || 0)
+      if (nextVal !== '' && Number(nextVal) > numTotal) {
+        return String(numTotal)
+      }
+      return nextVal
+    })
+  }, [totalAmount])
+
   const [secondaryPaymentMethod, setSecondaryPaymentMethod] = useState(null)
-  const [secondaryPaymentAmount, setSecondaryPaymentAmount] = useState('')
+  const [secondaryPaymentAmount, setRawSecondaryPaymentAmount] = useState('')
+  const setSecondaryPaymentAmount = useCallback((val) => {
+    setRawSecondaryPaymentAmount((prev) => {
+      let nextVal = typeof val === 'function' ? val(prev) : val
+      const numTotal = Number(totalAmount || 0)
+      if (nextVal !== '' && Number(nextVal) > numTotal) {
+        return String(numTotal)
+      }
+      return nextVal
+    })
+  }, [totalAmount])
   const [focusedPaymentInput, setFocusedPaymentInput] = useState('cash')
   const [showAppScanModal, setShowAppScanModal] = useState(false)
   const [productSelectList, setProductSelectList] = useState([])
@@ -542,6 +565,19 @@ export default function PosApp() {
       return
     }
 
+    const cardAmount = Number(cardPaymentAmount || 0)
+    const secondaryAmount = Number(secondaryPaymentAmount || 0)
+    const numTotal = Number(totalAmount || 0)
+
+    if ((cardPaymentSelected && cardAmount > numTotal) || 
+        (secondaryPaymentMethod && secondaryAmount > numTotal)) {
+      let errorMsg = 'Для безналичной оплаты сумма не может быть больше итога'
+      if (i18n.language === 'uz') errorMsg = 'Naqdsiz to‘lov summasi jami summadan oshmasligi kerak'
+      if (i18n.language === 'en') errorMsg = 'Non-cash payment amount cannot exceed the total sum'
+      error(errorMsg)
+      return
+    }
+
     if (paymentAmount < Number(totalAmount || 0)) {
       error("To'lov summasi yetarli emas")
       return
@@ -898,6 +934,13 @@ export default function PosApp() {
     const isPostPayment = !!finalNewSaleId
 
     try {
+      let logoHex = null
+      try {
+        logoHex = await loadSvgAsEscposHex('/MagnitLogoPremiumCheque.svg', 256)
+      } catch (e) {
+        console.warn('Receipt logo failed to load:', e)
+      }
+
       let paymentType = 'cash'
       if (cardPaymentSelected) {
         paymentType = 'card'
@@ -934,7 +977,7 @@ export default function PosApp() {
         discount: Number(totalDiscount || 0),
         totalAmount: Number(totalAmount || 0),
         paidAmount: Number(receivedAmount || cardPaymentAmount || secondaryPaymentAmount || totalAmount || 0),
-        changeAmount: Math.max(Number(receivedAmount || 0) - Number(totalAmount || 0), 0),
+        changeAmount: roundToOne(Math.max(Number(receivedAmount || 0) - Number(totalAmount || 0), 0)),
         vatAmount: Number(posCartItemsList.vat_sum || 0),
         chequeType: 'sale',
         fiscalSign: qrcodeUrl.fiscal && qrcodeUrl.fiscal !== 'pending' ? String(qrcodeUrl.fiscal) : '',
@@ -944,7 +987,7 @@ export default function PosApp() {
         customer: customerId?.name ? String(customerId.name) : '',
       }
 
-      const layoutLines = buildReceiptLayout(payloadData, {})
+      const layoutLines = buildReceiptLayout(payloadData, { logoHex })
 
       const reqPayload = {
         lines: layoutLines,
@@ -1064,6 +1107,16 @@ export default function PosApp() {
       console.error(err)
     }
   }
+
+  useEffect(() => {
+    const numTotal = Number(totalAmount || 0)
+    if (cardPaymentAmount && Number(cardPaymentAmount) > numTotal) {
+      setCardPaymentAmount(String(numTotal))
+    }
+    if (secondaryPaymentAmount && Number(secondaryPaymentAmount) > numTotal) {
+      setSecondaryPaymentAmount(String(numTotal))
+    }
+  }, [totalAmount, cardPaymentAmount, secondaryPaymentAmount])
 
   const handleDiscount = () => {
     setIsCustomerModalOpen(true)
