@@ -17,7 +17,7 @@ export const usePrintOperations = ({
   const navigate = useNavigate()
   const printContainer = useRef()
   const printContainerEmpty = useRef()
-  const documentName = useRef('Pharma CHEQUE')
+  const documentName = useRef('MAGNIT CHEQUE')
 
   const reactToPrintContent = useCallback(() => printContainer.current, [])
   const reactToPrintContentEmpty = useCallback(() => printContainerEmpty.current, [])

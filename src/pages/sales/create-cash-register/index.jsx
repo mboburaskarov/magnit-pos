@@ -475,7 +475,7 @@ function NewCashRegister() {
       if (!allowedTerminal && hasAccess('check-terminal-id', userData)) {
         setisEposTurnOn({
           is_open: false,
-          message: `Вы в другом филиале! Epos: ${terminalID} Pharma: ${terminalIds?.join(',')}`,
+          message: `Вы в другом филиале! Epos: ${terminalID} AccountID: ${terminalIds?.join(',')}`,
         })
         setInitLoading(false)
         clearTimeout(timer)
@@ -493,7 +493,7 @@ function NewCashRegister() {
 
       // Step 3: Check Active Sale
       setStatusText('Проверка активной кассовой сессии...')
-      
+
       let device_id = localStorage.getItem('device_id')
       if (device_id === 'null' || device_id === 'undefined') {
         device_id = null
@@ -516,9 +516,7 @@ function NewCashRegister() {
       // Store device_id to ensure it's not null on next run
       localStorage.setItem('device_id', device_id)
 
-      const checkSaleResponse = await withTimeout(
-        requests.checkSaleExist({ store_id: get(userData, 'store.id'), device_id }, { signal })
-      )
+      const checkSaleResponse = await withTimeout(requests.checkSaleExist({ store_id: get(userData, 'store.id'), device_id }, { signal }))
 
       if (get(checkSaleResponse, 'data.data.is_open', false)) {
         const saleId = get(checkSaleResponse, 'data.data.sale_id')
@@ -563,7 +561,7 @@ function NewCashRegister() {
       setInitErrorMessage(
         isTimeout
           ? 'Время ожидания запроса истекло. Пожалуйста, проверьте подключение к сети и EPOS.'
-          : err?.response?.data?.message || 'Не удалось связаться с сервером кассы. Проверьте подключение.'
+          : err?.response?.data?.message || 'Не удалось связаться с сервером кассы. Проверьте подключение.',
       )
       setRetryAction(() => () => {
         initStartedRef.current = false
@@ -777,15 +775,13 @@ function NewCashRegister() {
               <Box sx={{ color: '#ef4444', mb: 3 }}>
                 <AlertCircle size={64} strokeWidth={1.5} />
               </Box>
-              <Typography sx={{ fontWeight: 800, fontSize: '28px', mb: 2, color: '#ffffff' }}>
-                Не удалось создать продажу
-              </Typography>
+              <Typography sx={{ fontWeight: 800, fontSize: '28px', mb: 2, color: '#ffffff' }}>Не удалось создать продажу</Typography>
               <Typography sx={{ color: '#94a3b8', fontSize: '16px', mb: 4, lineHeight: 1.5 }}>
                 {initErrorMessage || 'Проверьте подключение и попробуйте снова.'}
               </Typography>
               <Box sx={{ display: 'flex', gap: 2, width: '100%', justifyContent: 'center' }}>
                 <Button
-                  variant="contained"
+                  variant='contained'
                   onClick={() => {
                     setInitError(false)
                     if (retryAction) retryAction()
@@ -801,13 +797,13 @@ function NewCashRegister() {
                     textTransform: 'none',
                     '&:hover': {
                       backgroundColor: '#1d4ed8',
-                    }
+                    },
                   }}
                 >
                   Повторить
                 </Button>
                 <Button
-                  variant="outlined"
+                  variant='outlined'
                   onClick={() => navigate(-1)}
                   sx={{
                     borderColor: '#475569',
@@ -821,7 +817,7 @@ function NewCashRegister() {
                     '&:hover': {
                       borderColor: '#94a3b8',
                       backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    }
+                    },
                   }}
                 >
                   Вернуться назад
@@ -847,15 +843,9 @@ function NewCashRegister() {
                   },
                 }}
               />
-              <Typography sx={{ fontWeight: 800, fontSize: '28px', mb: 1, color: '#ffffff' }}>
-                Создание кассы
-              </Typography>
-              <Typography sx={{ color: '#94a3b8', fontSize: '16px', mb: 2, lineHeight: 1.5 }}>
-                Идёт создание кассовой сессии, пожалуйста подождите…
-              </Typography>
-              <Typography sx={{ color: '#64748b', fontSize: '13px', fontWeight: 500 }}>
-                {statusText || 'Подключаем POS и подготавливаем чек'}
-              </Typography>
+              <Typography sx={{ fontWeight: 800, fontSize: '28px', mb: 1, color: '#ffffff' }}>Создание кассы</Typography>
+              <Typography sx={{ color: '#94a3b8', fontSize: '16px', mb: 2, lineHeight: 1.5 }}>Идёт создание кассовой сессии, пожалуйста подождите…</Typography>
+              <Typography sx={{ color: '#64748b', fontSize: '13px', fontWeight: 500 }}>{statusText || 'Подключаем POS и подготавливаем чек'}</Typography>
 
               {showTimerHint && (
                 <Typography
@@ -1055,23 +1045,13 @@ function NewCashRegister() {
         </Box>
       </Box>
 
-      <Dialog
-        open={!isEposTurnOn?.is_open}
-        disableEscapeKeyDown
-        onClose={() => {}}
-        className={classes.eposDialogRoot}
-        disableScrollLock
-      >
+      <Dialog open={!isEposTurnOn?.is_open} disableEscapeKeyDown onClose={() => {}} className={classes.eposDialogRoot} disableScrollLock>
         <Box className={classes.eposIconContainer}>
           <AlertCircle size={36} strokeWidth={2} />
         </Box>
-        <Typography className={classes.eposTitle}>
-          {isEposTurnOn.message?.includes('филиале') ? 'Неверный филиал' : 'EPOS не запущен'}
-        </Typography>
+        <Typography className={classes.eposTitle}>{isEposTurnOn.message?.includes('филиале') ? 'Неверный филиал' : 'EPOS не запущен'}</Typography>
         <Typography className={classes.eposDescription}>
-          {isEposTurnOn.message?.includes('филиале')
-            ? isEposTurnOn.message
-            : 'Для продолжения работы запустите программу EPOS на этом компьютере.'}
+          {isEposTurnOn.message?.includes('филиале') ? isEposTurnOn.message : 'Для продолжения работы запустите программу EPOS на этом компьютере.'}
         </Typography>
         <Box className={classes.eposStatusRow}>
           <span className={classes.eposStatusDot} />

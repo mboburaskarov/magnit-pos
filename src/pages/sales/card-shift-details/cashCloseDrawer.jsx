@@ -119,7 +119,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiOutlinedInput-root': {
       borderRadius: '12px !important',
-    }
+    },
   },
   closeButton: {
     height: '56px',
@@ -156,7 +156,7 @@ function CashCloseDrawer({ open, setOpen }) {
   const [checkdata, setcheckdata] = useState()
   const methods = useForm()
   const reactToPrintContent = useCallback(() => printContainer.current, [])
-  const documentName = useRef('Pharma CHEQUE')
+  const documentName = useRef('MAGNIT CHEQUE')
   const handlePrint = useReactToPrint({
     content: reactToPrintContent,
     documentTitle: documentName.current,
@@ -247,11 +247,9 @@ function CashCloseDrawer({ open, setOpen }) {
         <FormProvider {...methods}>
           <Box className={classes.box}>
             <Box className={classes.wrapper}>
-              <Box className="pos-std-header">
-                <Typography className="pos-std-title">
-                  Закрыть кассу
-                </Typography>
-                <button type="button" className="pos-std-close-btn" onClick={() => setOpen(false)}>
+              <Box className='pos-std-header'>
+                <Typography className='pos-std-title'>Закрыть кассу</Typography>
+                <button type='button' className='pos-std-close-btn' onClick={() => setOpen(false)}>
                   <X size={20} />
                 </button>
               </Box>
@@ -260,28 +258,19 @@ function CashCloseDrawer({ open, setOpen }) {
                 {/* Left side touchscreen options */}
                 <Box sx={{ width: '55%', display: 'flex', flexDirection: 'column' }}>
                   <Box>
-                    <div
-                      onClick={() => setCompany('1')}
-                      className={`${classes.touchOptionCard} ${company === '1' ? 'selected' : ''}`}
-                    >
+                    <div onClick={() => setCompany('1')} className={`${classes.touchOptionCard} ${company === '1' ? 'selected' : ''}`}>
                       <span className={classes.optionText}>Оставьте всю сумму на кассе</span>
-                      {company === '1' && <Check size={20} color="#2563eb" />}
+                      {company === '1' && <Check size={20} color='#2563eb' />}
                     </div>
 
-                    <div
-                      onClick={() => setCompany('2')}
-                      className={`${classes.touchOptionCard} ${company === '2' ? 'selected' : ''}`}
-                    >
+                    <div onClick={() => setCompany('2')} className={`${classes.touchOptionCard} ${company === '2' ? 'selected' : ''}`}>
                       <span className={classes.optionText}>Переведите всю сумму на счет компании</span>
-                      {company === '2' && <Check size={20} color="#2563eb" />}
+                      {company === '2' && <Check size={20} color='#2563eb' />}
                     </div>
 
-                    <div
-                      onClick={() => setCompany('3')}
-                      className={`${classes.touchOptionCard} ${company === '3' ? 'selected' : ''}`}
-                    >
+                    <div onClick={() => setCompany('3')} className={`${classes.touchOptionCard} ${company === '3' ? 'selected' : ''}`}>
                       <span className={classes.optionText}>Оставьте часть в кассе и передайте остальную часть</span>
-                      {company === '3' && <Check size={20} color="#2563eb" />}
+                      {company === '3' && <Check size={20} color='#2563eb' />}
                     </div>
                   </Box>
 
@@ -318,7 +307,7 @@ function CashCloseDrawer({ open, setOpen }) {
                         Наличные
                       </Typography>
                     </Box>
-                    <Typography fontSize={'20px'} fontWeight={'800'} color={'#2563eb'} display="flex" alignItems="center">
+                    <Typography fontSize={'20px'} fontWeight={'800'} color={'#2563eb'} display='flex' alignItems='center'>
                       {thousandDivider(get(closeCashboxPaymentsInfo, 'data.data.cash_amount', null)) || 0}
                       <span style={{ marginLeft: '4px', fontSize: '14px', color: '#94a3b8', fontWeight: 600 }}>UZS</span>
                     </Typography>
@@ -333,7 +322,7 @@ function CashCloseDrawer({ open, setOpen }) {
                         Карта
                       </Typography>
                     </Box>
-                    <Typography fontSize={'20px'} fontWeight={'800'} color={'#2563eb'} display="flex" alignItems="center">
+                    <Typography fontSize={'20px'} fontWeight={'800'} color={'#2563eb'} display='flex' alignItems='center'>
                       {thousandDivider(get(closeCashboxPaymentsInfo, 'data.data.cashless_amount', null)) || 0}
                       <span style={{ marginLeft: '4px', fontSize: '14px', color: '#94a3b8', fontWeight: 600 }}>UZS</span>
                     </Typography>
@@ -342,7 +331,7 @@ function CashCloseDrawer({ open, setOpen }) {
               </Box>
 
               {/* Flex Spacer to push button down */}
-              <Box flexGrow={1} minHeight="24px" />
+              <Box flexGrow={1} minHeight='24px' />
 
               {/* Bottom fixed full-width button */}
               <Button
@@ -357,7 +346,7 @@ function CashCloseDrawer({ open, setOpen }) {
                 className={classes.closeButton}
                 fullWidth
               >
-                Закрыть кассу <ArrowRightIcon color="#fff" />
+                Закрыть кассу <ArrowRightIcon color='#fff' />
               </Button>
             </Box>
           </Box>
