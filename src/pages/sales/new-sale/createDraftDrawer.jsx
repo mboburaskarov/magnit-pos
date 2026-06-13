@@ -14,6 +14,7 @@ import CloseIcon from '@icons/CloseIcon';
 import { LoadingButton } from '@mui/lab';
 import { useState } from 'react';
 import { get } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -45,6 +46,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, cashBoxDetails }) {
   const navigate = useNavigate()
   const methods = useForm()
   const { id } = useParams()
+  const { t } = useTranslation()
 
   const [eposChecked, setEposChecked] = useState(false)
 
@@ -70,10 +72,10 @@ function CreateDraftDrawer({ open, setOpen, customerId, cashBoxDetails }) {
     onSuccess: ({ data }) => {
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
       setOpen(false)
-      success('Черновик создан!')
+      success(t('pos.draft.created'))
     },
     onError: (err) => {
-      error('Ошибка при Черновик создан!')
+      error(t('pos.draft.create_error'))
       console.error('err', err)
     },
   })
@@ -94,7 +96,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, cashBoxDetails }) {
 
   const onError = (err) => {
     console.error('err', err)
-    error('Пожалуйста, заполните все поля!')
+    error(t('pos.error_fill_fields'))
   }
   return (
     <FormProvider {...methods}>
@@ -103,7 +105,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, cashBoxDetails }) {
           <Box>
             <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
               <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
-                Черновик
+                {t('draft')}
               </Typography>
               <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
             </Box>
@@ -116,8 +118,8 @@ function CreateDraftDrawer({ open, setOpen, customerId, cashBoxDetails }) {
                   required
                   id='draft_time_id'
                   showYearDropdown
-                  label='Время черновика'
-                  placeholder='Время черновика'
+                  label={t('pos.draft.time')}
+                  placeholder={t('pos.draft.time')}
                 />
                 <Box display={'flex'} justifyContent={'start'}>
                   <Typography
@@ -130,7 +132,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, cashBoxDetails }) {
                     onClick={() => changeExpireDate('ertaga')}
                     className={classes.expireInitialDate}
                   >
-                    До завтра
+                    {t('pos.draft.until_tomorrow')}
                   </Typography>
                   <Typography
                     sx={{
@@ -142,7 +144,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, cashBoxDetails }) {
                     onClick={() => changeExpireDate('3kun')}
                     className={classes.expireInitialDate}
                   >
-                    3 дней
+                    {t('pos.draft.3_days')}
                   </Typography>
                   <Typography
                     sx={{
@@ -154,7 +156,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, cashBoxDetails }) {
                     onClick={() => changeExpireDate('1hafta')}
                     className={classes.expireInitialDate}
                   >
-                    1 недели
+                    {t('pos.draft.1_week')}
                   </Typography>
                 </Box>
               </Box>
@@ -164,8 +166,8 @@ function CreateDraftDrawer({ open, setOpen, customerId, cashBoxDetails }) {
                 fullWidth
                 borderRadius={'20px'}
                 name='description'
-                label='Заметка'
-                placeholder='Например, товар забирает и оплачивает водитель.'
+                label={t('pos.draft.note')}
+                placeholder={t('pos.draft.note_placeholder')}
               />
               <Box height={'8px'} />
 
@@ -191,7 +193,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, cashBoxDetails }) {
                   checkedIcon={<FontAwesomeIcon icon={faCheckCircle} style={{ fill: 'orange.500' }} />}
                 />
                 <Typography ml={'10px'} fontSize={'16px'}>
-                  Печать чека за просрочку платежа
+                  {t('pos.draft.print_late_payment_receipt')}
                 </Typography>
               </Box>
             </Box>
@@ -203,7 +205,7 @@ function CreateDraftDrawer({ open, setOpen, customerId, cashBoxDetails }) {
             onClick={methods.handleSubmit(onSubmit, onError)}
             sx={{ mb: '20px', mx: '20px' }}
           >
-            Сохранить
+            {t('pos.save')}
           </LoadingButton>
         </Box>
       </Drawer>

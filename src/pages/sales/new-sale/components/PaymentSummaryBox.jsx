@@ -39,10 +39,10 @@ export const PaymentSummaryBox = ({ cartItemsList, maxAmount }) => {
         },
       }}
     >
-      <SummaryRow title={t('total_amount')} value={thousandDivider(get(cartItemsList, 'sum'), 'сум')} />
-      <SummaryRow title={t('discount')} value={thousandDivider(get(cartItemsList, 'discount_amount'), 'сум')} />
-      <SummaryRow title={t('should_pay')} value={thousandDivider(maxAmount > 0 ? maxAmount : 0, 'сум')} />
-      <SummaryRow title={t('return')} value={thousandDivider(maxAmount < 0 ? Math.abs(maxAmount) : 0, 'сум')} />
+      <SummaryRow title={t('total_amount')} value={thousandDivider(get(cartItemsList, 'sum'), t('pos.currency_short'))} />
+      <SummaryRow title={t('discount')} value={thousandDivider(get(cartItemsList, 'discount_amount'), t('pos.currency_short'))} />
+      <SummaryRow title={t('should_pay')} value={thousandDivider(maxAmount > 0 ? maxAmount : 0, t('pos.currency_short'))} />
+      <SummaryRow title={t('return')} value={thousandDivider(maxAmount < 0 ? Math.abs(maxAmount) : 0, t('pos.currency_short'))} />
     </Box>
   )
 }

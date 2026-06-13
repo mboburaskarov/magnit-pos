@@ -82,7 +82,7 @@ export default function POSHeader({
           type='button'
           className='pos-header-btn'
           onClick={onHardRefresh}
-          title='Обновить POS'
+          title={t('pos.refresh')}
           style={{ width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           <RefreshCw size={16} />
@@ -124,11 +124,11 @@ export default function POSHeader({
           </button>
 
           {/* Open cash drawer button */}
-          <button type='button' className='pos-header-btn' onClick={onOpenCashDrawer} title='Открыть денежный ящик'>
+          <button type='button' className='pos-header-btn' onClick={onOpenCashDrawer} title={t('pos.printer.test_drawer')}>
             <Banknote size={18} />
           </button>
 
-          <button type='button' className='pos-header-btn' onClick={onOpenPrinterSettings} title='Настройки принтера' style={{ position: 'relative' }}>
+          <button type='button' className='pos-header-btn' onClick={onOpenPrinterSettings} title={t('pos.printer.title')} style={{ position: 'relative' }}>
             <Printer size={18} />
             {!isAgentRunning && (
               <span

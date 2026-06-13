@@ -99,16 +99,16 @@ export default function CashierSessionModal({
         <div className="touch-modal-body">
           {showLogoutConfirm ? (
             <div style={{ textAlign: 'center', padding: '24px 0' }}>
-              <h3 style={{ margin: '0 0 16px', fontSize: 18, color: '#333' }}>Выйти из аккаунта?</h3>
+              <h3 style={{ margin: '0 0 16px', fontSize: 18, color: '#333' }}>{t('pos.logout_confirm_title')}</h3>
               <p style={{ margin: '0 0 24px', color: '#6B7280', fontSize: 14 }}>
-                Текущая сессия пользователя будет завершена. Для продолжения потребуется войти заново.
+                {t('pos.logout_confirm_desc')}
               </p>
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
                 <button
                   onClick={() => setShowLogoutConfirm(false)}
                   style={{ padding: '10px 20px', background: '#F3F4F6', color: '#4B5563', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
                 >
-                  Отмена
+                  {t('cancel')}
                 </button>
                 <button
                   onClick={() => {
@@ -118,7 +118,7 @@ export default function CashierSessionModal({
                   }}
                   style={{ padding: '10px 20px', background: '#EF4444', color: '#FFF', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
                 >
-                  Выйти
+                  {t('pos.logout')}
                 </button>
               </div>
             </div>

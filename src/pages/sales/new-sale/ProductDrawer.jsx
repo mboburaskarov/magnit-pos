@@ -10,6 +10,7 @@ import dayjs from 'dayjs'
 import { error, success } from '@utils/toast'
 import { useMutation } from 'react-query'
 import { requests } from '@utils/requests'
+import { useTranslation } from 'react-i18next'
 
 const Image = ({ data, setImages, refresh }) => {
   return (
@@ -64,13 +65,14 @@ const Image = ({ data, setImages, refresh }) => {
 }
 
 export default function ProductDrawer({ open: item, onClose, setImages, refresh }) {
+  const { t } = useTranslation()
   const { mutate: skipToAutoOrder, isLoading: isSkipToAutoOrder } = useMutation(requests.skipToAutoOrder, {
     onSuccess: ({ data }) => {
       refresh()
-      success('Товар успешно исключен из автозаказа')
+      success(t('skip_auto_order_success'))
     },
     onError: (err) => {
-      error('Ошибка при исключении товара из автозаказа')
+      error(t('skip_auto_order_error'))
       console.error('err', err)
     },
   })
@@ -91,7 +93,7 @@ export default function ProductDrawer({ open: item, onClose, setImages, refresh 
         <Typography mt={0.5} ml={2} fontSize={24} color={'bunker.950'} lineHeight={'32px'} fontWeight={'700'}>
           {item.name}
           <Typography display='flex' alignItems='center' color='orange.500' mt={1} fontWeight={'500'}>
-            {thousandDivider(get(item, 'unit_price'))} сум
+            {thousandDivider(get(item, 'unit_price'))} {t('pos.currency_short')}
           </Typography>
         </Typography>
       </Box>
@@ -99,10 +101,10 @@ export default function ProductDrawer({ open: item, onClose, setImages, refresh 
       {item.status === 'REJECTED' && (
         <>
           <SectionTitle grey mt={6}>
-            Причина отклона
+            {t('reason_rejected')}
           </SectionTitle>
           <Box mt={2} overflow={'hidden'} bgcolor={'grey.100'} borderRadius={3} p={4}>
-            <Typography sx={{ width: '100%', wordBreak: 'break-word' }}>{item.rejectedComment || 'Нет'}</Typography>
+            <Typography sx={{ width: '100%', wordBreak: 'break-word' }}>{item.rejectedComment || t('no')}</Typography>
           </Box>
         </>
       )}
@@ -115,24 +117,24 @@ export default function ProductDrawer({ open: item, onClose, setImages, refresh 
             skipToAutoOrder({ id: item.id, data: { is_auto_order: e.target.checked } })
           }}
         />
-        <Typography>Исключить из автозаказа</Typography>
+        <Typography>{t('exclude_from_auto_order')}</Typography>
       </Box>
       <Box px={'40px'} my={'20px'} mb={'80px'}>
-        <SectionTitle grey>Доп. информация</SectionTitle>
+        <SectionTitle grey>{t('additional_info')}</SectionTitle>
         <DrawerInfoBox
           infoData={[
-            { title: 'Наименование товара', info: item.name, fullWidth: true },
-            { title: 'Баркод', info: thousandDivider(item.barcode, '') },
-            { title: 'Цена', info: thousandDivider(item.unit_price, 'сум') },
-            { title: 'Производитель', info: get(item, 'producer.name', '-') },
-            { title: 'Сумма бонуса', info: thousandDivider(item.bonus_amount, 'сум') },
-            { title: 'Бонусный процент', info: thousandDivider(item.bonus_percent, '%') },
-            { title: 'Время подготовки', info: dayjs(item.expire_date).format('DD.MM.YYYY') },
-            { title: 'Единицы измерения', info: item?.unit_name },
+            { title: t('product_name'), info: item.name, fullWidth: true },
+            { title: t('table_columns.barcode'), info: thousandDivider(item.barcode, '') },
+            { title: t('price'), info: thousandDivider(item.unit_price, t('pos.currency_short')) },
+            { title: t('table_columns.manufacturer'), info: get(item, 'producer.name', '-') },
+            { title: t('bonus_amount'), info: thousandDivider(item.bonus_amount, t('pos.currency_short')) },
+            { title: t('bonus_percent'), info: thousandDivider(item.bonus_percent, '%') },
+            { title: t('preparation_time'), info: dayjs(item.expire_date).format('DD.MM.YYYY') },
+            { title: t('units_of_measurement'), info: item?.unit_name },
 
-            { title: 'Тип', info: item.type === 'BUCHET' ? 'Buchet' : 'Market' },
-            { title: 'Описание', info: item.description, fullWidth: true },
-            { title: 'Категории', info: item?.categories?.map((item) => item.name).join('<br>'), fullWidth: true },
+            { title: t('table_columns.type'), info: item.type === 'BUCHET' ? 'Buchet' : 'Market' },
+            { title: t('description'), info: item.description, fullWidth: true },
+            { title: t('table_columns.category'), info: item?.categories?.map((item) => item.name).join('<br>'), fullWidth: true },
           ]}
         />
       </Box>

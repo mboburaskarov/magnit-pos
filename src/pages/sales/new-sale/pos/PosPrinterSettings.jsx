@@ -69,7 +69,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
         workingUrl = FALLBACK_AGENT_URL
       } catch (err2) {
         setIsRunning(false)
-        if (showToasts) error('Не удалось подключиться к Printer Agent.')
+        if (showToasts) error(t('pos.printer.agent_connect_failed'))
         setIsChecking(false)
         return
       }
@@ -78,7 +78,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
     if (statusRes && statusRes.data && statusRes.data.ok) {
       setActiveUrl(workingUrl)
       setIsRunning(true)
-      if (showToasts) success('Printer Agent запущен!')
+      if (showToasts) success(t('pos.printer.agent_started'))
       
       // Fetch current settings from the agent
       try {
@@ -131,11 +131,11 @@ export default function PosPrinterSettings({ open, onClose, t }) {
   // 2. Save settings to local agent
   const handleSaveSettings = async () => {
     if (!isRunning) {
-      error('Printer Agent не запущен.')
+      error(t('pos.printer.agent_not_running'))
       return
     }
     if (mode === 'local' && !printerName) {
-      error('Выберите принтер из списка.')
+      error(t('pos.printer.select_from_list'))
       return
     }
 
@@ -155,12 +155,12 @@ export default function PosPrinterSettings({ open, onClose, t }) {
         }
       })
       if (res.data && res.data.settings) {
-        success('Настройки успешно сохранены!')
+        success(t('pos.printer.settings_saved'))
       } else {
-        error('Ошибка сохранения настроек.')
+        error(t('pos.printer.settings_save_error'))
       }
     } catch (err) {
-      error('Ошибка при сохранении: ' + err.message)
+      error(t('pos.printer.save_error_prefix') + err.message)
     } finally {
       setIsSaving(false)
     }
@@ -169,11 +169,11 @@ export default function PosPrinterSettings({ open, onClose, t }) {
   // 3. Ping the TCP printer
   const handlePingPrinter = async () => {
     if (!isRunning) {
-      error('Printer Agent не запущен.')
+      error(t('pos.printer.agent_not_running'))
       return
     }
     if (mode === 'network' && !printerIP) {
-      error('Укажите IP адрес принтера.')
+      error(t('pos.printer.enter_ip'))
       return
     }
 
@@ -190,13 +190,13 @@ export default function PosPrinterSettings({ open, onClose, t }) {
       })
       const res = await axios.post(`${activeUrl}/printer/ping`, {}, { timeout: 5000 })
       if (res.data && res.data.ok) {
-        success('Связь с принтером установлена!')
+        success(t('pos.printer.connection_success'))
       } else {
-        error(res.data.message || 'Ошибка связи с принтером.')
+        error(res.data.message || t('pos.printer.connection_error'))
       }
     } catch (err) {
       const errMsg = err.response?.data?.message || err.message
-      error('Ошибка: ' + errMsg)
+      error(t('pos.printer.error_prefix') + errMsg)
     } finally {
       setIsPinging(false)
     }
@@ -205,11 +205,11 @@ export default function PosPrinterSettings({ open, onClose, t }) {
   // 4. Send test print
   const handleTestPrint = async () => {
     if (!isRunning) {
-      error('Printer Agent не запущен.')
+      error(t('pos.printer.agent_not_running'))
       return
     }
     if (mode === 'local' && !printerName) {
-      error('Выберите принтер из списка.')
+      error(t('pos.printer.select_from_list'))
       return
     }
 
@@ -232,13 +232,13 @@ export default function PosPrinterSettings({ open, onClose, t }) {
       
       const res = await axios.post(`${activeUrl}/print/test`)
       if (res.data && res.data.ok) {
-        success('Тестовый чек отправлен!')
+        success(t('pos.printer.test_sent'))
       } else {
-        error(res.data.message || 'Ошибка печати чека.')
+        error(res.data.message || t('pos.printer.print_error'))
       }
     } catch (err) {
       const errMsg = err.response?.data?.message || err.message
-      error('Ошибка печати: ' + errMsg)
+      error(t('pos.printer.print_error_prefix') + errMsg)
     } finally {
       setIsTesting(false)
     }
@@ -247,7 +247,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
   // 5. Test Cash Drawer
   const handleTestDrawer = async () => {
     if (!isRunning) {
-      error('Printer Agent не запущен.')
+      error(t('pos.printer.agent_not_running'))
       return
     }
     
@@ -269,13 +269,13 @@ export default function PosPrinterSettings({ open, onClose, t }) {
       
       const res = await axios.post(`${activeUrl}/cash-drawer/open`)
       if (res.data && res.data.ok) {
-        success('Сигнал открытия денежного ящика отправлен!')
+        success(t('pos.printer.drawer_signal_sent'))
       } else {
-        error(res.data.message || 'Ошибка открытия ящика.')
+        error(res.data.message || t('pos.printer.drawer_open_error'))
       }
     } catch (err) {
       const errMsg = err.response?.data?.message || err.message
-      error('Ошибка денежного ящика: ' + errMsg)
+      error(t('pos.printer.drawer_error_prefix') + errMsg)
     } finally {
       setIsTestingDrawer(false)
     }
@@ -285,7 +285,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
     window.location.href = "magnitposprinter://start"
     setTimeout(() => {
       if(!isRunning) {
-         error("Не удалось запустить агент автоматически. Запустите './magnitposprinter' вручную.")
+         error(t('pos.printer.agent_manual_start'))
       }
     }, 2000)
   }
@@ -303,7 +303,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
             </div>
             <div>
               <div className="touch-modal-username" style={{ color: '#ffffff' }}>
-                Принтер чеков
+                {t('pos.printer.title')}
               </div>
             </div>
           </div>
@@ -329,10 +329,10 @@ export default function PosPrinterSettings({ open, onClose, t }) {
               <Server size={24} color={isRunning ? '#16a34a' : '#dc2626'} />
               <div>
                 <div style={{ fontWeight: '700', color: isRunning ? '#16a34a' : '#dc2626', fontSize: '15px' }}>
-                  {isRunning ? 'Агент запущен' : 'Агент не запущен'}
+                  {isRunning ? t('pos.printer.agent_active') : t('pos.printer.agent_inactive')}
                 </div>
                 <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '2px' }}>
-                  {isRunning ? `Работает на порту: ${activeUrl.split(':').pop()}` : 'Запустите MagnitPOSPrinter agent'}
+                  {isRunning ? `${t('pos.printer.port_label')}${activeUrl.split(':').pop()}` : t('pos.printer.run_agent_hint')}
                 </div>
               </div>
             </div>
@@ -353,7 +353,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                   }}
                   onClick={tryStartAgent}
                 >
-                  Запустить
+                  {t('pos.printer.run')}
                 </button>
               )}
               <button
@@ -381,9 +381,9 @@ export default function PosPrinterSettings({ open, onClose, t }) {
 
           {!isRunning && (
             <div style={{ fontSize: '14px', color: '#ef4444', fontWeight: '600', textAlign: 'center', margin: '0' }}>
-              Для работы с принтером и денежным ящиком необходим Агент.
+              {t('pos.printer.agent_needed')}
               <br/>
-              <span style={{fontSize: '12px', fontWeight: 'normal', color: '#6b7280'}}>Выполните запуск файла ./magnitposprinter</span>
+              <span style={{fontSize: '12px', fontWeight: 'normal', color: '#6b7280'}}>{t('pos.printer.run_file_hint')}</span>
             </div>
           )}
 
@@ -409,7 +409,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                 transition: 'all 0.2s'
               }}
             >
-              <Wifi size={16} /> IP Принтер
+              <Wifi size={16} /> {t('pos.printer.ip_printer')}
             </button>
             <button
               onClick={() => setMode('local')}
@@ -431,7 +431,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                 transition: 'all 0.2s'
               }}
             >
-              <Usb size={16} /> USB Принтер
+              <Usb size={16} /> {t('pos.printer.usb_printer')}
             </button>
           </div>
 
@@ -442,13 +442,13 @@ export default function PosPrinterSettings({ open, onClose, t }) {
               <>
                 <div>
                   <label className="form-label-touch" style={{ fontSize: '13px', fontWeight: '700', color: '#374151', marginBottom: '6px', display: 'block' }}>
-                    IP адрес принтера
+                    {t('pos.printer.ip_address')}
                   </label>
                   <input
                     type="text"
                     className="pos-cashier-search-input"
                     style={{ width: '100%', height: '48px', padding: '0 16px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '15px' }}
-                    placeholder="Например: 192.168.1.87"
+                    placeholder={t('pos.printer.ip_placeholder')}
                     value={printerIP}
                     onChange={(e) => setPrinterIP(e.target.value)}
                     disabled={!isRunning}
@@ -456,7 +456,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                 </div>
                 <div>
                   <label className="form-label-touch" style={{ fontSize: '13px', fontWeight: '700', color: '#374151', marginBottom: '6px', display: 'block' }}>
-                    Порт принтера
+                    {t('pos.printer.port')}
                   </label>
                   <input
                     type="number"
@@ -473,7 +473,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
               <>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                    <label className="form-label-touch" style={{ fontSize: '13px', fontWeight: '700', color: '#374151', display: 'block' }}>
-                    Установленные принтеры в системе
+                    {t('pos.printer.system_printers')}
                   </label>
                   <button
                     onClick={() => scanPrinters()}
@@ -491,7 +491,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                     }}
                   >
                     <Search size={14} className={isScanning ? 'spin' : ''} />
-                    Обновить список
+                    {t('pos.printer.refresh_list')}
                   </button>
                 </div>
                 
@@ -508,7 +508,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                 }}>
                   {printersList.length === 0 ? (
                      <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280', fontSize: '13px' }}>
-                       {isScanning ? 'Поиск принтеров...' : 'Принтеры не найдены'}
+                       {isScanning ? t('pos.printer.searching') : t('pos.printer.none_found')}
                      </div>
                   ) : (
                     printersList.map((p) => {
@@ -539,10 +539,10 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                            <div style={{ flex: 1 }}>
                              <div style={{ fontSize: '14px', fontWeight: '600', color: isSelected ? '#1e3a8a' : '#374151' }}>
                                {p.name}
-                               {p.recommended && <span style={{ marginLeft: '8px', fontSize: '10px', backgroundColor: '#dcfce7', color: '#166534', padding: '2px 6px', borderRadius: '10px' }}>Рекомендуемый</span>}
+                               {p.recommended && <span style={{ marginLeft: '8px', fontSize: '10px', backgroundColor: '#dcfce7', color: '#166534', padding: '2px 6px', borderRadius: '10px' }}>{t('pos.printer.recommended')}</span>}
                              </div>
                              <div style={{ fontSize: '12px', color: '#6b7280' }}>
-                               {p.port || 'USB/Local'} {p.isDefault ? ' • По умолчанию' : ''}
+                               {p.port || 'USB/Local'} {p.isDefault ? ` • ${t('pos.printer.default')}` : ''}
                              </div>
                            </div>
                         </div>
@@ -555,7 +555,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
 
             <div>
               <label className="form-label-touch" style={{ fontSize: '13px', fontWeight: '700', color: '#374151', marginBottom: '6px', display: 'block' }}>
-                Формат команд
+                {t('pos.printer.command_format')}
               </label>
               <select
                 className="pos-cashier-search-input"
@@ -564,7 +564,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                 onChange={(e) => setPrinterModel(e.target.value)}
                 disabled={!isRunning}
               >
-                <option value="ESC/POS">ESC/POS (Стандартный чековый принтер)</option>
+                <option value="ESC/POS">{t('pos.printer.esc_pos_desc')}</option>
               </select>
             </div>
           </div>
@@ -581,7 +581,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                   disabled={!isRunning || isPinging}
                 >
                   <Wifi size={16} />
-                  {isPinging ? 'Проверка...' : 'Проверить IP'}
+                  {isPinging ? t('pos.printer.checking') : t('pos.printer.check_ip')}
                 </button>
               ) : (
                 <button
@@ -592,7 +592,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                   disabled={!isRunning || isTestingDrawer}
                 >
                   <Box size={16} />
-                  {isTestingDrawer ? 'Отправка...' : 'Тест ящика'}
+                  {isTestingDrawer ? t('pos.printer.sending') : t('pos.printer.test_drawer')}
                 </button>
               )}
 
@@ -604,7 +604,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                 disabled={!isRunning || isTesting}
               >
                 <Play size={16} />
-                {isTesting ? 'Печать...' : 'Тест печати'}
+                {isTesting ? t('pos.printer.printing') : t('pos.printer.test_print')}
               </button>
 
               <button
@@ -614,7 +614,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                 onClick={() => setShowPreview(!showPreview)}
               >
                 <Eye size={16} />
-                {showPreview ? 'Скрыть предпросмотр' : 'Предпросмотр'}
+                {showPreview ? t('pos.printer.hide_preview') : t('pos.printer.preview')}
               </button>
             </div>
 
@@ -625,13 +625,13 @@ export default function PosPrinterSettings({ open, onClose, t }) {
               onClick={handleSaveSettings}
               disabled={!isRunning || isSaving}
             >
-              {isSaving ? 'Сохранение...' : 'Сохранить настройки'}
+              {isSaving ? t('pos.printer.saving') : t('pos.printer.save_settings')}
             </button>
           </div>
 
           {showPreview && (
             <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '16px', marginTop: '16px' }}>
-              <h4 style={{ margin: '0 0 16px 0', fontSize: '15px', fontWeight: '700', color: '#374151' }}>Предпросмотр чека (Тестовые данные)</h4>
+              <h4 style={{ margin: '0 0 16px 0', fontSize: '15px', fontWeight: '700', color: '#374151' }}>{t('pos.printer.receipt_preview_test')}</h4>
               <ReceiptPreviewCanvas lines={buildReceiptLayout(dummyData)} />
             </div>
           )}

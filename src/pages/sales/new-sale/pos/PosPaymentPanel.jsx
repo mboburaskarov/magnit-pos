@@ -9,6 +9,7 @@
  */
 import thousandDivider from '@utils/thousandDivider'
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import './PosLayout.css'
 
 // Payment method icons
@@ -49,10 +50,10 @@ const CheckIcon = () => (
 const QUICK_CASH = [10000, 20000, 50000, 100000, 200000]
 
 const PAYMENT_METHODS = [
-  { id: 'cash',   label: 'Naqd',    icon: <CashIcon />,   shortcut: 'N' },
-  { id: 'card',   label: 'Karta',   icon: <CardIcon />,   shortcut: 'U' },
-  { id: 'online', label: 'Online',  icon: <OnlineIcon />, shortcut: 'O' },
-  { id: 'mixed',  label: 'Aralash', icon: <MixIcon />,    shortcut: 'M' },
+  { id: 'cash',   labelKey: 'cash',    icon: <CashIcon />,   shortcut: 'N' },
+  { id: 'card',   labelKey: 'card',   icon: <CardIcon />,   shortcut: 'U' },
+  { id: 'online', labelKey: 'online_pay',  icon: <OnlineIcon />, shortcut: 'O' },
+  { id: 'mixed',  labelKey: 'pos.mixed_payment', icon: <MixIcon />,    shortcut: 'M' },
 ]
 
 function PosPaymentPanel({
@@ -64,6 +65,7 @@ function PosPaymentPanel({
   isCheckoutLoading,
   disabled,
 }) {
+  const { t } = useTranslation()
   const totalAmount    = cartItemsList?.total_amount || 0
   const discountAmount = cartItemsList?.discount_amount || 0
   const subtotal       = totalAmount + discountAmount
@@ -128,50 +130,53 @@ function PosPaymentPanel({
       <div className='pos-summary'>
         {discountAmount > 0 && (
           <div className='pos-summary-row'>
-            <span>Jami (chegirmasiz)</span>
-            <span>{thousandDivider(subtotal, 'сум')}</span>
+            <span>{t('pos.payment.subtotal_no_discount')}</span>
+            <span>{thousandDivider(subtotal, t('pos.currency_short'))}</span>
           </div>
         )}
         {discountAmount > 0 && (
           <div className='pos-summary-row' style={{ color: '#16A34A' }}>
-            <span>Chegirma</span>
-            <span>−{thousandDivider(discountAmount, 'сум')}</span>
+            <span>{t('discount')}</span>
+            <span>−{thousandDivider(discountAmount, t('pos.currency_short'))}</span>
           </div>
         )}
         <div className='pos-summary-row total'>
-          <span>Jami to'lov</span>
-          <span>{thousandDivider(totalAmount, 'сум')}</span>
+          <span>{t('pos.total_payment') || t('pos.payment.total_pay')}</span>
+          <span>{thousandDivider(totalAmount, t('pos.currency_short'))}</span>
         </div>
         {selectedMethod === 'cash' && cashNum > 0 && cashNum < totalAmount && (
           <div className='pos-summary-row' style={{ color: '#DC2626', fontSize: 13, marginTop: 4 }}>
-            <span>Qoldi</span>
-            <span>{thousandDivider(totalAmount - cashNum, 'сум')}</span>
+            <span>{t('pos.remaining')}</span>
+            <span>{thousandDivider(totalAmount - cashNum, t('pos.currency_short'))}</span>
           </div>
         )}
         {change > 0 && (
           <div className='pos-summary-row change'>
-            <span>Qaytim</span>
-            <span>{thousandDivider(change, 'сум')}</span>
+            <span>{t('pos.change')}</span>
+            <span>{thousandDivider(change, t('pos.currency_short'))}</span>
           </div>
         )}
       </div>
 
       {/* ── Payment Methods ── */}
       <div style={{ padding: '10px 16px 6px' }}>
-        <div className='pos-section-title' style={{ marginBottom: 8 }}>To'lov usuli</div>
+        <div className='pos-section-title' style={{ marginBottom: 8 }}>{t('pos.payment.method')}</div>
         <div className='pos-pay-methods'>
-          {PAYMENT_METHODS.map((m) => (
-            <button
-              key={m.id}
-              className={`pos-pay-btn ${selectedMethod === m.id ? 'selected' : ''}`}
-              onClick={() => setSelectedMethod(m.id)}
-              title={m.label}
-            >
-              {m.icon}
-              <span style={{ fontSize: 12 }}>{m.label}</span>
-              <span className='pos-kbd' style={{ fontSize: 10, opacity: 0.7 }}>{m.shortcut}</span>
-            </button>
-          ))}
+          {PAYMENT_METHODS.map((m) => {
+            const labelText = t(m.labelKey) || m.labelKey
+            return (
+              <button
+                key={m.id}
+                className={`pos-pay-btn ${selectedMethod === m.id ? 'selected' : ''}`}
+                onClick={() => setSelectedMethod(m.id)}
+                title={labelText}
+              >
+                {m.icon}
+                <span style={{ fontSize: 12 }}>{labelText}</span>
+                <span className='pos-kbd' style={{ fontSize: 10, opacity: 0.7 }}>{m.shortcut}</span>
+              </button>
+            )
+          })}
         </div>
       </div>
 
@@ -179,7 +184,7 @@ function PosPaymentPanel({
       {(selectedMethod === 'cash' || selectedMethod === 'mixed') && (
         <div style={{ padding: '8px 16px 4px' }}>
           <label style={{ fontSize: 12, fontWeight: 600, color: '#6B7280', display: 'block', marginBottom: 6 }}>
-            Mijoz bergan summa
+            {t('pos.customer_received')}
           </label>
           <input
             ref={cashInputRef}
@@ -194,7 +199,7 @@ function PosPaymentPanel({
           {/* Quick amounts */}
           <div className='pos-quick-cash'>
             <button className='pos-quick-cash-btn' onClick={handleExactAmount} style={{ fontWeight: 700 }}>
-              Aniq
+              {t('pos.payment.exact')}
               <span className='pos-kbd' style={{ fontSize: 9 }}>F9</span>
             </button>
             {QUICK_CASH.map((amt) => (
@@ -212,9 +217,9 @@ function PosPaymentPanel({
         onClick={onCheckout}
         disabled={disabled || isCheckoutLoading}
       >
-        <span>{isCheckoutLoading ? 'Jarayonda...' : "To'lovni yakunlash"}</span>
+        <span>{isCheckoutLoading ? t('pos.payment_processing') : t('pos.complete_payment')}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 18, fontWeight: 800 }}>{thousandDivider(totalAmount, 'сум')}</span>
+          <span style={{ fontSize: 18, fontWeight: 800 }}>{thousandDivider(totalAmount, t('pos.currency_short'))}</span>
           <span className='shortcut-badge'>F10</span>
           <CheckIcon />
         </div>

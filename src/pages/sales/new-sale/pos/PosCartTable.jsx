@@ -58,7 +58,7 @@ function PosCartTable({
         <tbody>
           {isLoading ? (
             <tr>
-              <td colSpan={8} style={{ padding: 24, color: '#9CA3AF', textAlign: 'center' }}>Yuklanmoqda...</td>
+              <td colSpan={8} style={{ padding: 24, color: '#9CA3AF', textAlign: 'center' }}>{t('pos.loading')}</td>
             </tr>
           ) : !cartItems.length ? (
             null
@@ -79,7 +79,7 @@ function PosCartTable({
                       <button className='pos-qty-btn' onClick={() => onQtyIncrease?.(item)}>+</button>
                     </div>
                   </td>
-                  <td>{item.unit_per_pack > 1 && item.unit_quantity > 0 ? `${item.unit_quantity} ${item.unit_per_pack === 1000 ? 'г' : 'шт'}` : 'уп'}</td>
+                  <td>{item.unit_per_pack > 1 && item.unit_quantity > 0 ? `${item.unit_quantity} ${item.unit_per_pack === 1000 ? (t('pos.unit.g') || 'g') : (t('pos.unit.pcs') || 'шт')}` : (t('pos.unit.pack') || 'уп')}</td>
                   <td style={{ textAlign: 'right' }}>{thousandDivider(item.unit_price)}</td>
                   <td style={{ textAlign: 'right' }}>
                     {item.discount_price > 0 ? thousandDivider(item.discount_price) : '0.00'}

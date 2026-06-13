@@ -253,10 +253,10 @@ export default function PosApp() {
   // ── Mutations ──
   const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCartItem, {
     onSuccess: () => {
-      success('Markirovka yangilandi')
+      success(t('pos.marking_updated'))
     },
     onError: () => {
-      error('Markirovkani saqlashda xatolik yuz berdi')
+      error(t('pos.marking_save_error'))
     },
   })
 
@@ -351,11 +351,11 @@ export default function PosApp() {
         setPendingAddBarcode(null)
 
         if (get(err, 'response.data.code') === 406) {
-          success('Prodanja yopildi')
+          success(t('pos.sale_closed'))
           navigate(`/sales/create`)
           return
         }
-        error(get(err, 'response.data.message', 'Не удалось добавить товар'))
+        error(get(err, 'response.data.message', t('pos.error_adding_product')))
       },
     },
   )
@@ -407,7 +407,7 @@ export default function PosApp() {
           })
         }
         refetchCart()
-        error(get(err, 'response.data.message', 'Miqdorni o`zgartirishda xatolik yuz berdi'))
+        error(get(err, 'response.data.message', t('pos.error_changing_quantity')))
       },
     },
   )
@@ -415,19 +415,19 @@ export default function PosApp() {
   const { mutate: deleteItem } = useMutation(requests.deleteCartItem, {
     onSuccess: () => {
       refetchCart()
-      success('Mahsulot olib tashlandi')
+      success(t('pos.product_removed'))
     },
-    onError: () => error('Mahsulotni olib tashlashda xatolik'),
+    onError: () => error(t('pos.error_removing_product')),
   })
 
   // Customer loyalty mutations
   const { mutate: addDiscountCard } = useMutation(requests.addDiscountCard, {
     onSuccess: ({ data }) => {
       refetchCart()
-      success(`Chegirma kartasi muvaffaqiyatli qo'shildi - ${data?.data?.discount_percent}%`)
+      success(t('pos.discount_card_added', { percent: data?.data?.discount_percent }))
     },
     onError: (err) => {
-      error("Chegirma kartasini qo'shishda xatolik")
+      error(t('pos.error_adding_discount_card'))
       console.error('err', err)
     },
   })
@@ -436,10 +436,10 @@ export default function PosApp() {
     onSuccess: () => {
       setCustomerId(null)
       refetchCart()
-      success("Chegirma kartasi muvaffaqiyatli o'chirildi")
+      success(t('pos.discount_card_removed'))
     },
     onError: (err) => {
-      error("Chegirma kartasini o'chirishda xatolik")
+      error(t('pos.error_removing_discount_card'))
       console.error('err', err)
     },
   })
@@ -569,7 +569,7 @@ export default function PosApp() {
 
   const handleCheckout = () => {
     if (!paymentsList.length) {
-      error("To'lov turini tanlang")
+      error(t('pos.error_select_payment_type'))
       return
     }
 
@@ -579,15 +579,13 @@ export default function PosApp() {
 
     if ((cardPaymentSelected && cardAmount > numTotal) || 
         (secondaryPaymentMethod && secondaryAmount > numTotal)) {
-      let errorMsg = 'Для безналичной оплаты сумма не может быть больше итога'
-      if (i18n.language === 'uz') errorMsg = 'Naqdsiz to‘lov summasi jami summadan oshmasligi kerak'
-      if (i18n.language === 'en') errorMsg = 'Non-cash payment amount cannot exceed the total sum'
+      let errorMsg = t('pos.error_non_cash_exceeds')
       error(errorMsg)
       return
     }
 
     if (paymentAmount < Number(totalAmount || 0)) {
-      error("To'lov summasi yetarli emas")
+      error(t('pos.error_insufficient_payment'))
       return
     }
 
@@ -671,7 +669,7 @@ export default function PosApp() {
     try {
       const storeId = get(userData, 'store.id')
       if (!storeId) {
-        error("Do'kon ombori aniqlanmadi")
+        error(t('pos.error_store_not_found'))
         return
       }
 
@@ -738,7 +736,7 @@ export default function PosApp() {
         delete next[searchBarcode]
         return next
       })
-      error('Mahsulotni qidirishda xatolik yuz berdi')
+      error(t('pos.error_searching_product'))
       console.error(err)
     }
   }
@@ -817,13 +815,13 @@ export default function PosApp() {
     try {
       const storeId = get(userData, 'store.id')
       if (!storeId) {
-        error("Do'kon ombori aniqlanmadi")
+        error(t('pos.error_store_not_found'))
         return
       }
       const res = await requests.getAllStoreProducts({ id: storeId }, { search: productSearchQuery, offset: 0, limit: 1 })
       const productsList = get(res, 'data.data') || []
       if (productsList.length === 0) {
-        error(`Mahsulot topilmadi: "${productSearchQuery}"`)
+        error(t('pos.error_product_not_found_query', { query: productSearchQuery }))
         return
       }
       const product = productsList[0]
@@ -835,7 +833,7 @@ export default function PosApp() {
         discount_value: 0,
       })
     } catch (err) {
-      error("Tezkor qo'shishda xatolik yuz berdi")
+      error(t('pos.error_quick_add'))
       console.error(err)
     }
   }
@@ -1013,13 +1011,13 @@ export default function PosApp() {
 
       const res = await axios.post(`${activeAgentUrl}/print/raw-template`, reqPayload)
       if (res.data && res.data.ok) {
-        success('Чек напечатан!')
+        success(t('pos.printer.receipt_printed'))
       } else {
-        error('Ошибка печати: ' + (res.data.message || ''))
+        error(t('pos.printer.print_error_prefix') + (res.data.message || ''))
       }
     } catch (err) {
       console.error('Failed to print receipt locally:', err)
-      error('Принтер чеков не отвечает. Проверьте агент печати.')
+      error(t('pos.printer.no_response'))
     } finally {
       if (isPostPayment) {
         await handleSaleTransition(finalNewSaleId)
@@ -1160,13 +1158,13 @@ export default function PosApp() {
     try {
       const res = await axios.post(`${activeAgentUrl}/cash-drawer/open`)
       if (res.data && res.data.ok) {
-        success('Денежный ящик открыт')
+        success(t('pos.drawer_opened'))
         // Optional: log to backend here if required by the API
       } else {
-        error('Ошибка открытия денежного ящика')
+        error(t('pos.printer.drawer_open_error'))
       }
     } catch (err) {
-      error('Ошибка: ' + (err.response?.data?.message || err.message))
+      error(t('pos.printer.error_prefix') + (err.response?.data?.message || err.message))
     }
   }
 
@@ -1220,9 +1218,9 @@ export default function PosApp() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span style={{ fontSize: '20px' }}>⚠️</span>
             <div>
-              <div style={{ fontWeight: '700', color: '#991b1b', fontSize: '15px' }}>Ошибка создания нового чека / Yangi chek yaratishda xatolik yuz berdi</div>
+              <div style={{ fontWeight: '700', color: '#991b1b', fontSize: '15px' }}>{t('pos.error_new_receipt_title')}</div>
               <div style={{ fontSize: '13px', color: '#7f1d1d', marginTop: '2px' }}>
-                Продажа успешно завершена, но не удалось автоматически создать новый пустой чек. Пожалуйста, обновите страницу или создайте чек вручную.
+                {t('pos.error_new_receipt_desc')}
               </div>
             </div>
           </div>
@@ -1240,7 +1238,7 @@ export default function PosApp() {
                   navigate(`/sales/pos/${nextId}`)
                 }
               } catch (e) {
-                error('Не удалось создать новый чек. Проверьте интернет-соединение.')
+                error(t('pos.error_create_receipt_net'))
               }
             }}
             style={{
@@ -1255,7 +1253,7 @@ export default function PosApp() {
               transition: 'background-color 0.2s',
             }}
           >
-            Повторить попытку
+            {t('pos.retry')}
           </button>
         </div>
       )}
@@ -1475,7 +1473,7 @@ export default function PosApp() {
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           <div className='pos-modal' onClick={(e) => e.stopPropagation()} style={{ width: '400px', maxWidth: '90%', padding: '24px', textAlign: 'center' }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: 18, color: '#333' }}>Обновить POS? Текущий чек может быть потерян.</h3>
+            <h3 style={{ margin: '0 0 16px', fontSize: 18, color: '#333' }}>{t('pos.refresh_confirm_title')}</h3>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <button
                 onClick={() => setShowHardRefreshConfirmation(false)}
@@ -1489,7 +1487,7 @@ export default function PosApp() {
                   fontWeight: 600,
                 }}
               >
-                Отмена
+                {t('pos.cancel')}
               </button>
               <button
                 onClick={() => {
@@ -1498,7 +1496,7 @@ export default function PosApp() {
                 }}
                 style={{ padding: '10px 20px', background: '#EF4444', color: '#FFF', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
               >
-                Обновить
+                {t('pos.refresh')}
               </button>
             </div>
           </div>
@@ -1510,12 +1508,12 @@ export default function PosApp() {
           <div className='touch-modal-card' onClick={(e) => e.stopPropagation()} style={{ width: '400px', textAlign: 'center' }}>
             <div className='touch-modal-header' style={{ justifyContent: 'center' }}>
               <div className='touch-modal-username' style={{ color: '#ffffff', fontSize: '20px' }}>
-                Cancel receipt?
+                {t('pos.cancel_receipt')}?
               </div>
             </div>
             <div className='touch-modal-body' style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '24px' }}>
               <div style={{ fontSize: '16px', color: 'var(--pos-text-secondary)' }}>
-                Are you sure you want to cancel the current receipt and clear the cart?
+                {t('pos.cancel_receipt_confirm_desc')}
               </div>
               <div style={{ display: 'flex', gap: '12px' }}>
                 <button
@@ -1524,7 +1522,7 @@ export default function PosApp() {
                   style={{ flex: 1, height: '48px', borderRadius: '24px' }}
                   onClick={() => setShowCancelConfirmation(false)}
                 >
-                  No
+                  {t('no')}
                 </button>
                 <button
                   type='button'
@@ -1532,7 +1530,7 @@ export default function PosApp() {
                   style={{ flex: 1, height: '48px', borderRadius: '24px', backgroundColor: '#dc2626' }}
                   onClick={handleCancelConfirm}
                 >
-                  Yes
+                  {t('yes')}
                 </button>
               </div>
             </div>

@@ -2,6 +2,7 @@
 import { Box, Typography } from '@mui/material'
 import InputFormattedPriceWithTextField from '../../../../../components/Inputs/InputFormattedPriceWithTextField'
 import ShortcutBox from '../../../../../components/ShortcutBox'
+import { useTranslation } from 'react-i18next'
 
 export const PaymentInputField = ({
   name,
@@ -19,6 +20,8 @@ export const PaymentInputField = ({
   maxAmount,
   paymentsList = [],
 }) => {
+  const { t } = useTranslation()
+
   const handleInput = (e) => {
     const value = Number(e.target.value.replace(/\s/g, ''))
 
@@ -73,10 +76,10 @@ export const PaymentInputField = ({
                 m: '0 !important',
               }}
             >
-              soon
+              {t('soon')}
             </Typography>
           </Box>
-          <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600', mx: '8px' }}>сум</Typography>
+          <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600', mx: '8px' }}>{t('pos.currency_short')}</Typography>
           <ShortcutBox minWidth='27px' shortcut={shortcut} height='20px' color='#D5D7E2' />
         </Box>
       )
@@ -86,7 +89,7 @@ export const PaymentInputField = ({
     if (paymentOptions.length === 0) {
       return (
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px 16px' }}>
-          <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600', mx: '8px' }}>сум</Typography>
+          <Typography sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: '600', mx: '8px' }}>{t('pos.currency_short')}</Typography>
           <ShortcutBox minWidth='27px' shortcut={shortcut} height='20px' color='#D5D7E2' />
         </Box>
       )

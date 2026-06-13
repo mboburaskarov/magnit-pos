@@ -46,7 +46,7 @@ export default function ActionBar({
             type='button'
           >
             <span style={{ fontSize: 18, marginRight: 6 }}>💵</span>
-            Naqd
+            {t('cash')}
           </button>
           <button
             className={`method-select-btn ${cardPaymentSelected ? 'is-active' : ''}`}
@@ -55,7 +55,7 @@ export default function ActionBar({
             type='button'
           >
             <img src="/images/uzcard.png" alt="Terminal" className="payment-icon" />
-            Terminal
+            {t('card')}
           </button>
           <button
             className={`method-select-btn ${secondaryPaymentMethod === 'click' ? 'is-active' : ''}`}
@@ -91,7 +91,7 @@ export default function ActionBar({
             type='button'
           >
             <CreditCard size={18} className="payment-icon-svg" style={{ marginRight: 6 }} />
-            Balans {customerId ? `(${customerId.balance || 0})` : ''}
+            {t('balans')} {customerId ? `(${customerId.balance || 0})` : ''}
           </button>
         </div>
       </div>
@@ -128,7 +128,7 @@ export default function ActionBar({
       <button className='action-btn neutral-btn' onClick={onDiscount} type='button' style={{ position: 'relative' }}>
         <Percent size={16} />
         <span>{t('menu.orders.new_order.cart_container.discount') || 'Скидка'}</span>
-        <span className="soon-badge">Soon</span>
+        <span className="soon-badge">{t('soon') || 'soon'}</span>
       </button>
 
       {/* 6. Cancel receipt */}
