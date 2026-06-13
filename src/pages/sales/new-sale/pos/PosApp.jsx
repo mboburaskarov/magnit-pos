@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from 'react'
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import { useSelector } from 'react-redux'
@@ -63,29 +63,8 @@ export default function PosApp() {
   const [receivedAmount, setReceivedAmount] = useState('')
   const [cardPaymentSelected, setCardPaymentSelected] = useState(false)
   const [cardPaymentAmount, setRawCardPaymentAmount] = useState('')
-  const setCardPaymentAmount = useCallback((val) => {
-    setRawCardPaymentAmount((prev) => {
-      let nextVal = typeof val === 'function' ? val(prev) : val
-      const numTotal = Number(totalAmount || 0)
-      if (nextVal !== '' && Number(nextVal) > numTotal) {
-        return String(numTotal)
-      }
-      return nextVal
-    })
-  }, [totalAmount])
-
   const [secondaryPaymentMethod, setSecondaryPaymentMethod] = useState(null)
   const [secondaryPaymentAmount, setRawSecondaryPaymentAmount] = useState('')
-  const setSecondaryPaymentAmount = useCallback((val) => {
-    setRawSecondaryPaymentAmount((prev) => {
-      let nextVal = typeof val === 'function' ? val(prev) : val
-      const numTotal = Number(totalAmount || 0)
-      if (nextVal !== '' && Number(nextVal) > numTotal) {
-        return String(numTotal)
-      }
-      return nextVal
-    })
-  }, [totalAmount])
   const [focusedPaymentInput, setFocusedPaymentInput] = useState('cash')
   const [showAppScanModal, setShowAppScanModal] = useState(false)
   const [productSelectList, setProductSelectList] = useState([])
@@ -168,6 +147,29 @@ export default function PosApp() {
 
   const cartItems = get(cartItemsRes, 'data.data.data', [])
   const totalAmount = get(cartItemsRes, 'data.data.total_amount', 0)
+
+  const setCardPaymentAmount = useCallback((val) => {
+    setRawCardPaymentAmount((prev) => {
+      let nextVal = typeof val === 'function' ? val(prev) : val
+      const numTotal = Number(totalAmount || 0)
+      if (nextVal !== '' && Number(nextVal) > numTotal) {
+        return String(numTotal)
+      }
+      return nextVal
+    })
+  }, [totalAmount])
+
+  const setSecondaryPaymentAmount = useCallback((val) => {
+    setRawSecondaryPaymentAmount((prev) => {
+      let nextVal = typeof val === 'function' ? val(prev) : val
+      const numTotal = Number(totalAmount || 0)
+      if (nextVal !== '' && Number(nextVal) > numTotal) {
+        return String(numTotal)
+      }
+      return nextVal
+    })
+  }, [totalAmount])
+
   const posCartItemsList = useMemo(
     () => ({
       data: cartItems,
