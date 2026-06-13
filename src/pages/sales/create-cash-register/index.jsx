@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
   wrapper: {
     width: '960px',
-    minHeight: '580px',
+    minHeight: '0px',
     border: '2px solid',
     borderColor: theme.palette.bunker[100],
     borderRadius: '24px',
@@ -107,8 +107,8 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   keypadBtn: {
-    height: '100%',
-    minHeight: '48px',
+    height: '72px',
+    minHeight: '72px',
     borderRadius: '12px',
     border: '1px solid #cbd5e1',
     backgroundColor: '#ffffff',
@@ -139,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#ffffff',
     gridColumn: 'span 3',
     fontSize: '16px',
-    height: '56px',
+    height: '72px',
     borderRadius: '12px',
     fontWeight: '700',
     cursor: 'pointer',
@@ -240,6 +240,16 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     gap: '8px',
     paddingRight: '4px',
+    position: 'absolute',
+    top: '60px',
+    left: 0,
+    right: 0,
+    zIndex: 50,
+    backgroundColor: '#ffffff',
+    border: '2px solid #cbd5e1',
+    borderRadius: '12px',
+    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+    padding: '8px',
   },
   registerRow: {
     display: 'flex',
@@ -632,7 +642,7 @@ function NewCashRegister() {
   const onSubmit = (data) => {
     const device_id = localStorage.getItem('device_id') || crypto.randomUUID()
     const requestBody = {
-      cash_amount: Number(get(data, 'opened_amout')),
+      cash_amount: Number(get(data, 'opened_amout') || 0),
       cash_box_id: get(data, 'registerCash_id.id', null),
       description: '', // Izoh / comment input removed completely
       store_id: get(userData, 'store.id'),
@@ -733,19 +743,11 @@ function NewCashRegister() {
   const filteredRegisters = registers.filter((reg) => (reg.full_name || reg.name || '').toLowerCase().includes(registerSearchQuery.toLowerCase()))
 
   const selectedRegister = methods.watch('registerCash_id')
-  const openedAmount = methods.watch('opened_amout')
-  const isAmountValid =
-    openedAmount !== undefined &&
-    openedAmount !== null &&
-    openedAmount !== '' &&
-    !isNaN(Number(openedAmount)) &&
-    Number(openedAmount) >= 0
   const isSubmitDisabled =
     get(canCreate, 'is_open') ||
     isopenZReport ||
     isCreatingCashbox ||
-    !selectedRegister ||
-    !isAmountValid
+    !selectedRegister
 
   const isPageLoading = initLoading || isopenZReport || isCreatingCashbox
 
@@ -910,14 +912,14 @@ function NewCashRegister() {
 
           <Box display={'flex'} p={'32px'} gap={'32px'} alignItems={'stretch'}>
             {/* Left side inputs and summary */}
-            <Box sx={{ width: '55%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <Box sx={{ width: '55%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <Box>
                 <Typography fontSize={'14px'} fontWeight={'700'} color={'#475569'} mb={'8px'}>
                   Kassa *
                 </Typography>
 
                 {showRegisterList ? (
-                  <Box>
+                  <Box sx={{ position: 'relative', zIndex: 10 }}>
                     <Box className={classes.registerSearchWrapper}>
                       <input
                         type='text'
@@ -967,8 +969,6 @@ function NewCashRegister() {
                     )}
                   </Box>
                 )}
-
-                <Box height={'24px'} />
 
                 <Box className={classes.formField}>
                   <NumberFormatInput

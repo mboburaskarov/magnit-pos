@@ -240,6 +240,19 @@ export function buildZReportReceiptLayout(zrepo, storeInfo = {}) {
   add(leftRight(`НОМЕР:`, `+${zrepo?.number || '-'}`, WIDTH, '.'))
   add(leftRight(`КОЛ-ВО:`, `${zrepo?.count || ''}`, WIDTH, '.'))
   add(leftRight(`ИТОГО ЧЕКОВ:`, `${zrepo?.totalSaleCount || ''}`, WIDTH, '.'))
+  const lang = (typeof window !== 'undefined' && localStorage.getItem('i18nextLng')) || 'ru'
+  const totalSumLabel = lang.startsWith('uz') ? 'JAMI SUMMA:' : 'ИТОГО СУММА:'
+
+  const totalSaleCash = Number(zrepo?.totalSaleCash || 0)
+  const totalSaleCard = Number(zrepo?.totalSaleCard || 0)
+  const totalRefundCash = Number(zrepo?.totalRefundCash || 0)
+  const totalRefundCard = Number(zrepo?.totalRefundCard || 0)
+
+  const totalSales = totalSaleCash + totalSaleCard
+  const totalReturns = totalRefundCash + totalRefundCard
+  const netTotal = totalSales - totalReturns
+
+  add(leftRight(totalSumLabel, `${formatVal(netTotal)}`, WIDTH, '.'))
   add(leftRight(`ИТОГО КАРТЫ:`, `${formatVal(zrepo?.totalSaleCard)}`, WIDTH, '.'))
   add(leftRight(`ИТОГО НАЛИЧНЫЕ:`, `${formatVal(zrepo?.totalSaleCash)}`, WIDTH, '.'))
   add(leftRight(`ИТОГО НДС:`, `${formatVal(zrepo?.totalSaleVAT)}`, WIDTH, '.'))
