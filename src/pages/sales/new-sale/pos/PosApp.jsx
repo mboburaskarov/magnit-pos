@@ -292,11 +292,11 @@ export default function PosApp() {
       const originalScannedValue = params.originalScannedValue
       if (barcode) {
         setPendingAddBarcode(barcode)
-        setPendingNewItems((prev) => ({ ...prev, [barcode]: true }))
+        setPendingNewItems((prev) => ({ ...prev, [barcode]: Date.now() }))
         pendingProductUpdatesRef.current[barcode] = true
       }
       if (originalScannedValue) {
-        setPendingNewItems((prev) => ({ ...prev, [originalScannedValue]: true }))
+        setPendingNewItems((prev) => ({ ...prev, [originalScannedValue]: Date.now() }))
         pendingProductUpdatesRef.current[originalScannedValue] = true
       }
       return requests.createCartItem(rest)
@@ -305,14 +305,17 @@ export default function PosApp() {
       onSuccess: ({ data }, variables) => {
         const barcode = variables.barcode
         const originalScannedValue = variables.originalScannedValue
+        const searchBarcode = variables.searchBarcode
         setPendingNewItems((prev) => {
           const next = { ...prev }
           if (barcode) delete next[barcode]
           if (originalScannedValue) delete next[originalScannedValue]
+          if (searchBarcode) delete next[searchBarcode]
           return next
         })
         if (barcode) delete pendingProductUpdatesRef.current[barcode]
         if (originalScannedValue) delete pendingProductUpdatesRef.current[originalScannedValue]
+        if (searchBarcode) delete pendingProductUpdatesRef.current[searchBarcode]
         setPendingAddBarcode(null)
 
         refetchCart()
@@ -334,14 +337,17 @@ export default function PosApp() {
       onError: (err, variables) => {
         const barcode = variables.barcode
         const originalScannedValue = variables.originalScannedValue
+        const searchBarcode = variables.searchBarcode
         setPendingNewItems((prev) => {
           const next = { ...prev }
           if (barcode) delete next[barcode]
           if (originalScannedValue) delete next[originalScannedValue]
+          if (searchBarcode) delete next[searchBarcode]
           return next
         })
         if (barcode) delete pendingProductUpdatesRef.current[barcode]
         if (originalScannedValue) delete pendingProductUpdatesRef.current[originalScannedValue]
+        if (searchBarcode) delete pendingProductUpdatesRef.current[searchBarcode]
         setPendingAddBarcode(null)
 
         if (get(err, 'response.data.code') === 406) {
@@ -677,7 +683,7 @@ export default function PosApp() {
 
       // Set states to trigger skeleton row loading
       setPendingAddBarcode(searchBarcode)
-      setPendingNewItems((prev) => ({ ...prev, [searchBarcode]: true }))
+      setPendingNewItems((prev) => ({ ...prev, [searchBarcode]: Date.now() }))
 
       const res = await requests.getAllStoreProducts({ id: storeId }, { search: searchBarcode, offset: 0, limit: 30 })
 
@@ -719,7 +725,7 @@ export default function PosApp() {
         return
       }
 
-      addProductToCart(productsList[0], weightGrams, scannedBarcode)
+      addProductToCart(productsList[0], weightGrams, scannedBarcode, searchBarcode)
     } catch (err) {
       // Clear locks and reset pending states on error
       delete pendingProductUpdatesRef.current[searchBarcode]
@@ -737,7 +743,7 @@ export default function PosApp() {
     }
   }
 
-  const addProductToCart = (product, weightGrams, originalScannedValue) => {
+  const addProductToCart = (product, weightGrams, originalScannedValue, searchBarcode) => {
     // For scale products already in cart: accumulate weight
     if (weightGrams !== null) {
       const existingScaleItem = cartItems.find((item) => item.store_product_id === product.id)
@@ -758,6 +764,14 @@ export default function PosApp() {
           setPendingNewItems((prev) => {
             const next = { ...prev }
             delete next[originalScannedValue]
+            return next
+          })
+        }
+        if (searchBarcode) {
+          delete pendingProductUpdatesRef.current[searchBarcode]
+          setPendingNewItems((prev) => {
+            const next = { ...prev }
+            delete next[searchBarcode]
             return next
           })
         }
@@ -782,12 +796,13 @@ export default function PosApp() {
       discount_value: 0,
       ...(weightGrams !== null && { weight_grams: weightGrams }),
       originalScannedValue,
+      searchBarcode,
     })
   }
 
   const handleProductSelect = (product) => {
     setProductSelectList([])
-    addProductToCart(product, pendingWeightGrams, pendingScannedValue)
+    addProductToCart(product, pendingWeightGrams, pendingScannedValue, pendingAddBarcode)
     setPendingWeightGrams(null)
     setPendingScannedValue(null)
   }
@@ -953,7 +968,7 @@ export default function PosApp() {
       const cashierNameStr = `${userData?.first_name || ''} ${userData?.last_name || ''}`.trim() || 'Кассир'
 
       const payloadData = {
-        saleId: String(finalNewSaleId || id || ''),
+        saleId: String(cashBoxDetails?.data?.data?.sale_number || finalNewSaleId || id || ''),
         cashier: cashierNameStr,
         paymentType: paymentType,
         date: new Date().toISOString(),

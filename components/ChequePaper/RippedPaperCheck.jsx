@@ -58,9 +58,9 @@ function RippedPaperCheck({
           <Fragment key={'index0'}>
             <div className={classes.canvasContainer} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <img
-                src="/MagnitLogoPremiumCheque.svg"
-                alt="Magnit Premium"
-                style={{ width: '200px', display: 'block', margin: '0 auto' }}
+                src='/MagnitLogoPremiumCheque.svg'
+                alt='Magnit Premium'
+                style={{ width: '320px', display: 'block', margin: '0 auto' }}
                 onError={(e) => {
                   console.warn('Receipt logo failed to load')
                   e.target.style.display = 'none'

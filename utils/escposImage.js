@@ -4,7 +4,7 @@
  * @param {number} targetWidth - Desired width in pixels (will be rounded to nearest multiple of 8)
  * @returns {Promise<string>} Hex formatted ESC/POS command
  */
-export async function loadSvgAsEscposHex(url, targetWidth = 256) {
+export async function loadSvgAsEscposHex(url, targetWidth = 328) {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.crossOrigin = 'Anonymous'
@@ -31,7 +31,7 @@ export async function loadSvgAsEscposHex(url, targetWidth = 256) {
 
       // Bytes per row = width / 8
       const xL = (width / 8) % 256
-      const xH = Math.floor((width / 8) / 256)
+      const xH = Math.floor(width / 8 / 256)
       const yL = height % 256
       const yH = Math.floor(height / 256)
 
@@ -48,12 +48,12 @@ export async function loadSvgAsEscposHex(url, targetWidth = 256) {
             const g = data[idx + 1]
             const b = data[idx + 2]
             const a = data[idx + 3]
-            
+
             // If pixel is mostly opaque and dark, print a black dot
             // Standard luminance thresholding
-            const luminance = (0.299 * r + 0.587 * g + 0.114 * b)
+            const luminance = 0.299 * r + 0.587 * g + 0.114 * b
             if (a > 128 && luminance < 128) {
-              byte |= (1 << (7 - bit))
+              byte |= 1 << (7 - bit)
             }
           }
           command.push(byte)
@@ -61,7 +61,7 @@ export async function loadSvgAsEscposHex(url, targetWidth = 256) {
       }
 
       // Convert byte array to Hex String
-      const hexString = command.map(b => b.toString(16).padStart(2, '0')).join('')
+      const hexString = command.map((b) => b.toString(16).padStart(2, '0')).join('')
       resolve(`[HEX:${hexString}]`)
     }
     img.onerror = () => {

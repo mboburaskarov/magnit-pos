@@ -105,8 +105,8 @@ export function buildReceiptLayout(req, storeInfo = {}) {
 
   add(leftRight(`PM №1`, `Sotuvchi: ${req.cashier || 'Kassir'}`))
   const dateObj = req.date ? dayjs(req.date) : dayjs()
-  add(leftRight(`PRODAJA №${req.saleId}`, `Smena №${req.shiftNumber || '1'}`))
-  add(leftRight(`Дата: ${dateObj.format('DD.MM.YY')}`, `Время: ${dateObj.format('HH:mm:ss')}`))
+  add(leftRight(`Sotuv №${req.saleId}`, `Smena №${req.shiftNumber || '1'}`))
+  add(leftRight(`Sana: ${dateObj.format('DD.MM.YY')}`, `Vaqt: ${dateObj.format('HH:mm:ss')}`))
   add(lineSeparator)
 
   req.items?.forEach((item, index) => {
@@ -130,7 +130,7 @@ export function buildReceiptLayout(req, storeInfo = {}) {
 
   add(lineSeparator)
   const totalItemsQty = req.items?.length || 0
-  add(leftRight(`Позиций: ${totalItemsQty}`, `Покупок: ${totalItemsQty}`))
+  add(leftRight(`Pozitsiyalar: ${totalItemsQty}`, `Xaridlar: ${totalItemsQty}`))
   add(dashSeparator)
 
   add('[BOLD_START]')
@@ -148,7 +148,18 @@ export function buildReceiptLayout(req, storeInfo = {}) {
   }
 
   add('Tolov')
-  const payTypeLabel = req.paymentType === 'card' || req.paymentType === 'cardless' ? '  Karta' : req.paymentType === 'cash' ? '  Наличные' : '  Aralash'
+  let payTypeLabel = '  Aralash'
+  if (req.paymentType === 'card' || req.paymentType === 'cardless') {
+    payTypeLabel = '  Karta'
+  } else if (req.paymentType === 'cash') {
+    payTypeLabel = '  Naqd'
+  } else if (req.paymentType === 'click') {
+    payTypeLabel = '  Click'
+  } else if (req.paymentType === 'payme') {
+    payTypeLabel = '  Payme'
+  } else if (req.paymentType === 'uzum') {
+    payTypeLabel = '  Uzum'
+  }
   add(leftRight(payTypeLabel, '=' + formatMoney(req.paidAmount), WIDTH, '.'))
 
   if (req.changeAmount > 0) {

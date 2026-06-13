@@ -131,7 +131,13 @@ export default function ProductTable({
               })}
 
               {/* Pending new items skeletons */}
-              {Object.keys(pendingNewItems).map((pendingBarcode, idx) => (
+              {Object.entries(pendingNewItems)
+                .filter(([pendingBarcode, timestamp]) => {
+                  const isStale = typeof timestamp === 'number' && Date.now() - timestamp > 15000
+                  const exists = cartItems.some((item) => item.barcode === pendingBarcode)
+                  return !isStale && !exists
+                })
+                .map(([pendingBarcode], idx) => (
                 <tr key={`skeleton-${pendingBarcode}`} className="pos-table-row is-skeleton">
                   <td className='col-num'>{cartItems.length + idx + 1}</td>
                   <td className='col-barcode'>
@@ -140,12 +146,7 @@ export default function ProductTable({
                     </span>
                   </td>
                   <td className='col-name'>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span className='skeleton-shimmer' style={{ display: 'inline-block', width: '120px', height: '16px' }} />
-                      <span style={{ fontSize: '11px', color: '#94a3b8', fontStyle: 'italic' }}>
-                        (Добавляем товар...)
-                      </span>
-                    </div>
+                    <span className='skeleton-shimmer' style={{ display: 'inline-block', width: '120px', height: '16px' }} />
                   </td>
                   <td className='col-qty'>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
