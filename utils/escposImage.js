@@ -13,7 +13,11 @@ export async function loadSvgAsEscposHex(url, targetWidth = 328, fullWidth = nul
       const logoWidth = Math.round(targetWidth / 8) * 8
       const canvasWidth = fullWidth ? Math.round(fullWidth / 8) * 8 : logoWidth
       const scale = logoWidth / img.width
-      const height = Math.round(img.height * scale)
+      const logoHeight = Math.round(img.height * scale)
+
+      // Add a clean bottom vertical spacing of 40 pixels (~5mm at 8 dots/mm)
+      const bottomSpacing = 40
+      const height = logoHeight + bottomSpacing
 
       const canvas = document.createElement('canvas')
       canvas.width = canvasWidth
@@ -24,9 +28,14 @@ export async function loadSvgAsEscposHex(url, targetWidth = 328, fullWidth = nul
       ctx.fillStyle = '#FFFFFF'
       ctx.fillRect(0, 0, canvasWidth, height)
 
-      // Draw the image centered horizontally
-      const dx = Math.round((canvasWidth - logoWidth) / 2)
-      ctx.drawImage(img, dx, 0, logoWidth, height)
+      // Draw the image shifted to the left by 6mm (approx 48 pixels) if fullWidth is set,
+      // keeping the logo sharp and proportional without stretching.
+      let dx = 0
+      if (fullWidth) {
+        dx = Math.round((canvasWidth - logoWidth) / 2) - 48
+        if (dx < 0) dx = 0
+      }
+      ctx.drawImage(img, dx, 0, logoWidth, logoHeight)
 
       const imgData = ctx.getImageData(0, 0, canvasWidth, height)
       const data = imgData.data
