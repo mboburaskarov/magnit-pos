@@ -105,11 +105,10 @@ export default function ActionBar({
         <Printer size={16} />
         <span>{t('print')}</span>
       </button>
-
       {/* 2. Return */}
       <button className='action-btn neutral-btn' onClick={onReturn} type='button'>
         <RotateCcw size={16} />
-        <span>{t('navbar.return') || 'Возврат'}</span>
+        <span>{t('sales') || 'Продажи'}</span>
       </button>
 
       {/* 3. Hold */}

@@ -25,8 +25,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   drawerHeader: {
-    padding: '12px 24px',
-    height: '72px',
+    padding: '10px 24px',
+    height: '60px',
     backgroundColor: '#111827',
     borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
     display: 'flex',
@@ -35,13 +35,13 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box',
   },
   drawerTitle: {
-    fontSize: '20px',
+    fontSize: '18px',
     fontWeight: '700',
     color: '#ffffff',
   },
   closeButton: {
-    width: '48px',
-    height: '48px',
+    width: '40px',
+    height: '40px',
     borderRadius: '8px',
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
     border: '1px solid rgba(255, 255, 255, 0.12)',
@@ -69,31 +69,35 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
 
   const [isOpenChild, setIsOpenChild] = useState(false)
   const returnExchangeListFilter = useMemo(() => {
-    return {
+    const filter = {
       search: values?.search || null,
       store_id: get(userData, 'store.id'),
       limit: get(values, 'returnLimit'),
       customer_id: values?.customer_id,
-      draft_date: values?.draft_date ? dayjs(values?.draft_date).format('YYYY-MM-DD') : '',
     }
-  }, [values?.customer_id, values?.returnLimit, values?.draft_date, values?.page, values?.search])
+    // if (values?.draft_date) {
+    //   filter.draft_date = dayjs(values?.draft_date).format('YYYY-MM-DD')
+    // } else if (!values?.search) {
+    //   filter.start_date = dayjs().subtract(1, 'day').format('YYYY-MM-DD')
+    //   filter.end_date = dayjs().format('YYYY-MM-DD')
+    // }
+    return filter
+  }, [values?.customer_id, values?.returnLimit, values?.draft_date, values?.page, values?.search, userData])
 
   const theme = useTheme()
 
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
       {!isOpenChild ? (
-        <Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
           <Box className={classes.drawerHeader}>
-            <Typography className={classes.drawerTitle}>
-              {t('navbar.return')}
-            </Typography>
-            <button type="button" className={classes.closeButton} onClick={() => setOpen(false)}>
+            <Typography className={classes.drawerTitle}>{t('sales') || 'Продажи'}</Typography>
+            <button type='button' className={classes.closeButton} onClick={() => setOpen(false)}>
               <X size={20} />
             </button>
           </Box>
-          
-          <Box display={'flex'} py={'24px'} px={'40px'} alignItems={'center'}>
+
+          <Box display={'flex'} py={'16px'} px={'24px'} alignItems={'center'}>
             <InputSearch
               fullWidth
               uncontrolled
@@ -106,45 +110,15 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
                 '& .MuiInputBase-root': {
                   height: '40px !important',
                   borderRadius: '8px !important',
-                }
+                },
               }}
             />
-            <Box minWidth={113} ml={'16px'}>
-              <Button
-                sx={{
-                  height: '40px !important',
-                  padding: 0,
-                  bgcolor: '#fff',
-                  border: '2px solid #cbd5e1',
-                  color: 'dark.500',
-                  fontWeight: '600',
-                  fontSize: '15px',
-                  borderRadius: '8px !important',
-                  boxShadow: 'none',
-                  textTransform: 'none',
-                  '& span': {
-                    mr: '8px',
-                  },
-                  '&:active': {
-                    backgroundColor: '#f1f5f9',
-                  }
-                }}
-                fullWidth
-                startIcon={<FilterMenuIcon />}
-                variant='contained'
-                color='secondary'
-                onClick={() => setDraftFilter((prev) => !prev)}
-              >
-                <Typography fontWeight={600} fontSize={'15px'}>
-                  {t('filter')}
-                </Typography>
-              </Button>
-            </Box>
           </Box>
 
-          <Box py={'0px'} px={'40px'}>
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', px: '24px', pb: '16px' }}>
             <ListWithPagination
-              maxHeight='calc(100vh - 220px)'
+              isFlex={true}
+              emptyText='Продажи за сегодня и вчера не найдены'
               limitQuery='returnLimit'
               request={(filter) => requests.getAllSales(filter)}
               customFilter={returnExchangeListFilter}

@@ -42,16 +42,19 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }))
-function ListWithPagination({ request, limit = 5, limitQuery = 'customLimit', renderItem, statePath = 'productsList', customFilter, maxHeight = '100vh' }) {
+function ListWithPagination({ request, limit = 5, limitQuery = 'customLimit', renderItem, statePath = 'productsList', customFilter, maxHeight = '100vh', isFlex = false, emptyText }) {
   const { values } = useQueryParams()
   const classes = useStyles()
   const [open, setOpen] = useState(false)
-  const [page, setPage] = useState(0)
+  const [page, setPage] = useState(1)
   const navigate = useNavigate()
+
+  const currentLimit = Number(get(values, limitQuery)) || limit
 
   const handleChange = (e) => {
     setPage(e)
   }
+
   useEffect(() => {
     if (!get(values, limitQuery)) {
       const offsetLimitParams = qs.stringify(
@@ -64,6 +67,11 @@ function ListWithPagination({ request, limit = 5, limitQuery = 'customLimit', re
       navigate(`${location.pathname}${offsetLimitParams}`)
     }
   }, [])
+
+  useEffect(() => {
+    setPage(1)
+  }, [customFilter, currentLimit])
+
   const changeOffsetSize = (offsetSize) => {
     const offsetLimitParams = qs.stringify(
       {
@@ -76,25 +84,40 @@ function ListWithPagination({ request, limit = 5, limitQuery = 'customLimit', re
     navigate(`${location.pathname}${offsetLimitParams}`)
     setOpen(false)
   }
+
   const dataFilter = useMemo(() => {
     return {
-      limit: limit,
-      offset: page > 0 ? page * 5 - 5 : 0,
+      limit: currentLimit,
+      offset: (page - 1) * currentLimit,
     }
-  }, [values?.offset, page, limit])
+  }, [values?.offset, page, currentLimit])
 
   const {
     data: datList,
     isLoading: dataLoading,
-    isFetching: isDataList,
     refetch,
   } = useQuery([statePath, dataFilter, customFilter], () => request({ ...dataFilter, ...customFilter }))
+
   return (
-    <Box>
-      <Box sx={{ padding: '0 0 10px 0', borderRadius: '10px', overflow: 'auto', position: 'relative', height: maxHeight }}>
+    <Box sx={isFlex ? { display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' } : undefined}>
+      <Box sx={{
+        padding: '0 0 10px 0',
+        borderRadius: '10px',
+        overflow: 'auto',
+        position: 'relative',
+        ...(isFlex ? { flex: 1 } : { height: maxHeight })
+      }}>
         <LoadingBlurry outside isLoading={dataLoading} />
 
         {datList?.data?.data?.data?.map((item) => renderItem(item))}
+
+        {datList?.data?.data?.data?.length === 0 && !dataLoading && (
+          <Box display="flex" justifyContent="center" alignItems="center" py={8}>
+            <Typography variant="body1" color="textSecondary" align="center">
+              {emptyText || 'Ничего не найдено'}
+            </Typography>
+          </Box>
+        )}
       </Box>
       <Box display={'flex'} justifyContent={'space-between'} mt='15px' position={'relative'}>
         <Box>
@@ -113,7 +136,6 @@ function ListWithPagination({ request, limit = 5, limitQuery = 'customLimit', re
               <ClickAwayListener onClickAway={() => setOpen(false)}>
                 <List className={classes.lineSortList}>
                   {[5, 10, 20]
-                    // .filter((n) => n < totalCount - (offsetIndex - 1) * offsetSize)
                     .map((opt) => (
                       <ListItem key={opt} component='button' className={classes.lineSortItem} onClick={() => changeOffsetSize(opt)}>
                         <Typography>{opt} строк</Typography>
@@ -125,7 +147,7 @@ function ListWithPagination({ request, limit = 5, limitQuery = 'customLimit', re
             </Paper>
           )}
         </Box>
-        <Pagination count={Math.ceil(datList?.data?.data?._meta?.page_count)} handleChangeOffset={handleChange} page={page + 1} pageQuery='page' />
+        <Pagination count={Math.ceil(datList?.data?.data?._meta?.page_count)} handleChangeOffset={handleChange} offset={page} pageQuery='page' />
       </Box>
     </Box>
   )

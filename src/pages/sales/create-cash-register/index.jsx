@@ -1,9 +1,7 @@
 import { setUserData } from '@/redux-toolkit/userSlice'
 import NumberFormatInput from '@components/Inputs/OutLineTextFieldThousand'
 import LogoMain from '@icons/LogoMain'
-import ArrowRightIcon from '@icons/ArrowRightIcon'
-import CartOutlineIcon from '@icons/CartOutline'
-import MoneyOutlineIcon from '@icons/MoneyOutline'
+
 import { Box, Button, Typography, Dialog } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import hasAccess from '@utils/hasAccess'
@@ -16,7 +14,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { Check, ChevronRight, AlertCircle } from 'lucide-react'
+import { Check, ChevronRight, AlertCircle, Banknote, CreditCard } from 'lucide-react'
 
 const useStyles = makeStyles((theme) => ({
   box: {
@@ -68,9 +66,9 @@ const useStyles = makeStyles((theme) => ({
     height: '48px',
     marginRight: 12,
     padding: '12px',
-    backgroundColor: '#eff6ff',
-    color: '#2563eb',
-    borderRadius: '50%',
+    backgroundColor: '#f1f5f9',
+    color: '#0f172a',
+    borderRadius: '12px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -150,6 +148,12 @@ const useStyles = makeStyles((theme) => ({
     '&:active': {
       backgroundColor: '#1d4ed8',
       transform: 'scale(0.98)',
+    },
+    '&:disabled': {
+      opacity: 0.6,
+      cursor: 'not-allowed',
+      backgroundColor: '#e2e8f0',
+      color: '#94a3b8',
     },
   },
   touchSelectTrigger: {
@@ -729,7 +733,19 @@ function NewCashRegister() {
   const filteredRegisters = registers.filter((reg) => (reg.full_name || reg.name || '').toLowerCase().includes(registerSearchQuery.toLowerCase()))
 
   const selectedRegister = methods.watch('registerCash_id')
-  const isSubmitDisabled = get(canCreate, 'is_open') || isopenZReport || isCreatingCashbox || !selectedRegister
+  const openedAmount = methods.watch('opened_amout')
+  const isAmountValid =
+    openedAmount !== undefined &&
+    openedAmount !== null &&
+    openedAmount !== '' &&
+    !isNaN(Number(openedAmount)) &&
+    Number(openedAmount) >= 0
+  const isSubmitDisabled =
+    get(canCreate, 'is_open') ||
+    isopenZReport ||
+    isCreatingCashbox ||
+    !selectedRegister ||
+    !isAmountValid
 
   const isPageLoading = initLoading || isopenZReport || isCreatingCashbox
 
@@ -972,7 +988,7 @@ function NewCashRegister() {
                 <Box className={classes.card_box} flex={1}>
                   <Box display={'flex'} alignItems={'center'}>
                     <Box className={classes.iconBox}>
-                      <MoneyOutlineIcon />
+                      <Banknote size={24} strokeWidth={1.5} />
                     </Box>
                     <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
                       Naqd
@@ -980,9 +996,9 @@ function NewCashRegister() {
                   </Box>
                   <Box my={'12px'} border={'1px solid'} borderColor={'#f1f5f9'} />
                   <Box display={'flex'} justifyContent={'end'}>
-                    <Typography display={'flex'} fontSize={'20px'} fontWeight={'700'} color={'#2563eb'}>
+                    <Typography display={'flex'} fontSize={'20px'} fontWeight={'700'} color={'#0f172a'}>
                       {get(registerCashData, 'data.data.closed_amount', null) || 0}
-                      <Typography mx={'4px'} fontSize={'20px'} fontWeight={'700'} color={'#94a3b8'}>
+                      <Typography mx={'4px'} fontSize={'20px'} fontWeight={'700'} color={'#64748b'}>
                         UZS
                       </Typography>
                     </Typography>
@@ -992,7 +1008,7 @@ function NewCashRegister() {
                 <Box className={classes.card_box} flex={1}>
                   <Box display={'flex'} alignItems={'center'}>
                     <Box className={classes.iconBox}>
-                      <CartOutlineIcon />
+                      <CreditCard size={24} strokeWidth={1.5} />
                     </Box>
                     <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
                       Karta
@@ -1000,19 +1016,15 @@ function NewCashRegister() {
                   </Box>
                   <Box my={'12px'} border={'1px solid'} borderColor={'#f1f5f9'} />
                   <Box display={'flex'} justifyContent={'end'}>
-                    <Typography display={'flex'} fontSize={'20px'} fontWeight={'700'} color={'#2563eb'}>
+                    <Typography display={'flex'} fontSize={'20px'} fontWeight={'700'} color={'#0f172a'}>
                       0
-                      <Typography mx={'4px'} fontSize={'20px'} fontWeight={'700'} color={'#94a3b8'}>
+                      <Typography mx={'4px'} fontSize={'20px'} fontWeight={'700'} color={'#64748b'}>
                         UZS
                       </Typography>
                     </Typography>
                   </Box>
                 </Box>
               </Box>
-
-              <Button type='button' onClick={handleOpenCashbox} disabled={isSubmitDisabled} className={classes.submitButton} fullWidth>
-                Kassani oching <ArrowRightIcon color={isSubmitDisabled ? '#94a3b8' : '#fff'} />
-              </Button>
             </Box>
 
             {/* Right side numeric keypad */}

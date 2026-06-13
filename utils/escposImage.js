@@ -4,34 +4,36 @@
  * @param {number} targetWidth - Desired width in pixels (will be rounded to nearest multiple of 8)
  * @returns {Promise<string>} Hex formatted ESC/POS command
  */
-export async function loadSvgAsEscposHex(url, targetWidth = 328) {
+export async function loadSvgAsEscposHex(url, targetWidth = 328, fullWidth = null) {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.crossOrigin = 'Anonymous'
     img.onload = () => {
       // Width must be a multiple of 8 for ESC/POS bit image
-      const width = Math.round(targetWidth / 8) * 8
-      const scale = width / img.width
+      const logoWidth = Math.round(targetWidth / 8) * 8
+      const canvasWidth = fullWidth ? Math.round(fullWidth / 8) * 8 : logoWidth
+      const scale = logoWidth / img.width
       const height = Math.round(img.height * scale)
 
       const canvas = document.createElement('canvas')
-      canvas.width = width
+      canvas.width = canvasWidth
       canvas.height = height
       const ctx = canvas.getContext('2d')
 
       // Fill background with white (since transparent parts should be white/not printed)
       ctx.fillStyle = '#FFFFFF'
-      ctx.fillRect(0, 0, width, height)
+      ctx.fillRect(0, 0, canvasWidth, height)
 
-      // Draw the image
-      ctx.drawImage(img, 0, 0, width, height)
+      // Draw the image centered horizontally
+      const dx = Math.round((canvasWidth - logoWidth) / 2)
+      ctx.drawImage(img, dx, 0, logoWidth, height)
 
-      const imgData = ctx.getImageData(0, 0, width, height)
+      const imgData = ctx.getImageData(0, 0, canvasWidth, height)
       const data = imgData.data
 
-      // Bytes per row = width / 8
-      const xL = (width / 8) % 256
-      const xH = Math.floor(width / 8 / 256)
+      // Bytes per row = canvasWidth / 8
+      const xL = (canvasWidth / 8) % 256
+      const xH = Math.floor(canvasWidth / 8 / 256)
       const yL = height % 256
       const yH = Math.floor(height / 256)
 
@@ -39,10 +41,10 @@ export async function loadSvgAsEscposHex(url, targetWidth = 328) {
       const command = [0x1d, 0x76, 0x30, 0x00, xL, xH, yL, yH]
 
       for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x += 8) {
+        for (let x = 0; x < canvasWidth; x += 8) {
           let byte = 0
           for (let bit = 0; bit < 8; bit++) {
-            const idx = (y * width + (x + bit)) * 4
+            const idx = (y * canvasWidth + (x + bit)) * 4
             // Get luminance
             const r = data[idx]
             const g = data[idx + 1]

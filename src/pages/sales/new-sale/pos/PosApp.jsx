@@ -951,7 +951,7 @@ export default function PosApp() {
     try {
       let logoHex = null
       try {
-        logoHex = await loadSvgAsEscposHex('/MagnitLogoPremiumCheque.svg', 256)
+        logoHex = await loadSvgAsEscposHex('/MagnitLogoPremiumCheque.svg', 400, 576)
       } catch (e) {
         console.warn('Receipt logo failed to load:', e)
       }

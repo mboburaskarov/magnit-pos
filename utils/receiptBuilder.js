@@ -89,6 +89,13 @@ export function buildReceiptLayout(req, storeInfo = {}) {
   const lineSeparator = '-'.repeat(WIDTH)
   const dashSeparator = '-'.repeat(WIDTH)
 
+  if (req.isDuplicate) {
+    add('[BOLD_START]')
+    add(centerText("QAYTA CHIQARILGAN CHECK"))
+    add('[BOLD_END]')
+    add(lineSeparator)
+  }
+
   const storeName = storeInfo.name || 'MAGNIT PREMIUM'
   const storeAddress = storeInfo.address || "Shayxontohur\nOlmazor MFY, O'qchi ko'chasi 4, 4A-UY"
   const stir = storeInfo.stir || req.fiscalStir || '305445201'
@@ -109,6 +116,8 @@ export function buildReceiptLayout(req, storeInfo = {}) {
   add(leftRight(`Sana: ${dateObj.format('DD.MM.YY')}`, `Vaqt: ${dateObj.format('HH:mm:ss')}`))
   add(lineSeparator)
 
+  let calculatedVatTotal = 0
+
   req.items?.forEach((item, index) => {
     const nameLines = wrapText(`${index + 1}. ${item.name || item.barcode || 'Tovar'}`)
     nameLines.forEach((l) => add(l))
@@ -123,9 +132,14 @@ export function buildReceiptLayout(req, storeInfo = {}) {
     const rightPart = formatMoneyWithoutSuffix(item.total)
     add(leftRight(leftPart, rightPart, WIDTH, '.'))
 
-    if (item.vatPercent) {
-      add(leftRight(`  sh.j. QQS ${item.vatPercent}%`, formatMoneyWithoutSuffix(item.vatAmount || 0), WIDTH, '.'))
-    }
+    // Calculate item VAT: itemVat = itemTotal * 12 / 112, where itemTotal = qty * price
+    const itemQty = Number(item.qty || 0)
+    const itemPrice = Number(item.price || 0)
+    const itemTotal = itemQty * itemPrice
+    const itemVat = (itemTotal * 12) / 112
+    calculatedVatTotal += itemVat
+
+    add(leftRight(`  sh.j. QQS 12%`, formatMoneyWithoutSuffix(itemVat), WIDTH, '.'))
   })
 
   add(lineSeparator)
@@ -137,9 +151,9 @@ export function buildReceiptLayout(req, storeInfo = {}) {
   add(leftRight('JAMI tolovga:', formatMoney(req.totalAmount), WIDTH, '.'))
   add('[BOLD_END]')
 
-  if (req.vatAmount > 0) {
+  if (calculatedVatTotal > 0) {
     add('[BOLD_START]')
-    add(leftRight('sh.j. QQS', formatMoney(req.vatAmount), WIDTH, '.'))
+    add(leftRight('sh.j. QQS', formatMoney(calculatedVatTotal), WIDTH, '.'))
     add('[BOLD_END]')
   }
 
@@ -186,6 +200,60 @@ export function buildReceiptLayout(req, storeInfo = {}) {
 
   add(lineSeparator)
   add(centerText('***** Xaridingiz uchun raxmat !!! *****'))
+  add('[CUT]')
+
+  return lines
+}
+
+export function buildZReportReceiptLayout(zrepo, storeInfo = {}) {
+  const lines = []
+
+  const add = (str) => {
+    str.split('\n').forEach((l) => lines.push(l))
+  }
+
+  const lineSeparator = '-'.repeat(WIDTH)
+
+  if (storeInfo?.logoHex) {
+    add(storeInfo.logoHex)
+  } else {
+    add('[BOLD_START]')
+    add(centerText(storeInfo?.name || 'MAGNIT PREMIUM'))
+    add('[BOLD_END]')
+  }
+  
+  const storeAddress = storeInfo?.address || "Shayxontohur\nOlmazor MFY, O'qchi ko'chasi 4, 4A-UY"
+  storeAddress.split('\n').forEach((line) => add(centerText(line)))
+  add('*'.repeat(WIDTH))
+
+  const formatVal = (val, divide = true) => {
+    if (val === undefined || val === null || val === '-') return '-'
+    const num = Number(val)
+    if (isNaN(num)) return String(val)
+    const finalNum = divide ? num / 100 : num
+    return finalNum.toFixed(2)
+  }
+
+  add(leftRight(`ИД ТЕРМИНАЛА:`, `#${zrepo?.terminalID || ''}`, WIDTH, '.'))
+  add(leftRight(`ВРЕМЯ ОТКРЫТИЯ:`, `${zrepo?.openTime || ''}`, WIDTH, '.'))
+  add(leftRight(`ВРЕМЯ ЗАКРЫТИЯ:`, `${zrepo?.closeTime || ''}`, WIDTH, '.'))
+  add(leftRight(`НОМЕР:`, `+${zrepo?.number || '-'}`, WIDTH, '.'))
+  add(leftRight(`КОЛ-ВО:`, `${zrepo?.count || ''}`, WIDTH, '.'))
+  add(leftRight(`ИТОГО ЧЕКОВ:`, `${zrepo?.totalSaleCount || ''}`, WIDTH, '.'))
+  add(leftRight(`ИТОГО КАРТЫ:`, `${formatVal(zrepo?.totalSaleCard)}`, WIDTH, '.'))
+  add(leftRight(`ИТОГО НАЛИЧНЫЕ:`, `${formatVal(zrepo?.totalSaleCash)}`, WIDTH, '.'))
+  add(leftRight(`ИТОГО НДС:`, `${formatVal(zrepo?.totalSaleVAT)}`, WIDTH, '.'))
+  add(leftRight(`ИТОГО ВОЗВРАТОВ:`, `${formatVal(zrepo?.totalRefundCount)}`, WIDTH, '.'))
+  add(leftRight(`ИТОГО ВОЗВРАТА НАЛИЧНЫЕ:`, `${formatVal(zrepo?.totalRefundCash)}`, WIDTH, '.'))
+  add(leftRight(`ИТОГО ВОЗВРАТА КАРТЫ:`, `${formatVal(zrepo?.totalRefundCard)}`, WIDTH, '.'))
+  add(leftRight(`ИТОГО ВОЗВРАТА НДС:`, `${formatVal(zrepo?.totalRefundVAT)}`, WIDTH, '.'))
+  add(leftRight(`LastReceiptsed:`, `${zrepo?.lastReceiptSeq || '-'}`, WIDTH, '.'))
+  add(leftRight(`FirstReceiptSeq:`, `${zrepo?.firstReceiptSeq || '-'}`, WIDTH, '.'))
+  add(leftRight(`AppletVersion:`, `${zrepo?.appletVersion || '-'}`, WIDTH, '.'))
+
+  add(lineSeparator)
+  add(centerText("Отчет о закрытии смены время на компьютере"))
+  add(centerText(dayjs().format('DD.MM.YYYY HH:mm:ss')))
   add('[CUT]')
 
   return lines

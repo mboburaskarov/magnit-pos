@@ -10,12 +10,14 @@ import { useMutation, useQuery } from 'react-query'
 import MoneyOutlineIcon from '@icons/MoneyOutline'
 import ArrowRightIcon from '@icons/ArrowRightIcon'
 import CartOutlineIcon from '@icons/CartOutline'
-import { useReactToPrint } from 'react-to-print'
 import { error, success } from '@utils/toast'
 import { requests } from '@utils/requests'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
 import { Check, X } from 'lucide-react'
+import axios from 'axios'
+import { loadSvgAsEscposHex } from '@utils/escposImage'
+import { buildZReportReceiptLayout } from '@utils/receiptBuilder'
 import '../new-sale/pos/PosLayout.css'
 
 const useStyles = makeStyles((theme) => ({
@@ -151,24 +153,45 @@ function CashCloseDrawer({ open, setOpen }) {
   const classes = useStyles()
   const { id } = useParams()
   const navigate = useNavigate()
-  const printContainer = useRef()
   const [company, setCompany] = useState('1')
   const [checkdata, setcheckdata] = useState()
+  const [printError, setPrintError] = useState(null)
   const methods = useForm()
-  const reactToPrintContent = useCallback(() => printContainer.current, [])
-  const documentName = useRef('MAGNIT CHEQUE')
-  const handlePrint = useReactToPrint({
-    content: reactToPrintContent,
-    documentTitle: documentName.current,
-    removeAfterPrint: true,
-    onAfterPrint: () => {
-      navigate(`/sales/create`)
-    },
-  })
 
   const { data: closeCashboxPaymentsInfo } = useQuery(['closeCashboxPaymentsInfo', open], () => requests.getCloseCashboxPaymentsInfo(id), {
     enabled: open,
   })
+
+  const handleAgentZReportPrint = async (zrepoData) => {
+    setPrintError(null)
+    try {
+      let logoHex = null
+      try {
+        logoHex = await loadSvgAsEscposHex('/MagnitLogoPremiumCheque.svg', 400, 576)
+      } catch (e) {
+        console.warn('Failed to load logo for Z-Report:', e)
+      }
+
+      const layoutLines = buildZReportReceiptLayout(zrepoData, { logoHex })
+      const reqPayload = {
+        lines: layoutLines,
+      }
+
+      const res = await axios.post('http://localhost:7788/print/raw-template', reqPayload)
+      if (res.data && res.data.ok) {
+        success('Отчет Z успешно распечатан!')
+        methods.handleSubmit(onSubmit, onError)()
+        return true
+      } else {
+        throw new Error(res.data?.message || 'Agent print error')
+      }
+    } catch (err) {
+      console.error('Z-Report printing failed:', err)
+      setPrintError('Не удалось распечатать Z-отчет. Проверьте принтер и агент.')
+      error('Ошибка печати Z-отчета!')
+      return false
+    }
+  }
 
   const { mutate: closeCheckZReport, isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
@@ -176,8 +199,9 @@ function CashCloseDrawer({ open, setOpen }) {
         error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
         return
       } else {
-        setcheckdata(get(data, 'message'))
-        methods.handleSubmit(onSubmit, onError)()
+        const zrepo = get(data, 'message')
+        setcheckdata(zrepo)
+        handleAgentZReportPrint(zrepo)
       }
     },
     onError: (err) => {
@@ -185,12 +209,6 @@ function CashCloseDrawer({ open, setOpen }) {
       console.error('err', err)
     },
   })
-
-  useEffect(() => {
-    if (checkdata) {
-      handlePrint()
-    }
-  }, [checkdata])
 
   const { mutate: closeZReport, isLoading: iscloseZReport } = useMutation(requests.closeZReport, {
     onSuccess: ({ data }) => {
@@ -217,6 +235,7 @@ function CashCloseDrawer({ open, setOpen }) {
   const { mutate: closeCashBoxRegister, isLoading: iscloseCashBoxRegister } = useMutation(requests.closeCashBoxRegister, {
     onSuccess: () => {
       setOpen(false)
+      navigate(`/sales/create`)
     },
     onError: (err) => {
       error('Ошибка закрытия кассы!')
@@ -333,37 +352,49 @@ function CashCloseDrawer({ open, setOpen }) {
               {/* Flex Spacer to push button down */}
               <Box flexGrow={1} minHeight='24px' />
 
-              {/* Bottom fixed full-width button */}
-              <Button
-                disabled={iscloseZReport}
-                type='button'
-                onClick={() => {
-                  closeZReport({
-                    token: 'DXJFX32CN1296678504F2',
-                    method: 'closeZreport',
-                  })
-                }}
-                className={classes.closeButton}
-                fullWidth
-              >
-                Закрыть кассу <ArrowRightIcon color='#fff' />
-              </Button>
+              {/* Bottom fixed full-width button / retry info */}
+              {checkdata && printError ? (
+                <Box p={'16px 32px'} bgcolor={'#fee2e2'} borderTop={'1px solid #fca5a5'} sx={{ width: '100%', boxSizing: 'border-box' }}>
+                  <Typography color={'#991b1b'} fontWeight={600} mb={'12px'} fontSize={'14px'} align="center">
+                    {printError}
+                  </Typography>
+                  <Box display={'flex'} gap={'16px'}>
+                    <Button
+                      variant="contained"
+                      onClick={() => handleAgentZReportPrint(checkdata)}
+                      sx={{ flex: 1, height: '44px', textTransform: 'none', fontWeight: 'bold', bgcolor: '#dc2626', '&:hover': { bgcolor: '#b91c1c' } }}
+                    >
+                      Повторить печать
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      onClick={() => methods.handleSubmit(onSubmit, onError)()}
+                      sx={{ flex: 1, height: '44px', textTransform: 'none', border: '1px solid #cbd5e1', color: '#4b5563', '&:hover': { border: '1px solid #9ca3af' } }}
+                    >
+                      Завершить без печати
+                    </Button>
+                  </Box>
+                </Box>
+              ) : (
+                <Button
+                  disabled={iscloseZReport || iscloseCheckZReport || iscloseCashBoxRegister}
+                  type='button'
+                  onClick={() => {
+                    closeZReport({
+                      token: 'DXJFX32CN1296678504F2',
+                      method: 'closeZreport',
+                    })
+                  }}
+                  className={classes.closeButton}
+                  fullWidth
+                >
+                  {iscloseZReport || iscloseCheckZReport || iscloseCashBoxRegister ? 'Закрытие...' : 'Закрыть кассу'} <ArrowRightIcon color='#fff' />
+                </Button>
+              )}
             </Box>
           </Box>
         </FormProvider>
       </LoadingContainer>
-
-      <Box
-        maxWidth='400px'
-        sx={{
-          display: 'none',
-          width: '255px',
-        }}
-      >
-        <Box ref={printContainer}>
-          <RippedPaperZReportCheck zrepo={checkdata} />
-        </Box>
-      </Box>
     </Drawer>
   )
 }

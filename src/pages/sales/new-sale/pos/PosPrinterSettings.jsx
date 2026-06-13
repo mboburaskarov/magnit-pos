@@ -3,6 +3,7 @@ import { X, Play, RefreshCw, Server, Wifi, Usb, Search, Box, Eye } from 'lucide-
 import axios from 'axios'
 import { success, error } from '@utils/toast'
 import { buildReceiptLayout } from '@utils/receiptBuilder'
+import { loadSvgAsEscposHex } from '@utils/escposImage'
 import ReceiptPreviewCanvas from '@components/ReceiptPreviewCanvas'
 import './PosLayout.css'
 
@@ -13,6 +14,21 @@ export default function PosPrinterSettings({ open, onClose, t }) {
   const [isRunning, setIsRunning] = useState(false)
   const [activeUrl, setActiveUrl] = useState(AGENT_URL)
   const [mode, setMode] = useState('network') // 'network' or 'local'
+  const [logoHex, setLogoHex] = useState(null)
+
+  useEffect(() => {
+    let active = true
+    loadSvgAsEscposHex('/MagnitLogoPremiumCheque.svg', 400, 576)
+      .then((hex) => {
+        if (active) setLogoHex(hex)
+      })
+      .catch((e) => {
+        console.warn('Failed to load logo for settings preview:', e)
+      })
+    return () => {
+      active = false
+    }
+  }, [])
   
   // Network
   const [printerIP, setPrinterIP] = useState('')
@@ -632,7 +648,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
           {showPreview && (
             <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '16px', marginTop: '16px' }}>
               <h4 style={{ margin: '0 0 16px 0', fontSize: '15px', fontWeight: '700', color: '#374151' }}>{t('pos.printer.receipt_preview_test')}</h4>
-              <ReceiptPreviewCanvas lines={buildReceiptLayout(dummyData)} />
+              <ReceiptPreviewCanvas lines={buildReceiptLayout(dummyData, { logoHex })} />
             </div>
           )}
         </div>

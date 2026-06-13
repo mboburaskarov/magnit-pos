@@ -14,7 +14,7 @@ import thousandDivider from '@utils/thousandDivider.js'
 const FiskalText = ({ data }) => {
   return <Typography>Fiskal belgi: {data}</Typography>
 }
-function RippedPaperCheckReturn({ saleDetailsList, qrCodeUrl, customerId = '', chequeData: cheque, noSticky }) {
+function RippedPaperCheckReturn({ saleDetailsList, qrCodeUrl, customerId = '', chequeData: cheque, noSticky, isDuplicate }) {
   const classes = useStyles()
   const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
@@ -44,6 +44,13 @@ function RippedPaperCheckReturn({ saleDetailsList, qrCodeUrl, customerId = '', c
       <Box className={classes.inner}>
         <Box px={'10px'} py={4}>
           <Fragment key={'index0'}>
+            {isDuplicate && (
+              <Box mb={'10px'} display="flex" justifyContent="center">
+                <Typography sx={{ fontSize: '18px', fontWeight: 'bold', color: '#000', textAlign: 'center', border: '2px solid #000', px: 2, py: 0.5, textTransform: 'uppercase' }}>
+                  Qayta chiqarilgan check
+                </Typography>
+              </Box>
+            )}
             <div className={classes.canvasContainer}>
               <p
                 style={{

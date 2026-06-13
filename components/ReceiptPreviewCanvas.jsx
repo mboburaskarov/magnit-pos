@@ -15,8 +15,8 @@ export default function ReceiptPreviewCanvas({ lines }) {
     const marginX = 20
     const marginY = 20
     
-    // We assume width is 48 chars
-    const canvasWidth = 48 * charWidth + marginX * 2
+    // We assume width is 40 chars
+    const canvasWidth = 40 * charWidth + marginX * 2
     
     // Calculate required height based on lines
     let requiredHeight = marginY * 2
@@ -25,6 +25,30 @@ export default function ReceiptPreviewCanvas({ lines }) {
       if (line === '[CUT]') continue
       if (line.startsWith('[QR:')) {
         requiredHeight += 160 // QR code space
+        continue
+      }
+      if (line.startsWith('[HEX:')) {
+        try {
+          const hexStr = line.substring(5, 25)
+          const bytes = []
+          for (let i = 0; i < hexStr.length; i += 2) {
+            bytes.push(parseInt(hexStr.substring(i, i + 2), 16))
+          }
+          if (bytes[0] === 0x1d && bytes[1] === 0x76 && bytes[2] === 0x30 && bytes[3] === 0x00) {
+            const xL = bytes[4]
+            const xH = bytes[5]
+            const yL = bytes[6]
+            const yH = bytes[7]
+            const imgWidth = (xL + xH * 256) * 8
+            const imgHeight = yL + yH * 256
+            const printableWidth = canvasWidth - marginX * 2
+            const scale = printableWidth / imgWidth
+            const drawHeight = imgHeight * scale
+            requiredHeight += drawHeight
+          }
+        } catch (e) {
+          console.error("Failed to parse height from hex line", e)
+        }
         continue
       }
       requiredHeight += lineHeight
@@ -78,6 +102,67 @@ export default function ReceiptPreviewCanvas({ lines }) {
         }
         
         y += qrSize + 20
+        continue
+      }
+      if (line.startsWith('[HEX:')) {
+        try {
+          const hexStr = line.substring(5, line.length - 1)
+          const bytes = []
+          for (let i = 0; i < hexStr.length; i += 2) {
+            bytes.push(parseInt(hexStr.substring(i, i + 2), 16))
+          }
+          
+          if (bytes[0] === 0x1d && bytes[1] === 0x76 && bytes[2] === 0x30 && bytes[3] === 0x00) {
+            const xL = bytes[4]
+            const xH = bytes[5]
+            const yL = bytes[6]
+            const yH = bytes[7]
+            
+            const widthBytes = xL + xH * 256
+            const imgWidth = widthBytes * 8
+            const imgHeight = yL + yH * 256
+            
+            const tempCanvas = document.createElement('canvas')
+            tempCanvas.width = imgWidth
+            tempCanvas.height = imgHeight
+            const tempCtx = tempCanvas.getContext('2d')
+            const imgData = tempCtx.createImageData(imgWidth, imgHeight)
+            const data = imgData.data
+            
+            let byteIdx = 8
+            for (let yOffset = 0; yOffset < imgHeight; yOffset++) {
+              for (let xByte = 0; xByte < widthBytes; xByte++) {
+                if (byteIdx >= bytes.length) break
+                const byteVal = bytes[byteIdx++]
+                for (let bit = 0; bit < 8; bit++) {
+                  const bitVal = (byteVal >> (7 - bit)) & 1
+                  const pixelIdx = (yOffset * imgWidth + (xByte * 8 + bit)) * 4
+                  if (bitVal === 1) {
+                    data[pixelIdx] = 0
+                    data[pixelIdx + 1] = 0
+                    data[pixelIdx + 2] = 0
+                    data[pixelIdx + 3] = 255
+                  } else {
+                    data[pixelIdx] = 255
+                    data[pixelIdx + 1] = 255
+                    data[pixelIdx + 2] = 255
+                    data[pixelIdx + 3] = 0
+                  }
+                }
+              }
+            }
+            tempCtx.putImageData(imgData, 0, 0)
+            
+            const printableWidth = canvasWidth - marginX * 2
+            const scale = printableWidth / imgWidth
+            const drawHeight = imgHeight * scale
+            
+            ctx.drawImage(tempCanvas, marginX, y, printableWidth, drawHeight)
+            y += drawHeight
+          }
+        } catch (e) {
+          console.error("Failed to render hex image on preview canvas", e)
+        }
         continue
       }
 

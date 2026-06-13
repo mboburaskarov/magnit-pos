@@ -9,6 +9,7 @@ import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
+import axios from 'axios'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import LeftArrowIcon from '../../../src/assets/icons/LeftArrow'
 import { requests } from '../../../utils/requests'
@@ -18,6 +19,8 @@ import CustomImg from '../../CustomImg'
 import LoadingContainer from '../../LoadingContainer'
 import ReturnExchangeChildItemBox from './ReturnExchangeChildItemBox'
 import RippedPaperCheckReturn from '../../ChequePaper/RippedPaperCheckReturn'
+import { loadSvgAsEscposHex } from '../../../utils/escposImage'
+import { buildReceiptLayout } from '../../../utils/receiptBuilder'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -28,27 +31,35 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   drawerHeader: {
-    padding: '40px 40px 24px 40px',
+    padding: '10px 24px',
+    height: '60px',
     borderBottom: `1px solid ${theme.palette.bunker[100]}`,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    boxSizing: 'border-box',
   },
   rightArrowIcon: {
     backgroundColor: theme.palette.bg[10],
-    width: '48px',
-    height: '48px',
+    width: '36px',
+    height: '36px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: '50%',
+    borderRadius: '8px',
+    cursor: 'pointer',
     '& svg': {
-      backgroundColor: theme.palette.bg[10],
+      backgroundColor: 'transparent',
     },
   },
   usrImg: {
-    width: '24px',
+    width: '20px',
+    height: '20px',
     borderRadius: '50%',
     margin: '0 4px',
   },
 }))
+
 function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, setOpen }) {
   const reactToPrintContent = useCallback(() => printContainer.current, [])
   const printContainer = useRef()
@@ -61,6 +72,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
   const navigate = useNavigate()
   const { id: sale_id } = useParams()
   const { t } = useTranslation()
+
   const selectReturnItem = (e, item) => {
     if (e.target.checked) {
       setSelectedReturnItems((p) => [
@@ -71,6 +83,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
       setSelectedReturnItems((p) => p.filter((i) => i?.store_product_id != item?.store_product_id))
     }
   }
+
   const selectAllReturnItem = (e) => {
     if (e.target.checked) {
       const items = get(darftChildList, 'data.data.products', [])
@@ -85,6 +98,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
       setSelectedReturnItems([])
     }
   }
+
   const isAllChecked = () => {
     const itemsLength = get(darftChildList, 'data.data.products', [])?.length
     return itemsLength === selectedReturnItems.length
@@ -95,6 +109,10 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
     documentTitle: documentName.current,
     removeAfterPrint: true,
     onAfterPrint: () => {
+      if (returnedSale?.isDuplicatePrint) {
+        setReturnedSale(null)
+        return
+      }
       setChildOpen(false)
       setOpen(false)
       if (returnedSaleId) {
@@ -103,7 +121,11 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
       }
     },
     onPrintError: (err) => {
-      error('Ошибка при печати чека возврата: ' + err)
+      error('Ошибка при печати чека: ' + err)
+      if (returnedSale?.isDuplicatePrint) {
+        setReturnedSale(null)
+        return
+      }
       setChildOpen(false)
       setOpen(false)
       if (returnedSaleId) {
@@ -122,17 +144,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
   }, [returnedSale])
 
   const classes = useStyles()
-  const { mutate: deleteDraft, isLoading: isDeleteDraft } = useMutation(requests.deleteDraft, {
-    onSuccess: ({ data }) => {
-      setChildOpen(false)
-      // setOpen(false)
-      success('Черновик удален!')
-    },
-    onError: (err) => {
-      error('Ошибка при Черновик удален!')
-      console.error('err', err)
-    },
-  })
+
   const { mutate: returnSaleItem, isLoading: isreturnSaleItem } = useMutation(requests.returnSaleItem, {
     onSuccess: ({ data }) => {
       const resData = get(data, 'data')
@@ -145,16 +157,90 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
       console.error('err', err)
     },
   })
+
   const {
     data: darftChildList,
     refetch,
     isLoading: cashBoxDetaildWithSaleIdLoading,
   } = useQuery('cashBoxDetaildWithSaleId', () => requests.getCashBoxDetaildWithSaleId(get(open, 'item.id')))
+
   useEffect(() => {
     refetch()
   }, [open])
 
+  const handleDuplicatePrint = async () => {
+    const saleData = get(darftChildList, 'data.data')
+    if (!saleData) return
+
+    try {
+      let logoHex = null
+      try {
+        logoHex = await loadSvgAsEscposHex('/MagnitLogoPremiumCheque.svg', 400, 576)
+      } catch (e) {
+        console.warn('Duplicate logo loading failed:', e)
+      }
+
+      const cashierNameStr = `${saleData.employee?.first_name || ''} ${saleData.employee?.last_name || ''}`.trim() || 'Кассир'
+      const paymentType = saleData.sale_payments?.[0]?.payment_type?.name?.toLowerCase() || 'cash'
+
+      const payloadData = {
+        saleId: String(saleData.sale_number || ''),
+        cashier: cashierNameStr,
+        paymentType: paymentType,
+        date: saleData.completed_at || new Date().toISOString(),
+        items: (saleData.products || []).map((item) => ({
+          name: item.name || 'Товар',
+          mxik: item.class_code || item.code || '',
+          qty: item.quantity || 1,
+          price: Number(item.unit_price || 0),
+          total: Number(item.total_price || 0),
+          vatPercent: item.vat_percent || 12,
+          vatAmount: item.vat || 0,
+        })),
+        discount: Number(saleData.discount_amount || 0),
+        totalAmount: Number(saleData.total_amount || 0),
+        paidAmount: Number(saleData.total_amount || 0),
+        changeAmount: 0,
+        vatAmount: Number(saleData.vat_sum || 0),
+        chequeType: 'sale',
+        fiscalSign: saleData.fiscal_sign || '',
+        fiscalNumber: saleData.terminal_id || '',
+        fiscalDate: saleData.completed_at || '',
+        qrData: saleData.fiscal_sign || '',
+        customer: saleData.customer_name || '',
+        isDuplicate: true,
+      }
+
+      const layoutLines = buildReceiptLayout(payloadData, { logoHex })
+      const reqPayload = {
+        lines: layoutLines,
+        paymentType: paymentType,
+      }
+
+      const res = await axios.post('http://localhost:7788/print/raw-template', reqPayload)
+      if (res.data && res.data.ok) {
+        success(t('pos.printer.receipt_printed') || 'Чек напечатан!')
+        return
+      }
+    } catch (err) {
+      console.warn('ESC/POS printing failed, falling back to browser print:', err)
+    }
+
+    setReturnedSale({ ...saleData, isDuplicatePrint: true })
+  }
+
+  useEffect(() => {
+    if (open?.autoPrintDuplicate && darftChildList?.data?.data && !cashBoxDetaildWithSaleIdLoading) {
+      handleDuplicatePrint()
+      open.autoPrintDuplicate = false
+    }
+  }, [darftChildList, cashBoxDetaildWithSaleIdLoading])
+
   const theme = useTheme()
+  const employeeFirstName = get(darftChildList, 'data.data.employee.first_name')
+  const customerName = get(darftChildList, 'data.data.customer_name')
+  const hasValidCustomer = customerName && customerName.toLowerCase() !== 'unknown'
+
   return (
     <LoadingContainer readyState={!cashBoxDetaildWithSaleIdLoading}>
       <Box className={classes.drawer}>
@@ -164,10 +250,10 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
               <LeftArrowIcon />
             </Box>
             <Box ml={'16px'}>
-              <Typography fontSize={24} lineHeight={'32px'} fontWeight={700}>
+              <Typography fontSize={16} lineHeight={'22px'} fontWeight={700}>
                 Продажа #{get(darftChildList, 'data.data.sale_number')}
               </Typography>
-              <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
+              <Typography fontSize={14} lineHeight={'20px'} color={'orange.500'} fontWeight={600}>
                 {thousandDivider(get(darftChildList, 'data.data.total_amount', 0), 'сум')}
               </Typography>
             </Box>
@@ -176,76 +262,80 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
           <CloseIcon
             color={theme.palette.black}
             onClick={() => {
-              ;(setOpen(false), setChildOpen(false))
+              setOpen(false)
+              setChildOpen(false)
             }}
           />
         </Box>
 
         <Box padding={'0'}>
-          <Box p={'24px 40px 24px'} alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
-            <Typography fontSize={20} lineHeight={'32px'} fontWeight={600}>
+          <Box p={'12px 24px'} alignItems={'center'} height={'32px'} display={'flex'} justifyContent={'space-between'}>
+            <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
               {t('cart')}
             </Typography>
-            <Box display={'flex'} alignItems={'center'}>
-              <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                {t('vendor')}:
-              </Typography>
-              <CustomImg className={classes.usrImg} src='default-user-img.png' />
-
-              <Typography fontSize={16} lineHeight={'24px'} fontWeight={600}>
-                {get(darftChildList, 'data.data.employee.first_name')}
-              </Typography>
-            </Box>
+            {employeeFirstName && (
+              <Box display={'flex'} alignItems={'center'}>
+                <Typography fontSize={13} lineHeight={'18px'} fontWeight={500} color={'bunker.500'}>
+                  {t('vendor')}:
+                </Typography>
+                <CustomImg className={classes.usrImg} src='default-user-img.png' />
+                <Typography fontSize={14} lineHeight={'20px'} fontWeight={600}>
+                  {employeeFirstName}
+                </Typography>
+              </Box>
+            )}
           </Box>
-          <Box maxHeight={'calc(100vh - 485px)'} sx={{ overflowY: 'auto' }} padding={'0px 40px'}>
+          <Box maxHeight={'calc(100vh - 420px)'} sx={{ overflowY: 'auto' }} padding={'0px 24px'}>
             {!get(open, 'item.is_returned') && (
-              <Box mb={'10px'} borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} mr={'8px'} display={'flex'} width={'auto'}>
+              <Box mb={'8px'} borderRadius={'8px'} p={'8px 16px'} bgcolor={'bg.10'} mr={'0px'} display={'flex'} height={'40px'} alignItems={'center'}>
                 <Box
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    width: '50px',
+                    width: '40px',
                   }}
                 >
                   <input onChange={(e) => selectAllReturnItem(e)} name='checkbox_zero' checked={isAllChecked()} className='customCheckbox' type='checkbox' />
                 </Box>
-                <Typography>Выбрать все</Typography>
+                <Typography fontSize={'14px'} fontWeight={600}>Выбрать все</Typography>
               </Box>
             )}
             {get(darftChildList, 'data.data.products', []).map((el) => (
               <ReturnExchangeChildItemBox selectedReturnItems={selectedReturnItems} open={open} selectReturnItem={selectReturnItem} key={el.id} item={el} />
             ))}
           </Box>
-          <Box p={'24px 40px'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
-            <Typography mb={'16px'} fontSize={20} lineHeight={'32px'} fontWeight={600}>
+          <Box p={'16px 24px'} mt={'8px'} borderTop={'1px solid'} borderColor={'bunker.100'}>
+            <Typography mb={'12px'} fontSize={16} lineHeight={'24px'} fontWeight={600}>
               {t('features')}
             </Typography>
-            <Box display={'flex'} justifyContent={'space-between'}>
-              <Box width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
-                <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+            <Box display={'grid'} gridTemplateColumns={'repeat(2, 1fr)'} gap={'8px'}>
+              <Box bgcolor={'bg.10'} borderRadius={'8px'} padding={'8px 12px'}>
+                <Typography fontSize={11} fontWeight={500} color={'bunker.500'}>
                   Дата создания
                 </Typography>
-                <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                  {dayjs(get(darftChildList, 'data.data.completed_at')).format('DD.MM.YYYY | HH:mm:ss')}
+                <Typography fontSize={13} mt={'2px'} color={'bunker.950'} fontWeight={600}>
+                  {dayjs(get(darftChildList, 'data.data.completed_at')).format('DD.MM.YYYY HH:mm:ss')}
                 </Typography>
               </Box>
-              <Box width={'100%'} bgcolor={'bg.10'} borderRadius={'16px'} padding={'16px'}>
-                <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
+              <Box bgcolor={'bg.10'} borderRadius={'8px'} padding={'8px 12px'}>
+                <Typography fontSize={11} fontWeight={500} color={'bunker.500'}>
                   {t('store')}
                 </Typography>
-                <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
+                <Typography fontSize={13} mt={'2px'} color={'bunker.950'} fontWeight={600}>
                   MAGNIT
                 </Typography>
               </Box>
-            </Box>
-            <Box mt={'20px'} width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
-              <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                Клиент
-              </Typography>
-              <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
-                {get(darftChildList, 'data.data.customer_name') ?? '-'}
-              </Typography>
+              {hasValidCustomer && (
+                <Box bgcolor={'bg.10'} borderRadius={'8px'} padding={'8px 12px'} gridColumn={'span 2'}>
+                  <Typography fontSize={11} fontWeight={500} color={'bunker.500'}>
+                    Клиент
+                  </Typography>
+                  <Typography fontSize={13} mt={'2px'} color={'bunker.950'} fontWeight={600}>
+                    {customerName}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </Box>
 
@@ -254,9 +344,11 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
               sx={{
                 color: 'white',
                 bgcolor: 'red.600',
-                borderRadius: '16px',
-                padding: '20px',
-                m: '20px 40px',
+                borderRadius: '8px',
+                padding: '12px',
+                m: '10px 24px',
+                fontSize: '13px',
+                lineHeight: '18px',
               }}
             >
               Поскольку вы перешли в статус возврата, вы больше не можете выполнять какие-либо операции с этой продажей.
@@ -266,19 +358,41 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
             sx={{
               position: 'absolute',
               bottom: 10,
-              width: 'calc(100wh - 40px)',
-              right: '20px',
-              left: '20px',
-              padding: '20px 20px',
+              left: '24px',
+              right: '24px',
+              display: 'flex',
+              gap: '12px',
+              width: 'calc(100% - 48px)',
               '& .MuiButtonBase-root': {
-                height: 48,
+                height: 40,
               },
             }}
-            columnGap={2}
-            display='flex'
-            width='100%'
-            mt={4}
           >
+            <Button
+              onClick={handleDuplicatePrint}
+              fullWidth
+              sx={{
+                height: '40px !important',
+                border: '2px solid #cbd5e1 !important',
+                bgcolor: '#ffffff !important',
+                color: '#1e293b !important',
+                textTransform: 'none !important',
+                borderRadius: '8px !important',
+                fontWeight: '600 !important',
+                fontSize: '14px !important',
+                boxShadow: 'none !important',
+                '&:hover': {
+                  bgcolor: '#f1f5f9 !important',
+                  borderColor: '#94a3b8 !important',
+                },
+                '&:active': {
+                  transform: 'scale(0.98)',
+                }
+              }}
+            >
+              Повторный чек
+            </Button>
+
             {!get(open, 'item.is_returned') && (
               <Button
                 onClick={() =>
@@ -292,8 +406,11 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
                 disabled={selectedReturnItems?.length == 0}
                 variant='contained'
                 type='submit'
+                sx={{
+                  textTransform: 'none',
+                }}
               >
-                <Typography fontSize={16} ml={'12px'} color={'white'} lineHeight={'24px'} fontWeight={600}>
+                <Typography fontSize={14} color={'white'} fontWeight={600}>
                   Возврат
                 </Typography>
               </Button>
@@ -309,6 +426,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
                 qrCodeUrl={returnedSale.fiscal_sign || 'https://-cosmos.uz'}
                 customerId={returnedSale.customer}
                 noSticky
+                isDuplicate={Boolean(returnedSale.isDuplicatePrint)}
               />
             )}
           </div>
