@@ -68,9 +68,49 @@ export default function ProductTable({
             </tr>
           ) : (
             <>
+              {/* Pending new items skeletons rendered at the top */}
+              {Object.entries(pendingNewItems)
+                .filter(([pendingBarcode, timestamp]) => {
+                  const isStale = typeof timestamp === 'number' && Date.now() - timestamp > 15000
+                  const exists = cartItems.some((item) => item.barcode === pendingBarcode)
+                  return !isStale && !exists
+                })
+                .map(([pendingBarcode], idx, filteredArr) => (
+                  <tr key={`skeleton-${pendingBarcode}`} className="pos-table-row is-skeleton">
+                    <td className='col-num'>{idx + 1}</td>
+                    <td className='col-barcode'>
+                      <span className='barcode-text skeleton-shimmer' style={{ display: 'inline-block', minWidth: '80px', height: '14px' }}>
+                        {pendingBarcode}
+                      </span>
+                    </td>
+                    <td className='col-name'>
+                      <span className='skeleton-shimmer' style={{ display: 'inline-block', width: '120px', height: '16px' }} />
+                    </td>
+                    <td className='col-qty'>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div className='qty-skeleton skeleton-shimmer' />
+                        <span className='unit-badge skeleton-shimmer' style={{ width: '24px', height: '18px' }} />
+                      </div>
+                    </td>
+                    <td className='col-price text-right'>
+                      <span className='skeleton-shimmer' style={{ display: 'inline-block', width: '50px', height: '18px' }} />
+                    </td>
+                    <td className='col-total text-right'>
+                      <span className='skeleton-shimmer' style={{ display: 'inline-block', width: '50px', height: '18px' }} />
+                    </td>
+                  </tr>
+                ))}
+
               {cartItems.map((item, index) => {
                 const isSelected = item.id === selectedId
                 const isUpdating = !!(pendingQuantityUpdates[item.id] || pendingQuantityUpdates[item.store_product_id] || pendingQuantityUpdates[item.barcode])
+                // Calculate the correct number taking into account skeletons at the top
+                const activeSkeletonsCount = Object.entries(pendingNewItems).filter(([pendingBarcode, timestamp]) => {
+                  const isStale = typeof timestamp === 'number' && Date.now() - timestamp > 15000
+                  const exists = cartItems.some((el) => el.barcode === pendingBarcode)
+                  return !isStale && !exists
+                }).length
+
                 return (
                   <tr
                     key={item.id}
@@ -78,7 +118,7 @@ export default function ProductTable({
                     onClick={() => onSelectRow?.(item.id)}
                     style={isUpdating ? { opacity: 0.8, backgroundColor: 'rgba(243, 244, 246, 0.2)' } : undefined}
                   >
-                    <td className='col-num'>{index + 1}</td>
+                    <td className='col-num'>{activeSkeletonsCount + index + 1}</td>
                     <td className='col-barcode'>
                       <span className='barcode-text'>{item.barcode || item.store_product_id || '—'}</span>
                     </td>
@@ -129,39 +169,6 @@ export default function ProductTable({
                   </tr>
                 )
               })}
-
-              {/* Pending new items skeletons */}
-              {Object.entries(pendingNewItems)
-                .filter(([pendingBarcode, timestamp]) => {
-                  const isStale = typeof timestamp === 'number' && Date.now() - timestamp > 15000
-                  const exists = cartItems.some((item) => item.barcode === pendingBarcode)
-                  return !isStale && !exists
-                })
-                .map(([pendingBarcode], idx) => (
-                <tr key={`skeleton-${pendingBarcode}`} className="pos-table-row is-skeleton">
-                  <td className='col-num'>{cartItems.length + idx + 1}</td>
-                  <td className='col-barcode'>
-                    <span className='barcode-text skeleton-shimmer' style={{ display: 'inline-block', minWidth: '80px', height: '14px' }}>
-                      {pendingBarcode}
-                    </span>
-                  </td>
-                  <td className='col-name'>
-                    <span className='skeleton-shimmer' style={{ display: 'inline-block', width: '120px', height: '16px' }} />
-                  </td>
-                  <td className='col-qty'>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <div className='qty-skeleton skeleton-shimmer' />
-                      <span className='unit-badge skeleton-shimmer' style={{ width: '24px', height: '18px' }} />
-                    </div>
-                  </td>
-                  <td className='col-price text-right'>
-                    <span className='skeleton-shimmer' style={{ display: 'inline-block', width: '50px', height: '18px' }} />
-                  </td>
-                  <td className='col-total text-right'>
-                    <span className='skeleton-shimmer' style={{ display: 'inline-block', width: '50px', height: '18px' }} />
-                  </td>
-                </tr>
-              ))}
             </>
           )}
         </tbody>

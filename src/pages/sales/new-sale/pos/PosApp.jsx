@@ -148,6 +148,33 @@ export default function PosApp() {
   const cartItems = get(cartItemsRes, 'data.data.data', [])
   const totalAmount = get(cartItemsRes, 'data.data.total_amount', 0)
 
+  // itemOrder maintains frontend interaction ordering (last scanned/updated items at the top)
+  const [itemOrder, setItemOrder] = useState([])
+
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      setItemOrder((prev) => {
+        const currentIds = cartItems.map((item) => item.id)
+        let filtered = prev.filter((id) => currentIds.includes(id))
+        const newIds = currentIds.filter((id) => !filtered.includes(id))
+        return [...newIds, ...filtered]
+      })
+    } else {
+      setItemOrder([])
+    }
+  }, [cartItems])
+
+  const sortedCartItems = useMemo(() => {
+    return [...cartItems].sort((a, b) => {
+      const idxA = itemOrder.indexOf(a.id)
+      const idxB = itemOrder.indexOf(b.id)
+      if (idxA === -1 && idxB === -1) return 0
+      if (idxA === -1) return 1
+      if (idxB === -1) return -1
+      return idxA - idxB
+    })
+  }, [cartItems, itemOrder])
+
   const setCardPaymentAmount = useCallback((val) => {
     setRawCardPaymentAmount((prev) => {
       let nextVal = typeof val === 'function' ? val(prev) : val
@@ -172,13 +199,13 @@ export default function PosApp() {
 
   const posCartItemsList = useMemo(
     () => ({
-      data: cartItems,
+      data: sortedCartItems,
       total_amount: totalAmount,
       sum: get(cartItemsRes, 'data.data.sum', totalAmount),
       discount_amount: get(cartItemsRes, 'data.data.discount_amount', 0),
       vat_sum: get(cartItemsRes, 'data.data.vat_sum', 0),
     }),
-    [cartItemsRes],
+    [sortedCartItems, cartItemsRes, totalAmount],
   )
 
   const getPaymentTypeId = (names = []) => {
@@ -237,7 +264,7 @@ export default function PosApp() {
   const maxAmount = Number(totalAmount || 0) - paymentAmount
 
   // Calculate totals
-  const totalDiscount = cartItems.reduce((acc, item) => acc + (item.discount_price || 0), 0)
+  const totalDiscount = sortedCartItems.reduce((acc, item) => acc + (item.discount_price || 0), 0)
 
   // Search customers query
   const { data: customersRes, isLoading: isSearchingCustomers } = useQuery(
@@ -319,7 +346,14 @@ export default function PosApp() {
         setPendingAddBarcode(null)
 
         refetchCart()
-        setSelectedId(data?.data?.id)
+        const newId = data?.data?.id
+        if (newId) {
+          setItemOrder((prev) => {
+            const filtered = prev.filter((x) => x !== newId)
+            return [newId, ...filtered]
+          })
+          setSelectedId(newId)
+        }
 
         const origScanVal = variables.originalScannedValue
         if (origScanVal && origScanVal.length > 37 && get(data, 'data.is_marking', false)) {
@@ -639,6 +673,13 @@ export default function PosApp() {
     if (weightGrams === null) {
       const existing = cartItems.find((item) => item.barcode === searchBarcode)
       if (existing) {
+        // Immediately select and move to top
+        setSelectedId(existing.id)
+        setItemOrder((prev) => {
+          const filtered = prev.filter((x) => x !== existing.id)
+          return [existing.id, ...filtered]
+        })
+
         // Set update locks for this barcode and scanned value
         pendingProductUpdatesRef.current[searchBarcode] = true
         if (scannedBarcode) {
@@ -746,6 +787,13 @@ export default function PosApp() {
     if (weightGrams !== null) {
       const existingScaleItem = cartItems.find((item) => item.store_product_id === product.id)
       if (existingScaleItem) {
+        // Immediately select and move to top
+        setSelectedId(existingScaleItem.id)
+        setItemOrder((prev) => {
+          const filtered = prev.filter((x) => x !== existingScaleItem.id)
+          return [existingScaleItem.id, ...filtered]
+        })
+
         const currentGrams = existingScaleItem.quantity * existingScaleItem.unit_per_pack + existingScaleItem.unit_quantity
 
         // Clear new item state/locks because this is an update to an existing row
@@ -844,6 +892,11 @@ export default function PosApp() {
   })
 
   const handleQtyIncrease = (item) => {
+    setSelectedId(item.id)
+    setItemOrder((prev) => {
+      const filtered = prev.filter((x) => x !== item.id)
+      return [item.id, ...filtered]
+    })
     changeQty({
       id: item.id,
       data: {
@@ -856,6 +909,11 @@ export default function PosApp() {
 
   const handleQtyDecrease = (item) => {
     if (item.quantity > 1 || (item.quantity === 1 && item.unit_quantity > 0)) {
+      setSelectedId(item.id)
+      setItemOrder((prev) => {
+        const filtered = prev.filter((x) => x !== item.id)
+        return [item.id, ...filtered]
+      })
       changeQty({
         id: item.id,
         data: {
@@ -1263,7 +1321,7 @@ export default function PosApp() {
         <main className='pos-left-section'>
           <div className='pos-cart-area'>
             <ProductTable
-              cartItems={cartItems}
+              cartItems={sortedCartItems}
               selectedId={selectedId}
               onSelectRow={setSelectedId}
               onQtyIncrease={handleQtyIncrease}
@@ -1277,7 +1335,7 @@ export default function PosApp() {
 
           {/* Left Bottom Summary & Actions */}
           <div className='pos-left-bottom'>
-            <ProductSummary cartItems={cartItems} selectedId={selectedId} totalAmount={totalAmount} totalDiscount={totalDiscount} t={t} />
+            <ProductSummary cartItems={sortedCartItems} selectedId={selectedId} totalAmount={totalAmount} totalDiscount={totalDiscount} t={t} />
 
             <ActionBar
               customerId={customerId}
@@ -1335,7 +1393,7 @@ export default function PosApp() {
           handleQuickCash={handleQuickCash}
           handleCheckout={handleCheckout}
           isCheckoutLoading={isCheckoutLoading}
-          cartItems={cartItems}
+          cartItems={sortedCartItems}
           t={t}
         />
       </div>
