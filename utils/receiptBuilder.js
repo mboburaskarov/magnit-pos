@@ -91,7 +91,7 @@ export function buildReceiptLayout(req, storeInfo = {}) {
 
   if (req.isDuplicate) {
     add('[BOLD_START]')
-    add(centerText("QAYTA CHIQARILGAN CHECK"))
+    add(centerText('QAYTA CHIQARILGAN CHECK'))
     add('[BOLD_END]')
     add(lineSeparator)
   }
@@ -221,7 +221,7 @@ export function buildZReportReceiptLayout(zrepo, storeInfo = {}) {
     add(centerText(storeInfo?.name || 'MAGNIT PREMIUM'))
     add('[BOLD_END]')
   }
-  
+
   const storeAddress = storeInfo?.address || "Shayxontohur\nOlmazor MFY, O'qchi ko'chasi 4, 4A-UY"
   storeAddress.split('\n').forEach((line) => add(centerText(line)))
   add('*'.repeat(WIDTH))
@@ -265,7 +265,7 @@ export function buildZReportReceiptLayout(zrepo, storeInfo = {}) {
   add(leftRight(`AppletVersion:`, `${zrepo?.appletVersion || '-'}`, WIDTH, '.'))
 
   add(lineSeparator)
-  add(centerText("Отчет о закрытии смены время на компьютере"))
+  add(centerText('Отчет о закрытии смены время на компьютере'))
   add(centerText(dayjs().format('DD.MM.YYYY HH:mm:ss')))
   add('[CUT]')
 

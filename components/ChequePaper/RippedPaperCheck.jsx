@@ -102,7 +102,7 @@ function RippedPaperCheck({
                 id={`return-price-${'index1'}`}
                 rowData={{
                   type: `STIR:`,
-                  value: get(userData, 'store.inn', '303970073'),
+                  value: get(userData, 'store.inn', '305445201'),
                 }}
               />
               {qrcodeUrl != false && disableSumsOnGoods() && (
