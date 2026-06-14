@@ -311,6 +311,66 @@ export default function PosApp() {
 
   const isCheckoutLoading = isFinishSaleWithoutAppPaymentType || isSendToEPOS || isGelOldEposCheck || isSendEPOSresponseToBackend
 
+  const [isCreatingNewSale, setIsCreatingNewSale] = useState(false)
+
+  const isSaleClosedError = (err) => {
+    const code = get(err, 'response.data.code') || err?.response?.status
+    const data = get(err, 'response.data.data')
+    return code === 409 && data === 'sale.is.closed'
+  }
+
+  const handleSaleClosedTransition = async (originalActionCallback) => {
+    setIsCreatingNewSale(true)
+    try {
+      let device_id = localStorage.getItem('device_id')
+      if (!device_id && userData?.store?.terminal_ids?.length > 0) {
+        device_id = userData.store.terminal_ids[0]
+      }
+      const storeId = get(userData, 'store.id')
+      
+      let openCashboxId = null
+      if (storeId && device_id) {
+        const checkRes = await requests.checkSaleExist({ store_id: storeId, device_id })
+        const isOpen = get(checkRes, 'data.data.is_open', false)
+        openCashboxId = get(checkRes, 'data.data.cash_box_id')
+        if (!isOpen) {
+          error(t('pos.cashbox_closed_redirect') || 'Kassa yopilgan, iltimos kassani oching')
+          navigate('/sales/create')
+          return
+        }
+      }
+
+      const cashBoxOpId = openCashboxId || get(cashBoxDetails, 'data.data.cash_box_operation_id') || get(cashBoxDetails, 'data.data.id')
+      if (!cashBoxOpId) {
+        error(t('pos.cashbox_closed_redirect') || 'Kassa yopilgan, iltimos kassani oching')
+        navigate('/sales/create')
+        return
+      }
+
+      const { data: newSaleRes } = await requests.saleCreate({
+        cash_box_operation_id: cashBoxOpId,
+        store_id: storeId,
+      })
+      const nextId = get(newSaleRes, 'data.id')
+      if (nextId) {
+        navigate(`/sales/pos/${nextId}`, { replace: true })
+        localStorage.setItem('last_sale_id', nextId)
+        
+        if (originalActionCallback) {
+          await originalActionCallback(nextId)
+        }
+      } else {
+        error('Yangi chek yaratib bo‘lmadi')
+      }
+    } catch (e) {
+      console.error('Failed to resolve closed sale:', e)
+      error('Yangi chek yaratib bo‘lmadi')
+      navigate('/sales/create')
+    } finally {
+      setIsCreatingNewSale(false)
+    }
+  }
+
   const { mutate: addProduct } = useMutation(
     (params) => {
       const rest = { ...params }
@@ -372,6 +432,16 @@ export default function PosApp() {
         const barcode = variables.barcode
         const originalScannedValue = variables.originalScannedValue
         const searchBarcode = variables.searchBarcode
+
+        if (isSaleClosedError(err)) {
+          if (!variables._retried) {
+            handleSaleClosedTransition(async (newSaleId) => {
+              addProduct({ ...variables, sale_id: newSaleId, _retried: true })
+            })
+            return
+          }
+        }
+
         setPendingNewItems((prev) => {
           const next = { ...prev }
           if (barcode) delete next[barcode]
@@ -425,6 +495,26 @@ export default function PosApp() {
       },
       onError: (err, variables) => {
         const id = variables.id
+
+        if (isSaleClosedError(err)) {
+          if (!variables._retried) {
+            handleSaleClosedTransition(async (newSaleId) => {
+              const item = cartItems.find((el) => el.id === id)
+              if (item) {
+                addProduct({
+                  sale_id: newSaleId,
+                  barcode: item.barcode,
+                  store_product_id: item.store_product_id,
+                  discount_type: 'percent',
+                  discount_value: 0,
+                  _retried: true,
+                })
+              }
+            })
+            return
+          }
+        }
+
         setPendingQuantityUpdates((prev) => {
           const next = { ...prev }
           delete next[id]
@@ -446,37 +536,68 @@ export default function PosApp() {
     },
   )
 
-  const { mutate: deleteItem } = useMutation(requests.deleteCartItem, {
-    onSuccess: () => {
-      refetchCart()
-      success(t('pos.product_removed'))
-    },
-    onError: () => error(t('pos.error_removing_product')),
-  })
+  const { mutate: deleteItem } = useMutation(
+    (params) => requests.deleteCartItem(params),
+    {
+      onSuccess: () => {
+        refetchCart()
+        success(t('pos.product_removed'))
+      },
+      onError: (err) => {
+        if (isSaleClosedError(err)) {
+          handleSaleClosedTransition()
+          return
+        }
+        error(t('pos.error_removing_product'))
+      },
+    }
+  )
 
   // Customer loyalty mutations
-  const { mutate: addDiscountCard } = useMutation(requests.addDiscountCard, {
-    onSuccess: ({ data }) => {
-      refetchCart()
-      success(t('pos.discount_card_added', { percent: data?.data?.discount_percent }))
-    },
-    onError: (err) => {
-      error(t('pos.error_adding_discount_card'))
-      console.error('err', err)
-    },
-  })
+  const { mutate: addDiscountCard } = useMutation(
+    (params) => requests.addDiscountCard(params),
+    {
+      onSuccess: ({ data }) => {
+        refetchCart()
+        success(t('pos.discount_card_added', { percent: data?.data?.discount_percent }))
+      },
+      onError: (err, variables) => {
+        if (isSaleClosedError(err)) {
+          if (!variables._retried) {
+            handleSaleClosedTransition(async (newSaleId) => {
+              addDiscountCard({ ...variables, sale_id: newSaleId, _retried: true })
+            })
+            return
+          }
+        }
+        error(t('pos.error_adding_discount_card'))
+        console.error('err', err)
+      },
+    }
+  )
 
-  const { mutate: removeDiscountCard } = useMutation(requests.removeDiscountCard, {
-    onSuccess: () => {
-      setCustomerId(null)
-      refetchCart()
-      success(t('pos.discount_card_removed'))
-    },
-    onError: (err) => {
-      error(t('pos.error_removing_discount_card'))
-      console.error('err', err)
-    },
-  })
+  const { mutate: removeDiscountCard } = useMutation(
+    (params) => requests.removeDiscountCard(params),
+    {
+      onSuccess: () => {
+        setCustomerId(null)
+        refetchCart()
+        success(t('pos.discount_card_removed'))
+      },
+      onError: (err, variables) => {
+        if (isSaleClosedError(err)) {
+          if (!variables._retried) {
+            handleSaleClosedTransition(async (newSaleId) => {
+              removeDiscountCard({ ...variables, sale_id: newSaleId, _retried: true })
+            })
+            return
+          }
+        }
+        error(t('pos.error_removing_discount_card'))
+        console.error('err', err)
+      },
+    }
+  )
 
   // ── Effects ──
   useEffect(() => {
@@ -1593,6 +1714,41 @@ export default function PosApp() {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {isCreatingNewSale && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(255, 255, 255, 0.7)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          gap: '12px',
+        }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            border: '3px solid #e2e8f0',
+            borderTopColor: '#2563eb',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+          }} />
+          <div style={{ fontWeight: '600', color: '#1e293b', fontSize: '15px' }}>
+            Yangi chek yaratilmoqda...
+          </div>
+          <style>{`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}</style>
         </div>
       )}
     </div>
