@@ -322,7 +322,7 @@ export const requests = {
   getFastSelectGroups: (filter) => request.get(`v1/fast-select-group/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getFastSelectProducts: (filter) => request.get(`v1/fast-select-product/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   createProduct: (data) => request.post(`v1/product`, data),
-  createProductBarcode: ({data,id}) => request.post(`v1/product/${id}/barcodes`, data),
+  createProductBarcode: ({ data, id }) => request.post(`v1/product/${id}/barcodes`, data),
   changeBarcode: ({ id, barcode, unit_code, mxik, unit_label }) => request.put(`v1/product/update-barcode/${id}`, { id, barcode, unit_label, unit_code, mxik }),
   getProductBarcodes: ({ id, ...filter }) => request.get(`v1/product/${id}/barcodes${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateProductBarcode: ({ productId, ...data }) => request.put(`v1/product/${productId}/barcodes`, data),
@@ -489,9 +489,9 @@ export const requests = {
   //target
   createTarget: (data) => request.post(`v1/store-target`, data),
   getTargetList: (filter) => request.get(`v1/store-target/list${qs.stringify(filter, { addQueryPrefix: true })}`),
-  getTargetByEmployeeList: ({ store_id, ...filter }) => request.get(`v1/store-target/employee/list/${store_id}${qs.stringify(filter, { addQueryPrefix: true })}`),
+  getTargetByEmployeeList: ({ store_id, ...filter }) =>
+    request.get(`v1/store-target/employee/list/${store_id}${qs.stringify(filter, { addQueryPrefix: true })}`),
   updateEmployeeTarget: ({ employee_id, data }) => request.put(`v1/store-target/employee/${employee_id}`, data),
   getMyTarget: (filter) => request.get(`v1/store-target/employee/my${qs.stringify(filter, { addQueryPrefix: true })}`),
   getTargetsExcelReport: (filter) => requestEXCEL.get(`v1/store-target/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
-
 }
