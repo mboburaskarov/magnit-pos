@@ -264,8 +264,8 @@ export const useSaleOperations = ({
 
           label: '',
           name: el.name,
-          classCode: data.find((final) => final.cart_item_id === el.id)?.classCode,
-          packageCode: data.find((final) => final.cart_item_id === el.id)?.packageCode,
+          classCode: data.find((final) => final.cart_item_id === el.id)?.classCode || el.class_code,
+          packageCode: data.find((final) => final.cart_item_id === el.id)?.packageCode || el.package_code,
           other: parseFloat(other),
           ownerType: 0,
         })
@@ -327,8 +327,8 @@ export const useSaleOperations = ({
             vat: parseFloat(((((price - discount - otherSum) * get(el, 'vat_percent')) / (get(el, 'vat_percent') + 100)) * 100).toFixed(2)),
             label: marking,
             name: el.name,
-            classCode: data.find((final) => final.cart_item_id === el.id)?.classCode,
-            packageCode: data.find((final) => final.cart_item_id === el.id)?.packageCode,
+            classCode: data.find((final) => final.cart_item_id === el.id)?.classCode || el.class_code,
+            packageCode: data.find((final) => final.cart_item_id === el.id)?.packageCode || el.package_code,
             other: parseFloat(other),
             ownerType: 0,
           })
