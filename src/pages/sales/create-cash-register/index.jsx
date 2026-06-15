@@ -631,7 +631,7 @@ function NewCashRegister() {
       navigate(`/sales/pos/${saleId}`)
     },
     onError: (err) => {
-      error('Kassani ochib bo‘lmadi')
+      error('Ошибка при создании кассы!')
       console.error('err', err)
       setInitError(true)
       setInitErrorMessage(err?.response?.data?.message || err?.message || 'Ошибка при создании кассы!')
@@ -669,12 +669,12 @@ function NewCashRegister() {
         if (get(data, 'message', '').includes('Ru:')) {
           error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
         } else {
-          error(`Kassani ochib bo‘lmadi. ${get(data, 'message', '')}`)
+          error(`err: ${get(data, 'message', 'Ошибка при создании кассы! (open z report)')}`)
         }
       }
     },
     onError: (err) => {
-      error('Kassani ochib bo‘lmadi')
+      error('Ошибка при создании кассы! (open z report)')
       console.error('err', err)
       setInitError(true)
       setInitErrorMessage(err?.response?.data?.message || err?.message || 'Ошибка при создании кассы! (open z report)')
@@ -703,74 +703,19 @@ function NewCashRegister() {
     return () => clearInterval(interval)
   }, [isEposDisconnected, runInitCheck])
 
-  const handleOpenCashbox = async () => {
+  const handleOpenCashbox = () => {
     const selectedRegister = methods.watch('registerCash_id')
     if (!selectedRegister) {
       error('Пожалуйста, выберите кассу!')
       return
     }
-    if (selectedRegister.is_open) {
-      try {
-        const storeId = get(userData, 'store.id')
-        let deviceId = localStorage.getItem('device_id')
-        if (deviceId === 'null' || deviceId === 'undefined') deviceId = null
-        deviceId = deviceId || userData?.store?.terminal_ids?.[0] || crypto.randomUUID()
-        
-        let isOpen = false
-        let saleId = null
-        let checkRes = null
-        
-        try {
-          checkRes = await requests.checkSaleExist({ 
-            store_id: storeId, 
-            device_id: deviceId,
-            cash_box_id: selectedRegister.id 
-          })
-          isOpen = get(checkRes, 'data.data.is_open', false)
-          saleId = get(checkRes, 'data.data.sale_id')
-        } catch (checkErr) {
-          console.warn('checkSaleExist failed, treating as no active sale:', checkErr)
-        }
-
-        if (isOpen && saleId) {
-          localStorage.setItem('device_id', deviceId)
-          if (window.parent) {
-            window.parent.postMessage(
-              {
-                type: 'SAVE_CASH_BOX',
-                payload: {
-                   ...selectedRegister,
-                   ...(checkRes?.data?.data || {}),
-                   cash_box_id: selectedRegister.id,
-                   is_open: true
-                },
-              },
-              '*',
-            )
-          }
-          navigate(`/sales/pos/${saleId}`)
-        } else {
-          const cashBoxOpId = selectedRegister.active_operation_id || selectedRegister.current_operation_id || selectedRegister.cash_box_operation_id || selectedRegister.id
-          const { data: newSaleRes } = await requests.saleCreate({
-            cash_box_operation_id: cashBoxOpId,
-            store_id: storeId,
-          })
-          const nextId = get(newSaleRes, 'data.id')
-          if (nextId) {
-            navigate(`/sales/pos/${nextId}`)
-          } else {
-            error('Kassani davom ettirib bo‘lmadi')
-          }
-        }
-      } catch (e) {
-        console.error('Failed to continue to open cashbox:', e)
-        error('Kassani davom ettirib bo‘lmadi')
-      }
-    } else {
+    if (!get(selectedRegister, 'is_open', true)) {
       openZReport({
         token: 'DXJFX32CN1296678504F2',
         method: 'openZreport',
       })
+    } else {
+      methods.handleSubmit((data) => onSubmit(data), onError)()
     }
   }
 
@@ -798,35 +743,11 @@ function NewCashRegister() {
   const filteredRegisters = registers.filter((reg) => (reg.full_name || reg.name || '').toLowerCase().includes(registerSearchQuery.toLowerCase()))
 
   const selectedRegister = methods.watch('registerCash_id')
-  const openedAmount = methods.watch('opened_amout')
-
-  let buttonText = 'Kassani tanlang'
-  let isSubmitDisabled = true
-
-  if (!selectedRegister) {
-    buttonText = 'Kassani tanlang'
-    isSubmitDisabled = true
-  } else if (selectedRegister.is_open) {
-    buttonText = 'Davom ettirish (Enter)'
-    isSubmitDisabled = isopenZReport || isCreatingCashbox
-  } else {
-    buttonText = 'Kassani oching (Enter)'
-    const hasValidAmount = openedAmount !== undefined && openedAmount !== null && openedAmount !== '' && Number(openedAmount) >= 0
-    isSubmitDisabled = !hasValidAmount || isopenZReport || isCreatingCashbox
-  }
-
-  useEffect(() => {
-    const handleGlobalKeyDown = (event) => {
-      if (event.key === 'Enter') {
-        if (selectedRegister && !isSubmitDisabled) {
-          event.preventDefault()
-          handleOpenCashbox()
-        }
-      }
-    }
-    window.addEventListener('keydown', handleGlobalKeyDown)
-    return () => window.removeEventListener('keydown', handleGlobalKeyDown)
-  }, [selectedRegister, isSubmitDisabled])
+  const isSubmitDisabled =
+    get(canCreate, 'is_open') ||
+    isopenZReport ||
+    isCreatingCashbox ||
+    !selectedRegister
 
   const isPageLoading = initLoading || isopenZReport || isCreatingCashbox
 
@@ -972,41 +893,18 @@ function NewCashRegister() {
       <Box className={classes.box}>
         <Box className={classes.wrapper}>
           <Box className={classes.header}>
-            {selectedRegister ? (
-              selectedRegister.is_open ? (
-                <>
-                  <span className={classes.openStoreDot} />
-                  <Box>
-                    <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
-                      Kassa Ochiq — {selectedRegister.full_name || selectedRegister.name}
-                    </Typography>
-                    <Box sx={{ display: 'inline-block', backgroundColor: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '6px', mt: '4px' }}>
-                      <Typography fontSize={'13px'} color={'#cbd5e1'} fontWeight={'600'}>
-                        {selectedRegister.name}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </>
-              ) : (
-                <>
-                  <span className={classes.closeStoreDot} />
-                  <Box>
-                    <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
-                      Kassa Yopiq — {selectedRegister.full_name || selectedRegister.name}
-                    </Typography>
-                    <Box sx={{ display: 'inline-block', backgroundColor: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '6px', mt: '4px' }}>
-                      <Typography fontSize={'13px'} color={'#cbd5e1'} fontWeight={'600'}>
-                        {selectedRegister.name}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </>
-              )
+            {get(canCreate, 'is_open') ? (
+              <>
+                <span className={classes.openStoreDot} />
+                <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
+                  Kassa Ochiq ({get(registerCashList, 'data.data.data', null).find((a) => a.id == get(methods.watch('registerCash_id'), 'id'))?.full_name})
+                </Typography>
+              </>
             ) : (
               <>
-                <span className={classes.closeStoreDot} style={{ backgroundColor: '#64748b' }} />
+                <span className={classes.closeStoreDot} />
                 <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
-                  Kassani tanlang
+                  Kassa Yopiq
                 </Typography>
               </>
             )}
@@ -1014,7 +912,7 @@ function NewCashRegister() {
 
           <Box display={'flex'} p={'32px'} gap={'32px'} alignItems={'stretch'}>
             {/* Left side inputs and summary */}
-            <Box sx={{ width: '55%', display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ width: '55%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <Box>
                 <Typography fontSize={'14px'} fontWeight={'700'} color={'#475569'} mb={'8px'}>
                   Kassa *
@@ -1072,25 +970,21 @@ function NewCashRegister() {
                   </Box>
                 )}
 
-                {!selectedRegister?.is_open && (
-                  <Box mt={'16px'}>
-                    <Typography fontSize={'14px'} fontWeight={'700'} color={'#475569'} mb={'8px'}>
-                      Ochilish miqdori
-                    </Typography>
-                    <NumberFormatInput
-                      endAdornmentText={'UZS'}
-                      end
-                      type='number'
-                      fullWidth
-                      name='opened_amout'
-                      placeholder='Miqdorni kiriting'
-                      onFocus={() => setFocusedInput('opened_amout')}
-                    />
-                  </Box>
-                )}
+                <Box className={classes.formField}>
+                  <NumberFormatInput
+                    endAdornmentText={'UZS'}
+                    end
+                    type='number'
+                    fullWidth
+                    name='opened_amout'
+                    label='Ochilish miqdori'
+                    placeholder='Miqdorni kiriting'
+                    onFocus={() => setFocusedInput('opened_amout')}
+                  />
+                </Box>
               </Box>
 
-              <Box display='flex' gap='16px' sx={{ marginTop: 'auto' }}>
+              <Box display='flex' gap='16px' mt='20px'>
                 <Box className={classes.card_box} flex={1}>
                   <Box display={'flex'} alignItems={'center'}>
                     <Box className={classes.iconBox}>
@@ -1154,8 +1048,8 @@ function NewCashRegister() {
                     )
                   })}
                 </div>
-                <button type='button' className={classes.enterBtn} disabled={isSubmitDisabled} onClick={() => handleOpenCashbox()}>
-                  {buttonText}
+                <button type='button' className={classes.enterBtn} disabled={isSubmitDisabled} onClick={() => handleKeypadPress('enter')}>
+                  Kassani oching (Enter)
                 </button>
               </div>
             </Box>
