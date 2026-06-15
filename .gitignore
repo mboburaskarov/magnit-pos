@@ -24,3 +24,8 @@ dist-ssr
 *.sln
 *.sw?
 .sixth
+.env
+.env.dev
+.env.prod
+.env.*.local
+
