@@ -7,7 +7,9 @@ RUN yarn install --frozen-lockfile
 
 COPY . .
 
-RUN yarn global add vite@4.4 && yarn build
+ARG BUILD_MODE=production
+
+RUN yarn global add vite@4.4 && yarn build --mode $BUILD_MODE
 
 FROM nginx:alpine
 

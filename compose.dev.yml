@@ -6,7 +6,7 @@ services:
   app:
     image: ${APP_IMAGE:-ghcr.io/nagaimatsuge/magnit-pos:dev-latest}
     container_name: pos-frontend
-    env_file: .env.dev
+    env_file: .env.development
     restart: unless-stopped
     networks:
       - magnit

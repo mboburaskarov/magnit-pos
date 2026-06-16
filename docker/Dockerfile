@@ -10,8 +10,9 @@ COPY . .
 ARG VITE_API_BASE_URL
 ARG VITE_MEDIA_BASE_URL
 ARG VITE_USE_MOCKS
+ARG BUILD_MODE=production
 
-RUN yarn global add vite@4.4 && yarn build
+RUN yarn global add vite@4.4 && yarn build --mode $BUILD_MODE
 
 FROM nginx:alpine
 
