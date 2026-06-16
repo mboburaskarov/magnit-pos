@@ -4,9 +4,9 @@ networks:
 
 services:
   app:
-    image: ${APP_IMAGE:-ghcr.io/nagaimatsuge/magnit-pos:latest}
+    image: ${APP_IMAGE:-ghcr.io/nagaimatsuge/magnit-pos:dev-latest}
     container_name: pos-frontend
-    env_file: .env.prod
+    env_file: .env.dev
     restart: unless-stopped
     networks:
       - magnit
