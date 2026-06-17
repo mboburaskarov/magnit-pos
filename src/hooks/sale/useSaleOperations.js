@@ -444,10 +444,12 @@ export const useSaleOperations = ({
         printerSize: 58,
         phoneNumber: get(userData, 'store.phone'),
         companyPhoneNumber: '+998712916999',
+        is_corporate: cartOwnerType === 'corporative',
         params: {
           ...(SALE_TYPE === 'SALE' ? { externalId: `${SALE_NUMBER}` } : {}),
           clientName: get(customerId, 'name'),
           items,
+          is_corporate: cartOwnerType === 'corporative',
 
           receivedCash: parseFloat(
             (
@@ -488,7 +490,7 @@ export const useSaleOperations = ({
       lastEposPayloadRef.current = payload
       sendToEPOS(payload)
     },
-    [prepareEPOSData, paymentsList, maxAmount, sendToEPOS, SALE_TYPE, userData, customerId, cartItemsList, cashBoxDetails],
+    [prepareEPOSData, paymentsList, maxAmount, sendToEPOS, SALE_TYPE, userData, customerId, cartItemsList, cashBoxDetails, cartOwnerType],
   )
 
   const sendEPOSDataRef = useRef(sendEPOSData)

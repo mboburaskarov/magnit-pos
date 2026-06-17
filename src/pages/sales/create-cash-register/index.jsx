@@ -234,7 +234,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   registerListScroll: {
-    maxHeight: '220px',
+    maxHeight: '380px',
     overflowY: 'auto',
     display: 'flex',
     flexDirection: 'column',
@@ -395,6 +395,9 @@ function NewCashRegister() {
   const [showTimerHint, setShowTimerHint] = useState(false)
   const [retryAction, setRetryAction] = useState(null)
 
+  // Track if a continue action is in progress
+  const [isContinuing, setIsContinuing] = useState(false)
+
   // Focused Input Tracking
   const [focusedInput, setFocusedInput] = useState('opened_amout')
 
@@ -407,10 +410,10 @@ function NewCashRegister() {
       dispatch(setUserData({ ...data?.data }))
     },
     onError: (err) => {
-      error('Ошибка получения пользовательских данных.!')
+      error('Foydalanuvchi ma‘lumotlarini olishda xatolik yuz berdi!')
       setInitError(true)
       setInitLoading(false)
-      setInitErrorMessage('Не удалось загрузить данные пользователя. Проверьте подключение к интернету.')
+      setInitErrorMessage('Foydalanuvchi ma‘lumotlarini yuklab bo‘lmadi. Internet aloqasini tekshiring.')
       setRetryAction(() => () => {
         setInitError(false)
         setInitLoading(true)
@@ -608,20 +611,51 @@ function NewCashRegister() {
     })
   }, [methods.watch('registerCash_id')])
 
+  // Auto-select the cashbox saved in localStorage on list load
+  const registers = registerCashList?.data?.data?.data || []
+  useEffect(() => {
+    if (registers.length > 0 && !methods.watch('registerCash_id')) {
+      const saved = localStorage.getItem('selected_cashbox')
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved)
+          const found = registers.find((r) => r.id === parsed.id)
+          if (found) {
+            methods.setValue('registerCash_id', found, { shouldValidate: true })
+          } else {
+            methods.setValue('registerCash_id', parsed, { shouldValidate: true })
+          }
+        } catch (e) {
+          console.error('Error parsing selected_cashbox:', e)
+        }
+      }
+    }
+  }, [registers, methods])
+
   const { mutate: handleCashBoxCreate, isLoading: isCreatingCashbox } = useMutation(requests.createCashOperationBox, {
     onSuccess: ({ data }) => {
       const saleId = get(data, 'data.id')
       const device_id = get(data, 'data.device_id')
       localStorage.setItem('device_id', device_id)
+      const selectedReg = methods.getValues('registerCash_id')
+      const cashboxInfo = {
+        id: selectedReg.id,
+        name: selectedReg.name,
+        full_name: selectedReg.full_name,
+        store_id: selectedReg.store_id || get(userData, 'store.id'),
+        store_name: selectedReg.store_name || get(userData, 'store.name'),
+        is_open: true,
+      }
+      localStorage.setItem('selected_cashbox', JSON.stringify(cashboxInfo))
       if (window.parent) {
         window.parent.postMessage(
           {
             type: 'SAVE_CASH_BOX',
             payload: {
+              ...cashboxInfo,
               sale_id: saleId,
-              cash_box_id: get(methods.getValues(), 'registerCash_id.id'),
+              cash_box_id: selectedReg.id,
               device_id,
-              is_open: true,
               opened_at: Date.now(),
             },
           },
@@ -631,10 +665,10 @@ function NewCashRegister() {
       navigate(`/sales/pos/${saleId}`)
     },
     onError: (err) => {
-      error('Ошибка при создании кассы!')
+      error('Kassani ochib bo‘lmadi')
       console.error('err', err)
       setInitError(true)
-      setInitErrorMessage(err?.response?.data?.message || err?.message || 'Ошибка при создании кассы!')
+      setInitErrorMessage(err?.response?.data?.message || err?.message || 'Kassani ochib bo‘lmadi')
       setRetryAction(() => () => handleOpenCashbox())
     },
   })
@@ -656,7 +690,7 @@ function NewCashRegister() {
 
   const onError = (err) => {
     console.error('err', err)
-    error('Пожалуйста, заполните все поля!')
+    error('Iltimos, barcha maydonlarni to‘ldiring!')
   }
 
   const { mutate: openZReport, isLoading: isopenZReport } = useMutation(requests.openZReport, {
@@ -669,15 +703,15 @@ function NewCashRegister() {
         if (get(data, 'message', '').includes('Ru:')) {
           error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
         } else {
-          error(`err: ${get(data, 'message', 'Ошибка при создании кассы! (open z report)')}`)
+          error(`err: ${get(data, 'message', 'Kassani ochib bo‘lmadi (open z report)')}`)
         }
       }
     },
     onError: (err) => {
-      error('Ошибка при создании кассы! (open z report)')
+      error('Kassani ochib bo‘lmadi')
       console.error('err', err)
       setInitError(true)
-      setInitErrorMessage(err?.response?.data?.message || err?.message || 'Ошибка при создании кассы! (open z report)')
+      setInitErrorMessage(err?.response?.data?.message || err?.message || 'Kassani ochib bo‘lmadi')
       setRetryAction(() => () => handleOpenCashbox())
     },
   })
@@ -703,10 +737,100 @@ function NewCashRegister() {
     return () => clearInterval(interval)
   }, [isEposDisconnected, runInitCheck])
 
+  // Custom function to continue an already open cashbox
+  const handleContinueOpenCashbox = async (selectedRegister) => {
+    setIsContinuing(true)
+    const device_id = localStorage.getItem('device_id') || crypto.randomUUID()
+    localStorage.setItem('device_id', device_id)
+
+    const cashboxInfo = {
+      id: selectedRegister.id,
+      name: selectedRegister.name,
+      full_name: selectedRegister.full_name,
+      store_id: selectedRegister.store_id || get(userData, 'store.id'),
+      store_name: selectedRegister.store_name || get(userData, 'store.name'),
+      is_open: true,
+    }
+
+    localStorage.setItem('selected_cashbox', JSON.stringify(cashboxInfo))
+
+    try {
+      const checkRes = await requests.checkSaleExist({
+        store_id: cashboxInfo.store_id,
+        cash_box_id: cashboxInfo.id,
+        device_id,
+      })
+
+      const saleId = get(checkRes, 'data.data.sale_id')
+      if (saleId) {
+        if (window.parent) {
+          window.parent.postMessage(
+            {
+              type: 'SAVE_CASH_BOX',
+              payload: {
+                ...cashboxInfo,
+                sale_id: saleId,
+                cash_box_id: cashboxInfo.id,
+                device_id,
+                opened_at: Date.now(),
+              },
+            },
+            '*',
+          )
+        }
+        navigate(`/sales/pos/${saleId}`)
+        return
+      }
+    } catch (err) {
+      console.log('No active sale found for cashbox, will fetch operation and create a new sale:', err)
+    }
+
+    try {
+      const opInfoRes = await requests.getCashBoxOperationInfo(cashboxInfo.id)
+      const cashBoxOpId = get(opInfoRes, 'data.data.id')
+
+      if (!cashBoxOpId) {
+        throw new Error('Cashbox operation ID not found')
+      }
+
+      const newSaleRes = await requests.saleCreate({
+        cash_box_operation_id: cashBoxOpId,
+        store_id: cashboxInfo.store_id,
+      })
+
+      const newSaleId = get(newSaleRes, 'data.id')
+      if (!newSaleId) {
+        throw new Error('Failed to create a new sale')
+      }
+
+      if (window.parent) {
+        window.parent.postMessage(
+          {
+            type: 'SAVE_CASH_BOX',
+            payload: {
+              ...cashboxInfo,
+              sale_id: newSaleId,
+              cash_box_id: cashboxInfo.id,
+              device_id,
+              opened_at: Date.now(),
+            },
+          },
+          '*',
+        )
+      }
+      navigate(`/sales/pos/${newSaleId}`)
+    } catch (err) {
+      console.error('Error continuing open cashbox:', err)
+      error('Kassani davom ettirib bo‘lmadi')
+    } finally {
+      setIsContinuing(false)
+    }
+  }
+
   const handleOpenCashbox = () => {
     const selectedRegister = methods.watch('registerCash_id')
     if (!selectedRegister) {
-      error('Пожалуйста, выберите кассу!')
+      error('Iltimos, kassani tanlang!')
       return
     }
     if (!get(selectedRegister, 'is_open', true)) {
@@ -715,12 +839,26 @@ function NewCashRegister() {
         method: 'openZreport',
       })
     } else {
-      methods.handleSubmit((data) => onSubmit(data), onError)()
+      handleContinueOpenCashbox(selectedRegister)
     }
   }
 
   // Keypad processing logic
   const handleKeypadPress = (val) => {
+    if (val === 'enter') {
+      const selectedRegister = methods.watch('registerCash_id')
+      if (selectedRegister) {
+        if (selectedRegister.is_open) {
+          handleContinueOpenCashbox(selectedRegister)
+        } else {
+          if (!isopenZReport && !isCreatingCashbox) {
+            handleOpenCashbox()
+          }
+        }
+      }
+      return
+    }
+
     if (!focusedInput) return
     const currentVal = methods.getValues(focusedInput) || ''
     const currentString = String(currentVal)
@@ -730,8 +868,6 @@ function NewCashRegister() {
     } else if (val === 'backspace') {
       const nextString = currentString.slice(0, -1)
       methods.setValue(focusedInput, nextString ? Number(nextString) : '', { shouldValidate: true })
-    } else if (val === 'enter') {
-      handleOpenCashbox()
     } else {
       // Append number digits
       const nextString = currentString + val
@@ -739,17 +875,54 @@ function NewCashRegister() {
     }
   }
 
-  const registers = registerCashList?.data?.data?.data || []
   const filteredRegisters = registers.filter((reg) => (reg.full_name || reg.name || '').toLowerCase().includes(registerSearchQuery.toLowerCase()))
 
   const selectedRegister = methods.watch('registerCash_id')
-  const isSubmitDisabled =
-    get(canCreate, 'is_open') ||
-    isopenZReport ||
-    isCreatingCashbox ||
-    !selectedRegister
+  const openingAmount = methods.watch('opened_amout')
 
-  const isPageLoading = initLoading || isopenZReport || isCreatingCashbox
+  let buttonText = 'Kassani tanlang'
+  let isSubmitDisabled = true
+
+  if (selectedRegister) {
+    if (selectedRegister.is_open) {
+      buttonText = 'Davom ettirish (Enter)'
+      isSubmitDisabled = isContinuing
+    } else {
+      buttonText = 'Kassani ochish (Enter)'
+      isSubmitDisabled = isopenZReport || isCreatingCashbox
+    }
+  }
+
+  // Handle global Enter key down listener
+  useEffect(() => {
+    const handleGlobalKeyDown = (event) => {
+      if (event.key === 'Enter') {
+        if (showRegisterList) return
+
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+          document.activeElement.blur()
+        }
+
+        event.preventDefault()
+        if (selectedRegister) {
+          if (selectedRegister.is_open) {
+            handleContinueOpenCashbox(selectedRegister)
+          } else {
+            if (!isopenZReport && !isCreatingCashbox && !isContinuing) {
+              handleOpenCashbox()
+            }
+          }
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleGlobalKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleGlobalKeyDown)
+    }
+  }, [selectedRegister, isopenZReport, isCreatingCashbox, isContinuing, methods, showRegisterList])
+
+  const isPageLoading = initLoading || isopenZReport || isCreatingCashbox || isContinuing
 
   if (isPageLoading || initError) {
     return (
@@ -893,11 +1066,11 @@ function NewCashRegister() {
       <Box className={classes.box}>
         <Box className={classes.wrapper}>
           <Box className={classes.header}>
-            {get(canCreate, 'is_open') ? (
+            {selectedRegister ? (
               <>
-                <span className={classes.openStoreDot} />
+                <span className={selectedRegister.is_open ? classes.openStoreDot : classes.closeStoreDot} />
                 <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
-                  Kassa Ochiq ({get(registerCashList, 'data.data.data', null).find((a) => a.id == get(methods.watch('registerCash_id'), 'id'))?.full_name})
+                  Kassa {selectedRegister.is_open ? 'Ochiq' : 'Yopiq'} — {selectedRegister.name}
                 </Typography>
               </>
             ) : (
@@ -912,79 +1085,215 @@ function NewCashRegister() {
 
           <Box display={'flex'} p={'32px'} gap={'32px'} alignItems={'stretch'}>
             {/* Left side inputs and summary */}
-            <Box sx={{ width: '55%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <Box>
-                <Typography fontSize={'14px'} fontWeight={'700'} color={'#475569'} mb={'8px'}>
-                  Kassa *
-                </Typography>
+            <Box sx={{ width: '55%', display: 'flex', flexDirection: 'column' }}>
+              {/* Top part: cashbox select + opening amount */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <Box>
+                  <Typography fontSize={'14px'} fontWeight={'700'} color={'#475569'} mb={'8px'}>
+                    Kassa *
+                  </Typography>
 
-                {showRegisterList ? (
-                  <Box sx={{ position: 'relative', zIndex: 10 }}>
-                    <Box className={classes.registerSearchWrapper}>
-                      <input
-                        type='text'
-                        className={classes.registerSearchInput}
-                        placeholder='Kassani qidirish...'
-                        value={registerSearchQuery}
-                        onChange={(e) => setRegisterSearchQuery(e.target.value)}
-                        autoFocus
-                      />
+                  {showRegisterList ? (
+                    <Box sx={{ position: 'relative', zIndex: 100 }}>
+                      <Box className={classes.registerSearchWrapper}>
+                        <input
+                          type='text'
+                          className={classes.registerSearchInput}
+                          placeholder='Kassani qidirish...'
+                          value={registerSearchQuery}
+                          onChange={(e) => setRegisterSearchQuery(e.target.value)}
+                          autoFocus
+                        />
+                      </Box>
+                      <Box
+                        className={classes.registerListScroll}
+                        sx={{
+                          maxHeight: '380px',
+                          overflowY: 'auto',
+                          zIndex: 100,
+                          backgroundColor: '#ffffff',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '8px',
+                          p: '8px',
+                          border: '2px solid #cbd5e1',
+                          borderRadius: '12px',
+                          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+                          position: 'absolute',
+                          top: '60px',
+                          left: 0,
+                          right: 0,
+                          // Custom scrollbar styling
+                          '&::-webkit-scrollbar': {
+                            width: '6px',
+                          },
+                          '&::-webkit-scrollbar-track': {
+                            background: '#f8fafc',
+                            borderRadius: '3px',
+                          },
+                          '&::-webkit-scrollbar-thumb': {
+                            background: '#cbd5e1',
+                            borderRadius: '3px',
+                          },
+                          '&::-webkit-scrollbar-thumb:hover': {
+                            background: '#94a3b8',
+                          },
+                        }}
+                      >
+                        {filteredRegisters.map((reg) => (
+                          <Box
+                            key={reg.id}
+                            onClick={() => {
+                              methods.setValue('registerCash_id', reg, { shouldValidate: true })
+                              setShowRegisterList(false)
+                            }}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              width: '100%',
+                              p: '10px 16px',
+                              backgroundColor: selectedRegister?.id === reg.id ? '#eff6ff' : '#ffffff',
+                              border: '2px solid',
+                              borderColor: selectedRegister?.id === reg.id ? '#2563eb' : '#e2e8f0',
+                              borderRadius: '12px',
+                              cursor: 'pointer',
+                              userSelect: 'none',
+                              transition: 'all 0.15s ease',
+                              '&:hover': {
+                                backgroundColor: '#f8fafc',
+                                borderColor: '#cbd5e1',
+                              },
+                              '&:active': {
+                                transform: 'scale(0.99)',
+                              },
+                            }}
+                          >
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                                <span style={{ fontSize: '15px', fontWeight: '700', color: '#0f172a' }}>{reg.full_name || reg.name}</span>
+                                <span
+                                  style={{
+                                    backgroundColor: '#f1f5f9',
+                                    color: '#475569',
+                                    fontSize: '11px',
+                                    fontWeight: '600',
+                                    padding: '1px 6px',
+                                    borderRadius: '4px',
+                                    border: '1px solid #e2e8f0',
+                                  }}
+                                >
+                                  {reg.name}
+                                </span>
+                              </div>
+                              <span style={{ fontSize: '12px', color: '#64748b' }}>{reg.store_name || get(userData, 'store.name')}</span>
+                              <div style={{ marginTop: '2px', display: 'flex' }}>
+                                {reg.is_open ? (
+                                  <span
+                                    style={{
+                                      backgroundColor: '#dcfce7',
+                                      color: '#15803d',
+                                      fontSize: '11px',
+                                      fontWeight: '700',
+                                      padding: '1px 6px',
+                                      borderRadius: '4px',
+                                    }}
+                                  >
+                                    Ochiq
+                                  </span>
+                                ) : (
+                                  <span
+                                    style={{
+                                      backgroundColor: '#fee2e2',
+                                      color: '#b91c1c',
+                                      fontSize: '11px',
+                                      fontWeight: '700',
+                                      padding: '1px 6px',
+                                      borderRadius: '4px',
+                                    }}
+                                  >
+                                    Yopiq
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            {selectedRegister?.id === reg.id && <Check color='#2563eb' size={20} style={{ marginLeft: '8px' }} />}
+                          </Box>
+                        ))}
+                      </Box>
                     </Box>
-                    <Box className={classes.registerListScroll}>
-                      {filteredRegisters.map((reg) => (
-                        <div
-                          key={reg.id}
-                          className={`${classes.registerRow} ${selectedRegister?.id === reg.id ? classes.selectedRow : ''}`}
-                          onClick={() => {
-                            methods.setValue('registerCash_id', reg, { shouldValidate: true })
-                            setShowRegisterList(false)
-                          }}
-                        >
+                  ) : (
+                    <Box>
+                      {selectedRegister ? (
+                        <div className={classes.selectedRegisterCard}>
                           <div className={classes.registerDetails}>
-                            <span className={classes.registerName}>{reg.full_name || reg.name}</span>
-                            <span className={classes.registerMeta}>Status: {reg.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}</span>
+                            <span className={classes.registerName}>{selectedRegister.full_name || selectedRegister.name}</span>
+                            <span className={classes.registerMeta}>
+                              {selectedRegister.name} • {selectedRegister.store_name || get(userData, 'store.name')}
+                            </span>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
+                              {selectedRegister.is_open ? (
+                                <Box
+                                  sx={{
+                                    backgroundColor: '#dcfce7',
+                                    color: '#15803d',
+                                    fontSize: '12px',
+                                    fontWeight: '700',
+                                    px: '8px',
+                                    py: '2px',
+                                    borderRadius: '6px',
+                                  }}
+                                >
+                                  Ochiq
+                                </Box>
+                              ) : (
+                                <Box
+                                  sx={{
+                                    backgroundColor: '#fee2e2',
+                                    color: '#b91c1c',
+                                    fontSize: '12px',
+                                    fontWeight: '700',
+                                    px: '8px',
+                                    py: '2px',
+                                    borderRadius: '6px',
+                                  }}
+                                >
+                                  Yopiq
+                                </Box>
+                              )}
+                            </Box>
                           </div>
-                          {selectedRegister?.id === reg.id && <Check color='#2563eb' size={20} />}
+                          <button type='button' className={classes.changeRegisterBtn} onClick={() => setShowRegisterList(true)}>
+                            O&apos;zgartirish
+                          </button>
                         </div>
-                      ))}
-                    </Box>
-                  </Box>
-                ) : (
-                  <Box>
-                    {selectedRegister ? (
-                      <div className={classes.selectedRegisterCard}>
-                        <div className={classes.registerDetails}>
-                          <span className={classes.registerName}>{selectedRegister.full_name || selectedRegister.name}</span>
-                          <span className={classes.registerMeta}>Status: {selectedRegister.is_open ? 'Ochiq (Open)' : 'Yopiq (Closed)'}</span>
-                        </div>
-                        <button type='button' className={classes.changeRegisterBtn} onClick={() => setShowRegisterList(true)}>
-                          O&apos;zgartirish
+                      ) : (
+                        <button type='button' className={classes.touchSelectTrigger} onClick={() => setShowRegisterList(true)}>
+                          <span>Kassirni tanlang</span>
+                          <ChevronRight size={20} />
                         </button>
-                      </div>
-                    ) : (
-                      <button type='button' className={classes.touchSelectTrigger} onClick={() => setShowRegisterList(true)}>
-                        <span>Kassirni tanlang</span>
-                        <ChevronRight size={20} />
-                      </button>
-                    )}
+                      )}
+                    </Box>
+                  )}
+                </Box>
+                {selectedRegister && !selectedRegister.is_open && (
+                  <Box className={classes.formField}>
+                    <NumberFormatInput
+                      endAdornmentText={'UZS'}
+                      end
+                      type='number'
+                      fullWidth
+                      name='opened_amout'
+                      label='Ochilish miqdori'
+                      placeholder='Miqdorni kiriting'
+                      onFocus={() => setFocusedInput('opened_amout')}
+                    />
                   </Box>
                 )}
-
-                <Box className={classes.formField}>
-                  <NumberFormatInput
-                    endAdornmentText={'UZS'}
-                    end
-                    type='number'
-                    fullWidth
-                    name='opened_amout'
-                    label='Ochilish miqdori'
-                    placeholder='Miqdorni kiriting'
-                    onFocus={() => setFocusedInput('opened_amout')}
-                  />
-                </Box>
               </Box>
 
-              <Box display='flex' gap='16px' mt='20px'>
+              {/* Bottom part: Naqd / Karta wrapper cards pinned to bottom */}
+              <Box display='flex' gap='16px' sx={{ mt: 'auto', pt: '16px' }}>
                 <Box className={classes.card_box} flex={1}>
                   <Box display={'flex'} alignItems={'center'}>
                     <Box className={classes.iconBox}>
@@ -1049,7 +1358,7 @@ function NewCashRegister() {
                   })}
                 </div>
                 <button type='button' className={classes.enterBtn} disabled={isSubmitDisabled} onClick={() => handleKeypadPress('enter')}>
-                  Kassani oching (Enter)
+                  {buttonText}
                 </button>
               </div>
             </Box>

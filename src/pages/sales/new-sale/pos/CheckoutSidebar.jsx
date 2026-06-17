@@ -31,6 +31,8 @@ export default function CheckoutSidebar({
   isCheckoutLoading,
   cartItems,
   t,
+  cartOwnerType,
+  setCartOwnerType,
 }) {
   const receivedAmountInputRef = useRef(null)
   const cardPaymentInputRef = useRef(null)
@@ -177,28 +179,41 @@ export default function CheckoutSidebar({
             )}
 
             {cardPaymentSelected && (
-              <div className={`payment-row ${cashPaymentSelected ? '' : 'border-top-dashed'}`}>
-                <span className='payment-label'>{t('pos.card_payment')}:</span>
-                <div className='payment-input-wrapper'>
-                  <input
-                    ref={cardPaymentInputRef}
-                    type='text'
-                    inputMode='numeric'
-                    value={cardPaymentAmount ? formatNumberUZS(cardPaymentAmount) : ''}
-                    onChange={(e) => setCardPaymentAmount(e.target.value.replace(/\D/g, ''))}
-                    onFocus={() => setFocusedPaymentInput('card')}
-                    placeholder={formatNumberUZS(Math.max(totalAmount - Number(receivedAmount || 0) - Number(secondaryPaymentAmount || 0), 0))}
-                    className='received-amount-input'
-                  />
-                  <button
-                    className='received-amount-clear'
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => setCardPaymentAmount('')}
-                  >
-                    C
-                  </button>
+              <>
+                <div className={`payment-row ${cashPaymentSelected ? '' : 'border-top-dashed'}`}>
+                  <span className='payment-label'>{t('pos.card_payment')}:</span>
+                  <div className='payment-input-wrapper'>
+                    <input
+                      ref={cardPaymentInputRef}
+                      type='text'
+                      inputMode='numeric'
+                      value={cardPaymentAmount ? formatNumberUZS(cardPaymentAmount) : ''}
+                      onChange={(e) => setCardPaymentAmount(e.target.value.replace(/\D/g, ''))}
+                      onFocus={() => setFocusedPaymentInput('card')}
+                      placeholder={formatNumberUZS(Math.max(totalAmount - Number(receivedAmount || 0) - Number(secondaryPaymentAmount || 0), 0))}
+                      className='received-amount-input'
+                    />
+                    <button
+                      className='received-amount-clear'
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => setCardPaymentAmount('')}
+                    >
+                      C
+                    </button>
+                  </div>
                 </div>
-              </div>
+                <div className='payment-row' style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--pos-text-secondary)', cursor: 'pointer', userSelect: 'none' }}>
+                    <input
+                      type='checkbox'
+                      checked={cartOwnerType === 'corporative'}
+                      onChange={(e) => setCartOwnerType(e.target.checked ? 'corporative' : 'physical')}
+                      style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: 'var(--pos-accent)' }}
+                    />
+                    Корпоративная карта
+                  </label>
+                </div>
+              </>
             )}
 
             {secondaryPaymentMethod && (

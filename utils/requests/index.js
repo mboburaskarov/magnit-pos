@@ -151,7 +151,16 @@ export const requests = {
   //cashbox
   getAllCashBoxList: (filter) => request.get(`v1/cash_box/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   deleteCashBox: (ids) => request.delete(`v1/cash_box/soft-delete`, ids),
-  checkSaleExist: ({ store_id, device_id }, config) => request.get(`v1/cash_box/check?store_id=${store_id}&device_id=${device_id}`, config),
+  checkSaleExist: ({ store_id, device_id, cash_box_id }, config) => {
+    let url = `v1/cash_box/check?store_id=${store_id}`
+    if (device_id && device_id !== 'null' && device_id !== 'undefined') {
+      url += `&device_id=${device_id}`
+    }
+    if (cash_box_id) {
+      url += `&cash_box_id=${cash_box_id}`
+    }
+    return request.get(url, config)
+  },
   createCashBox: (data) => request.post(`v1/cash_box`, data),
   updateCashBox: ({ id, data }) => request.put(`v1/cash_box/${id}`, data),
   getSingleCashBox: (id) => request.get(`v1/cash_box/${id}`),

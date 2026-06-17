@@ -70,6 +70,7 @@ export default function PosApp() {
   const [productSelectList, setProductSelectList] = useState([])
   const [pendingWeightGrams, setPendingWeightGrams] = useState(null)
   const [pendingScannedValue, setPendingScannedValue] = useState(null)
+  const [cartOwnerType, setCartOwnerType] = useState('physical')
 
   // Loading skeleton and scan lock states
   const [pendingAddBarcode, setPendingAddBarcode] = useState(null)
@@ -304,7 +305,8 @@ export default function PosApp() {
       setCustomerId,
       paymentsList,
       maxAmount,
-      cartOwnerType: 'personal',
+      cartOwnerType: cartOwnerType,
+      setCardOwnerType: setCartOwnerType,
       cartItemsListLoading: isCartLoading,
     })
   console.log(posCartItemsList)
@@ -640,6 +642,7 @@ export default function PosApp() {
     setSecondaryPaymentAmount('')
     setFocusedPaymentInput(null)
     setPaymentMethod(null)
+    setCartOwnerType('physical')
     setShowPaymentView(true)
   }
 
@@ -673,6 +676,7 @@ export default function PosApp() {
     if (cardPaymentSelected) {
       setCardPaymentSelected(false)
       setCardPaymentAmount('')
+      setCartOwnerType('physical')
       if (cashPaymentSelected) {
         setFocusedPaymentInput('cash')
         setPaymentMethod('cash')
@@ -750,12 +754,12 @@ export default function PosApp() {
       return
     }
 
-    submitSale(paymentsList, undefined, maxAmount, 'personal')
+    submitSale(paymentsList, undefined, maxAmount, cartOwnerType)
   }
 
   const handleAppScanSubmit = (scannedToken) => {
     setShowAppScanModal(false)
-    submitSale(paymentsList, scannedToken, maxAmount, 'personal')
+    submitSale(paymentsList, scannedToken, maxAmount, cartOwnerType)
   }
 
   const handleBarcodeScan = async (scannedBarcode) => {
@@ -1060,6 +1064,7 @@ export default function PosApp() {
     setCardPaymentAmount('')
     setSecondaryPaymentMethod(null)
     setSecondaryPaymentAmount('')
+    setCartOwnerType('physical')
     setShowPaymentView(false)
   }
 
@@ -1515,6 +1520,8 @@ export default function PosApp() {
           handleCheckout={handleCheckout}
           isCheckoutLoading={isCheckoutLoading}
           cartItems={sortedCartItems}
+          cartOwnerType={cartOwnerType}
+          setCartOwnerType={setCartOwnerType}
           t={t}
         />
       </div>
