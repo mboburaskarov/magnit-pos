@@ -6,6 +6,11 @@ import { useMutation } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 
+// Fallback class/package codes used to retry an EPOS request when one or more
+// products fail with their own class_code/package_code.
+const FALLBACK_EPOS_CLASS_CODE = '07616003001000002'
+const FALLBACK_EPOS_PACKAGE_CODE = '1624156'
+
 export const useSaleOperations = ({
   cartItemsList,
   markingsList,
@@ -32,6 +37,10 @@ export const useSaleOperations = ({
   const sendToEpos = true
   const [payType, setPayType] = useState(undefined)
   const [hasError, setHasError] = useState(false)
+  // Holds the last EPOS payload + whether we already retried it with the
+  // fallback class/package codes, so we only retry once per submission.
+  const lastEposPayloadRef = useRef(null)
+  const eposRetriedRef = useRef(false)
 
   useEffect(() => {
     if (paymentsList?.length == 1 && paymentsList?.[0]?.front_name == 'uzum') {
@@ -152,6 +161,11 @@ export const useSaleOperations = ({
           })
           return
         }
+        // One or more products may have failed with their own class/package
+        // codes. Retry once with the fallback codes before surfacing the error.
+        if (retryEPOSWithFallbackCodes()) {
+          return
+        }
         setOpenRefreshDialog(false)
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(data), sale_id: id })
         throw new Error(`InnerError: ${get(data, 'message')}`)
@@ -167,6 +181,31 @@ export const useSaleOperations = ({
       }
     },
   })
+
+  // Re-send the last EPOS payload with fallback class/package codes applied to
+  // every item. Returns true if a retry was triggered, false if we already
+  // retried (or there is nothing to retry), so the caller can surface the error.
+  function retryEPOSWithFallbackCodes() {
+    const payload = lastEposPayloadRef.current
+    if (!payload || eposRetriedRef.current) {
+      return false
+    }
+    eposRetriedRef.current = true
+    const retryPayload = {
+      ...payload,
+      params: {
+        ...payload.params,
+        items: (payload.params?.items || []).map((item) => ({
+          ...item,
+          classCode: FALLBACK_EPOS_CLASS_CODE,
+          packageCode: FALLBACK_EPOS_PACKAGE_CODE,
+        })),
+      },
+    }
+    lastEposPayloadRef.current = retryPayload
+    sendToEPOS(retryPayload)
+    return true
+  }
 
   // Send EPOS response to backend
   const {
@@ -353,7 +392,7 @@ export const useSaleOperations = ({
       const items = prepareEPOSData(get(data, 'data.data.items', '[]'))
       const qrToken = JSON.parse(data?.config?.data)?.payment_types[0]?.otp_data || undefined
 
-      sendToEPOS({
+      const payload = {
         qrToken: qrToken,
         token: 'DXJFX32CN1296678504F2',
         method: payType == 2 ? 'saleEPS' : SALE_TYPE === 'SALE' ? 'fastSale' : 'refund',
@@ -402,7 +441,13 @@ export const useSaleOperations = ({
             return rest
           })(),
         }),
-      })
+      }
+
+      // Fresh submission: reset the retry flag and remember the payload so an
+      // EPOS failure can be retried once with the fallback class/package codes.
+      eposRetriedRef.current = false
+      lastEposPayloadRef.current = payload
+      sendToEPOS(payload)
     },
     [prepareEPOSData, paymentsList, maxAmount, sendToEPOS, SALE_TYPE, userData, customerId, cartItemsList, cashBoxDetails],
   )
