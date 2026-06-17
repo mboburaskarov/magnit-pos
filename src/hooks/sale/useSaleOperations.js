@@ -215,7 +215,7 @@ export const useSaleOperations = ({
     }
     const failingNames = bracketContent
       .split(',')
-      .map((name) => normalizeProductName(name))
+      .map((name) => normalizeProductName(name.replace(/\s+\d+\s*$/, '')))
       .filter(Boolean)
 
     const items = payload.params?.items || []
