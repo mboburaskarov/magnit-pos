@@ -11,6 +11,14 @@ import { useNavigate, useParams } from 'react-router-dom'
 const FALLBACK_EPOS_CLASS_CODE = '07616003001000002'
 const FALLBACK_EPOS_PACKAGE_CODE = '1624156'
 
+// Normalizes a product name for comparison between our cart items and the names
+// EPOS echoes back inside its error message (e.g. "...: [F SHAFTOL]").
+const normalizeProductName = (name) =>
+  String(name ?? '')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLowerCase()
+
 export const useSaleOperations = ({
   cartItemsList,
   markingsList,
@@ -37,10 +45,11 @@ export const useSaleOperations = ({
   const sendToEpos = true
   const [payType, setPayType] = useState(undefined)
   const [hasError, setHasError] = useState(false)
-  // Holds the last EPOS payload + whether we already retried it with the
-  // fallback class/package codes, so we only retry once per submission.
+  // Holds the last EPOS payload and the set of product names we have already
+  // patched with the fallback class/package codes. Together they let us retry
+  // failing products incrementally, without re-patching a product or looping.
   const lastEposPayloadRef = useRef(null)
-  const eposRetriedRef = useRef(false)
+  const patchedProductNamesRef = useRef(new Set())
 
   useEffect(() => {
     if (paymentsList?.length == 1 && paymentsList?.[0]?.front_name == 'uzum') {
@@ -161,9 +170,10 @@ export const useSaleOperations = ({
           })
           return
         }
-        // One or more products may have failed with their own class/package
-        // codes. Retry once with the fallback codes before surfacing the error.
-        if (retryEPOSWithFallbackCodes()) {
+        // EPOS lists products whose own class/package (ИКПУ) codes are unknown.
+        // Patch those products with the fallback codes and retry before
+        // surfacing the error. Returns false once there is nothing new to fix.
+        if (retryEPOSWithFallbackCodes(get(data, 'message'))) {
           return
         }
         setOpenRefreshDialog(false)
@@ -182,24 +192,53 @@ export const useSaleOperations = ({
     },
   })
 
-  // Re-send the last EPOS payload with fallback class/package codes applied to
-  // every item. Returns true if a retry was triggered, false if we already
-  // retried (or there is nothing to retry), so the caller can surface the error.
-  function retryEPOSWithFallbackCodes() {
+  // EPOS reports unknown class/package (ИКПУ) codes by listing the offending
+  // product names in brackets, e.g. "...не найдены...: [F SHAFTOL]". We patch
+  // ONLY those products with the fallback codes and resend the whole sale.
+  //
+  // Returns true only when it actually starts a retry. It refuses to retry
+  // (returns false, so the caller surfaces the error) unless the message names
+  // at least one real product in this sale that we have not patched yet. That
+  // keeps the retry strictly incremental — the patched set only grows and is
+  // bounded by the number of products — so it can neither loop forever nor fire
+  // a duplicate request for a failure we already attempted to fix.
+  function retryEPOSWithFallbackCodes(message) {
     const payload = lastEposPayloadRef.current
-    if (!payload || eposRetriedRef.current) {
+    if (!payload || typeof message !== 'string') {
       return false
     }
-    eposRetriedRef.current = true
+
+    // Product names listed inside the first [...] block of the EPOS message.
+    const bracketContent = message.match(/\[([^\]]*)\]/)?.[1]
+    if (!bracketContent) {
+      return false
+    }
+    const failingNames = bracketContent
+      .split(',')
+      .map((name) => normalizeProductName(name))
+      .filter(Boolean)
+
+    const items = payload.params?.items || []
+    const itemNames = new Set(items.map((item) => normalizeProductName(item.name)))
+    const patched = patchedProductNamesRef.current
+
+    // Keep only failing products that exist in this sale and are not yet
+    // patched. If none remain, retrying cannot help → surface the error.
+    const newFailingNames = failingNames.filter((name) => itemNames.has(name) && !patched.has(name))
+    if (newFailingNames.length === 0) {
+      return false
+    }
+    newFailingNames.forEach((name) => patched.add(name))
+
     const retryPayload = {
       ...payload,
       params: {
         ...payload.params,
-        items: (payload.params?.items || []).map((item) => ({
-          ...item,
-          classCode: FALLBACK_EPOS_CLASS_CODE,
-          packageCode: FALLBACK_EPOS_PACKAGE_CODE,
-        })),
+        items: items.map((item) =>
+          patched.has(normalizeProductName(item.name))
+            ? { ...item, classCode: FALLBACK_EPOS_CLASS_CODE, packageCode: FALLBACK_EPOS_PACKAGE_CODE }
+            : item,
+        ),
       },
     }
     lastEposPayloadRef.current = retryPayload
@@ -443,9 +482,9 @@ export const useSaleOperations = ({
         }),
       }
 
-      // Fresh submission: reset the retry flag and remember the payload so an
-      // EPOS failure can be retried once with the fallback class/package codes.
-      eposRetriedRef.current = false
+      // Fresh submission: clear previously patched products and remember the
+      // payload so EPOS class/package (ИКПУ) failures can be retried per product.
+      patchedProductNamesRef.current = new Set()
       lastEposPayloadRef.current = payload
       sendToEPOS(payload)
     },
