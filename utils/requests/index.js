@@ -5,15 +5,15 @@ import { authRequest, eposRequest, fileUploadRequest, request, requestEXCEL } fr
 
 export const requests = {
   //epos
-  sendToEpos: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
-  gelOldEposCheck: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
-  closeZReport: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
-  closeCheckZReport: (data, config) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data, config),
-  checkEposFlesh: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
-  openZReport: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
-  getZReportByDate: (data) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data),
+  sendToEpos: (data) => eposRequest.post('', data),
+  gelOldEposCheck: (data) => eposRequest.post('', data),
+  closeZReport: (data) => eposRequest.post('', data),
+  closeCheckZReport: (data, config) => eposRequest.post('', data, config),
+  checkEposFlesh: (data) => eposRequest.post('', data),
+  openZReport: (data) => eposRequest.post('', data),
+  getZReportByDate: (data) => eposRequest.post('', data),
+  checkEPOSTurnOn: (data, config) => eposRequest.post('', data, config),
   sendEPOSresponseToBackend: (data) => request.post(`v1/sale/epos-result`, data),
-  checkEPOSTurnOn: (data, config) => eposRequest.post(import.meta.env.VITE_MODE == 'dev' ? `/helper/epos` : `/uzpos`, data, config),
 
   //tags
   getAllTags: (filter) => request.get(`v1/tag/list${qs.stringify(filter, { addQueryPrefix: true })}`),

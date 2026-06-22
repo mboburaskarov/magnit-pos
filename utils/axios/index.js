@@ -46,7 +46,7 @@ export const requestEXCEL = axios.create({
 })
 
 export const eposRequest = axios.create({
-  baseURL: import.meta.env.VITE_MODE == 'dev' ? import.meta.env.VITE_EPOS_BASE_API_URL_DEV : import.meta.env.VITE_EPOS_BASE_API_URL,
+  baseURL: import.meta.env.VITE_EPOS_BASE_API_URL,
   headers: {
     Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     Accept: 'application/json',
@@ -95,5 +95,5 @@ request.interceptors.response.use(
     }
 
     return Promise.reject(err)
-  }
+  },
 )
