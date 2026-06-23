@@ -138,7 +138,7 @@ export default function ActionBar({
         type='button'
       >
         <Edit3 size={16} />
-        <span>{t('pos.edit_quantity') || 'Ред. кол-во'}</span>
+        <span>{t('pos.edit_quantity') || 'Изменить кол-во'}</span>
       </button>
 
       {/* 6. Cancel receipt */}

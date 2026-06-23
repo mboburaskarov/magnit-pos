@@ -8,7 +8,7 @@ export default function PosOnScreenKeyboard({
   onBackspace,
   onClear,
   onEnter,
-  language = 'ru',
+  language = 'uz',
   onLanguageChange,
   onClose,
   t,

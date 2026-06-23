@@ -88,7 +88,7 @@ export default function PosApp() {
   const [topbarSearchTerm, setTopbarSearchTerm] = useState('')
   const [showLiveSearchPanel, setShowLiveSearchPanel] = useState(false)
   const [showKeyboard, setShowKeyboard] = useState(false)
-  const [keyboardLanguage, setKeyboardLanguage] = useState('ru')
+  const [keyboardLanguage, setKeyboardLanguage] = useState('uz')
   const [liveSearchResults, setLiveSearchResults] = useState([])
   const [isLiveSearchLoading, setIsLiveSearchLoading] = useState(false)
   const latestSearchIdRef = useRef(0)
@@ -198,15 +198,16 @@ export default function PosApp() {
   }, [cartItems, itemOrder])
 
   const activeCartItems = useMemo(() => {
+    const stornedOriginalIds = new Set(frontendStornoItems.map(item => item.original_cart_item_id).filter(Boolean))
     return sortedCartItems.filter((item) => {
       const qty = Number(item.quantity || 0)
       const unitQty = Number(item.unit_quantity || 0)
-      return qty > 0 || unitQty > 0
+      return (qty > 0 || unitQty > 0) && !stornedOriginalIds.has(item.id)
     })
-  }, [sortedCartItems])
+  }, [sortedCartItems, frontendStornoItems])
 
   const displayCartItems = useMemo(() => {
-    return [...frontendStornoItems, ...activeCartItems]
+    return [...activeCartItems, ...frontendStornoItems]
   }, [frontendStornoItems, activeCartItems])
 
   const setCardPaymentAmount = useCallback((val) => {
@@ -784,15 +785,26 @@ export default function PosApp() {
     }
 
     // Delete storned items from API before completing the sale
-    if (stornedIds.size > 0) {
-      const stornedList = sortedCartItems.filter((item) => stornedIds.has(item.id))
+    const backendStornedIds = new Set()
+    frontendStornoItems.forEach((item) => {
+      if (item.original_cart_item_id) {
+        backendStornedIds.add(item.original_cart_item_id)
+      }
+    })
+    stornedIds.forEach((id) => {
+      if (typeof id !== 'string' || !id.startsWith('storno-')) {
+        backendStornedIds.add(id)
+      }
+    })
+
+    if (backendStornedIds.size > 0) {
+      const itemIds = Array.from(backendStornedIds)
       try {
-        const itemIds = stornedList.map((item) => item.id)
         try {
           await requests.deleteAll({ ids: itemIds })
         } catch (e1) {
-          for (const stornedItem of stornedList) {
-            try { await requests.deleteCartItem(stornedItem.id) } catch {}
+          for (const itemId of itemIds) {
+            try { await requests.deleteCartItem(itemId) } catch {}
           }
         }
       } catch {} // non-fatal: proceed even if deletion fails
@@ -1120,6 +1132,7 @@ export default function PosApp() {
   useEffect(() => {
     if (!showLiveSearchPanel) {
       setLiveSearchResults([])
+      latestSearchIdRef.current++
       return
     }
 
@@ -1130,6 +1143,7 @@ export default function PosApp() {
     if (!isQueryValid) {
       setLiveSearchResults([])
       setIsLiveSearchLoading(false)
+      latestSearchIdRef.current++
       return
     }
 
@@ -1519,17 +1533,10 @@ export default function PosApp() {
       created_at: new Date().toISOString(),
     }
 
-    setFrontendStornoItems((prev) => [stornoCopy, ...prev])
+    setFrontendStornoItems((prev) => [...prev, stornoCopy])
     setStornedIds((prev) => new Set([...prev, stornoCopy.id]))
 
-    changeQty({
-      id: selectedItem.id,
-      data: {
-        quantity: 0,
-        unit_quantity: 0,
-        store_product_id: selectedItem.store_product_id,
-      },
-    })
+    deleteItem(selectedItem.id)
 
     setSelectedId(null)
     setNumpadQtyBuffer('')
@@ -1646,6 +1653,7 @@ export default function PosApp() {
 
   const handleReturn = () => {
     clearPOSActionFocus()
+    handleCloseLiveSearch()
     setShowReturnDrawer(true)
   }
 
@@ -1687,14 +1695,15 @@ export default function PosApp() {
         setShowLangDropdown={setShowLangDropdown}
         t={t}
         i18n={i18n}
-        onLogout={() => setShowCashierSession(true)}
+        onLogout={() => { handleCloseLiveSearch(); setShowCashierSession(true) }}
         receiptNumber={cashBoxDetails?.data?.data?.sale_number || '--'}
-        onOpenPrinterSettings={() => setShowPrinterSettings(true)}
+        onOpenPrinterSettings={() => { handleCloseLiveSearch(); setShowPrinterSettings(true) }}
         isAgentRunning={isAgentRunning}
         onOpenCashDrawer={handleOpenCashDrawer}
         onHardRefresh={handleHardRefreshRequest}
         onFocusLiveSearch={() => {
           setShowLiveSearchPanel(true)
+          setKeyboardLanguage('uz')
           setShowKeyboard(true)
         }}
         onEnterBarcodeSearch={handleEnterBarcodeSearch}
@@ -1819,13 +1828,13 @@ export default function PosApp() {
               onPrint={handlePrintCurrentCheck}
               onReturn={handleReturn}
               onHold={handleHold}
-              onOpenHeldSales={() => { setShowHeldSalesDrawer(true); setTimeout(() => document.activeElement?.blur(), 0) }}
+              onOpenHeldSales={() => { handleCloseLiveSearch(); setShowHeldSalesDrawer(true) }}
               onEditQuantity={handleEditQuantity}
               onCancelSale={handleCancelSale}
               onStornoProduct={handleStornoProduct}
               hasSelectedProduct={!!selectedId && !stornedIds.has(selectedId) && activeCartItems.some(i => i.id === selectedId)}
               showQuickProducts={showQuickProducts}
-              onToggleQuickProducts={() => setShowQuickProducts(!showQuickProducts)}
+              onToggleQuickProducts={() => { handleCloseLiveSearch(); setShowQuickProducts(!showQuickProducts) }}
               showPaymentView={showPaymentView}
               paymentMethod={paymentMethod}
               cashPaymentSelected={cashPaymentSelected}

@@ -120,20 +120,17 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
 
       const printRes = await axios.post('http://localhost:7788/print/raw-template', reqPayload)
       if (printRes.data && printRes.data.ok) {
-        setIsPrinting(false)
         return
       }
     } catch (err) {
-      console.warn('Silent ESC/POS print failed, falling back to child drawer:', err)
+      console.warn('Silent ESC/POS print failed:', err)
+    } finally {
+      setIsPrinting(false)
     }
-
-    setIsOpenChild({ item, autoPrintDuplicate: true })
-    setIsPrinting(false)
   }
 
   return (
     <Box
-      onClick={() => setIsOpenChild({ item })}
       display={'flex'}
       height={'68px'}
       borderRadius={'8px'}
@@ -144,15 +141,6 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
       alignItems={'center'}
       sx={{
         border: '1px solid #cbd5e1',
-        cursor: 'pointer',
-        transition: 'all 0.15s ease',
-        '&:hover': {
-          backgroundColor: '#f8fafc',
-        },
-        '&:active': {
-          backgroundColor: '#eff6ff',
-          borderColor: '#2563eb',
-        },
       }}
     >
       <Box display={'flex'} alignItems={'center'}>
@@ -222,7 +210,14 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
           <Printer size={16} />
         </Box>
 
-        <Box className={classes.rightArrowIcon}>
+        <Box
+          className={classes.rightArrowIcon}
+          onClick={(e) => {
+            e.stopPropagation()
+            setIsOpenChild({ item })
+          }}
+          sx={{ cursor: 'pointer' }}
+        >
           <ArrowRightIcon />
         </Box>
       </Box>

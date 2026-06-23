@@ -5,7 +5,6 @@ import { get } from 'lodash'
 import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import ArrowRightIcon from '../../src/assets/icons/ArrowRightIcon'
-import BagOutline from '../../src/assets/icons/BagOutline'
 import thousandDivider from '@utils/thousandDivider'
 
 const useStyles = makeStyles((theme) => ({
@@ -13,8 +12,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#eff6ff',
     border: '1px solid #2563eb',
     color: '#2563eb',
-    width: '48px',
-    height: '48px',
+    width: '36px',
+    height: '36px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -25,26 +24,33 @@ const useStyles = makeStyles((theme) => ({
       transform: 'scale(0.95)',
     },
   },
-  usrImg: {
-    width: '24px',
-    borderRadius: '50%',
-    marginRight: '4px',
-  },
-  productsNumsWrapper: {
-    height: '48px',
-    minWidth: '88px',
-    backgroundColor: '#ffffff',
-    border: '1px solid #e2e8f0',
-    borderRadius: '8px',
-    marginRight: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 }))
 
+const getProductCountText = (count, lng) => {
+  if (lng === 'uz') {
+    return `${count} ta mahsulot`
+  }
+  if (lng === 'en') {
+    return `${count} item${count !== 1 ? 's' : ''}`
+  }
+  // Russian pluralization fallback
+  const lastDigit = count % 10
+  const lastTwoDigits = count % 100
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+    return `${count} товаров`
+  }
+  if (lastDigit === 1) {
+    return `${count} товар`
+  }
+  if (lastDigit >= 2 && lastDigit <= 4) {
+    return `${count} товара`
+  }
+  return `${count} товаров`
+}
+
 function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const currentLang = i18n?.language || 'ru'
   const classes = useStyles()
   const [elapsed, setElapsed] = useState('')
 
@@ -75,54 +81,62 @@ function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
     return () => clearInterval(timerId)
   }, [item])
 
+  const productCount = get(item, 'product_count', 0)
+  const customerName = get(item, 'customer_name') || [get(item, 'customer.first_name'), get(item, 'customer.last_name')].filter(Boolean).join(' ').trim()
+  const hasValidCustomer = customerName && customerName.toLowerCase() !== 'unknown'
+
   return (
     <Box
       onClick={() => setIsOpenChild({ item, type: 'sale' })}
       display={'flex'}
-      height={'84px'}
+      height={'68px'}
       borderRadius={'8px'}
-      mb={'16px'}
+      mb={'12px'}
       bgcolor={'bg.10'}
-      padding={'18px 16px'}
+      padding={'10px 16px'}
       justifyContent={'space-between'}
+      alignItems={'center'}
       sx={{
         border: '1px solid #cbd5e1',
-        transition: 'background-color 0.15s ease',
+        transition: 'all 0.15s ease',
+        cursor: 'pointer',
+        '&:hover': {
+          backgroundColor: '#f8fafc',
+        },
         '&:active': {
           backgroundColor: '#eff6ff',
           borderColor: '#2563eb',
         },
       }}
     >
-      <Box display={'flex'}>
-        <Box className={classes.productsNumsWrapper}>
-          <BagOutline />
-          <Typography ml={'12px'} fontSize={'16px'} fontWeight={'700'} lineHeight={'24px'} color={'#2563eb'}>
-            {get(item, 'product_count')}
+      <Box display={'flex'} flexDirection={'column'}>
+        <Typography mb={'2px'} fontSize={'14px'} fontWeight={'700'} color={'bunker.950'}>
+          {t('pending_sales')} #{get(item, 'sale_number')}
+        </Typography>
+        <Box display="flex" alignItems="center" gap="8px">
+          <Typography fontSize={'12px'} fontWeight={'500'} color={'bunker.500'}>
+            {dayjs(get(item, 'created_at')).format('DD.MM.YYYY | HH:mm:ss')}
           </Typography>
-        </Box>
-        <Box>
-          <Typography mb={'4px'} fontSize={'16px'} fontWeight={'700'} lineHeight={'24px'} color={'bunker.950'}>
-            {t('pending_sales')} #{get(item, 'sale_number')}
+          <Typography fontSize={'11px'} fontWeight={'500'} color={'bunker.500'} sx={{ display: 'inline-flex', alignItems: 'center', gap: '3px', bgcolor: '#f1f5f9', px: '6px', py: '2px', borderRadius: '4px' }}>
+            ⏱️ {elapsed}
           </Typography>
-          <Box display="flex" alignItems="center" gap="10px">
-            <Typography fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'} color={'bunker.500'}>
-              {dayjs(get(item, 'created_at')).format('DD.MM.YYYY | HH:mm:ss')}
-            </Typography>
-            <span style={{ fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '2px 8px', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', color: '#0f172a', borderRadius: '4px', fontWeight: 'bold' }}>
-              ⏱️ {elapsed}
-            </span>
-          </Box>
         </Box>
       </Box>
+
+      <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+        <Typography fontSize={'13px'} fontWeight={'600'} color={'bunker.600'}>
+          {getProductCountText(productCount, currentLang)}
+        </Typography>
+      </Box>
+
       <Box display={'flex'} alignItems={'center'}>
         <Box mr={'16px'} display="flex" flexDirection="column" alignItems="end">
-          <Box display={'flex'} mb={'4px'}>
-            <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
-              {get(item, 'customer.first_name') == null ? 'Unknown' : get(item, 'customer.first_name')}
+          {hasValidCustomer && (
+            <Typography mb={'2px'} fontSize={'13px'} fontWeight={'600'} color={'bunker.700'}>
+              {customerName}
             </Typography>
-          </Box>
-          <Typography fontSize={'16px'} fontWeight={'700'} lineHeight={'24px'} color={'#2563eb'}>
+          )}
+          <Typography fontSize={'14px'} fontWeight={'700'} color={'#2563eb'}>
             {thousandDivider(get(item, 'total_amount'), 'сум')}
           </Typography>
         </Box>

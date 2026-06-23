@@ -20,7 +20,7 @@ export default function ProductTable({
   const { t } = useTranslation()
 
   const handleDecrease = (item) => {
-    if (stornedIds.has(item.id)) return // no interaction with storned rows
+    if (item.is_frontend_storno || item.is_storno || stornedIds.has(item.id)) return // no interaction with storned rows
     if (item.quantity <= 1 && (item.unit_quantity || 0) === 0) {
       onQtyDecreaseRequestSecurity?.(item)
     } else {
@@ -29,7 +29,7 @@ export default function ProductTable({
   }
 
   const handleIncrease = (item) => {
-    if (stornedIds.has(item.id)) return
+    if (item.is_frontend_storno || item.is_storno || stornedIds.has(item.id)) return
     onQtyIncrease?.(item)
   }
 
@@ -109,7 +109,7 @@ export default function ProductTable({
 
               {cartItems.map((item, index) => {
                 const isSelected = item.id === selectedId
-                const isStorned = stornedIds.has(item.id)
+                const isStorned = item.is_frontend_storno || item.is_storno || stornedIds.has(item.id)
                 const isUpdating = !isStorned && !!(
                   pendingQuantityUpdates[item.id] ||
                   pendingQuantityUpdates[item.store_product_id] ||
@@ -125,7 +125,10 @@ export default function ProductTable({
                   <tr
                     key={item.id}
                     className={`pos-table-row ${isSelected ? 'is-selected' : ''} ${isUpdating ? 'pos-row-updating' : ''} ${isStorned ? 'pos-row-storned' : ''}`}
-                    onClick={() => onSelectRow?.(item.id)}
+                    onClick={() => {
+                      if (isStorned) return
+                      onSelectRow?.(item.id)
+                    }}
                     style={isUpdating ? { opacity: 0.8, backgroundColor: 'rgba(243, 244, 246, 0.2)' } : undefined}
                   >
                     <td className='col-num'>{activeSkeletonsCount + index + 1}</td>

@@ -3076,9 +3076,9 @@ body {
 
 /* ── Standardized POS Drawer/Modal Header ── */
 .pos-std-header {
-  height: 72px;
+  height: 60px;
   background-color: var(--pos-header-bg);
-  padding: 12px 24px;
+  padding: 10px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3093,7 +3093,7 @@ body {
 }
 
 .pos-std-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #ffffff;
 }
@@ -3115,8 +3115,8 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
   cursor: pointer;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--pos-radius-md); /* 8px */
   display: flex;
   align-items: center;

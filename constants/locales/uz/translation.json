@@ -571,7 +571,7 @@
   "pos.error_quick_add": "Tezkor qo'shishda xatolik yuz berdi",
   "yes": "Ha",
   "pos.cancel_receipt_confirm_desc": "Haqiqatan ham joriy chekni bekor qilib, savatni tozalamoqchimisiz?",
-  "pos.edit_quantity": "Miqdorni tahrirlash",
+  "pos.edit_quantity": "Miqdorni o'zgartirish",
   "pos.edit_qty_dialog_title": "Miqdorni o'zgartirish",
   "pos.edit_qty_current": "Joriy miqdor",
   "pos.edit_qty_new": "Yangi miqdor",

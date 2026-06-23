@@ -87,11 +87,19 @@ export default function PosLiveSearchPanel({
             </div>
           ) : (
             !isLoading && (
-              <div className='pos-live-search-empty'>
-                <div className='empty-emoji'>🔍</div>
-                <div className='empty-title'>{t?.('product_not_found') || 'Товар не найден'}</div>
-                <div className='empty-desc'>Проверьте название или штрих-код</div>
-              </div>
+              !query || !query.trim() ? (
+                <div className='pos-live-search-empty'>
+                  <div className='empty-emoji'>🔍</div>
+                  <div className='empty-title'>{t?.('pos.search_instructions') || 'Поиск товаров'}</div>
+                  <div className='empty-desc'>{t?.('pos.search_instructions_desc') || 'Введите название или штрих-код'}</div>
+                </div>
+              ) : (
+                <div className='pos-live-search-empty'>
+                  <div className='empty-emoji'>🔍</div>
+                  <div className='empty-title'>{t?.('product_not_found') || 'Товар не найден'}</div>
+                  <div className='empty-desc'>Проверьте название или штрих-код</div>
+                </div>
+              )
             )
           )}
 

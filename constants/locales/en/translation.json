@@ -571,7 +571,7 @@
   "pos.error_quick_add": "Error during quick add",
   "yes": "Yes",
   "pos.cancel_receipt_confirm_desc": "Are you sure you want to cancel the current receipt and clear the cart?",
-  "pos.edit_quantity": "Edit quantity",
+  "pos.edit_quantity": "Change quantity",
   "pos.edit_qty_dialog_title": "Edit quantity",
   "pos.edit_qty_current": "Current quantity",
   "pos.edit_qty_new": "New quantity",

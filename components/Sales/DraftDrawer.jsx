@@ -93,17 +93,17 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
   return (
     <Drawer open={open} onClose={() => setOpen(false)} anchor='right' elevation={1} className={classes.drawer}>
       {!isOpenChild ? (
-        <Box>
-          <Box className={classes.drawerHeader}>
-            <Typography className={classes.drawerTitle}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+          <Box className="pos-std-header">
+            <Typography className="pos-std-title">
               Отложенные продажи
             </Typography>
-            <button type="button" className={classes.closeButton} onClick={() => setOpen(false)}>
+            <button type="button" className="pos-std-close-btn" onClick={() => setOpen(false)}>
               <X size={20} />
             </button>
           </Box>
           
-          <Box display={'flex'} py={'24px'} px={'40px'} alignItems={'center'}>
+          <Box display={'flex'} py={'16px'} px={'24px'} alignItems={'center'}>
             <InputSearch
               fullWidth
               uncontrolled
@@ -152,10 +152,10 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
             </Box>
           </Box>
           
-          <Box py={'0px'} px={'40px'}>
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', px: '24px', pb: '16px' }}>
             <ListWithPagination
+              isFlex={true}
               statePath='pendingSaleList'
-              maxHeight='calc(100vh - 250px)'
               request={(filter) => requests.getPendingSales(filter)}
               renderItem={(item) => <PendingSaleParentItemsBox item={item} setIsOpenChild={setIsOpenChild} />}
               customFilter={draftsListFilter}
