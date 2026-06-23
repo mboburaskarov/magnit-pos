@@ -373,8 +373,8 @@
   "pos.receipt_id": "Check ID",
   "pos.price_list": "Narxlar ro'yxati",
   "pos.standard": "Standart",
-  "pos.customer_placeholder": "Mijoz ismi yoki raqami",
-  "pos.customer_hint": "Sodiqlik karta skaneri",
+  "pos.customer_placeholder": "Jamg'arma karta",
+  "pos.customer_hint": "Kartani skanerlang",
   "pos.remove_customer": "Mijozni o'chirish",
   "pos.numpad_title": "Klaviatura / Numpad kiritish",
   "pos.go_to_payment": "To'lovga o'tish",
@@ -568,5 +568,16 @@
   "pos.error_product_not_found_query": "Mahsulot topilmadi: \"{{query}}\"",
   "pos.error_quick_add": "Tezkor qo'shishda xatolik yuz berdi",
   "yes": "Ha",
-  "pos.cancel_receipt_confirm_desc": "Haqiqatan ham joriy chekni bekor qilib, savatni tozalamoqchimisiz?"
+  "pos.cancel_receipt_confirm_desc": "Haqiqatan ham joriy chekni bekor qilib, savatni tozalamoqchimisiz?",
+  "pos.edit_quantity": "Miqdorni tahrirlash",
+  "pos.edit_qty_dialog_title": "Miqdorni o'zgartirish",
+  "pos.edit_qty_current": "Joriy miqdor",
+  "pos.edit_qty_new": "Yangi miqdor",
+  "pos.edit_qty_confirm": "Tasdiqlash",
+  "pos.edit_qty_cancel": "Bekor qilish",
+  "pos.edit_qty_invalid": "Noto'g'ri miqdor",
+  "pos.edit_qty_min": "Minimal miqdor: 1",
+  "pos.edit_qty_no_decimal": "Dona mahsulot — vergulsiz",
+  "pos.storno_badge": "STORNO",
+  "pos.cashbox_closed_redirect": "Kassa yopilgan, iltimos kassani oching"
 }

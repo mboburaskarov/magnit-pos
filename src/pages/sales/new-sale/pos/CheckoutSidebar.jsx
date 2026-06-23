@@ -33,6 +33,10 @@ export default function CheckoutSidebar({
   t,
   cartOwnerType,
   setCartOwnerType,
+  // Qty-edit numpad props
+  onNumpadQtyPress,
+  selectedItemIsWeight,
+  numpadQtyBuffer,
 }) {
   const receivedAmountInputRef = useRef(null)
   const cardPaymentInputRef = useRef(null)
@@ -61,6 +65,12 @@ export default function CheckoutSidebar({
   }
 
   const handleNumpadPress = (val) => {
+    // In non-payment mode, delegate to qty editing if a product is selected
+    if (!showPaymentView && onNumpadQtyPress) {
+      onNumpadQtyPress(val)
+      return
+    }
+    // Payment mode: update the focused payment input
     if (val === 'clear') {
       setFocusedAmount('')
     } else if (val === 'backspace') {
@@ -128,11 +138,28 @@ export default function CheckoutSidebar({
 
       {!showPaymentView ? (
         <div className='pos-sidebar-flow'>
-          {/* Numpad Container */}
-          <div className='numpad-container-title'>
-            {t('pos.numpad_title')}
+          {/* Numpad section with context hint */}
+          <div className='numpad-container-title' style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span>{onNumpadQtyPress ? t('table_columns.quantity') : t('pos.numpad_title')}</span>
+            {onNumpadQtyPress && numpadQtyBuffer && (
+              <span style={{
+                fontSize: 13,
+                fontWeight: 700,
+                color: 'var(--pos-accent)',
+                background: 'rgba(37,99,235,0.07)',
+                padding: '2px 8px',
+                borderRadius: 6,
+                letterSpacing: 1,
+              }}>
+                {numpadQtyBuffer || '—'}
+                {selectedItemIsWeight ? ' кг' : ' шт'}
+              </span>
+            )}
           </div>
-          <Numpad onKeyPress={handleNumpadPress} />
+          <Numpad
+            onKeyPress={handleNumpadPress}
+            showComma={!!(onNumpadQtyPress && selectedItemIsWeight)}
+          />
 
           {/* Primary Checkout Button */}
           <button

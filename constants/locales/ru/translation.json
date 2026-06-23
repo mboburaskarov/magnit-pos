@@ -475,8 +475,8 @@
   "pos.receipt_id": "Чек ID",
   "pos.price_list": "Прайс-лист",
   "pos.standard": "Стандартный",
-  "pos.customer_placeholder": "Имя или телефон клиента",
-  "pos.customer_hint": "Сканируйте штрих-код карты",
+  "pos.customer_placeholder": "Накопительная карта",
+  "pos.customer_hint": "Сканируйте карту",
   "pos.remove_customer": "Удалить клиента",
   "pos.numpad_title": "Клавиатура / Ввод с Numpad",
   "pos.go_to_payment": "Перейти к оплате",
@@ -672,5 +672,16 @@
   "pos.error_product_not_found_query": "Товар не найден: \"{{query}}\"",
   "pos.error_quick_add": "Ошибка при быстром добавлении",
   "yes": "Да",
-  "pos.cancel_receipt_confirm_desc": "Вы уверены, что хотите аннулировать текущий чек и очистить корзину?"
+  "pos.cancel_receipt_confirm_desc": "Вы уверены, что хотите аннулировать текущий чек и очистить корзину?",
+  "pos.edit_quantity": "Редактировать кол-во",
+  "pos.edit_qty_dialog_title": "Изменить количество",
+  "pos.edit_qty_current": "Текущее кол-во",
+  "pos.edit_qty_new": "Новое количество",
+  "pos.edit_qty_confirm": "Подтвердить",
+  "pos.edit_qty_cancel": "Отмена",
+  "pos.edit_qty_invalid": "Неверное количество",
+  "pos.edit_qty_min": "Минимальное количество: 1",
+  "pos.edit_qty_no_decimal": "Штучный товар — без запятой",
+  "pos.storno_badge": "СТОРНО",
+  "pos.cashbox_closed_redirect": "Касса закрыта, пожалуйста откройте кассу"
 }

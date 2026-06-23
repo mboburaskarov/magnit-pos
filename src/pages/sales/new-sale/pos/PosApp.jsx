@@ -33,6 +33,7 @@ import ReturnExchangeDrawer from '@components/Sales/ReturnExchange/ReturnExchang
 import DraftDrawer from '@components/Sales/DraftDrawer'
 import axios from 'axios'
 import PosPrinterSettings from './PosPrinterSettings'
+import EditQuantityDialog from './EditQuantityDialog'
 
 export default function PosApp() {
   const { id } = useParams()
@@ -91,6 +92,13 @@ export default function PosApp() {
   const [dmedOrganizedList, setDmedOrganizedList] = useState([])
   const [isAgentRunning, setIsAgentRunning] = useState(true)
   const [activeAgentUrl, setActiveAgentUrl] = useState('http://localhost:7788')
+
+  // ── Storno & Qty Edit states ──
+  const [stornedIds, setStornedIds] = useState(new Set())
+  const [numpadQtyBuffer, setNumpadQtyBuffer] = useState('')
+  const [showEditQtyDialog, setShowEditQtyDialog] = useState(false)
+  const numpadQtyTimerRef = useRef(null)
+  const numpadQtyBufferRef = useRef('')
 
   const checkAgentHealth = async () => {
     try {
@@ -264,8 +272,18 @@ export default function PosApp() {
   const paymentAmount = paymentsList.reduce((sum, item) => sum + Number(item.amount || 0), 0)
   const maxAmount = Number(totalAmount || 0) - paymentAmount
 
-  // Calculate totals
-  const totalDiscount = sortedCartItems.reduce((acc, item) => acc + (item.discount_price || 0), 0)
+  // Calculate totals — storned items excluded from displayed total
+  const stornedItemsTotal = useMemo(
+    () => sortedCartItems
+      .filter((item) => stornedIds.has(item.id))
+      .reduce((acc, item) => acc + Number(item.total_price || 0), 0),
+    [sortedCartItems, stornedIds]
+  )
+  const effectiveTotalAmount = Math.max(0, Number(totalAmount) - stornedItemsTotal)
+
+  const totalDiscount = sortedCartItems
+    .filter((item) => !stornedIds.has(item.id))
+    .reduce((acc, item) => acc + (item.discount_price || 0), 0)
 
   // Search customers query
   const { data: customersRes, isLoading: isSearchingCustomers } = useQuery(
@@ -726,7 +744,7 @@ export default function PosApp() {
     setPaymentMethod(method)
   }
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!paymentsList.length) {
       error(t('pos.error_select_payment_type'))
       return
@@ -734,18 +752,33 @@ export default function PosApp() {
 
     const cardAmount = Number(cardPaymentAmount || 0)
     const secondaryAmount = Number(secondaryPaymentAmount || 0)
-    const numTotal = Number(totalAmount || 0)
+    const numEffective = effectiveTotalAmount
 
-    if ((cardPaymentSelected && cardAmount > numTotal) || 
-        (secondaryPaymentMethod && secondaryAmount > numTotal)) {
-      let errorMsg = t('pos.error_non_cash_exceeds')
-      error(errorMsg)
+    if ((cardPaymentSelected && cardAmount > numEffective) ||
+        (secondaryPaymentMethod && secondaryAmount > numEffective)) {
+      error(t('pos.error_non_cash_exceeds'))
       return
     }
 
-    if (paymentAmount < Number(totalAmount || 0)) {
+    if (paymentAmount < numEffective) {
       error(t('pos.error_insufficient_payment'))
       return
+    }
+
+    // Delete storned items from API before completing the sale
+    if (stornedIds.size > 0) {
+      const stornedList = sortedCartItems.filter((item) => stornedIds.has(item.id))
+      try {
+        const itemIds = stornedList.map((item) => item.id)
+        try {
+          await requests.deleteAll({ ids: itemIds })
+        } catch (e1) {
+          for (const stornedItem of stornedList) {
+            try { await requests.deleteCartItem(stornedItem.id) } catch {}
+          }
+        }
+      } catch {} // non-fatal: proceed even if deletion fails
+      setStornedIds(new Set())
     }
 
     const hasAppPayment = paymentsList.some((p) => p.type === 'app')
@@ -754,7 +787,8 @@ export default function PosApp() {
       return
     }
 
-    submitSale(paymentsList, undefined, maxAmount, cartOwnerType)
+    const effectiveMaxAmount = numEffective - paymentAmount
+    submitSale(paymentsList, undefined, effectiveMaxAmount, cartOwnerType)
   }
 
   const handleAppScanSubmit = (scannedToken) => {
@@ -796,7 +830,7 @@ export default function PosApp() {
     // 3. Check if product already exists in cart (only for non-scale barcodes;
     //    scale barcodes are checked by store_product_id after the API lookup below)
     if (weightGrams === null) {
-      const existing = cartItems.find((item) => item.barcode === searchBarcode)
+      const existing = cartItems.find((item) => item.barcode === searchBarcode && !stornedIds.has(item.id))
       if (existing) {
         // Immediately select and move to top
         setSelectedId(existing.id)
@@ -910,7 +944,7 @@ export default function PosApp() {
   const addProductToCart = (product, weightGrams, originalScannedValue, searchBarcode) => {
     // For scale products already in cart: accumulate weight
     if (weightGrams !== null) {
-      const existingScaleItem = cartItems.find((item) => item.store_product_id === product.id)
+      const existingScaleItem = cartItems.find((item) => item.store_product_id === product.id && !stornedIds.has(item.id))
       if (existingScaleItem) {
         // Immediately select and move to top
         setSelectedId(existingScaleItem.id)
@@ -1097,6 +1131,9 @@ export default function PosApp() {
     resetPaymentState()
     setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
     setNewSaleId(null)
+    setStornedIds(new Set())
+    setNumpadQtyBuffer('')
+    numpadQtyBufferRef.current = ''
 
     // 3. Create or fetch a new sale check if needed (e.g. if finalNewSaleId is null/false or '888')
     if (!nextSaleId || nextSaleId === '888') {
@@ -1278,6 +1315,7 @@ export default function PosApp() {
 
   const handleCancelConfirm = async () => {
     setShowCancelConfirmation(false)
+    setStornedIds(new Set()) // clear storno before deleting all items
     try {
       if (cartItems.length > 0) {
         const itemIds = cartItems.map((item) => item.id)
@@ -1317,24 +1355,148 @@ export default function PosApp() {
     }
   }, [totalAmount, cardPaymentAmount, secondaryPaymentAmount])
 
+  // ── Focus Fix: blur any focused action button to prevent scanner re-triggering ──
+  const clearPOSActionFocus = () => {
+    setTimeout(() => document.activeElement?.blur(), 0)
+  }
+
   const handleDiscount = () => {
     setIsCustomerModalOpen(true)
   }
 
   const handleCancelSale = () => {
+    clearPOSActionFocus()
     setShowCancelConfirmation(true)
   }
 
-  const handleDeleteProduct = () => {
-    const selectedItem = cartItems.find((item) => item.id === selectedId)
-    if (selectedItem) {
-      setSecurityItem(selectedItem)
-    } else {
+  // ── Storno: frontend-only cancellation, item remains in API cart ──
+  const handleStornoProduct = () => {
+    if (!selectedId) {
       error(t('pos.select_product_to_delete'))
+      return
+    }
+    const selectedItem = sortedCartItems.find((item) => item.id === selectedId)
+    if (!selectedItem) {
+      error(t('pos.select_product_to_delete'))
+      return
+    }
+    if (stornedIds.has(selectedId)) return // already storned
+    setStornedIds((prev) => new Set([...prev, selectedId]))
+    setSelectedId(null)
+    setNumpadQtyBuffer('')
+    numpadQtyBufferRef.current = ''
+    clearPOSActionFocus()
+  }
+
+  // ── Edit Quantity Dialog handlers ──
+  const handleEditQuantity = () => {
+    if (!selectedId) return
+    const selectedItem = sortedCartItems.find((item) => item.id === selectedId)
+    if (!selectedItem || stornedIds.has(selectedId)) return
+    setShowEditQtyDialog(true)
+    clearPOSActionFocus()
+  }
+
+  const handleEditQtyConfirm = ({ item, qty, kgVal, isWeight }) => {
+    setShowEditQtyDialog(false)
+    clearPOSActionFocus()
+    if (!item) return
+    if (isWeight) {
+      const totalGrams = Math.round(kgVal * 1000)
+      changeQty({
+        id: item.id,
+        data: {
+          quantity: 0,
+          unit_quantity: totalGrams,
+          store_product_id: item.store_product_id,
+        },
+      })
+    } else {
+      changeQty({
+        id: item.id,
+        data: {
+          quantity: qty,
+          unit_quantity: item.unit_quantity,
+          store_product_id: item.store_product_id,
+        },
+      })
     }
   }
 
+  // ── Direct numpad quantity editing (sidebar numpad in cart mode) ──
+  const handleNumpadQtyPress = useCallback(
+    (val) => {
+      const selectedItem = sortedCartItems.find((el) => el.id === selectedId)
+      if (!selectedItem || stornedIds.has(selectedId)) return
+      const isWeight = selectedItem.unit_per_pack === 1000
+      const capturedItem = selectedItem
+
+      // Build the buffer
+      const current = numpadQtyBufferRef.current
+      let next
+      if (val === 'clear') {
+        next = ''
+      } else if (val === 'backspace') {
+        next = current.slice(0, -1)
+      } else if (val === ',') {
+        if (!isWeight) return
+        if (current.includes(',')) return
+        next = current === '' ? '0,' : current + ','
+      } else {
+        const digit = String(val)
+        if (!isWeight && current.length >= 5) return
+        if (isWeight && current.length >= 8) return
+        next = current + digit
+      }
+
+      numpadQtyBufferRef.current = next
+      setNumpadQtyBuffer(next)
+
+      // Debounce the API call
+      if (numpadQtyTimerRef.current) clearTimeout(numpadQtyTimerRef.current)
+      numpadQtyTimerRef.current = setTimeout(() => {
+        const buffer = numpadQtyBufferRef.current
+        if (!buffer) {
+          if (!isWeight) {
+            changeQty({
+              id: capturedItem.id,
+              data: { quantity: 1, unit_quantity: capturedItem.unit_quantity, store_product_id: capturedItem.store_product_id },
+            })
+          }
+          return
+        }
+        if (isWeight) {
+          const kgVal = parseFloat(buffer.replace(',', '.'))
+          if (!isNaN(kgVal) && kgVal > 0) {
+            const totalGrams = Math.round(kgVal * 1000)
+            changeQty({
+              id: capturedItem.id,
+              data: { quantity: 0, unit_quantity: totalGrams, store_product_id: capturedItem.store_product_id },
+            })
+          }
+        } else {
+          const qty = Math.max(1, parseInt(buffer, 10) || 1)
+          changeQty({
+            id: capturedItem.id,
+            data: { quantity: qty, unit_quantity: capturedItem.unit_quantity, store_product_id: capturedItem.store_product_id },
+          })
+        }
+      }, 600)
+    },
+    [selectedId, sortedCartItems, stornedIds],
+  )
+
+  // Reset numpad buffer when selection changes
+  useEffect(() => {
+    setNumpadQtyBuffer('')
+    numpadQtyBufferRef.current = ''
+    if (numpadQtyTimerRef.current) {
+      clearTimeout(numpadQtyTimerRef.current)
+    }
+  }, [selectedId])
+
   const handleReturn = () => {
+    clearPOSActionFocus()
     setShowReturnDrawer(true)
   }
 
@@ -1343,7 +1505,6 @@ export default function PosApp() {
       const res = await axios.post(`${activeAgentUrl}/cash-drawer/open`)
       if (res.data && res.data.ok) {
         success(t('pos.drawer_opened'))
-        // Optional: log to backend here if required by the API
       } else {
         error(t('pos.printer.drawer_open_error'))
       }
@@ -1456,23 +1617,24 @@ export default function PosApp() {
               isLoading={isCartLoading}
               pendingQuantityUpdates={pendingQuantityUpdates}
               pendingNewItems={pendingNewItems}
+              stornedIds={stornedIds}
             />
           </div>
 
           {/* Left Bottom Summary & Actions */}
           <div className='pos-left-bottom'>
-            <ProductSummary cartItems={sortedCartItems} selectedId={selectedId} totalAmount={totalAmount} totalDiscount={totalDiscount} t={t} />
+            <ProductSummary cartItems={sortedCartItems.filter(i => !stornedIds.has(i.id))} selectedId={selectedId} totalAmount={effectiveTotalAmount} totalDiscount={totalDiscount} t={t} />
 
             <ActionBar
               customerId={customerId}
               onPrint={handlePrintCurrentCheck}
               onReturn={handleReturn}
               onHold={handleHold}
-              onOpenHeldSales={() => setShowHeldSalesDrawer(true)}
-              onDiscount={handleDiscount}
+              onOpenHeldSales={() => { setShowHeldSalesDrawer(true); setTimeout(() => document.activeElement?.blur(), 0) }}
+              onEditQuantity={handleEditQuantity}
               onCancelSale={handleCancelSale}
-              onDeleteProduct={handleDeleteProduct}
-              hasSelectedProduct={!!selectedId}
+              onStornoProduct={handleStornoProduct}
+              hasSelectedProduct={!!selectedId && !stornedIds.has(selectedId)}
               showQuickProducts={showQuickProducts}
               onToggleQuickProducts={() => setShowQuickProducts(!showQuickProducts)}
               showPaymentView={showPaymentView}
@@ -1486,7 +1648,7 @@ export default function PosApp() {
               onSelectCardPayment={handleSelectCardPayment}
               onSelectSecondaryPayment={handleSelectSecondaryPayment}
               receivedAmount={receivedAmount}
-              totalAmount={totalAmount}
+              totalAmount={effectiveTotalAmount}
               t={t}
             />
 
@@ -1515,14 +1677,17 @@ export default function PosApp() {
           setSecondaryPaymentAmount={setSecondaryPaymentAmount}
           focusedPaymentInput={focusedPaymentInput}
           setFocusedPaymentInput={setFocusedPaymentInput}
-          totalAmount={totalAmount}
+          totalAmount={effectiveTotalAmount}
           handleQuickCash={handleQuickCash}
           handleCheckout={handleCheckout}
           isCheckoutLoading={isCheckoutLoading}
-          cartItems={sortedCartItems}
+          cartItems={sortedCartItems.filter(i => !stornedIds.has(i.id))}
           cartOwnerType={cartOwnerType}
           setCartOwnerType={setCartOwnerType}
           t={t}
+          onNumpadQtyPress={selectedId && !stornedIds.has(selectedId) ? handleNumpadQtyPress : null}
+          selectedItemIsWeight={sortedCartItems.find(i => i.id === selectedId)?.unit_per_pack === 1000}
+          numpadQtyBuffer={numpadQtyBuffer}
         />
       </div>
 
@@ -1530,7 +1695,7 @@ export default function PosApp() {
       {isCustomerModalOpen && (
         <div
           className='pos-modal-overlay'
-          onClick={() => setIsCustomerModalOpen(false)}
+          onClick={() => { setIsCustomerModalOpen(false); clearPOSActionFocus() }}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           <div
@@ -1579,7 +1744,16 @@ export default function PosApp() {
         open={!!securityItem}
         productName={securityItem?.name}
         onApprove={handleSecurityApproved}
-        onCancel={() => setSecurityItem(null)}
+        onCancel={() => { setSecurityItem(null); clearPOSActionFocus() }}
+        t={t}
+      />
+
+      {/* Edit Quantity Dialog */}
+      <EditQuantityDialog
+        open={showEditQtyDialog}
+        item={sortedCartItems.find(i => i.id === selectedId) || null}
+        onConfirm={handleEditQtyConfirm}
+        onClose={() => { setShowEditQtyDialog(false); clearPOSActionFocus() }}
         t={t}
       />
 
@@ -1607,7 +1781,7 @@ export default function PosApp() {
         open={showAppScanModal}
         paymentName={paymentsList.find((p) => p.type === 'app')?.name}
         onSubmit={handleAppScanSubmit}
-        onCancel={() => setShowAppScanModal(false)}
+        onCancel={() => { setShowAppScanModal(false); clearPOSActionFocus() }}
         t={t}
       />
 

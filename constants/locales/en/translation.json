@@ -373,8 +373,8 @@
   "pos.receipt_id": "Check ID",
   "pos.price_list": "Price List",
   "pos.standard": "Standard",
-  "pos.customer_placeholder": "Customer name or phone",
-  "pos.customer_hint": "Loyalty QR or barcode scanner hint",
+  "pos.customer_placeholder": "Loyalty card",
+  "pos.customer_hint": "Scan card",
   "pos.remove_customer": "Remove customer",
   "pos.numpad_title": "Numpad / Keyboard Input",
   "pos.go_to_payment": "Go to payment",
@@ -568,5 +568,16 @@
   "pos.error_product_not_found_query": "Product not found: \"{{query}}\"",
   "pos.error_quick_add": "Error during quick add",
   "yes": "Yes",
-  "pos.cancel_receipt_confirm_desc": "Are you sure you want to cancel the current receipt and clear the cart?"
+  "pos.cancel_receipt_confirm_desc": "Are you sure you want to cancel the current receipt and clear the cart?",
+  "pos.edit_quantity": "Edit quantity",
+  "pos.edit_qty_dialog_title": "Edit quantity",
+  "pos.edit_qty_current": "Current quantity",
+  "pos.edit_qty_new": "New quantity",
+  "pos.edit_qty_confirm": "Confirm",
+  "pos.edit_qty_cancel": "Cancel",
+  "pos.edit_qty_invalid": "Invalid quantity",
+  "pos.edit_qty_min": "Minimum quantity: 1",
+  "pos.edit_qty_no_decimal": "Piece product — no decimal",
+  "pos.storno_badge": "STORNO",
+  "pos.cashbox_closed_redirect": "Cashbox is closed, please open the cashbox"
 }

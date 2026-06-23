@@ -1,5 +1,11 @@
-import { Printer, RotateCcw, Pause, History, Percent, Ban, Trash2, Zap, CreditCard } from 'lucide-react'
+import { Printer, RotateCcw, Pause, History, Edit3, Ban, Slash, Zap, CreditCard } from 'lucide-react'
 import './PosLayout.css'
+
+// Helper: blur focused element after any action button click so scanner Enter
+// does not re-trigger the same button.
+const blurActiveBtn = () => {
+  setTimeout(() => document.activeElement?.blur(), 0)
+}
 
 export default function ActionBar({
   customerId,
@@ -7,9 +13,9 @@ export default function ActionBar({
   onReturn,
   onHold,
   onOpenHeldSales,
-  onDiscount,
+  onEditQuantity,
   onCancelSale,
-  onDeleteProduct,
+  onStornoProduct,
   hasSelectedProduct,
   showQuickProducts,
   onToggleQuickProducts,
@@ -41,7 +47,7 @@ export default function ActionBar({
         <div className='payment-methods-action-row'>
           <button
             className={`method-select-btn ${cashPaymentSelected ? 'is-active' : ''}`}
-            onClick={onSelectCashPayment}
+            onClick={(e) => { onSelectCashPayment(); blurActiveBtn() }}
             disabled={shouldDisableInactive && !cashPaymentSelected}
             type='button'
           >
@@ -50,7 +56,7 @@ export default function ActionBar({
           </button>
           <button
             className={`method-select-btn ${cardPaymentSelected ? 'is-active' : ''}`}
-            onClick={onSelectCardPayment}
+            onClick={(e) => { onSelectCardPayment(); blurActiveBtn() }}
             disabled={shouldDisableInactive && !cardPaymentSelected}
             type='button'
           >
@@ -59,7 +65,7 @@ export default function ActionBar({
           </button>
           <button
             className={`method-select-btn ${secondaryPaymentMethod === 'click' ? 'is-active' : ''}`}
-            onClick={() => onSelectSecondaryPayment('click')}
+            onClick={() => { onSelectSecondaryPayment('click'); blurActiveBtn() }}
             disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'click') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'click')}
             type='button'
           >
@@ -68,7 +74,7 @@ export default function ActionBar({
           </button>
           <button
             className={`method-select-btn ${secondaryPaymentMethod === 'payme' ? 'is-active' : ''}`}
-            onClick={() => onSelectSecondaryPayment('payme')}
+            onClick={() => { onSelectSecondaryPayment('payme'); blurActiveBtn() }}
             disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'payme') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'payme')}
             type='button'
           >
@@ -77,7 +83,7 @@ export default function ActionBar({
           </button>
           <button
             className={`method-select-btn ${secondaryPaymentMethod === 'uzum' ? 'is-active' : ''}`}
-            onClick={() => onSelectSecondaryPayment('uzum')}
+            onClick={() => { onSelectSecondaryPayment('uzum'); blurActiveBtn() }}
             disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'uzum') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'uzum')}
             type='button'
           >
@@ -86,7 +92,7 @@ export default function ActionBar({
           </button>
           <button
             className={`method-select-btn ${secondaryPaymentMethod === 'loyaltycard' ? 'is-active' : ''}`}
-            onClick={() => onSelectSecondaryPayment('loyaltycard')}
+            onClick={() => { onSelectSecondaryPayment('loyaltycard'); blurActiveBtn() }}
             disabled={!customerId || (shouldDisableInactive && secondaryPaymentMethod !== 'loyaltycard') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'loyaltycard')}
             type='button'
           >
@@ -101,56 +107,61 @@ export default function ActionBar({
   return (
     <div className='pos-action-bar-premium'>
       {/* 1. Print */}
-      <button className='action-btn neutral-btn' onClick={onPrint} type='button'>
+      <button className='action-btn neutral-btn' onClick={() => { onPrint(); blurActiveBtn() }} type='button'>
         <Printer size={16} />
         <span>{t('print')}</span>
       </button>
-      {/* 2. Return */}
-      <button className='action-btn neutral-btn' onClick={onReturn} type='button'>
+
+      {/* 2. Return / Sales */}
+      <button className='action-btn neutral-btn' onClick={() => { onReturn(); blurActiveBtn() }} type='button'>
         <RotateCcw size={16} />
         <span>{t('sales') || 'Продажи'}</span>
       </button>
 
       {/* 3. Hold */}
-      <button className='action-btn neutral-btn' onClick={onHold} type='button'>
+      <button className='action-btn neutral-btn' onClick={() => { onHold(); blurActiveBtn() }} type='button'>
         <Pause size={16} />
         <span>{t('menu.orders.all.postpone') || 'Отложить'}</span>
       </button>
 
       {/* 4. Held sales */}
-      <button className='action-btn neutral-btn' onClick={onOpenHeldSales} type='button'>
+      <button className='action-btn neutral-btn' onClick={() => { onOpenHeldSales(); blurActiveBtn() }} type='button'>
         <History size={16} />
         <span>{t('pos.held_sales') || 'Отложенные'}</span>
       </button>
 
-      {/* 5. Discount (with Soon Badge) */}
-      <button className='action-btn neutral-btn' onClick={onDiscount} type='button' style={{ position: 'relative' }}>
-        <Percent size={16} />
-        <span>{t('menu.orders.new_order.cart_container.discount') || 'Скидка'}</span>
-        <span className="soon-badge">{t('soon') || 'soon'}</span>
+      {/* 5. Edit Quantity (replaces Discount/Скидка) */}
+      <button
+        className={`action-btn ${hasSelectedProduct ? 'neutral-btn' : 'danger-btn-disabled'}`}
+        onClick={() => { if (hasSelectedProduct) { onEditQuantity(); blurActiveBtn() } }}
+        disabled={!hasSelectedProduct}
+        type='button'
+      >
+        <Edit3 size={16} />
+        <span>{t('pos.edit_quantity') || 'Ред. кол-во'}</span>
       </button>
 
       {/* 6. Cancel receipt */}
-      <button className='action-btn danger-outline-btn' onClick={onCancelSale} type='button'>
+      <button className='action-btn danger-outline-btn' onClick={() => { onCancelSale(); blurActiveBtn() }} type='button'>
         <Ban size={16} />
         <span>{t('pos.cancel_receipt') || 'Аннулировать'}</span>
       </button>
 
       {/* 7. Storno / Remove item */}
-      <button 
+      <button
         className={`action-btn ${hasSelectedProduct ? 'danger-btn-active' : 'danger-btn-disabled'}`}
-        onClick={onDeleteProduct} 
+        onClick={() => { if (hasSelectedProduct) { onStornoProduct(); blurActiveBtn() } }}
         disabled={!hasSelectedProduct}
         type='button'
       >
-        <Trash2 size={16} />
+        <Slash size={16} />
         <span>{t('pos.remove_item') || 'Убрать товар'}</span>
       </button>
 
       {/* 8. Quick select */}
-      <button 
+      <button
         className={`action-btn ${showQuickProducts ? 'active-quick-btn' : 'neutral-btn'}`}
-        onClick={onToggleQuickProducts} 
+        onClick={() => { onToggleQuickProducts(); blurActiveBtn() }}
         type='button'
       >
         <Zap size={16} />
