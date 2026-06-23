@@ -2,7 +2,7 @@ import { Box, Button, ClickAwayListener, List, ListItem, Paper, Typography } fro
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
 import * as qs from 'qs'
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 import { useNavigate } from 'react-router-dom'
 import ArrowDown from '../../src/assets/icons/ArrowDown'
@@ -109,7 +109,14 @@ function ListWithPagination({ request, limit = 5, limitQuery = 'customLimit', re
       }}>
         <LoadingBlurry outside isLoading={dataLoading} />
 
-        {datList?.data?.data?.data?.map((item) => renderItem(item))}
+        {datList?.data?.data?.data?.map((item, index) => {
+          const itemKey = item.id || item.sale_number || item.barcode || item.created_at || `list-item-${index}`
+          return (
+            <React.Fragment key={itemKey}>
+              {renderItem(item)}
+            </React.Fragment>
+          )
+        })}
 
         {datList?.data?.data?.data?.length === 0 && !dataLoading && (
           <Box display="flex" justifyContent="center" alignItems="center" py={8}>

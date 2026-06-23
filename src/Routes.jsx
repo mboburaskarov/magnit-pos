@@ -35,6 +35,36 @@ export const filterNavData = (routes, urls, user_data) => {
     return acc
   }, [])
 }
+function RouteRenderer({ filteredRoutes }) {
+  const formattedRoutes = useRoutes([
+    ...filteredRoutes,
+    {
+      path: '',
+      element: <MainLayout />,
+      children: [
+        {
+          path: '',
+          element: <Navigate to={'/sales/create'} />,
+        },
+        {
+          path: '404',
+          element: <NotFoundPage full />,
+        },
+        {
+          path: 'redirect',
+          element: <Redirect />,
+        },
+        {
+          path: '*',
+          element: <Navigate to='redirect' />,
+        },
+      ],
+    },
+  ])
+
+  return <TerminalAccessGuard>{formattedRoutes}</TerminalAccessGuard>
+}
+
 export default function Routes() {
   const user_data = useSelector((state) => state.user)
 
@@ -73,6 +103,7 @@ export default function Routes() {
   if (isLoading) {
     return <LoadingContainer />
   }
+
   const filterRoutes = (routes, urls, isChild = null) => {
     if (user_data?.type === 'SUPERADMIN') {
       return routes
@@ -122,35 +153,9 @@ export default function Routes() {
 
   const filteredRoutes = filterRoutes(routes, routeString)
 
-  const formattedRoutes = useRoutes([
-
-    ...filteredRoutes,
-    {
-      path: '',
-      element: <MainLayout />,
-      children: [
-        {
-          path: '',
-          element: <Navigate to={'/sales/create'} />,
-        },
-        {
-          path: '404',
-          element: <NotFoundPage full />,
-        },
-        {
-          path: 'redirect',
-          element: <Redirect />,
-        },
-        {
-          path: '*',
-          element: <Navigate to='redirect' />,
-        },
-      ],
-    },
-  ])
   return (
     <Suspense fallback={<LoadingContainer />}>
-      <TerminalAccessGuard>{formattedRoutes}</TerminalAccessGuard>
+      <RouteRenderer filteredRoutes={filteredRoutes} />
     </Suspense>
   )
 }

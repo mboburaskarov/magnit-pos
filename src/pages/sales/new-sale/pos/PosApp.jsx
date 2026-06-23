@@ -108,6 +108,7 @@ export default function PosApp() {
   const [showEditQtyDialog, setShowEditQtyDialog] = useState(false)
   const numpadQtyTimerRef = useRef(null)
   const numpadQtyBufferRef = useRef('')
+  const failureCountRef = useRef(0)
 
   useEffect(() => {
     setFrontendStornoItems([])
@@ -118,21 +119,32 @@ export default function PosApp() {
       await axios.get('http://localhost:7788/health', { timeout: 2000 })
       setActiveAgentUrl('http://localhost:7788')
       setIsAgentRunning(true)
+      failureCountRef.current = 0
     } catch (e) {
       try {
         await axios.get('http://127.0.0.1:7777/health', { timeout: 2000 })
         setActiveAgentUrl('http://127.0.0.1:7777')
         setIsAgentRunning(true)
+        failureCountRef.current = 0
       } catch (e2) {
         setIsAgentRunning(false)
+        failureCountRef.current += 1
       }
     }
   }
 
   useEffect(() => {
-    checkAgentHealth()
-    const interval = setInterval(checkAgentHealth, 10000)
-    return () => clearInterval(interval)
+    let timeoutId
+    const runCheck = async () => {
+      await checkAgentHealth()
+      // Backoff check frequency if consecutive failures happen
+      const delay = failureCountRef.current > 5 
+        ? 60000 
+        : (failureCountRef.current > 2 ? 30000 : 10000)
+      timeoutId = setTimeout(runCheck, delay)
+    }
+    runCheck()
+    return () => clearTimeout(timeoutId)
   }, [])
 
   useEffect(() => {
@@ -346,7 +358,6 @@ export default function PosApp() {
       setCardOwnerType: setCartOwnerType,
       cartItemsListLoading: isCartLoading,
     })
-  console.log(posCartItemsList)
 
   const isCheckoutLoading = isFinishSaleWithoutAppPaymentType || isSendToEPOS || isGelOldEposCheck || isSendEPOSresponseToBackend
 

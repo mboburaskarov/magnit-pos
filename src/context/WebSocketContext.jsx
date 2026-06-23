@@ -23,7 +23,9 @@ export const WebSocketProvider = ({ children }) => {
       isInitializedRef.current = true
       websocketService.connect(userData)
 
-      console.log('Global WebSocket initialized for store:', userData.store.id)
+      if (import.meta.env.DEV) {
+        console.log('Global WebSocket initialized for store:', userData.store.id)
+      }
     }
 
     // Cleanup when user data changes or component unmounts

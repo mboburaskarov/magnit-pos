@@ -13,8 +13,8 @@ const GlobalStyles = () => {
           padding: 0,
         },
         html: {
-          '-webkit-font-smoothing': 'antialiased',
-          '-moz-osx-font-smoothing': 'grayscale',
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale',
           height: '100%',
           width: '100%',
         },

@@ -6,6 +6,18 @@ let reconnectAttempts = 0
 let maxReconnectAttempts = 5
 let reconnectTimeout = null
 
+const logDev = (...args) => {
+  if (import.meta.env.DEV) {
+    console.log(...args)
+  }
+}
+
+const logErrorDev = (...args) => {
+  if (import.meta.env.DEV) {
+    console.error(...args)
+  }
+}
+
 class WebSocketService {
   constructor() {
     this.ws = null
@@ -15,6 +27,11 @@ class WebSocketService {
   }
 
   connect(userData) {
+    // If store changed, close the old connection first
+    if (this.ws && this.userData?.store?.id !== userData?.store?.id) {
+      this.disconnect()
+    }
+
     if (this.isConnecting || (this.ws && this.ws.readyState === WebSocket.OPEN)) {
       return
     }
@@ -33,7 +50,7 @@ class WebSocketService {
       wsInstance = this.ws
 
       this.ws.onopen = () => {
-        console.log('WebSocket connection established')
+        logDev('WebSocket connection established')
         this.isConnecting = false
         reconnectAttempts = 0
         
@@ -47,28 +64,28 @@ class WebSocketService {
       this.ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data)
-          console.log('WebSocket received:', data)
+          logDev('WebSocket received:', data)
           
           // Notify all subscribers
           subscribers.forEach(callback => {
             try {
               callback(data)
             } catch (error) {
-              console.error('Error in subscriber callback:', error)
+              logErrorDev('Error in subscriber callback:', error)
             }
           })
         } catch (error) {
-          console.error('Error parsing WebSocket message:', error)
+          logErrorDev('Error parsing WebSocket message:', error)
         }
       }
 
       this.ws.onerror = (error) => {
-        console.error('WebSocket error:', error)
+        logErrorDev('WebSocket error:', error)
         this.isConnecting = false
       }
 
       this.ws.onclose = () => {
-        console.log('WebSocket closed')
+        logDev('WebSocket closed')
         this.isConnecting = false
         this.ws = null
         wsInstance = null
@@ -79,13 +96,13 @@ class WebSocketService {
           const delay = Math.pow(2, reconnectAttempts) * 1000 // Exponential backoff
           
           reconnectTimeout = setTimeout(() => {
-            console.log(`Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts})`)
+            logDev(`Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts})`)
             this.connect(this.userData)
           }, delay)
         }
       }
     } catch (error) {
-      console.error('Error creating WebSocket connection:', error)
+      logErrorDev('Error creating WebSocket connection:', error)
       this.isConnecting = false
     }
   }
@@ -97,7 +114,11 @@ class WebSocketService {
     }
 
     if (this.ws) {
-      this.ws.close()
+      try {
+        this.ws.close()
+      } catch (err) {
+        logErrorDev('Error closing WebSocket:', err)
+      }
       this.ws = null
     }
     

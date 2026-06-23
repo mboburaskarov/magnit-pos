@@ -57,11 +57,11 @@ export default function PosLiveSearchPanel({
         <div className='pos-live-search-list-column'>
           {products.length > 0 ? (
             <div className='pos-live-search-list'>
-              {products.map((product) => {
+              {products.map((product, index) => {
                 const isHovered = hoveredProduct?.id === product.id
                 return (
                   <div
-                    key={product.id}
+                    key={`${product.id || ''}-${product.barcode || ''}-${index}`}
                     className={`pos-live-search-item ${isHovered ? 'is-hovered' : ''}`}
                     onMouseEnter={() => setHoveredProduct(product)}
                     onClick={() => onSelect(product)}

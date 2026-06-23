@@ -1,16 +1,14 @@
 import { Box, Typography } from '@mui/material'
 import { Fragment } from 'react'
-
 import { QRCodeCanvas } from 'qrcode.react'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import DashedRow from './DashedRow.jsx'
 import useStyles from './useStyles'
-
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import palette from '../../src/assets/theme/mui.config'
 import thousandDivider from '@utils/thousandDivider.js'
+
 const FiskalText = ({ data }) => {
   return <Typography>Fiskal belgi: {data}</Typography>
 }
@@ -172,92 +170,97 @@ function RippedPaperCheck({
             </Box>
             {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
           </Fragment>
-          {get(cartItemsList, 'data', [])?.map((el, index) => (
-            <Fragment key={'index3'}>
-              <Box className={classes.content}>
-                <p id={`return-name-${'index'}`}>
-                  <b style={{ fontSize: '17px' }} className={classes.bold}>
-                    {index + 1}. {get(el, 'name')}
-                  </b>
-                </p>
+          {get(cartItemsList, 'data', [])?.map((el, index) => {
+            const itemKey = el.id || el.barcode || `ripped-item-${index}`
+            return (
+              <Fragment key={itemKey}>
+                <Box className={classes.content}>
+                  <p id={`return-name-${index}`}>
+                    <b style={{ fontSize: '17px' }} className={classes.bold}>
+                      {index + 1}. {get(el, 'name')}
+                    </b>
+                  </p>
 
-                <Box mt={'15px'} mb={'10px'} display={'flex'} alignItems={'center'} justifyContent={'end'}>
-                  <Typography sx={{ fontSize: '17px !important', fontWeight: '600 !important' }}>
-                    {`${get(el, 'quantity') > 0 ? get(el, 'quantity') : ''}${
-                      get(el, 'unit_quantity') > 0 ? ` (${get(el, 'unit_quantity')}/${get(el, 'unit_per_pack')})` : ''
-                    } X `}
-                    {thousandDivider(get(el, 'unit_price'))}
-                  </Typography>
+                  <Box mt={'15px'} mb={'10px'} display={'flex'} alignItems={'center'} justifyContent={'end'}>
+                    <Typography sx={{ fontSize: '17px !important', fontWeight: '600 !important' }}>
+                      {`${get(el, 'quantity') > 0 ? get(el, 'quantity') : ''}${
+                        get(el, 'unit_quantity') > 0 ? ` (${get(el, 'unit_quantity')}/${get(el, 'unit_per_pack')})` : ''
+                      } X `}
+                      {thousandDivider(get(el, 'unit_price'))}
+                    </Typography>
 
-                  <Typography
+                    <Typography
+                      sx={{
+                        ml: '5px',
+                        fontSize: '17px !important',
+                        fontWeight: '600 !important',
+                      }}
+                    >{` = ${thousandDivider(get(el, 'total_price'))} so'm`}</Typography>
+                  </Box>
+                  <Box
                     sx={{
-                      ml: '5px',
-                      fontSize: '17px !important',
-                      fontWeight: '600 !important',
+                      '& > p': {
+                        fontWeight: '600 !important',
+                        fontSize: '14px !important',
+                      },
                     }}
-                  >{` = ${thousandDivider(get(el, 'total_price'))} so'm`}</Typography>
-                </Box>
-                <Box
-                  sx={{
-                    '& > p': {
-                      fontWeight: '600 !important',
-                      fontSize: '14px !important',
-                    },
-                  }}
-                >
-                  <Typography>O'lchov birligi: {get(el, 'package_name', '-')}</Typography>
-                  <Typography>MXIK: {get(el, 'class_code', '-')}</Typography>
-                  {get(el, 'is_marking') && (
-                    <Box>
-                      {Object.values(markingsList[get(el, 'id')] || {})?.length > 0 &&
-                        Object.values(markingsList[get(el, 'id')] || {}).map((el) => <Typography>MK: {el.slice(0, 32)}</Typography>)}
-                    </Box>
-                  )}
+                  >
+                    <Typography>O'lchov birligi: {get(el, 'package_name', '-')}</Typography>
+                    <Typography>MXIK: {get(el, 'class_code', '-')}</Typography>
+                    {get(el, 'is_marking') && (
+                      <Box>
+                        {Object.values(markingsList[get(el, 'id')] || {})?.length > 0 &&
+                          Object.values(markingsList[get(el, 'id')] || {}).map((val, idx) => (
+                            <Typography key={`mk-${val}-${idx}`}>MK: {val.slice(0, 32)}</Typography>
+                          ))}
+                      </Box>
+                    )}
 
-                  <Typography>ShtKod: {get(el, 'barcode', '-')}</Typography>
+                    <Typography>ShtKod: {get(el, 'barcode', '-')}</Typography>
+                  </Box>
+                  <DashedRow
+                    id={`return-price-${index}`}
+                    rowData={{
+                      type: `QQS: ${get(el, 'vat_percent')}%`,
+                      value: `${thousandDivider(get(el, 'vat'))} so'm`,
+                    }}
+                  />
                 </Box>
-                <DashedRow
-                  id={`return-price-${'index'}`}
-                  rowData={{
-                    type: `QQS: ${get(el, 'vat_percent')}%`,
-                    value: `${thousandDivider(get(el, 'vat'))} so'm`,
-                  }}
-                />
-              </Box>
-              {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
-            </Fragment>
-          ))}
+                {(disableSumsOnCheque() || disableDiscountOnCheque() || orderItems?.length > 0) && <div className={classes.border} />}
+              </Fragment>
+            )
+          })}
           <Fragment key={'index39'}>
             <Box className={classes.content}>
-              {
-                (mode = 'lite'
-                  ? paymentsList
-                      .filter((a) => a.amount > 0)
-                      ?.map(
-                        (el) =>
-                          disableSumsOnGoods() && (
-                            <DashedRow
-                              id={`return-price-${'index'}`}
-                              rowData={{
-                                type: `${el.name}:`,
-                                value: `${thousandDivider(el.amount)} so'm`,
-                              }}
-                            />
-                          ),
-                      )
-                  : paymentsList?.map(
-                      (el) =>
+              {mode === 'lite'
+                ? paymentsList
+                    .filter((a) => a.amount > 0)
+                    ?.map(
+                      (el, idx) =>
                         disableSumsOnGoods() && (
                           <DashedRow
-                            id={`return-price-${'index'}`}
+                            key={`payment-${el.name || idx}-${idx}`}
+                            id={`return-price-${idx}`}
                             rowData={{
                               type: `${el.name}:`,
                               value: `${thousandDivider(el.amount)} so'm`,
                             }}
                           />
                         ),
-                    ))
-              }
+                    )
+                : paymentsList?.map(
+                    (el, idx) =>
+                      disableSumsOnGoods() && (
+                        <DashedRow
+                          key={`payment-${el.name || idx}-${idx}`}
+                          id={`return-price-${idx}`}
+                          rowData={{
+                            type: `${el.name}:`,
+                            value: `${thousandDivider(el.amount)} so'm`,
+                          }}
+                        />
+                      ),
+                  )}
               {disableSumsOnGoods() && (
                 <DashedRow
                   id={`return-price-${'index'}`}
