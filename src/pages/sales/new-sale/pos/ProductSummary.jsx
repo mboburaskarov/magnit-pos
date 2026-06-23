@@ -61,10 +61,20 @@ export default function ProductSummary({
           <span className='totals-label'>{t('discount')}:</span>
           <span className='totals-val'>−{formatUZS(totalDiscount)}</span>
         </div>
-        <div className='totals-line grand-total'>
-          <span className='totals-label'>{t('pos.receipt_total')}</span>
-          <span className='totals-val'>{formatNumberUZS(totalAmount)} <span className='currency'>UZS</span></span>
-        </div>
+        {(() => {
+          const amountStr = formatNumberUZS(totalAmount)
+          const isLargeAmount = amountStr.length > 9
+          const isVeryLargeAmount = amountStr.length > 12
+          const amountClass = isVeryLargeAmount ? 'very-large-amount' : isLargeAmount ? 'large-amount' : ''
+          return (
+            <div className={`totals-line grand-total ${amountClass}`}>
+              <span className='totals-label'>{t('pos.receipt_total')}</span>
+              <span className='totals-val'>
+                {amountStr} <span className='currency'>UZS</span>
+              </span>
+            </div>
+          )
+        })()}
       </div>
     </div>
   )

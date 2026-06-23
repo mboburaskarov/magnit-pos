@@ -681,7 +681,7 @@ body {
 }
 
 .pos-receipt-totals {
-  width: 280px;
+  width: 340px;
   flex-shrink: 0;
   background-color: var(--pos-surface);
   border: 1px solid var(--pos-border);
@@ -710,6 +710,7 @@ body {
   border-top: 1px dashed var(--pos-border);
   padding-top: 8px;
   margin-top: 4px;
+  align-items: center;
 }
 
 .totals-line.grand-total .totals-label {
@@ -722,6 +723,17 @@ body {
   font-size: 26px;
   font-weight: 800;
   color: var(--pos-accent);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.totals-line.grand-total.large-amount .totals-val {
+  font-size: 20px;
+}
+
+.totals-line.grand-total.very-large-amount .totals-val {
+  font-size: 16px;
 }
 
 .totals-line.grand-total .currency {
@@ -729,6 +741,51 @@ body {
   font-weight: 700;
   color: var(--pos-text-muted);
   margin-left: 2px;
+}
+
+/* ── Custom Scrollbar Styles for POS ── */
+.pos-main-wrapper ::-webkit-scrollbar,
+.pos-sidebar-premium ::-webkit-scrollbar,
+.pos-cart-area ::-webkit-scrollbar,
+.pos-modal ::-webkit-scrollbar,
+.drawer-content ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.pos-main-wrapper ::-webkit-scrollbar-track,
+.pos-sidebar-premium ::-webkit-scrollbar-track,
+.pos-cart-area ::-webkit-scrollbar-track,
+.pos-modal ::-webkit-scrollbar-track,
+.drawer-content ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pos-main-wrapper ::-webkit-scrollbar-thumb,
+.pos-sidebar-premium ::-webkit-scrollbar-thumb,
+.pos-cart-area ::-webkit-scrollbar-thumb,
+.pos-modal ::-webkit-scrollbar-thumb,
+.drawer-content ::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.35);
+  border-radius: 3px;
+  border: 1px solid transparent;
+}
+
+.pos-main-wrapper ::-webkit-scrollbar-thumb:hover,
+.pos-sidebar-premium ::-webkit-scrollbar-thumb:hover,
+.pos-cart-area ::-webkit-scrollbar-thumb:hover,
+.pos-modal ::-webkit-scrollbar-thumb:hover,
+.drawer-content ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.5);
+}
+
+.pos-main-wrapper,
+.pos-sidebar-premium,
+.pos-cart-area,
+.pos-modal,
+.drawer-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.35) transparent;
 }
 
 /* ── PosQuickProducts ── */
@@ -3254,4 +3311,442 @@ body {
 
 .animate-spin {
   animation: spin 1s linear infinite;
+}
+
+/* ==========================================
+   Live Search & Keyboard Layout Redesign
+   ========================================== */
+
+/* Search Overlay Blur/Dim */
+.pos-live-search-overlay {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(17, 24, 39, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 998;
+}
+
+/* Search Dropdown Panel */
+.pos-live-search-panel {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  max-width: 95vw;
+  bottom: 250px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--pos-radius-lg, 12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.pos-live-search-header {
+  height: 48px;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-icon-dimmed {
+  color: #9ca3af;
+}
+
+.pos-live-search-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.pos-live-search-count-badge {
+  font-size: 12px;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-weight: 600;
+}
+
+.pos-live-search-close {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--pos-radius-sm, 4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.pos-live-search-close:hover {
+  color: #1f2937;
+  background-color: #f3f4f6;
+}
+
+.pos-live-search-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Results Column */
+.pos-live-search-list-column {
+  width: 60%;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+}
+
+.pos-live-search-list {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pos-live-search-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: var(--pos-radius-md, 8px);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.pos-live-search-item:hover,
+.pos-live-search-item.is-hovered {
+  background-color: #f3f4f6;
+}
+
+.pos-live-search-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 70%;
+}
+
+.pos-live-search-item-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pos-live-search-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.meta-barcode {
+  font-family: monospace;
+}
+
+.meta-dot {
+  color: #d1d5db;
+}
+
+.meta-stock {
+  font-weight: 500;
+}
+
+.pos-live-search-item-right {
+  text-align: right;
+}
+
+.pos-live-search-item-price {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--pos-accent, #2563eb);
+}
+
+.price-currency {
+  font-size: 12px;
+  font-weight: 700;
+  color: #9ca3af;
+}
+
+/* Preview Column */
+.pos-live-search-preview-column {
+  width: 40%;
+  background-color: #f9fafb;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pos-live-search-preview-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.preview-label-header {
+  font-size: 11px;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.preview-name-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.preview-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preview-details-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.detail-name {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.detail-val {
+  color: #111827;
+  font-weight: 700;
+}
+
+.detail-val.monospace {
+  font-family: monospace;
+}
+
+.preview-price-highlight {
+  font-size: 18px;
+  color: var(--pos-accent, #2563eb);
+}
+
+.pos-live-search-preview-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #9ca3af;
+  font-size: 13px;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Empty & Loading States */
+.pos-live-search-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  height: 100%;
+  color: #6b7280;
+}
+
+.empty-emoji {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.empty-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.empty-desc {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.pos-live-search-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 10;
+}
+
+.pos-live-search-loading-overlay .spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e5e7eb;
+  border-top-color: var(--pos-accent, #2563eb);
+  border-radius: 50%;
+  animation: spin 0.8s infinite linear;
+}
+
+/* Virtual Keyboard Styling */
+.pos-keyboard-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 240px;
+  background-color: #f3f4f6;
+  border-top: 1px solid #d1d5db;
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+.pos-keyboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px;
+  margin-bottom: 2px;
+}
+
+.pos-keyboard-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pos-keyboard-close-btn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.pos-keyboard-close-btn:hover {
+  color: #1f2937;
+  background-color: #e5e7eb;
+}
+
+.pos-keyboard-keys {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.pos-keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+}
+
+.pos-keyboard-key {
+  height: 38px;
+  flex: 1;
+  max-width: 60px;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #1f2937;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: all 0.1s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.pos-keyboard-key:active {
+  background-color: #e5e7eb;
+  transform: translateY(1px);
+}
+
+/* Custom action keys */
+.pos-keyboard-key.action-key {
+  background-color: #e5e7eb;
+  border-color: #c4c7cd;
+  color: #4b5563;
+  font-size: 12px;
+  max-width: 80px;
+}
+
+.pos-keyboard-key.action-key:active {
+  background-color: #d1d5db;
+}
+
+.pos-keyboard-key.space-key {
+  flex: 4;
+  max-width: 320px;
+}
+
+.pos-keyboard-key.action-key.enter-key {
+  background-color: #3b82f6;
+  border-color: #2563eb;
+  color: #ffffff;
+  max-width: 90px;
+}
+
+.pos-keyboard-key.action-key.enter-key:active {
+  background-color: #1d4ed8;
+}
+
+.pos-keyboard-key.action-key.lang-toggle {
+  background-color: #6b7280;
+  border-color: #4b5563;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.pos-keyboard-key.action-key.lang-toggle:active {
+  background-color: #374151;
+}
+
+.pos-keyboard-key.action-key.clear-key {
+  font-size: 11px;
 }

@@ -119,15 +119,44 @@ const Notification = ({ closeToast, type, message, icon, body, primary }) => {
   )
 }
 
+const recentToasts = new Map()
+const DUPLICATE_WINDOW_MS = 2500
+
+const shouldIgnoreToast = (msg) => {
+  if (typeof msg !== 'string') return false
+  const now = Date.now()
+  const lastTime = recentToasts.get(msg)
+  if (lastTime && now - lastTime < DUPLICATE_WINDOW_MS) {
+    return true
+  }
+  recentToasts.set(msg, now)
+  // Clean up old entries
+  for (const [key, value] of recentToasts.entries()) {
+    if (now - value > DUPLICATE_WINDOW_MS) {
+      recentToasts.delete(key)
+    }
+  }
+  return false
+}
+
 export const success = (msg) => {
+  if (shouldIgnoreToast(msg)) return
+  toast.dismiss()
   toast(<Notification type='success' icon={<TickSmallIcon />} message={msg} />)
 }
 export const warning = (msg) => {
+  if (shouldIgnoreToast(msg)) return
+  toast.dismiss()
   toast(<Notification type='warning' icon={<WarningSmallIcon />} message={msg} />)
 }
 export const error = (msg) => {
+  if (shouldIgnoreToast(msg)) return
+  toast.dismiss()
   toast(<Notification type='error' icon={<DeleteMiddleIcon />} message={msg} />)
 }
 export const notification = (title, body) => {
+  const key = `${title}:${body}`
+  if (shouldIgnoreToast(key)) return
+  toast.dismiss()
   toast(<Notification type='notification' icon={<NotificationSmallIcon color='white' />} message={title} body={body} primary />, { autoClose: false })
 }

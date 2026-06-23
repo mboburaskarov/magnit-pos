@@ -34,6 +34,8 @@ import DraftDrawer from '@components/Sales/DraftDrawer'
 import axios from 'axios'
 import PosPrinterSettings from './PosPrinterSettings'
 import EditQuantityDialog from './EditQuantityDialog'
+import PosOnScreenKeyboard from './PosOnScreenKeyboard'
+import PosLiveSearchPanel from './PosLiveSearchPanel'
 
 export default function PosApp() {
   const { id } = useParams()
@@ -84,6 +86,12 @@ export default function PosApp() {
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false)
   const [showSearchInput, setShowSearchInput] = useState(false)
   const [topbarSearchTerm, setTopbarSearchTerm] = useState('')
+  const [showLiveSearchPanel, setShowLiveSearchPanel] = useState(false)
+  const [showKeyboard, setShowKeyboard] = useState(false)
+  const [keyboardLanguage, setKeyboardLanguage] = useState('ru')
+  const [liveSearchResults, setLiveSearchResults] = useState([])
+  const [isLiveSearchLoading, setIsLiveSearchLoading] = useState(false)
+  const latestSearchIdRef = useRef(0)
   const [newSaleId, setNewSaleId] = useState(null)
   const [saleCreationError, setSaleCreationError] = useState(false)
   const [qrcodeUrl, setQrcodeUrl] = useState({})
@@ -95,10 +103,15 @@ export default function PosApp() {
 
   // ── Storno & Qty Edit states ──
   const [stornedIds, setStornedIds] = useState(new Set())
+  const [frontendStornoItems, setFrontendStornoItems] = useState([])
   const [numpadQtyBuffer, setNumpadQtyBuffer] = useState('')
   const [showEditQtyDialog, setShowEditQtyDialog] = useState(false)
   const numpadQtyTimerRef = useRef(null)
   const numpadQtyBufferRef = useRef('')
+
+  useEffect(() => {
+    setFrontendStornoItems([])
+  }, [id])
 
   const checkAgentHealth = async () => {
     try {
@@ -184,6 +197,18 @@ export default function PosApp() {
     })
   }, [cartItems, itemOrder])
 
+  const activeCartItems = useMemo(() => {
+    return sortedCartItems.filter((item) => {
+      const qty = Number(item.quantity || 0)
+      const unitQty = Number(item.unit_quantity || 0)
+      return qty > 0 || unitQty > 0
+    })
+  }, [sortedCartItems])
+
+  const displayCartItems = useMemo(() => {
+    return [...frontendStornoItems, ...activeCartItems]
+  }, [frontendStornoItems, activeCartItems])
+
   const setCardPaymentAmount = useCallback((val) => {
     setRawCardPaymentAmount((prev) => {
       let nextVal = typeof val === 'function' ? val(prev) : val
@@ -208,13 +233,13 @@ export default function PosApp() {
 
   const posCartItemsList = useMemo(
     () => ({
-      data: sortedCartItems,
+      data: activeCartItems,
       total_amount: totalAmount,
       sum: get(cartItemsRes, 'data.data.sum', totalAmount),
       discount_amount: get(cartItemsRes, 'data.data.discount_amount', 0),
       vat_sum: get(cartItemsRes, 'data.data.vat_sum', 0),
     }),
-    [sortedCartItems, cartItemsRes, totalAmount],
+    [activeCartItems, cartItemsRes, totalAmount],
   )
 
   const getPaymentTypeId = (names = []) => {
@@ -272,18 +297,11 @@ export default function PosApp() {
   const paymentAmount = paymentsList.reduce((sum, item) => sum + Number(item.amount || 0), 0)
   const maxAmount = Number(totalAmount || 0) - paymentAmount
 
-  // Calculate totals — storned items excluded from displayed total
-  const stornedItemsTotal = useMemo(
-    () => sortedCartItems
-      .filter((item) => stornedIds.has(item.id))
-      .reduce((acc, item) => acc + Number(item.total_price || 0), 0),
-    [sortedCartItems, stornedIds]
-  )
-  const effectiveTotalAmount = Math.max(0, Number(totalAmount) - stornedItemsTotal)
+  const effectiveTotalAmount = totalAmount
 
-  const totalDiscount = sortedCartItems
-    .filter((item) => !stornedIds.has(item.id))
-    .reduce((acc, item) => acc + (item.discount_price || 0), 0)
+  const totalDiscount = useMemo(() => {
+    return activeCartItems.reduce((acc, item) => acc + (item.discount_price || 0), 0)
+  }, [activeCartItems])
 
   // Search customers query
   const { data: customersRes, isLoading: isSearchingCustomers } = useQuery(
@@ -685,7 +703,7 @@ export default function PosApp() {
     if (remainingAmount <= 0) return
 
     setCashPaymentSelected(true)
-    setReceivedAmount(String(remainingAmount))
+    setReceivedAmount('')
     setFocusedPaymentInput('cash')
     setPaymentMethod('cash')
   }
@@ -830,7 +848,7 @@ export default function PosApp() {
     // 3. Check if product already exists in cart (only for non-scale barcodes;
     //    scale barcodes are checked by store_product_id after the API lookup below)
     if (weightGrams === null) {
-      const existing = cartItems.find((item) => item.barcode === searchBarcode && !stornedIds.has(item.id))
+      const existing = cartItems.find((item) => item.barcode === searchBarcode && (item.quantity > 0 || item.unit_quantity > 0) && !stornedIds.has(item.id))
       if (existing) {
         // Immediately select and move to top
         setSelectedId(existing.id)
@@ -944,7 +962,7 @@ export default function PosApp() {
   const addProductToCart = (product, weightGrams, originalScannedValue, searchBarcode) => {
     // For scale products already in cart: accumulate weight
     if (weightGrams !== null) {
-      const existingScaleItem = cartItems.find((item) => item.store_product_id === product.id && !stornedIds.has(item.id))
+      const existingScaleItem = cartItems.find((item) => item.store_product_id === product.id && (item.quantity > 0 || item.unit_quantity > 0) && !stornedIds.has(item.id))
       if (existingScaleItem) {
         // Immediately select and move to top
         setSelectedId(existingScaleItem.id)
@@ -1017,6 +1035,111 @@ export default function PosApp() {
     setPendingWeightGrams(null)
     setPendingScannedValue(null)
   }
+
+  const triggerLiveSearch = async (query) => {
+    const searchId = ++latestSearchIdRef.current
+    setIsLiveSearchLoading(true)
+
+    try {
+      const storeId = get(userData, 'store.id')
+      if (!storeId) return
+
+      const res = await requests.getAllStoreProducts(
+        { id: storeId },
+        { search: query, offset: 0, limit: 30 }
+      )
+
+      if (searchId !== latestSearchIdRef.current) return
+
+      const productsList = get(res, 'data.data') || []
+      setLiveSearchResults(productsList)
+    } catch (err) {
+      if (searchId === latestSearchIdRef.current) {
+        error(t('pos.error_searching_product'))
+        console.error(err)
+      }
+    } finally {
+      if (searchId === latestSearchIdRef.current) {
+        setIsLiveSearchLoading(false)
+      }
+    }
+  }
+
+  const handleEnterBarcodeSearch = (query) => {
+    const trimmed = query.trim()
+    if (!trimmed) return
+    triggerLiveSearch(trimmed)
+  }
+
+  const handleLiveProductSelect = (product) => {
+    let weightGrams = null
+    const searchBarcode = product.barcode
+    const inputVal = topbarSearchTerm.trim()
+    if (inputVal.startsWith('26') || inputVal.startsWith('27')) {
+      const parsed = parseInt(inputVal.slice(7, 12), 10)
+      if (!isNaN(parsed) && parsed > 0) {
+        weightGrams = parsed
+      }
+    }
+
+    addProductToCart(product, weightGrams, null, searchBarcode)
+    
+    setTopbarSearchTerm('')
+    setShowSearchInput(false)
+    setShowLiveSearchPanel(false)
+    setShowKeyboard(false)
+  }
+
+  const handleCloseLiveSearch = () => {
+    setTopbarSearchTerm('')
+    setShowSearchInput(false)
+    setShowLiveSearchPanel(false)
+    setShowKeyboard(false)
+  }
+
+  const handleKeyboardLanguageChange = () => {
+    setKeyboardLanguage((prev) => (prev === 'ru' ? 'uz' : 'ru'))
+  }
+
+  const handleKeyboardChange = (newVal) => {
+    setTopbarSearchTerm(newVal)
+  }
+
+  const handleKeyboardBackspace = () => {
+    setTopbarSearchTerm((prev) => prev.slice(0, -1))
+  }
+
+  const handleKeyboardClear = () => {
+    setTopbarSearchTerm('')
+  }
+
+  const handleKeyboardEnter = () => {
+    handleEnterBarcodeSearch(topbarSearchTerm)
+  }
+
+  useEffect(() => {
+    if (!showLiveSearchPanel) {
+      setLiveSearchResults([])
+      return
+    }
+
+    const query = topbarSearchTerm.trim()
+    const isNumeric = /^\d+$/.test(query)
+    const isQueryValid = isNumeric ? query.length >= 1 : query.length >= 2
+
+    if (!isQueryValid) {
+      setLiveSearchResults([])
+      setIsLiveSearchLoading(false)
+      return
+    }
+
+    const delay = 300
+    const timeoutId = setTimeout(() => {
+      triggerLiveSearch(query)
+    }, delay)
+
+    return () => clearTimeout(timeoutId)
+  }, [topbarSearchTerm, showLiveSearchPanel])
 
   const handleQuickAdd = async (productSearchQuery) => {
     try {
@@ -1380,8 +1503,34 @@ export default function PosApp() {
       error(t('pos.select_product_to_delete'))
       return
     }
-    if (stornedIds.has(selectedId)) return // already storned
-    setStornedIds((prev) => new Set([...prev, selectedId]))
+    if (selectedItem.is_frontend_storno) return
+
+    const stornoCopy = {
+      ...selectedItem,
+      id: `storno-${selectedItem.id}-${Date.now()}`,
+      original_cart_item_id: selectedItem.id,
+      is_frontend_storno: true,
+      is_storno: true,
+      status: 'STORNO',
+      quantity: selectedItem.quantity,
+      unit_quantity: selectedItem.unit_quantity,
+      total_price: selectedItem.total_price,
+      unit_price: selectedItem.unit_price,
+      created_at: new Date().toISOString(),
+    }
+
+    setFrontendStornoItems((prev) => [stornoCopy, ...prev])
+    setStornedIds((prev) => new Set([...prev, stornoCopy.id]))
+
+    changeQty({
+      id: selectedItem.id,
+      data: {
+        quantity: 0,
+        unit_quantity: 0,
+        store_product_id: selectedItem.store_product_id,
+      },
+    })
+
     setSelectedId(null)
     setNumpadQtyBuffer('')
     numpadQtyBufferRef.current = ''
@@ -1391,7 +1540,7 @@ export default function PosApp() {
   // ── Edit Quantity Dialog handlers ──
   const handleEditQuantity = () => {
     if (!selectedId) return
-    const selectedItem = sortedCartItems.find((item) => item.id === selectedId)
+    const selectedItem = activeCartItems.find((item) => item.id === selectedId)
     if (!selectedItem || stornedIds.has(selectedId)) return
     setShowEditQtyDialog(true)
     clearPOSActionFocus()
@@ -1426,7 +1575,7 @@ export default function PosApp() {
   // ── Direct numpad quantity editing (sidebar numpad in cart mode) ──
   const handleNumpadQtyPress = useCallback(
     (val) => {
-      const selectedItem = sortedCartItems.find((el) => el.id === selectedId)
+      const selectedItem = activeCartItems.find((el) => el.id === selectedId)
       if (!selectedItem || stornedIds.has(selectedId)) return
       const isWeight = selectedItem.unit_per_pack === 1000
       const capturedItem = selectedItem
@@ -1544,7 +1693,42 @@ export default function PosApp() {
         isAgentRunning={isAgentRunning}
         onOpenCashDrawer={handleOpenCashDrawer}
         onHardRefresh={handleHardRefreshRequest}
+        onFocusLiveSearch={() => {
+          setShowLiveSearchPanel(true)
+          setShowKeyboard(true)
+        }}
+        onEnterBarcodeSearch={handleEnterBarcodeSearch}
+        onCloseLiveSearch={handleCloseLiveSearch}
       />
+
+      {showLiveSearchPanel && (
+        <>
+          <div className='pos-live-search-overlay' onClick={handleCloseLiveSearch} />
+          <PosLiveSearchPanel
+            open={showLiveSearchPanel}
+            query={topbarSearchTerm}
+            products={liveSearchResults}
+            isLoading={isLiveSearchLoading}
+            onSelect={handleLiveProductSelect}
+            onClose={handleCloseLiveSearch}
+            t={t}
+          />
+        </>
+      )}
+
+      {showKeyboard && (
+        <PosOnScreenKeyboard
+          value={topbarSearchTerm}
+          onChange={handleKeyboardChange}
+          onBackspace={handleKeyboardBackspace}
+          onClear={handleKeyboardClear}
+          onEnter={handleKeyboardEnter}
+          language={keyboardLanguage}
+          onLanguageChange={handleKeyboardLanguageChange}
+          onClose={handleCloseLiveSearch}
+          t={t}
+        />
+      )}
 
       {saleCreationError && (
         <div
@@ -1608,9 +1792,14 @@ export default function PosApp() {
         <main className='pos-left-section'>
           <div className='pos-cart-area'>
             <ProductTable
-              cartItems={sortedCartItems}
+              cartItems={displayCartItems}
               selectedId={selectedId}
-              onSelectRow={setSelectedId}
+              onSelectRow={(rowId) => {
+                // Do not allow selecting frontend storno items
+                const item = displayCartItems.find((i) => i.id === rowId)
+                if (item?.is_frontend_storno) return
+                setSelectedId(rowId)
+              }}
               onQtyIncrease={handleQtyIncrease}
               onQtyDecrease={handleQtyDecrease}
               onQtyDecreaseRequestSecurity={setSecurityItem}
@@ -1623,7 +1812,7 @@ export default function PosApp() {
 
           {/* Left Bottom Summary & Actions */}
           <div className='pos-left-bottom'>
-            <ProductSummary cartItems={sortedCartItems.filter(i => !stornedIds.has(i.id))} selectedId={selectedId} totalAmount={effectiveTotalAmount} totalDiscount={totalDiscount} t={t} />
+            <ProductSummary cartItems={activeCartItems} selectedId={selectedId} totalAmount={effectiveTotalAmount} totalDiscount={totalDiscount} t={t} />
 
             <ActionBar
               customerId={customerId}
@@ -1634,7 +1823,7 @@ export default function PosApp() {
               onEditQuantity={handleEditQuantity}
               onCancelSale={handleCancelSale}
               onStornoProduct={handleStornoProduct}
-              hasSelectedProduct={!!selectedId && !stornedIds.has(selectedId)}
+              hasSelectedProduct={!!selectedId && !stornedIds.has(selectedId) && activeCartItems.some(i => i.id === selectedId)}
               showQuickProducts={showQuickProducts}
               onToggleQuickProducts={() => setShowQuickProducts(!showQuickProducts)}
               showPaymentView={showPaymentView}
@@ -1681,12 +1870,12 @@ export default function PosApp() {
           handleQuickCash={handleQuickCash}
           handleCheckout={handleCheckout}
           isCheckoutLoading={isCheckoutLoading}
-          cartItems={sortedCartItems.filter(i => !stornedIds.has(i.id))}
+          cartItems={activeCartItems}
           cartOwnerType={cartOwnerType}
           setCartOwnerType={setCartOwnerType}
           t={t}
-          onNumpadQtyPress={selectedId && !stornedIds.has(selectedId) ? handleNumpadQtyPress : null}
-          selectedItemIsWeight={sortedCartItems.find(i => i.id === selectedId)?.unit_per_pack === 1000}
+          onNumpadQtyPress={selectedId && !stornedIds.has(selectedId) && activeCartItems.some(i => i.id === selectedId) ? handleNumpadQtyPress : null}
+          selectedItemIsWeight={activeCartItems.find(i => i.id === selectedId)?.unit_per_pack === 1000}
           numpadQtyBuffer={numpadQtyBuffer}
         />
       </div>
@@ -1751,7 +1940,7 @@ export default function PosApp() {
       {/* Edit Quantity Dialog */}
       <EditQuantityDialog
         open={showEditQtyDialog}
-        item={sortedCartItems.find(i => i.id === selectedId) || null}
+        item={activeCartItems.find(i => i.id === selectedId) || null}
         onConfirm={handleEditQtyConfirm}
         onClose={() => { setShowEditQtyDialog(false); clearPOSActionFocus() }}
         t={t}

@@ -23,6 +23,9 @@ export default function POSHeader({
   isAgentRunning,
   onOpenCashDrawer,
   onHardRefresh,
+  onFocusLiveSearch,
+  onEnterBarcodeSearch,
+  onCloseLiveSearch,
 }) {
   const getShortName = (first, last) => {
     if (!first) return cashierName || 'Magnit'
@@ -239,7 +242,7 @@ export default function POSHeader({
             id='posSearchQuery'
             name='posSearchQuery'
             className='pos-header-search-input'
-            placeholder={t('pos.enter_barcode')}
+            placeholder={t('pos.search_title') || 'Поиск товара...'}
             autoFocus
             autoComplete='off'
             autoCorrect='off'
@@ -252,14 +255,13 @@ export default function POSHeader({
             data-form-type='other'
             value={topbarSearchTerm}
             onChange={(e) => setTopbarSearchTerm(e.target.value)}
+            onFocus={onFocusLiveSearch}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                handleBarcodeScan(topbarSearchTerm)
-                setTopbarSearchTerm('')
-                setShowSearchInput(false)
+                onEnterBarcodeSearch(topbarSearchTerm)
               }
               if (e.key === 'Escape') {
-                setShowSearchInput(false)
+                onCloseLiveSearch()
               }
             }}
           />

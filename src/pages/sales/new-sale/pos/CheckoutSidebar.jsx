@@ -176,13 +176,13 @@ export default function CheckoutSidebar({
           {/* Payment Info Display Card */}
           <div className='pos-sidebar-card payment-summary-card'>
             <div className='payment-row'>
-              <span className='payment-label'>{t('pos.total_payment')}</span>
+              <span className='payment-label'>{t('pos.total_compact')}</span>
               <span className='payment-val total'>{formatUZS(totalAmount)}</span>
             </div>
 
             {cashPaymentSelected && (
               <div className='payment-row border-top-dashed'>
-                <span className='payment-label'>{t('pos.cash_payment')}:</span>
+                <span className='payment-label'>{t('pos.cash_payment_compact')}:</span>
                 <div className='payment-input-wrapper'>
                   <input
                     ref={receivedAmountInputRef}
