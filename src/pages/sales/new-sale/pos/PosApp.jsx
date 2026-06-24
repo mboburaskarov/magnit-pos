@@ -1038,6 +1038,7 @@ export default function PosApp() {
       sale_id: id,
       barcode: product.barcode,
       store_product_id: product.id,
+      product_id: product.product_id,
       discount_type: 'percent',
       discount_value: 0,
       ...(weightGrams !== null && { weight_grams: weightGrams }),
@@ -1184,6 +1185,7 @@ export default function PosApp() {
         sale_id: id,
         barcode: product.barcode,
         store_product_id: product.id,
+        product_id: product.product_id,
         discount_type: 'percent',
         discount_value: 0,
       })
