@@ -51,6 +51,7 @@ export default function CheckoutSidebar({
     click: 'Click',
     payme: 'Payme',
     uzum: 'Uzum',
+    munis: 'Munis',
     loyaltycard: 'Balans',
   }
 

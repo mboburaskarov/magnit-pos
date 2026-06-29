@@ -26,6 +26,7 @@ import PosQuickSelectDrawer from './PosQuickSelectDrawer'
 import ActionBar from './ActionBar'
 import PosSecurityQrModal from './PosSecurityQrModal'
 import PosAppScanModal from './PosAppScanModal'
+import PosMunisQrModal from './PosMunisQrModal'
 import PosProductSelectModal from './PosProductSelectModal'
 import SaleProgressSteps from '../saleStepLoading'
 import './PosLayout.css'
@@ -70,6 +71,7 @@ export default function PosApp() {
   const [secondaryPaymentAmount, setRawSecondaryPaymentAmount] = useState('')
   const [focusedPaymentInput, setFocusedPaymentInput] = useState('cash')
   const [showAppScanModal, setShowAppScanModal] = useState(false)
+  const [showMunisQrModal, setShowMunisQrModal] = useState(false)
   const [productSelectList, setProductSelectList] = useState([])
   const [pendingWeightGrams, setPendingWeightGrams] = useState(null)
   const [pendingScannedValue, setPendingScannedValue] = useState(null)
@@ -290,6 +292,7 @@ export default function PosApp() {
         click: 'Click',
         payme: 'Payme',
         uzum: 'Uzum',
+        munis: 'Munis',
         loyaltycard: 'Balans',
       }
       const appName = appNameByMethod[secondaryPaymentMethod]
@@ -822,6 +825,13 @@ export default function PosApp() {
       setStornedIds(new Set())
     }
 
+    // Munis: show a generated QR for the customer to scan, then finalize once paid.
+    const hasMunisPayment = paymentsList.some((p) => p.type === 'app' && p.app_type === 'munis')
+    if (hasMunisPayment) {
+      setShowMunisQrModal(true)
+      return
+    }
+
     const hasAppPayment = paymentsList.some((p) => p.type === 'app')
     if (hasAppPayment) {
       setShowAppScanModal(true)
@@ -835,6 +845,11 @@ export default function PosApp() {
   const handleAppScanSubmit = (scannedToken) => {
     setShowAppScanModal(false)
     submitSale(paymentsList, scannedToken, maxAmount, cartOwnerType)
+  }
+
+  const handleMunisPaid = () => {
+    setShowMunisQrModal(false)
+    submitSale(paymentsList, undefined, maxAmount, cartOwnerType)
   }
 
   const handleBarcodeScan = async (scannedBarcode) => {
@@ -1993,6 +2008,16 @@ export default function PosApp() {
         paymentName={paymentsList.find((p) => p.type === 'app')?.name}
         onSubmit={handleAppScanSubmit}
         onCancel={() => { setShowAppScanModal(false); clearPOSActionFocus() }}
+        t={t}
+      />
+
+      {/* Munis QR Payment Modal */}
+      <PosMunisQrModal
+        open={showMunisQrModal}
+        saleId={id}
+        amount={Number(paymentsList.find((p) => p.app_type === 'munis')?.amount || 0)}
+        onPaid={handleMunisPaid}
+        onCancel={() => { setShowMunisQrModal(false); clearPOSActionFocus() }}
         t={t}
       />
 

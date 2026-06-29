@@ -91,6 +91,14 @@ export default function ActionBar({
             Uzum
           </button>
           <button
+            className={`method-select-btn ${secondaryPaymentMethod === 'munis' ? 'is-active' : ''}`}
+            onClick={() => { onSelectSecondaryPayment('munis'); blurActiveBtn() }}
+            disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'munis') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'munis')}
+            type='button'
+          >
+            Munis
+          </button>
+          <button
             className={`method-select-btn ${secondaryPaymentMethod === 'loyaltycard' ? 'is-active' : ''}`}
             onClick={() => { onSelectSecondaryPayment('loyaltycard'); blurActiveBtn() }}
             disabled={!customerId || (shouldDisableInactive && secondaryPaymentMethod !== 'loyaltycard') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'loyaltycard')}
