@@ -11,14 +11,16 @@ const POLL_INTERVAL_MS = 3000
  * PosMunisQrModal
  *
  * Munis (QR Online) payment flow:
- *  1. On open, generate a per-sale dynamic QR (receiptNumber = sale id).
+ *  1. On open, generate a per-sale dynamic QR. The server returns the bill_number
+ *     (the sale's sale_number) the payment must be looked up by.
  *  2. Render the QR for the customer to scan and pay.
- *  3. Poll payment status by sale id until it lands (Munis code === 0).
+ *  3. Poll payment status by that bill_number until it lands (Munis code === 0).
  *  4. Once paid, call onPaid() which finalizes the sale (server re-verifies).
  */
 function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
   const [status, setStatus] = useState('loading') // loading | waiting | paid | error
   const [qr, setQr] = useState('')
+  const [billNumber, setBillNumber] = useState('') // Munis receipt/bill number to poll with
   const [errMsg, setErrMsg] = useState('')
   const [retryNonce, setRetryNonce] = useState(0)
   const paidHandledRef = useRef(false)
@@ -30,6 +32,7 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
     paidHandledRef.current = false
     setStatus('loading')
     setQr('')
+    setBillNumber('')
     setErrMsg('')
 
     requests
@@ -37,12 +40,14 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
       .then((res) => {
         if (cancelled) return
         const qrValue = get(res, 'data.data.qr', '')
-        if (!qrValue) {
+        const bill = get(res, 'data.data.bill_number', '')
+        if (!qrValue || !bill) {
           setStatus('error')
           setErrMsg(t('pos.munis.generate_failed', { defaultValue: 'QR-код не удалось создать' }))
           return
         }
         setQr(qrValue)
+        setBillNumber(String(bill))
         setStatus('waiting')
       })
       .catch((e) => {
@@ -62,12 +67,12 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
 
   // Poll for payment while waiting
   useEffect(() => {
-    if (!open || status !== 'waiting') return
+    if (!open || status !== 'waiting' || !billNumber) return
     let stopped = false
 
     const poll = async () => {
       try {
-        const res = await requests.getMunisPayment({ bill_number: saleId })
+        const res = await requests.getMunisPayment({ bill_number: billNumber })
         const code = get(res, 'data.data.code')
         if (!stopped && code === 0) {
           setStatus('paid')
@@ -83,7 +88,7 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
       stopped = true
       clearInterval(interval)
     }
-  }, [open, status, saleId])
+  }, [open, status, billNumber])
 
   // Once paid, finalize the sale (server re-verifies). Guard against double-calls.
   useEffect(() => {
