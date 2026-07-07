@@ -213,18 +213,39 @@ export const useSaleOperations = ({
     if (!bracketContent) {
       return false
     }
-    const failingNames = bracketContent
-      .split(',')
-      .map((name) => normalizeProductName(name.replace(/\s+\d+\s*$/, '')))
-      .filter(Boolean)
-
     const items = payload.params?.items || []
-    const itemNames = new Set(items.map((item) => normalizeProductName(item.name)))
     const patched = patchedProductNamesRef.current
 
-    // Keep only failing products that exist in this sale and are not yet
-    // patched. If none remain, retrying cannot help → surface the error.
-    const newFailingNames = failingNames.filter((name) => itemNames.has(name) && !patched.has(name))
+    // Each comma-separated entry inside the brackets is a product EPOS could not
+    // match. EPOS sometimes appends an extra number after the name (e.g. a line
+    // index/quantity), which must NOT be mistaken for a digit that is genuinely
+    // part of the product name (e.g. "...ASSORTI 4"). So instead of stripping a
+    // trailing number and matching exactly, we resolve every entry against the
+    // real item names in this payload: an item matches an entry when the entry
+    // equals its name, or begins with its name followed by a space (the
+    // appended-number case). When several names qualify, the longest wins, so
+    // "MILK 2L" is preferred over "MILK".
+    const reportedEntries = bracketContent
+      .split(',')
+      .map((entry) => normalizeProductName(entry))
+      .filter(Boolean)
+
+    const itemNamesByLength = items
+      .map((item) => normalizeProductName(item.name))
+      .filter(Boolean)
+      .sort((a, b) => b.length - a.length)
+
+    const matchedNames = new Set()
+    reportedEntries.forEach((entry) => {
+      const match = itemNamesByLength.find((name) => entry === name || entry.startsWith(`${name} `))
+      if (match) {
+        matchedNames.add(match)
+      }
+    })
+
+    // Keep only matched products we have not patched yet. If none remain,
+    // retrying cannot help → surface the error.
+    const newFailingNames = [...matchedNames].filter((name) => !patched.has(name))
     if (newFailingNames.length === 0) {
       return false
     }
@@ -332,7 +353,7 @@ export const useSaleOperations = ({
         const discountSum = parseFloat((discount * 100).toFixed(2))
 
         readyData.push({
-          barcode: data.find((final) => final.cart_item_id === el.id)?.barcode,
+          barcode: data.find((final) => final.cart_item_id === el.id)?.barcode || el.barcode,
 
           amount: (el.quantity + el.unit_amount) * 1000,
           price: parseFloat((price * 100).toFixed(2)),
@@ -396,7 +417,7 @@ export const useSaleOperations = ({
           const discountSum = parseFloat((discount * 100).toFixed(2))
 
           readyData.push({
-            barcode: data.find((final) => final.cart_item_id === el.id)?.barcode,
+            barcode: data.find((final) => final.cart_item_id === el.id)?.barcode || el.barcode,
             amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
             price: parseFloat((price * 100).toFixed(2)),
 
