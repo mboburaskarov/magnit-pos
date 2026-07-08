@@ -1,434 +1,1013 @@
-import { LoadingButton } from '@mui/lab'
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, CircularProgress } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { useEffect, useRef, useState } from 'react'
 import { useMutation } from 'react-query'
 import { useDispatch } from 'react-redux'
-import { Delete, CornerDownLeft } from 'lucide-react'
-import PhoneNumber from '../../../components/Inputs/PhoneNumber'
+import { Store, Search, ArrowLeft, ArrowRight, Check, Eye, EyeOff, Delete, CornerDownLeft, RefreshCw, AlertTriangle } from 'lucide-react'
 import { requests } from '../../../utils/requests'
-import { error, success } from '../../../utils/toast'
-import { countries } from '../../assets/data/countries'
+import { fetchMachineId } from '../../../utils/deviceAgent'
 import { setUserData } from '../../redux-toolkit/userSlice'
-import InputPassword from '/components/Inputs/InputPassword'
 import LoadingContainer from '/components/LoadingContainer'
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: '#F7F9FC', // Premium light background
-    minHeight: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '20px',
+// Brand accent for the login experience. The design exposes this as a brand
+// choice; we use the app's primary black to stay consistent with the rest of
+// Magnit POS.
+const ACCENT = '#111217'
+const ACCENT_HOVER = '#2A2D38'
+const MAX_PASSWORD = 32
 
-    // Consistent input styling for both Phone (Outlined) and Password (Filled)
-    '& .MuiFilledInput-root, & .MuiOutlinedInput-root': {
-      backgroundColor: '#F3F4F6',
-      borderRadius: '8px !important',
-      transition: 'all 0.2s ease',
-      border: '1px solid transparent !important',
+const WEEKDAYS = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
+const MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+
+const useStyles = makeStyles((theme) => {
+  const font = theme.fontFamily.Gilroy
+  return {
+    '@keyframes shake': {
+      '0%, 100%': { transform: 'translateX(0)' },
+      '20%': { transform: 'translateX(-9px)' },
+      '40%': { transform: 'translateX(9px)' },
+      '60%': { transform: 'translateX(-6px)' },
+      '80%': { transform: 'translateX(6px)' },
+    },
+    screen: {
+      position: 'fixed',
+      inset: 0,
+      display: 'flex',
       overflow: 'hidden',
-
-      '&:hover': {
-        backgroundColor: '#E5E7EB',
-        '& fieldset': {
-          borderColor: 'transparent !important',
-        }
-      },
-      '&.Mui-focused': {
-        backgroundColor: '#FFFFFF',
-        border: `1px solid ${theme.palette.primary.main} !important`,
-        boxShadow: `0 0 0 4px ${theme.palette.primary.main}20`,
-        '& fieldset': {
-          borderColor: 'transparent !important',
-        }
-      },
-      '&:before, &:after': {
-        display: 'none', // Remove filled input bottom lines
-      },
-      '& fieldset': {
-        border: 'none !important', // Remove outlined input default borders
-      }
+      background: '#F7F9FC',
+      color: '#111217',
+      fontFamily: font,
     },
 
-    // Adjust Phone input inner text area
-    '& .MuiOutlinedInput-input': {
-      paddingTop: '18px',
-      paddingBottom: '18px',
-      height: 'auto',
+    // ---------- brand rail ----------
+    rail: {
+      width: '37%',
+      minWidth: 400,
+      maxWidth: 520,
+      background: ACCENT,
+      color: '#fff',
+      padding: '52px 48px',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      position: 'relative',
+      overflow: 'hidden',
+      flexShrink: 0,
+    },
+    railCircleLg: {
+      position: 'absolute',
+      width: 560,
+      height: 560,
+      border: '1.5px solid rgba(255,255,255,0.13)',
+      borderRadius: '50%',
+      right: -220,
+      bottom: -200,
+    },
+    railCircleSm: {
+      position: 'absolute',
+      width: 340,
+      height: 340,
+      border: '1.5px solid rgba(255,255,255,0.10)',
+      borderRadius: '50%',
+      right: -110,
+      bottom: -90,
+    },
+    railLogo: {
+      height: 32,
+      width: 'auto',
+      filter: 'brightness(0) invert(1)',
+      position: 'relative',
+      alignSelf: 'flex-start',
+    },
+    railCenter: { position: 'relative' },
+    railDate: {
+      fontSize: 15,
       fontWeight: 500,
+      letterSpacing: '0.02em',
+      opacity: 0.72,
+      marginBottom: 10,
+      color: '#fff',
     },
-
-    // Adjust Password input inner text area
-    '& .MuiFilledInput-input': {
-      paddingTop: '18px !important',
-      paddingBottom: '18px !important',
+    railClock: {
+      fontSize: 78,
+      fontWeight: 700,
+      lineHeight: '0.95',
+      letterSpacing: '-0.02em',
+      marginBottom: 28,
+      fontVariantNumeric: 'tabular-nums',
+      color: '#fff',
+    },
+    railChip: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 11,
+      background: 'rgba(255,255,255,0.15)',
+      backdropFilter: 'blur(2px)',
+      padding: '13px 18px',
+      borderRadius: 14,
+      maxWidth: '100%',
+    },
+    railChipText: {
+      fontSize: 15.5,
+      fontWeight: 600,
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    },
+    railHint: {
+      position: 'relative',
+      fontSize: 13.5,
       fontWeight: 500,
+      opacity: 0.62,
+      lineHeight: 1.5,
+      whiteSpace: 'pre-line',
+      color: '#fff',
     },
 
-    '& .MuiInputLabel-root': {
-      display: 'none', // Hide standard labels to keep UI clean like reference
-    }
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: '32px 40px',
-    border: '1px solid #e5e7eb',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: 480,
-  },
-  header: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    marginBottom: 20,
-    width: '100%',
-  },
-  logoWrapper: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 700,
-    lineHeight: '1.2',
-    color: '#111827',
-    fontFamily: theme.fontFamily.Gilroy,
-    textAlign: 'left',
-  },
-  subtitle: {
-    marginTop: 8,
-    fontSize: 16,
-    fontWeight: 500,
-    color: '#6B7280',
-    textAlign: 'left',
-  },
-  inputGroup: {
-    width: '100%',
-    marginBottom: '16px',
-    '& .MuiFormControl-root': {
-      width: '100%', // Make password full width
-      margin: 0,
-    }
-  },
-  inputLabel: {
-    fontSize: 14,
-    fontWeight: 600,
-    color: '#374151',
-    marginBottom: 8,
-    fontFamily: theme.fontFamily.Gilroy,
-  },
-  loginButton: {
-    height: 56,
-    borderRadius: 8,
-    fontSize: 18,
-    fontWeight: 600,
-    textTransform: 'none',
-  },
-  loginContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    gap: '32px',
-    maxWidth: '920px',
-    width: '100%',
-    justifyContent: 'center',
-    margin: 'auto',
-    '@media (max-width: 900px)': {
+    // ---------- content shell ----------
+    content: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      minWidth: 0,
+      overflow: 'hidden',
+    },
+    contentCenter: {
+      flex: 1,
+      display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      gap: '20px',
-      maxWidth: '480px',
-    }
-  },
-  keypadCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: '32px',
-    border: '1px solid #e5e7eb',
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    maxWidth: 380,
-    justifyContent: 'center',
-  },
-  keypadHeader: {
-    marginBottom: 16,
-    width: '100%',
-    textAlign: 'left',
-  },
-  keypadTitle: {
-    fontSize: 24,
-    fontWeight: 700,
-    color: '#111827',
-    fontFamily: theme.fontFamily.Gilroy,
-    textAlign: 'left',
-  },
-  keypadSubtitle: {
-    marginTop: 8,
-    fontSize: 15,
-    fontWeight: 500,
-    color: '#6B7280',
-    textAlign: 'left',
-  },
-  keypadGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '12px',
-  },
-  keypadBtn: {
-    height: '60px',
-    borderRadius: '8px',
-    fontSize: '22px',
-    fontWeight: 700,
-    backgroundColor: '#F3F4F6',
-    color: '#111827',
-    border: 'none',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'all 0.15s ease',
-    outline: 'none',
-    userSelect: 'none',
-    fontFamily: theme.fontFamily.Gilroy,
-    '&:hover': {
-      backgroundColor: '#E5E7EB',
+      justifyContent: 'center',
+      padding: 48,
+      position: 'relative',
+      minWidth: 0,
     },
-    '&:active': {
-      backgroundColor: '#D1D5DB',
-      transform: 'scale(0.96)',
+
+    // ---------- select ----------
+    selectContent: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      padding: '44px 52px 0',
+      overflow: 'hidden',
+      minWidth: 0,
     },
-  },
-  keypadBtnAction: {
-    backgroundColor: '#E5E7EB',
-    '&:hover': {
-      backgroundColor: '#D1D5DB',
+    selectHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-end',
+      gap: 24,
+      marginBottom: 26,
+      flexShrink: 0,
+      flexWrap: 'wrap',
     },
-  },
-  keypadBtnEnter: {
-    backgroundColor: '#111827',
-    color: '#FFFFFF',
-    '&:hover': {
-      backgroundColor: '#1F2937',
+    selectTitleRow: { display: 'flex', alignItems: 'center', gap: 12 },
+    selectTitle: {
+      fontSize: 31,
+      fontWeight: 700,
+      letterSpacing: '-0.01em',
+      color: '#111217',
+      fontFamily: font,
     },
-    '&:active': {
-      backgroundColor: '#374151',
+    countBadge: {
+      fontSize: 15,
+      fontWeight: 600,
+      color: ACCENT,
+      background: 'rgba(17,18,23,0.06)',
+      padding: '5px 12px',
+      borderRadius: 999,
     },
-  },
-}))
+    selectSubtitle: {
+      fontSize: 15,
+      fontWeight: 500,
+      color: '#6F6F6F',
+      marginTop: 6,
+    },
+    searchWrap: { position: 'relative', width: 320, flexShrink: 0 },
+    searchIcon: {
+      position: 'absolute',
+      left: 16,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      pointerEvents: 'none',
+      color: '#A4A5AB',
+    },
+    searchInput: {
+      width: '100%',
+      height: 52,
+      padding: '0 16px 0 46px',
+      border: '1.5px solid #E5E7EB',
+      borderRadius: 13,
+      background: '#fff',
+      fontFamily: font,
+      fontSize: 16,
+      fontWeight: 500,
+      color: '#111217',
+      outline: 'none',
+      transition: 'border-color .15s ease, box-shadow .15s ease',
+      '&::placeholder': { color: '#A4A5AB', fontWeight: 500 },
+      '&:focus': {
+        borderColor: ACCENT,
+        boxShadow: '0 0 0 4px rgba(17,18,23,0.10)',
+      },
+    },
+    gridScroll: {
+      flex: 1,
+      overflowY: 'auto',
+      padding: '4px 8px 32px 0',
+      minHeight: 0,
+      '&::-webkit-scrollbar': { width: 10 },
+      '&::-webkit-scrollbar-thumb': {
+        background: '#D5D7E2',
+        borderRadius: 8,
+        border: '3px solid transparent',
+        backgroundClip: 'content-box',
+      },
+      '&::-webkit-scrollbar-track': { background: 'transparent' },
+    },
+    grid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(212px, 1fr))',
+      gap: 16,
+      alignContent: 'start',
+    },
+    card: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: 13,
+      padding: '26px 16px',
+      borderRadius: 16,
+      border: '1.5px solid #E5E7EB',
+      background: '#fff',
+      cursor: 'pointer',
+      textAlign: 'center',
+      position: 'relative',
+      fontFamily: font,
+      outline: 'none',
+      transition: 'transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease',
+      '&:hover': {
+        transform: 'translateY(-3px)',
+        boxShadow: '0 12px 28px rgba(17,18,23,0.10)',
+        borderColor: ACCENT,
+      },
+    },
+    cardSelected: {
+      borderColor: ACCENT,
+      background: '#F4F5F7',
+      boxShadow: '0 10px 26px rgba(17,18,23,0.12)',
+    },
+    cardBadge: {
+      position: 'absolute',
+      top: 12,
+      right: 12,
+      width: 26,
+      height: 26,
+      borderRadius: '50%',
+      background: ACCENT,
+      color: '#fff',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    cardName: {
+      fontSize: 16,
+      fontWeight: 600,
+      color: '#111217',
+      lineHeight: 1.25,
+    },
+    cardPosition: { fontSize: 13.5, fontWeight: 500, color: '#6F6F6F' },
+    emptyState: {
+      padding: '64px 16px',
+      textAlign: 'center',
+      color: '#A4A5AB',
+      fontSize: 16,
+      fontWeight: 500,
+    },
+
+    // avatar (shared)
+    avatar: {
+      borderRadius: '50%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontWeight: 700,
+      background: 'rgba(17,18,23,0.06)',
+      color: '#111217',
+      flexShrink: 0,
+      position: 'relative',
+      overflow: 'hidden',
+    },
+    avatarSel: { background: ACCENT, color: '#fff' },
+    avatarImg: {
+      position: 'absolute',
+      inset: 0,
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+    },
+
+    // selected sticky bar
+    selectedBar: {
+      flexShrink: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: 20,
+      padding: '18px 24px',
+      margin: '0 0 24px',
+      background: '#fff',
+      border: '1.5px solid #E5E7EB',
+      borderRadius: 16,
+      boxShadow: '0 8px 30px rgba(17,18,23,0.08)',
+    },
+    selectedBarInfo: { display: 'flex', alignItems: 'center', gap: 14, minWidth: 0 },
+    selectedBarName: {
+      fontSize: 16,
+      fontWeight: 600,
+      color: '#111217',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    },
+    continueBtn: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 10,
+      height: 56,
+      padding: '0 30px',
+      border: 'none',
+      borderRadius: 13,
+      background: ACCENT,
+      color: '#fff',
+      fontFamily: font,
+      fontSize: 18,
+      fontWeight: 600,
+      cursor: 'pointer',
+      whiteSpace: 'nowrap',
+      flexShrink: 0,
+      transition: 'background .15s ease',
+      '&:hover': { background: ACCENT_HOVER },
+    },
+
+    // ---------- error ----------
+    errorInner: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      textAlign: 'center',
+      maxWidth: 480,
+    },
+    errorIcon: {
+      width: 88,
+      height: 88,
+      borderRadius: '50%',
+      background: '#FDECEC',
+      color: '#E23A32',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 26,
+    },
+    errorTitle: {
+      fontSize: 27,
+      fontWeight: 700,
+      letterSpacing: '-0.01em',
+      color: '#111217',
+      margin: '0 0 14px',
+      fontFamily: font,
+    },
+    errorText: {
+      fontSize: 16,
+      fontWeight: 500,
+      color: '#6F6F6F',
+      lineHeight: 1.55,
+      margin: '0 0 24px',
+    },
+    deviceChip: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 10,
+      background: '#F5F5F5',
+      padding: '11px 18px',
+      borderRadius: 12,
+      marginBottom: 34,
+    },
+    deviceChipLabel: {
+      fontSize: 13,
+      fontWeight: 600,
+      color: '#A4A5AB',
+      textTransform: 'uppercase',
+      letterSpacing: '0.04em',
+    },
+    deviceChipValue: {
+      fontFamily: "'SFMono-Regular', ui-monospace, Menlo, monospace",
+      fontSize: 15,
+      fontWeight: 600,
+      color: '#111217',
+    },
+    retryBtn: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 11,
+      height: 56,
+      padding: '0 32px',
+      border: 'none',
+      borderRadius: 13,
+      background: ACCENT,
+      color: '#fff',
+      fontFamily: font,
+      fontSize: 18,
+      fontWeight: 600,
+      cursor: 'pointer',
+      transition: 'background .15s ease',
+      '&:hover': { background: ACCENT_HOVER },
+    },
+
+    // ---------- password / PIN entry ----------
+    backLink: {
+      position: 'absolute',
+      top: 36,
+      left: 44,
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: 8,
+      background: 'none',
+      border: 'none',
+      padding: 0,
+      color: '#6F6F6F',
+      fontFamily: font,
+      fontSize: 16,
+      fontWeight: 600,
+      cursor: 'pointer',
+      transition: 'color .15s ease',
+      '&:hover': { color: '#111217' },
+    },
+    identity: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      marginBottom: 28,
+    },
+    identityName: {
+      fontSize: 24,
+      fontWeight: 700,
+      letterSpacing: '-0.01em',
+      color: '#111217',
+      marginTop: 16,
+      fontFamily: font,
+    },
+    identityPos: { fontSize: 15, fontWeight: 500, color: '#6F6F6F', marginTop: 4 },
+    pwEntry: { display: 'flex', flexDirection: 'column', alignItems: 'center' },
+    promptLabel: {
+      fontSize: 15,
+      fontWeight: 600,
+      color: '#6F6F6F',
+      marginBottom: 16,
+    },
+    fieldWrap: { position: 'relative', width: 320 },
+    fieldWrapShake: { animation: '$shake .4s ease' },
+    field: {
+      height: 64,
+      borderRadius: 14,
+      background: '#fff',
+      border: '2px solid #E5E7EB',
+      display: 'flex',
+      alignItems: 'center',
+      padding: '0 56px 0 20px',
+      fontSize: 24,
+      fontWeight: 700,
+      color: '#111217',
+      overflow: 'hidden',
+    },
+    fieldError: { borderColor: '#E23A32' },
+    fieldValue: {
+      letterSpacing: '0.16em',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    },
+    fieldPlaceholder: { color: '#A4A5AB', fontWeight: 500, fontSize: 18 },
+    revealBtn: {
+      position: 'absolute',
+      right: 8,
+      top: '50%',
+      transform: 'translateY(-50%)',
+      width: 44,
+      height: 44,
+      border: 'none',
+      background: 'transparent',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#6F6F6F',
+    },
+    errorLine: {
+      height: 22,
+      margin: '12px 0 20px',
+      fontSize: 14,
+      fontWeight: 600,
+      color: '#E23A32',
+    },
+    keypadGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 96px)',
+      gap: 14,
+    },
+    keypadBtn: {
+      width: 96,
+      height: 80,
+      borderRadius: 16,
+      border: 'none',
+      background: '#EEF0F4',
+      color: '#111217',
+      fontSize: 28,
+      fontWeight: 700,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      fontFamily: font,
+      userSelect: 'none',
+      transition: 'transform .08s ease, filter .08s ease',
+      '&:active': { transform: 'scale(0.95)', filter: 'brightness(0.94)' },
+      '&:disabled': { cursor: 'default', opacity: 0.7 },
+    },
+    keypadBtnBack: { background: '#E1E5EC', color: '#6F6F6F' },
+    keypadBtnEnter: { background: ACCENT, color: '#fff' },
+
+    // success
+    successWrap: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: 18,
+    },
+    successIcon: {
+      width: 88,
+      height: 88,
+      borderRadius: '50%',
+      background: '#E9F8EF',
+      color: '#1E9E52',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    successTitle: { fontSize: 22, fontWeight: 700, color: '#111217', fontFamily: font },
+    successSub: { fontSize: 15, fontWeight: 500, color: '#6F6F6F' },
+  }
+})
+
+const PHASE = {
+  LOADING: 'loading',
+  ERROR: 'error',
+  SELECT: 'select',
+  PASSWORD: 'password',
+}
+
+function displayName(cashier) {
+  const full = (cashier?.full_name || '').trim()
+  if (full) return full
+  const composed = `${cashier?.first_name || ''} ${cashier?.last_name || ''}`.trim()
+  return composed || '—'
+}
+
+function initials(cashier) {
+  const first = (cashier?.first_name || '').trim()
+  const last = (cashier?.last_name || '').trim()
+  if (first || last) return ((first[0] || '') + (last[0] || '')).toUpperCase()
+  const words = displayName(cashier).split(/\s+/).filter(Boolean)
+  return (words.slice(0, 2).map((w) => w[0]).join('') || '?').toUpperCase()
+}
 
 export default function LoginPage() {
   const classes = useStyles()
-  const methods = useForm()
   const dispatch = useDispatch()
-  const [country, setCountry] = useState(countries[0])
-  const [activeField, setActiveField] = useState('phone_number')
 
-  const handleKeyPress = (val) => {
-    const inputId = activeField || 'phone_number'
-    const inputEl = document.getElementById(inputId)
-    if (!inputEl) return
+  const [phase, setPhase] = useState(PHASE.LOADING)
+  const [store, setStore] = useState(null)
+  const [cashiers, setCashiers] = useState([])
+  const [selectedCashier, setSelectedCashier] = useState(null)
+  const [blockInfo, setBlockInfo] = useState(null)
+  const [machineId, setMachineId] = useState(null)
+  const [query, setQuery] = useState('')
+  const [now, setNow] = useState(new Date())
 
-    if (document.activeElement !== inputEl) {
-      inputEl.focus()
-    }
+  // password entry
+  const [password, setPassword] = useState('')
+  const [reveal, setReveal] = useState(false)
+  const [pwError, setPwError] = useState('')
+  const [shakeCount, setShakeCount] = useState(0)
+  const [loginSuccess, setLoginSuccess] = useState(false)
+  const passwordRef = useRef('')
 
-    const start = inputEl.selectionStart ?? inputEl.value.length
-    const end = inputEl.selectionEnd ?? inputEl.value.length
-    const currentValue = inputEl.value
+  useEffect(() => {
+    passwordRef.current = password
+  }, [password])
 
-    if (val === 'backspace') {
-      let newValue = currentValue
-      let newCursorPos = start
-      if (start === end) {
-        if (start > 0) {
-          newValue = currentValue.slice(0, start - 1) + currentValue.slice(end)
-          newCursorPos = start - 1
-        }
-      } else {
-        newValue = currentValue.slice(0, start) + currentValue.slice(end)
-        newCursorPos = start
-      }
-      inputEl.value = newValue
-      inputEl.setSelectionRange(newCursorPos, newCursorPos)
+  // live clock in the brand rail
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(timer)
+  }, [])
 
-      const inputEvent = new Event('input', { bubbles: true })
-      inputEl.dispatchEvent(inputEvent)
-      methods.setValue(inputId, inputEl.value, { shouldValidate: true, shouldDirty: true })
-    } else if (val === 'enter') {
-      methods.handleSubmit(onSubmit, onError)()
-    } else {
-      const newValue = currentValue.slice(0, start) + val + currentValue.slice(end)
-      const newCursorPos = start + String(val).length
-      inputEl.value = newValue
-      inputEl.setSelectionRange(newCursorPos, newCursorPos)
+  const loadDeviceInfo = async () => {
+    setPhase(PHASE.LOADING)
+    setBlockInfo(null)
+    setMachineId(null)
 
-      const inputEvent = new Event('input', { bubbles: true })
-      inputEl.dispatchEvent(inputEvent)
-      methods.setValue(inputId, inputEl.value, { shouldValidate: true, shouldDirty: true })
-    }
-  }
-
-  const { mutate: logIn, isLoading: logInLoading } = useMutation(requests.logIn, {
-    onSuccess: async ({ data }) => {
-      const userData = data.data
-      localStorage.setItem('access_token', userData.token)
-      localStorage.setItem('user_data', JSON.stringify(userData.employee))
-      dispatch(setUserData(userData?.employee))
-      setTimeout(() => {
-        window.location.replace('/redirect')
-      }, 300)
-    },
-    onError: (err) => {
-      console.warn('API login failed, bypassing authentication guard for local testing:', err)
-      const mockUserData = {
-        token: 'mock-dev-token-999',
-        employee: {
-          id: 1,
-          first_name: 'Magnit',
-          last_name: 'Admin',
-          store: {
-            id: 1,
-            name: 'Magnit Go - Chilonzor',
-            terminal_ids: [],
-          },
-          type: 'SUPERADMIN',
-          permissions: ['check-terminal-id'],
-        },
-      }
-      localStorage.setItem('access_token', mockUserData.token)
-      localStorage.setItem('user_data', JSON.stringify(mockUserData.employee))
-      dispatch(setUserData(mockUserData.employee))
-      success('Bypassing offline API...')
-      setTimeout(() => {
-        window.location.replace('/redirect')
-      }, 300)
-    },
-  })
-
-  const onSubmit = (data) => {
-    if ((data?.phone_number?.replace(/[X() ]/g, '')?.replaceAll('x', '')?.length || 0) < country?.mask?.replace(/[X() ]/g, '')?.length) {
-      methods.setError('phone_number', { type: 'required', message: '' })
-      methods.setFocus('phone_number')
+    let id
+    try {
+      id = await fetchMachineId()
+    } catch (err) {
+      console.error('device agent unreachable:', err)
+      setBlockInfo({
+        title: 'Устройство недоступно',
+        message:
+          'Не удалось связаться с агентом устройства. Убедитесь, что Magnit Device Agent запущен на этом компьютере, и повторите попытку.',
+      })
+      setPhase(PHASE.ERROR)
       return
     }
 
-    data.phone_number = country.dial_code + data.phone_number.replace(/[X() ]/g, '')
-    data.password = data.password.replace(/[()\s-]/g, "")
-    logIn({ phone: data.phone_number, password: data.password })
+    setMachineId(id)
+
+    try {
+      const { data } = await requests.getDeviceLoginInfo({ identifier: id })
+      const info = data?.data || {}
+      setStore(info.store || null)
+      setCashiers(Array.isArray(info.cashiers) ? info.cashiers : [])
+      setSelectedCashier(null)
+      setQuery('')
+      setPhase(PHASE.SELECT)
+    } catch (err) {
+      const key = err?.response?.data?.data
+      if (err?.response?.status === 404 || key === 'device.not.registered') {
+        setBlockInfo({
+          title: 'Устройство не зарегистрировано',
+          message:
+            'Эта касса не привязана к магазину. Обратитесь к администратору, чтобы зарегистрировать устройство и получить доступ к смене.',
+        })
+      } else {
+        setBlockInfo({
+          title: 'Ошибка',
+          message: 'Не удалось получить данные устройства. Повторите попытку.',
+        })
+      }
+      setPhase(PHASE.ERROR)
+    }
   }
 
-  const onError = (err) => {
-    error('Пожалуйста, заполните все поля')
-    console.error('err', err)
+  useEffect(() => {
+    loadDeviceInfo()
+  }, [])
+
+  const { mutate: logIn, isLoading: logInLoading } = useMutation(requests.logIn, {
+    onSuccess: ({ data }) => {
+      const userData = data.data
+      // The machine's store is authoritative for this session: the cashbox
+      // operation must open at the store the device belongs to, even if the
+      // cashier's primary store differs (they may be listed here via store_ids).
+      const employee = { ...userData.employee }
+      if (store) {
+        employee.store = store
+        employee.store_id = store.id
+      }
+      localStorage.setItem('access_token', userData.token)
+      localStorage.setItem('user_data', JSON.stringify(employee))
+      dispatch(setUserData(employee))
+      setLoginSuccess(true)
+      setTimeout(() => {
+        window.location.replace('/redirect')
+      }, 700)
+    },
+    onError: (err) => {
+      const status = err?.response?.status
+      const msg =
+        status === 409 ? 'Неверный пароль' : status === 404 ? 'Кассир не найден' : 'Не удалось войти. Повторите попытку.'
+      setPwError(msg)
+      setPassword('')
+      setShakeCount((c) => c + 1)
+      console.error('login error:', err)
+    },
+  })
+
+  const goToPassword = () => {
+    if (!selectedCashier) return
+    setPassword('')
+    setPwError('')
+    setReveal(false)
+    setLoginSuccess(false)
+    setPhase(PHASE.PASSWORD)
   }
 
-  return (
-    <LoadingContainer boxStyle={{ height: '100%' }} readyState={!false}>
-      <Box className={classes.root} onFocusCapture={(e) => {
-        if (e.target.id === 'phone_number' || e.target.id === 'password') {
-          setActiveField(e.target.id)
-        }
-      }}>
-        <Box className={classes.loginContainer}>
-          <Box className={classes.card}>
-            <Box className={classes.header}>
-              <Box className={classes.logoWrapper}>
-                <img src="/MagnitPOS.svg" alt="Magnit POS" style={{ height: '36px', width: 'auto' }} />
-              </Box>
-              <Typography className={classes.title}>Вход</Typography>
+  const backToSelect = () => {
+    setPassword('')
+    setPwError('')
+    setPhase(PHASE.SELECT)
+  }
+
+  const pressKey = (digit) => {
+    setPwError('')
+    setPassword((p) => (p.length >= MAX_PASSWORD ? p : p + digit))
+  }
+
+  const backspace = () => {
+    setPwError('')
+    setPassword((p) => p.slice(0, -1))
+  }
+
+  const submitPassword = () => {
+    if (logInLoading || loginSuccess || !selectedCashier) return
+    const pwd = (passwordRef.current || '').replace(/[()\s-]/g, '')
+    if (!pwd) {
+      setPwError('Введите пароль')
+      setShakeCount((c) => c + 1)
+      return
+    }
+    logIn({ employee_id: selectedCashier.id, password: pwd })
+  }
+
+  // physical keyboard support while entering the password
+  useEffect(() => {
+    if (phase !== PHASE.PASSWORD) return
+    const handler = (e) => {
+      if (loginSuccess || logInLoading) return
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        submitPassword()
+      } else if (e.key === 'Backspace') {
+        e.preventDefault()
+        backspace()
+      } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault()
+        pressKey(e.key)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, loginSuccess, logInLoading, selectedCashier])
+
+  const renderAvatar = (cashier, { size, fontSize, selected }) => (
+    <Box
+      className={`${classes.avatar} ${selected ? classes.avatarSel : ''}`}
+      style={{ width: size, height: size, minWidth: size, fontSize }}
+    >
+      {cashier?.photo && (
+        <img
+          src={cashier.photo}
+          alt=""
+          className={classes.avatarImg}
+          onError={(e) => {
+            e.currentTarget.style.display = 'none'
+          }}
+        />
+      )}
+      <span>{initials(cashier)}</span>
+    </Box>
+  )
+
+  const renderRail = (variant) => {
+    const pad = (n) => String(n).padStart(2, '0')
+    const clock = `${pad(now.getHours())}:${pad(now.getMinutes())}`
+    const weekday = WEEKDAYS[now.getDay()]
+    const dateLabel = `${now.getDate()} ${MONTHS[now.getMonth()]}`
+    const hint =
+      variant === 'error'
+        ? 'Это устройство ещё не привязано к магазину.\nВход невозможен, пока касса не настроена.'
+        : variant === 'password'
+        ? 'Введите пароль, чтобы открыть смену.\nНе сообщайте свой пароль другим сотрудникам.'
+        : 'Рабочая смена начинается с входа кассира.\nВыберите себя из списка, чтобы продолжить.'
+
+    return (
+      <Box className={classes.rail}>
+        <Box aria-hidden="true" className={classes.railCircleLg} />
+        <Box aria-hidden="true" className={classes.railCircleSm} />
+        <img src="/MagnitPOS.svg" alt="Magnit POS" className={classes.railLogo} />
+
+        <Box className={classes.railCenter}>
+          <Typography className={classes.railDate}>
+            {weekday}, {dateLabel}
+          </Typography>
+          <Typography className={classes.railClock}>{clock}</Typography>
+          {variant === 'error' ? (
+            <Box className={classes.railChip}>
+              <Store size={20} />
+              <span className={classes.railChipText} style={{ opacity: 0.85 }}>
+                Магазин не определён
+              </span>
             </Box>
+          ) : store?.name ? (
+            <Box className={classes.railChip}>
+              <Store size={20} />
+              <span className={classes.railChipText}>{store.name}</span>
+            </Box>
+          ) : null}
+        </Box>
 
-            <FormProvider {...methods}>
-              <Box component='form' onSubmit={methods.handleSubmit(onSubmit, onError)} width="100%">
+        <Typography className={classes.railHint}>{hint}</Typography>
+      </Box>
+    )
+  }
 
-                <Box className={classes.inputGroup}>
-                  <Typography className={classes.inputLabel}>Номер телефона</Typography>
-                  <PhoneNumber
-                    fullWidth
-                    name='phone_number'
-                    placeholder='Введите номер телефона'
-                    secondary
-                    required
-                    login={false}
-                    country={country}
-                    setCountry={setCountry}
-                  />
-                </Box>
+  // ---- Loading ----
+  if (phase === PHASE.LOADING) {
+    return <LoadingContainer fullHeight readyState={false} />
+  }
 
-                <Box className={classes.inputGroup}>
-                  <Typography className={classes.inputLabel} sx={{ mb: '-8px !important' }}>Пароль</Typography>
-                  <InputPassword
-                    id='password'
-                    name='password'
-                    placeholder='********'
-                    autoCompleteOff
-                    required
-                    fullWidth
-                    minLength={8}
-                    secondary
-                  />
-                </Box>
-
-                <Box width='100%' mt={4}>
-                  <LoadingButton
-                    className={classes.loginButton}
-                    variant='contained'
-                    size='large'
-                    type='submit'
-                    fullWidth
-                    loading={logInLoading}
-                    onClick={methods.handleSubmit(onSubmit, onError)}
-                    id='login-button'
-                  >
-                    Войти
-                  </LoadingButton>
-                </Box>
+  // ---- Blocked / error ----
+  if (phase === PHASE.ERROR) {
+    return (
+      <Box className={classes.screen}>
+        {renderRail('error')}
+        <Box className={classes.contentCenter}>
+          <Box className={classes.errorInner}>
+            <Box className={classes.errorIcon}>
+              <AlertTriangle size={42} />
+            </Box>
+            <Typography className={classes.errorTitle}>{blockInfo?.title}</Typography>
+            <Typography className={classes.errorText}>{blockInfo?.message}</Typography>
+            {machineId && (
+              <Box className={classes.deviceChip}>
+                <span className={classes.deviceChipLabel}>ID устройства</span>
+                <span className={classes.deviceChipValue}>{machineId}</span>
               </Box>
-            </FormProvider>
+            )}
+            <button type="button" className={classes.retryBtn} onClick={loadDeviceInfo}>
+              <RefreshCw size={20} />
+              Повторить
+            </button>
+          </Box>
+        </Box>
+      </Box>
+    )
+  }
+
+  // ---- Cashier selection ----
+  if (phase === PHASE.SELECT) {
+    const q = query.trim().toLowerCase()
+    const filtered = !q ? cashiers : cashiers.filter((c) => displayName(c).toLowerCase().includes(q))
+
+    return (
+      <Box className={classes.screen}>
+        {renderRail('select')}
+        <Box className={classes.selectContent}>
+          <Box className={classes.selectHeader}>
+            <Box>
+              <Box className={classes.selectTitleRow}>
+                <Typography className={classes.selectTitle}>Выберите кассира</Typography>
+                <span className={classes.countBadge}>{cashiers.length}</span>
+              </Box>
+              <Typography className={classes.selectSubtitle}>Нажмите на своё имя, затем введите пароль</Typography>
+            </Box>
+            <Box className={classes.searchWrap}>
+              <Search size={20} className={classes.searchIcon} />
+              <input
+                type="text"
+                placeholder="Поиск по имени"
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value)
+                  setSelectedCashier(null)
+                }}
+                className={classes.searchInput}
+              />
+            </Box>
           </Box>
 
-          <Box className={classes.keypadCard}>
-            <Box className={classes.keypadHeader}>
-              <Typography className={classes.keypadTitle}>Клавиатура</Typography>
-              <Typography className={classes.keypadSubtitle}>
-                {activeField === 'phone_number' ? 'Ввод номера телефона' : 'Ввод пароля'}
-              </Typography>
+          <Box className={classes.gridScroll}>
+            {filtered.length === 0 ? (
+              <Box className={classes.emptyState}>
+                {q
+                  ? `По запросу «${query}» кассиров не найдено`
+                  : 'Для этого магазина не найдено кассиров. Обратитесь к администратору.'}
+              </Box>
+            ) : (
+              <Box className={classes.grid}>
+                {filtered.map((cashier) => {
+                  const selected = selectedCashier?.id === cashier.id
+                  return (
+                    <Box
+                      key={cashier.id}
+                      component="button"
+                      type="button"
+                      className={`${classes.card} ${selected ? classes.cardSelected : ''}`}
+                      onClick={() => setSelectedCashier(cashier)}
+                    >
+                      {selected && (
+                        <span className={classes.cardBadge}>
+                          <Check size={15} strokeWidth={3} />
+                        </span>
+                      )}
+                      {renderAvatar(cashier, { size: 58, fontSize: 20, selected })}
+                      <span className={classes.cardName}>{displayName(cashier)}</span>
+                      {cashier.position && <span className={classes.cardPosition}>{cashier.position}</span>}
+                    </Box>
+                  )
+                })}
+              </Box>
+            )}
+          </Box>
+
+          {selectedCashier && (
+            <Box className={classes.selectedBar}>
+              <Box className={classes.selectedBarInfo}>
+                {renderAvatar(selectedCashier, { size: 52, fontSize: 18, selected: true })}
+                <Box sx={{ minWidth: 0 }}>
+                  <div className={classes.selectedBarName}>{displayName(selectedCashier)}</div>
+                  <div className={classes.cardPosition}>{selectedCashier.position || store?.name}</div>
+                </Box>
+              </Box>
+              <button type="button" className={classes.continueBtn} onClick={goToPassword}>
+                Продолжить
+                <ArrowRight size={20} strokeWidth={2.2} />
+              </button>
             </Box>
+          )}
+        </Box>
+      </Box>
+    )
+  }
+
+  // ---- Password entry ----
+  return (
+    <Box className={classes.screen}>
+      {renderRail('password')}
+      <Box className={classes.contentCenter}>
+        <button type="button" className={classes.backLink} onClick={backToSelect}>
+          <ArrowLeft size={20} strokeWidth={2.2} />
+          Назад к списку
+        </button>
+
+        <Box className={classes.identity}>
+          {renderAvatar(selectedCashier, { size: 74, fontSize: 26, selected: false })}
+          <Typography className={classes.identityName}>{displayName(selectedCashier)}</Typography>
+          <Typography className={classes.identityPos}>{selectedCashier?.position || store?.name}</Typography>
+        </Box>
+
+        {loginSuccess ? (
+          <Box className={classes.successWrap}>
+            <span className={classes.successIcon}>
+              <Check size={44} strokeWidth={2.4} />
+            </span>
+            <Typography className={classes.successTitle}>Вход выполнен</Typography>
+            <Typography className={classes.successSub}>Открываем смену…</Typography>
+          </Box>
+        ) : (
+          <Box className={classes.pwEntry}>
+            <Typography className={classes.promptLabel}>
+              {pwError ? 'Попробуйте ввести пароль ещё раз' : 'Введите пароль от учётной записи'}
+            </Typography>
+
+            <Box key={shakeCount} className={`${classes.fieldWrap} ${pwError ? classes.fieldWrapShake : ''}`}>
+              <Box className={`${classes.field} ${pwError ? classes.fieldError : ''}`}>
+                {password.length > 0 ? (
+                  <span className={classes.fieldValue}>{reveal ? password : '•'.repeat(password.length)}</span>
+                ) : (
+                  <span className={classes.fieldPlaceholder}>Введите пароль</span>
+                )}
+              </Box>
+              <button
+                type="button"
+                className={classes.revealBtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => setReveal((r) => !r)}
+                aria-label={reveal ? 'Скрыть пароль' : 'Показать пароль'}
+              >
+                {reveal ? <Eye size={22} /> : <EyeOff size={22} />}
+              </button>
+            </Box>
+
+            <Box className={classes.errorLine}>{pwError}</Box>
+
             <Box className={classes.keypadGrid}>
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+              {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((digit) => (
                 <button
-                  key={num}
+                  key={digit}
                   type="button"
                   className={classes.keypadBtn}
                   onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => handleKeyPress(num)}
+                  onClick={() => pressKey(digit)}
                 >
-                  {num}
+                  {digit}
                 </button>
               ))}
               <button
                 type="button"
-                className={`${classes.keypadBtn} ${classes.keypadBtnAction}`}
+                className={`${classes.keypadBtn} ${classes.keypadBtnBack}`}
                 onMouseDown={(e) => e.preventDefault()}
-                onClick={() => handleKeyPress('backspace')}
-                aria-label="Delete"
+                onClick={backspace}
+                aria-label="Удалить"
               >
-                <Delete size={24} />
+                <Delete size={26} />
               </button>
               <button
                 type="button"
                 className={classes.keypadBtn}
                 onMouseDown={(e) => e.preventDefault()}
-                onClick={() => handleKeyPress(0)}
+                onClick={() => pressKey('0')}
               >
                 0
               </button>
@@ -436,15 +1015,16 @@ export default function LoginPage() {
                 type="button"
                 className={`${classes.keypadBtn} ${classes.keypadBtnEnter}`}
                 onMouseDown={(e) => e.preventDefault()}
-                onClick={() => handleKeyPress('enter')}
-                aria-label="Enter"
+                onClick={submitPassword}
+                aria-label="Войти"
+                disabled={logInLoading}
               >
-                <CornerDownLeft size={24} />
+                {logInLoading ? <CircularProgress size={24} sx={{ color: '#fff' }} /> : <CornerDownLeft size={26} strokeWidth={2.2} />}
               </button>
             </Box>
           </Box>
-        </Box>
+        )}
       </Box>
-    </LoadingContainer>
+    </Box>
   )
 }

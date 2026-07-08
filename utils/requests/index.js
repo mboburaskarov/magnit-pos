@@ -52,6 +52,7 @@ export const requests = {
 
   //auth
   logIn: (data) => authRequest.post(`v1/login`, data),
+  getDeviceLoginInfo: (data) => authRequest.post(`v1/login/device`, data),
 
   //user
   getUserInfo: (id) => request.get(`v1/employee/info`),
