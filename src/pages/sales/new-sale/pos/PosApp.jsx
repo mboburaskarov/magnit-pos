@@ -1395,6 +1395,14 @@ export default function PosApp() {
         paymentType: paymentType,
       }
 
+      if (paymentType === 'cash') {
+        try {
+          await axios.post(`${activeAgentUrl}/cash-drawer/open`)
+        } catch (err) {
+          console.warn('Failed to open cash drawer before print:', err)
+        }
+      }
+
       const res = await axios.post(`${activeAgentUrl}/print/raw-template`, reqPayload)
       if (res.data && res.data.ok) {
         success(t('pos.printer.receipt_printed'))
