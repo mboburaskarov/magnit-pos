@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import { Store, Search, ArrowLeft, ArrowRight, Check, Eye, EyeOff, Delete, CornerDownLeft, RefreshCw, AlertTriangle } from 'lucide-react'
 import { requests } from '../../../utils/requests'
 import { fetchMachineId } from '../../../utils/deviceAgent'
+import { isDevEnvironment } from '../../../utils/isDevEnvironment'
 import { setUserData } from '../../redux-toolkit/userSlice'
 import LoadingContainer from '/components/LoadingContainer'
 
@@ -72,12 +73,27 @@ const useStyles = makeStyles((theme) => {
       right: -110,
       bottom: -90,
     },
+    railLogoRow: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      position: 'relative',
+      alignSelf: 'flex-start',
+    },
     railLogo: {
       height: 32,
       width: 'auto',
       filter: 'brightness(0) invert(1)',
-      position: 'relative',
-      alignSelf: 'flex-start',
+    },
+    devBadge: {
+      fontSize: 11,
+      fontWeight: 700,
+      letterSpacing: '0.06em',
+      color: '#fff',
+      background: '#E23A32',
+      padding: '3px 8px',
+      borderRadius: 6,
+      lineHeight: 1.4,
     },
     railCenter: { position: 'relative' },
     railDate: {
@@ -785,7 +801,10 @@ export default function LoginPage() {
       <Box className={classes.rail}>
         <Box aria-hidden="true" className={classes.railCircleLg} />
         <Box aria-hidden="true" className={classes.railCircleSm} />
-        <img src="/MagnitPOS.svg" alt="Magnit POS" className={classes.railLogo} />
+        <Box className={classes.railLogoRow}>
+          <img src="/MagnitPOS.svg" alt="Magnit POS" className={classes.railLogo} />
+          {isDevEnvironment() && <span className={classes.devBadge}>DEV</span>}
+        </Box>
 
         <Box className={classes.railCenter}>
           <Typography className={classes.railDate}>
