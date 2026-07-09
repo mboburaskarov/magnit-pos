@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import { Store, Search, ArrowLeft, ArrowRight, Check, Eye, EyeOff, Delete, CornerDownLeft, RefreshCw, AlertTriangle } from 'lucide-react'
 import { get } from 'lodash'
 import { requests } from '../../../utils/requests'
+import { request, eposRequest } from '../../../utils/axios'
 import { fetchMachineId } from '../../../utils/deviceAgent'
 import { isDevEnvironment } from '../../../utils/isDevEnvironment'
 import thousandDivider from '../../../utils/thousandDivider'
@@ -927,6 +928,13 @@ export default function LoginPage() {
       }
       localStorage.setItem('access_token', userData.token)
       localStorage.setItem('user_data', JSON.stringify(employee))
+      // The `request`/`eposRequest` axios instances set their Authorization
+      // header once, at module load, from whatever was in localStorage back
+      // then (nothing, pre-login). Since we now call these APIs directly
+      // from this same page load (no full reload), we must refresh the
+      // header in place or every call below 401s with a stale "Bearer null".
+      request.defaults.headers.Authorization = `Bearer ${userData.token}`
+      eposRequest.defaults.headers.Authorization = `Bearer ${userData.token}`
       dispatch(setUserData(employee))
       setEmployeeData(employee)
       setLoginSuccess(true)
