@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from 'react'
 import { useMutation } from 'react-query'
 import { useDispatch } from 'react-redux'
 import { Store, Search, ArrowLeft, ArrowRight, Check, Eye, EyeOff, Delete, CornerDownLeft, RefreshCw, AlertTriangle } from 'lucide-react'
+import { get } from 'lodash'
 import { requests } from '../../../utils/requests'
 import { fetchMachineId } from '../../../utils/deviceAgent'
 import { isDevEnvironment } from '../../../utils/isDevEnvironment'
+import thousandDivider from '../../../utils/thousandDivider'
 import { setUserData } from '../../redux-toolkit/userSlice'
 import LoadingContainer from '/components/LoadingContainer'
 
@@ -669,6 +671,7 @@ const PHASE = {
   ERROR: 'error',
   SELECT: 'select',
   PASSWORD: 'password',
+  AMOUNT: 'amount',
 }
 
 function displayName(cashier) {
@@ -707,7 +710,14 @@ export default function LoginPage() {
   const [pwError, setPwError] = useState('')
   const [shakeCount, setShakeCount] = useState(0)
   const [loginSuccess, setLoginSuccess] = useState(false)
+  const [employeeData, setEmployeeData] = useState(null)
   const passwordRef = useRef('')
+
+  // opening-amount entry (shown only when this device's cashbox has no
+  // active session to continue - see resolveCashboxSession)
+  const [openAmount, setOpenAmount] = useState('')
+  const [openError, setOpenError] = useState('')
+  const [isOpening, setIsOpening] = useState(false)
 
   useEffect(() => {
     passwordRef.current = password
@@ -776,6 +786,134 @@ export default function LoginPage() {
     loadDeviceInfo()
   }, [])
 
+  // The device's cashbox is authoritative now - there's no manual kassa
+  // picker anymore. If this device already has an active sale, drop the
+  // cashier straight into it. Otherwise ask for the opening cash amount
+  // right here and open the shift ourselves (PHASE.AMOUNT below).
+  const resolveCashboxSession = async (employee) => {
+    const storeId = cashbox?.store_id || employee?.store?.id
+    const cashBoxId = cashbox?.id
+
+    if (!cashBoxId) {
+      window.location.replace('/redirect')
+      return
+    }
+
+    const device_id = localStorage.getItem('device_id') || crypto.randomUUID()
+    localStorage.setItem('device_id', device_id)
+
+    try {
+      const checkRes = await requests.checkSaleExist({ store_id: storeId, cash_box_id: cashBoxId, device_id })
+      const saleId = get(checkRes, 'data.data.sale_id')
+      if (saleId) {
+        window.location.replace(`/sales/pos/${saleId}`)
+        return
+      }
+
+      if (get(checkRes, 'data.data.is_open')) {
+        const opInfoRes = await requests.getCashBoxOperationInfo(cashBoxId)
+        const cashBoxOpId = get(opInfoRes, 'data.data.id')
+        if (cashBoxOpId) {
+          const newSaleRes = await requests.saleCreate({ cash_box_operation_id: cashBoxOpId, store_id: storeId })
+          const newSaleId = get(newSaleRes, 'data.id')
+          if (newSaleId) {
+            window.location.replace(`/sales/pos/${newSaleId}`)
+            return
+          }
+        }
+      }
+    } catch (err) {
+      // No active sale/operation for this device (e.g. 404 "no open cashbox
+      // operation") - expected whenever the shift needs to be (re)opened.
+    }
+
+    setPhase(PHASE.AMOUNT)
+  }
+
+  const submitOpenAmount = async () => {
+    if (isOpening) return
+    setIsOpening(true)
+    setOpenError('')
+
+    try {
+      const zRes = await requests.openZReport({ token: 'DXJFX32CN1296678504F2', method: 'openZreport' })
+      const zData = zRes?.data
+      const zOk = get(zData, 'error', true) == false || get(zData, 'message', '').includes('ERROR_ZREPORT_IS_ALREADY_OPEN')
+      if (!zOk) {
+        const msg = get(zData, 'message', '')
+        setOpenError(msg.includes('Ru:') ? msg.split('Ru:')[1] : msg || 'Kassani ochib bo‘lmadi')
+        setIsOpening(false)
+        return
+      }
+      localStorage.setItem('leftZreportCount', get(zData, 'leftZreportCount', 999))
+
+      const device_id = localStorage.getItem('device_id') || crypto.randomUUID()
+      localStorage.setItem('device_id', device_id)
+      const storeId = cashbox?.store_id || employeeData?.store?.id
+
+      const createRes = await requests.createCashOperationBox({
+        cash_amount: Number(openAmount || 0),
+        cash_box_id: cashbox?.id,
+        description: '',
+        store_id: storeId,
+        employee_id: employeeData?.id,
+        device_id,
+        is_open: true,
+      })
+      const saleId = get(createRes, 'data.data.id')
+      const respDeviceId = get(createRes, 'data.data.device_id')
+      if (respDeviceId) localStorage.setItem('device_id', respDeviceId)
+      if (!saleId) throw new Error('Sale not created')
+
+      localStorage.setItem(
+        'selected_cashbox',
+        JSON.stringify({
+          id: cashbox?.id,
+          name: cashbox?.name,
+          full_name: cashbox?.full_name,
+          store_id: storeId,
+          store_name: cashbox?.store_name || employeeData?.store?.name,
+          is_open: true,
+        }),
+      )
+      window.location.replace(`/sales/pos/${saleId}`)
+    } catch (err) {
+      setOpenError(err?.response?.data?.message || err?.message || 'Kassani ochib bo‘lmadi')
+      setIsOpening(false)
+    }
+  }
+
+  const pressAmountKey = (digit) => {
+    setOpenError('')
+    setOpenAmount((a) => (a.length >= 12 ? a : a + digit))
+  }
+
+  const backspaceAmount = () => {
+    setOpenError('')
+    setOpenAmount((a) => a.slice(0, -1))
+  }
+
+  // physical keyboard support while entering the opening amount
+  useEffect(() => {
+    if (phase !== PHASE.AMOUNT) return
+    const handler = (e) => {
+      if (isOpening) return
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        submitOpenAmount()
+      } else if (e.key === 'Backspace') {
+        e.preventDefault()
+        backspaceAmount()
+      } else if (/^[0-9]$/.test(e.key)) {
+        e.preventDefault()
+        pressAmountKey(e.key)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, isOpening, openAmount])
+
   const { mutate: logIn, isLoading: logInLoading } = useMutation(requests.logIn, {
     onSuccess: ({ data }) => {
       const userData = data.data
@@ -790,9 +928,10 @@ export default function LoginPage() {
       localStorage.setItem('access_token', userData.token)
       localStorage.setItem('user_data', JSON.stringify(employee))
       dispatch(setUserData(employee))
+      setEmployeeData(employee)
       setLoginSuccess(true)
       setTimeout(() => {
-        window.location.replace('/redirect')
+        resolveCashboxSession(employee)
       }, 700)
     },
     onError: (err) => {
@@ -1118,6 +1257,85 @@ export default function LoginPage() {
             </Box>
           </Box>
         )}
+      </Box>
+    )
+  }
+
+  // ---- Opening amount (shown only when this device's cashbox has no active
+  // session to continue - see resolveCashboxSession) ----
+  if (phase === PHASE.AMOUNT) {
+    return (
+      <Box className={classes.screen}>
+        {renderRail('password')}
+        <Box className={classes.contentCenter}>
+          <Box className={classes.identity}>
+            {renderAvatar(selectedCashier, { size: 74, fontSize: 26, selected: false })}
+            <Typography className={classes.identityName}>{displayName(selectedCashier)}</Typography>
+            <Typography className={classes.identityPos}>{selectedCashier?.position || store?.name}</Typography>
+          </Box>
+
+          <Box className={classes.pwEntry}>
+            <Typography className={classes.promptLabel}>
+              {openError ? 'Iltimos, qaytadan urinib ko‘ring' : 'Kassa ochilish miqdorini kiriting (UZS)'}
+            </Typography>
+
+            <Box className={classes.fieldWrap}>
+              <Box className={`${classes.field} ${openError ? classes.fieldError : ''}`}>
+                {openAmount.length > 0 ? (
+                  <span className={classes.fieldValue}>{thousandDivider(openAmount)}</span>
+                ) : (
+                  <span className={classes.fieldPlaceholder}>Miqdorni kiriting</span>
+                )}
+              </Box>
+            </Box>
+
+            <Box className={classes.errorLine}>{openError}</Box>
+
+            <Box className={classes.keypadGrid}>
+              {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((digit) => (
+                <button
+                  key={digit}
+                  type="button"
+                  className={classes.keypadBtn}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => pressAmountKey(digit)}
+                  disabled={isOpening}
+                >
+                  {digit}
+                </button>
+              ))}
+              <button
+                type="button"
+                className={`${classes.keypadBtn} ${classes.keypadBtnBack}`}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={backspaceAmount}
+                aria-label="Удалить"
+                disabled={isOpening}
+              >
+                <Delete size={26} />
+              </button>
+              <button
+                type="button"
+                className={classes.keypadBtn}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => pressAmountKey('0')}
+                disabled={isOpening}
+              >
+                0
+              </button>
+              <button
+                type="button"
+                className={`${classes.keypadBtn} ${classes.keypadBtnEnter}`}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={submitOpenAmount}
+                aria-label="Открыть смену"
+                disabled={isOpening}
+              >
+                {isOpening ? <CircularProgress size={24} sx={{ color: '#fff' }} /> : <CornerDownLeft size={26} strokeWidth={2.2} />}
+              </button>
+            </Box>
+          </Box>
+        </Box>
       </Box>
     )
   }
