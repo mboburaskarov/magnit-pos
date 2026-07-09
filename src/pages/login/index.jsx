@@ -97,6 +97,17 @@ const useStyles = makeStyles((theme) => {
       fontVariantNumeric: 'tabular-nums',
       color: '#fff',
     },
+    railCashboxName: {
+      fontSize: 30,
+      fontWeight: 700,
+      letterSpacing: '-0.01em',
+      lineHeight: 1.15,
+      marginBottom: 14,
+      color: '#fff',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+    },
     railChip: {
       display: 'inline-flex',
       alignItems: 'center',
@@ -270,6 +281,15 @@ const useStyles = makeStyles((theme) => {
       alignItems: 'center',
       justifyContent: 'center',
     },
+    cardDisabled: {
+      cursor: 'not-allowed',
+      opacity: 0.55,
+      '&:hover': {
+        transform: 'none',
+        boxShadow: 'none',
+        borderColor: '#E5E7EB',
+      },
+    },
     cardName: {
       fontSize: 16,
       fontWeight: 600,
@@ -277,6 +297,18 @@ const useStyles = makeStyles((theme) => {
       lineHeight: 1.25,
     },
     cardPosition: { fontSize: 13.5, fontWeight: 500, color: '#6F6F6F' },
+    cardBusyNote: {
+      fontSize: 12.5,
+      fontWeight: 600,
+      color: '#E23A32',
+      lineHeight: 1.35,
+    },
+    cardActiveNote: {
+      fontSize: 12.5,
+      fontWeight: 600,
+      color: '#1E9E52',
+      lineHeight: 1.35,
+    },
     emptyState: {
       padding: '64px 16px',
       textAlign: 'center',
@@ -537,6 +569,63 @@ const useStyles = makeStyles((theme) => {
     keypadBtnBack: { background: '#E1E5EC', color: '#6F6F6F' },
     keypadBtnEnter: { background: ACCENT, color: '#fff' },
 
+    // ---------- switch-cashbox confirmation ----------
+    confirmOverlay: {
+      position: 'fixed',
+      inset: 0,
+      background: 'rgba(17,18,23,0.55)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 30,
+    },
+    confirmPanel: {
+      width: 480,
+      maxWidth: 'calc(100vw - 48px)',
+      background: '#fff',
+      borderRadius: 20,
+      padding: '34px 34px 28px',
+      textAlign: 'center',
+      boxShadow: '0 24px 60px rgba(17,18,23,0.28)',
+    },
+    confirmTitle: {
+      fontSize: 23,
+      fontWeight: 700,
+      letterSpacing: '-0.01em',
+      color: '#111217',
+      marginBottom: 12,
+      fontFamily: font,
+    },
+    confirmText: {
+      fontSize: 15.5,
+      fontWeight: 500,
+      color: '#6F6F6F',
+      lineHeight: 1.55,
+      marginBottom: 28,
+    },
+    confirmActions: { display: 'flex', gap: 12 },
+    confirmBtn: {
+      flex: 1,
+      height: 56,
+      border: 'none',
+      borderRadius: 13,
+      fontFamily: font,
+      fontSize: 17,
+      fontWeight: 600,
+      cursor: 'pointer',
+      transition: 'background .15s ease',
+    },
+    confirmBtnCancel: {
+      background: '#EEF0F4',
+      color: '#111217',
+      '&:hover': { background: '#E1E5EC' },
+    },
+    confirmBtnGo: {
+      background: ACCENT,
+      color: '#fff',
+      '&:hover': { background: ACCENT_HOVER },
+    },
+
     // success
     successWrap: {
       display: 'flex',
@@ -587,8 +676,10 @@ export default function LoginPage() {
 
   const [phase, setPhase] = useState(PHASE.LOADING)
   const [store, setStore] = useState(null)
+  const [cashbox, setCashbox] = useState(null)
   const [cashiers, setCashiers] = useState([])
   const [selectedCashier, setSelectedCashier] = useState(null)
+  const [switchTarget, setSwitchTarget] = useState(null)
   const [blockInfo, setBlockInfo] = useState(null)
   const [machineId, setMachineId] = useState(null)
   const [query, setQuery] = useState('')
@@ -636,9 +727,15 @@ export default function LoginPage() {
     try {
       const { data } = await requests.getDeviceLoginInfo({ identifier: id })
       const info = data?.data || {}
+      const box = info.cashbox || null
+      const list = Array.isArray(info.cashiers) ? info.cashiers : []
       setStore(info.store || null)
-      setCashiers(Array.isArray(info.cashiers) ? info.cashiers : [])
-      setSelectedCashier(null)
+      setCashbox(box)
+      setCashiers(list)
+      // the cashier holding this cashbox's open session is pre-selected
+      const active = box?.active_cashier_id ? list.find((c) => c.id === box.active_cashier_id) : null
+      setSelectedCashier(active || null)
+      setSwitchTarget(null)
       setQuery('')
       setPhase(PHASE.SELECT)
     } catch (err) {
@@ -684,14 +781,44 @@ export default function LoginPage() {
     },
     onError: (err) => {
       const status = err?.response?.status
+      const key = err?.response?.data?.data
       const msg =
-        status === 409 ? 'Неверный пароль' : status === 404 ? 'Кассир не найден' : 'Не удалось войти. Повторите попытку.'
+        key === 'cashier.busy.in.another.cashbox'
+          ? 'Смена уже открыта в другой кассе. Закройте её, чтобы войти на этой.'
+          : key === 'device.not.registered'
+          ? 'Устройство не зарегистрировано. Обратитесь к администратору.'
+          : status === 409
+          ? 'Неверный пароль'
+          : status === 404
+          ? 'Кассир не найден'
+          : 'Не удалось войти. Повторите попытку.'
       setPwError(msg)
       setPassword('')
       setShakeCount((c) => c + 1)
       console.error('login error:', err)
     },
   })
+
+  // the cashier currently holding this cashbox's open session (if any)
+  const activeCashierId = cashbox?.active_cashier_id || ''
+  const activeCashier = activeCashierId ? cashiers.find((c) => c.id === activeCashierId) : null
+
+  // name of the other cashbox where this cashier's open session lives, or ''
+  const busyCashboxName = (cashier) =>
+    cashier?.active_cashbox_id && cashier.active_cashbox_id !== cashbox?.id
+      ? cashier.active_cashbox_name || 'другой кассе'
+      : ''
+
+  const pickCashier = (cashier) => {
+    if (busyCashboxName(cashier)) return
+    // picking someone other than the session holder switches the cashbox to
+    // them — ask for confirmation first
+    if (activeCashierId && cashier.id !== activeCashierId && selectedCashier?.id !== cashier.id) {
+      setSwitchTarget(cashier)
+      return
+    }
+    setSelectedCashier(cashier)
+  }
 
   const goToPassword = () => {
     if (!selectedCashier) return
@@ -726,7 +853,9 @@ export default function LoginPage() {
       setShakeCount((c) => c + 1)
       return
     }
-    logIn({ employee_id: selectedCashier.id, password: pwd })
+    // identifier lets the backend hand this cashbox's open session over to the
+    // cashier logging in (and reject them if they hold a session elsewhere)
+    logIn({ employee_id: selectedCashier.id, password: pwd, identifier: machineId })
   }
 
   // physical keyboard support while entering the password
@@ -792,6 +921,9 @@ export default function LoginPage() {
             {weekday}, {dateLabel}
           </Typography>
           <Typography className={classes.railClock}>{clock}</Typography>
+          {variant !== 'error' && cashbox?.name && (
+            <Typography className={classes.railCashboxName}>{cashbox.name}</Typography>
+          )}
           {variant === 'error' ? (
             <Box className={classes.railChip}>
               <Store size={20} />
@@ -888,13 +1020,16 @@ export default function LoginPage() {
               <Box className={classes.grid}>
                 {filtered.map((cashier) => {
                   const selected = selectedCashier?.id === cashier.id
+                  const busyIn = busyCashboxName(cashier)
                   return (
                     <Box
                       key={cashier.id}
                       component="button"
                       type="button"
-                      className={`${classes.card} ${selected ? classes.cardSelected : ''}`}
-                      onClick={() => setSelectedCashier(cashier)}
+                      disabled={Boolean(busyIn)}
+                      title={busyIn ? `Смена открыта в кассе «${busyIn}». Закройте её, чтобы войти здесь.` : undefined}
+                      className={`${classes.card} ${selected ? classes.cardSelected : ''} ${busyIn ? classes.cardDisabled : ''}`}
+                      onClick={() => pickCashier(cashier)}
                     >
                       {selected && (
                         <span className={classes.cardBadge}>
@@ -904,6 +1039,11 @@ export default function LoginPage() {
                       {renderAvatar(cashier, { size: 58, fontSize: 20, selected })}
                       <span className={classes.cardName}>{displayName(cashier)}</span>
                       {cashier.position && <span className={classes.cardPosition}>{cashier.position}</span>}
+                      {busyIn ? (
+                        <span className={classes.cardBusyNote}>Закройте смену в кассе «{busyIn}»</span>
+                      ) : cashier.id === activeCashierId ? (
+                        <span className={classes.cardActiveNote}>Смена на этой кассе</span>
+                      ) : null}
                     </Box>
                   )
                 })}
@@ -927,6 +1067,38 @@ export default function LoginPage() {
             </Box>
           )}
         </Box>
+
+        {switchTarget && (
+          <Box className={classes.confirmOverlay}>
+            <Box className={classes.confirmPanel}>
+              <Typography className={classes.confirmTitle}>Переключить кассу?</Typography>
+              <Typography className={classes.confirmText}>
+                Касса{cashbox?.name ? ` «${cashbox.name}»` : ''} сейчас закреплена за{' '}
+                {activeCashier ? `кассиром ${displayName(activeCashier)}` : 'другим кассиром'}. После входа смена
+                будет переключена на {displayName(switchTarget)}.
+              </Typography>
+              <Box className={classes.confirmActions}>
+                <button
+                  type="button"
+                  className={`${classes.confirmBtn} ${classes.confirmBtnCancel}`}
+                  onClick={() => setSwitchTarget(null)}
+                >
+                  Отмена
+                </button>
+                <button
+                  type="button"
+                  className={`${classes.confirmBtn} ${classes.confirmBtnGo}`}
+                  onClick={() => {
+                    setSelectedCashier(switchTarget)
+                    setSwitchTarget(null)
+                  }}
+                >
+                  Продолжить
+                </button>
+              </Box>
+            </Box>
+          </Box>
+        )}
       </Box>
     )
   }
