@@ -166,7 +166,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
         cashDrawer: {
           enabled: true,
           openOnCashPayment: true,
-          openTiming: "after_print",
+          openTiming: "before_print",
           command: "1B700019FA"
         }
       })
@@ -241,7 +241,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
         cashDrawer: {
           enabled: true,
           openOnCashPayment: true,
-          openTiming: "after_print",
+          openTiming: "before_print",
           command: "1B700019FA"
         }
       })
@@ -278,7 +278,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
         cashDrawer: {
           enabled: true,
           openOnCashPayment: true,
-          openTiming: "after_print",
+          openTiming: "before_print",
           command: "1B700019FA" // Default ESC/POS kick command
         }
       })
