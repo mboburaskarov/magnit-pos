@@ -235,7 +235,10 @@ function CashCloseDrawer({ open, setOpen }) {
   const { mutate: closeCashBoxRegister, isLoading: iscloseCashBoxRegister } = useMutation(requests.closeCashBoxRegister, {
     onSuccess: () => {
       setOpen(false)
-      navigate(`/sales/create`)
+      // Kassa endi qurilma bo'yicha avtomatik aniqlanadi (login/index.jsx),
+      // shuning uchun qo'lda tanlash sahifasi (sales/create) o'rniga
+      // to'g'ridan-to'g'ri login ekraniga qaytariladi.
+      navigate(`/login`)
     },
     onError: (err) => {
       error('Ошибка закрытия кассы!')
