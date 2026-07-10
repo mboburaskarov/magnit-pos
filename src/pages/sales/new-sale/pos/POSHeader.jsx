@@ -143,7 +143,7 @@ export default function POSHeader({
                   height: 10,
                   backgroundColor: '#dc2626',
                   borderRadius: '50%',
-                  border: '2px solid #111827',
+                  border: '2px solid #111217',
                 }}
               />
             )}

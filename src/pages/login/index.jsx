@@ -515,7 +515,7 @@ const useStyles = makeStyles((theme) => {
       color: '#6F6F6F',
       marginBottom: 16,
     },
-    fieldWrap: { position: 'relative', width: 320, marginBottom: 32 },
+    fieldWrap: { position: 'relative', width: 320, marginBottom: 12 },
     fieldWrapShake: { animation: '$shake .4s ease' },
     field: {
       height: 64,
@@ -555,7 +555,7 @@ const useStyles = makeStyles((theme) => {
     },
     errorLine: {
       height: 22,
-      margin: '12px 0 20px',
+      margin: '6px 0 10px',
       fontSize: 14,
       fontWeight: 600,
       color: '#E23A32',
