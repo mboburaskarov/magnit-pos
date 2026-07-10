@@ -1388,7 +1388,11 @@ export default function PosApp() {
         customer: customerId?.name ? String(customerId.name) : '',
       }
 
-      const layoutLines = buildReceiptLayout(payloadData, { logoHex })
+      const layoutLines = buildReceiptLayout(payloadData, {
+        logoHex,
+        name: get(userData, 'store.name'),
+        address: get(userData, 'store.address'),
+      })
 
       const reqPayload = {
         lines: layoutLines,
