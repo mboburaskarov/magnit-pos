@@ -244,9 +244,13 @@ const useStyles = makeStyles((theme) => {
     },
     gridScroll: {
       flex: 1,
-      overflow: 'visible',
+      overflowY: 'auto',
+      overflowX: 'hidden',
       padding: '4px 8px 32px 0',
       minHeight: 0,
+      scrollbarWidth: 'none',
+      msOverflowStyle: 'none',
+      '&::-webkit-scrollbar': { display: 'none' },
     },
     grid: {
       display: 'grid',
@@ -354,6 +358,8 @@ const useStyles = makeStyles((theme) => {
     // selected sticky bar
     selectedBar: {
       flexShrink: 0,
+      position: 'relative',
+      zIndex: 5,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -796,10 +802,25 @@ export default function LoginPage() {
     const device_id = localStorage.getItem('device_id') || crypto.randomUUID()
     localStorage.setItem('device_id', device_id)
 
+    const persistSelectedCashbox = () => {
+      localStorage.setItem(
+        'selected_cashbox',
+        JSON.stringify({
+          id: cashbox?.id,
+          name: cashbox?.name,
+          full_name: cashbox?.full_name,
+          store_id: storeId,
+          store_name: cashbox?.store_name || employee?.store?.name,
+          is_open: true,
+        }),
+      )
+    }
+
     try {
       const checkRes = await requests.checkSaleExist({ store_id: storeId, cash_box_id: cashBoxId, device_id })
       const saleId = get(checkRes, 'data.data.sale_id')
       if (saleId) {
+        persistSelectedCashbox()
         window.location.replace(`/sales/pos/${saleId}`)
         return
       }
@@ -811,6 +832,7 @@ export default function LoginPage() {
           const newSaleRes = await requests.saleCreate({ cash_box_operation_id: cashBoxOpId, store_id: storeId })
           const newSaleId = get(newSaleRes, 'data.id')
           if (newSaleId) {
+            persistSelectedCashbox()
             window.location.replace(`/sales/pos/${newSaleId}`)
             return
           }

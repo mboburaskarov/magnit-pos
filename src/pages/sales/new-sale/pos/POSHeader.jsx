@@ -6,6 +6,7 @@ export const APP_VERSION = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSIO
 
 export default function POSHeader({
   time,
+  cashboxName,
   cashierName,
   userData,
   showSearchInput,
@@ -68,19 +69,21 @@ export default function POSHeader({
         <div className='pos-header-brand'>
           <LogoMain />
         </div>
-        {/* <div
-          style={{
-            fontSize: '11px',
-            color: '#9CA3AF',
-            backgroundColor: '#1F2937',
-            padding: '2px 6px',
-            borderRadius: '4px',
-            fontWeight: 600,
-            letterSpacing: '0.5px',
-          }}
-        >
-          v{APP_VERSION}
-        </div> */}
+        {cashboxName && (
+          <div
+            style={{
+              fontSize: '11px',
+              color: '#9CA3AF',
+              backgroundColor: '#1F2937',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              fontWeight: 600,
+              letterSpacing: '0.3px',
+            }}
+          >
+            {cashboxName}
+          </div>
+        )}
         <button
           type='button'
           className='pos-header-btn'

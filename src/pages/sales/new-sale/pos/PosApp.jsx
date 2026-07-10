@@ -52,6 +52,14 @@ export default function PosApp() {
   const [showQuickProducts, setShowQuickProducts] = useState(false)
   const [securityItem, setSecurityItem] = useState(null)
   const [time, setTime] = useState('')
+  const [cashboxName] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('selected_cashbox') || 'null')
+      return saved?.full_name || saved?.name || ''
+    } catch (e) {
+      return ''
+    }
+  })
   const [showCashierSession, setShowCashierSession] = useState(false)
   const [showPrinterSettings, setShowPrinterSettings] = useState(false)
   const [isLocked, setIsLocked] = useState(false)
@@ -1724,6 +1732,7 @@ export default function PosApp() {
       {/* ── Top Header ── */}
       <POSHeader
         time={time}
+        cashboxName={cashboxName}
         cashierName={`${get(userData, 'first_name')} ${get(userData, 'last_name') ? `(${get(userData, 'last_name')})` : ''}`}
         userData={userData}
         showSearchInput={showSearchInput}
