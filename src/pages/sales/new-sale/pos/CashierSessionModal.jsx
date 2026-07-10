@@ -11,6 +11,7 @@ import { get } from 'lodash'
 
 export default function CashierSessionModal({
   open,
+  initialView = 'options',
   onClose,
   onTempLogout,
   onCloseSession,
@@ -27,13 +28,13 @@ export default function CashierSessionModal({
 
   useEffect(() => {
     if (open) {
-      setView('options')
+      setView(initialView === 'logoutConfirm' ? 'options' : initialView)
       setShowCashierList(false)
       setCashierSearchQuery('')
-      setShowLogoutConfirm(false)
+      setShowLogoutConfirm(initialView === 'logoutConfirm')
       reset({ employee_id: null, password: '' })
     }
-  }, [open, reset])
+  }, [open, reset, initialView])
 
   const { data: employees } = useQuery(
     'employees-list',

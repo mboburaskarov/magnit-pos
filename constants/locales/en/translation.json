@@ -370,7 +370,7 @@
   "payment_type": "Payment Type",
   "new_order.marking_dialog_info": "Barcha qo'shilgan mahsulotlarda markirofka mavjud emas. Savdo uchun barcha markirofkalarni kiriting.",
   "new_order.empty_marking.dialog_info": "Siz barcha mahsulotlar uchun belgi kiritmagansiz. Yorliqsiz sotish qonuniy ravishda mumkin emas. \"Davom etish\" tugmasini bosish orqali siz to'liq javobgarlikni qabul qilasiz.",
-  "pos.receipt_id": "Check ID",
+  "pos.receipt_id": "ID",
   "pos.price_list": "Price List",
   "pos.standard": "Standard",
   "pos.customer_placeholder": "Loyalty card",

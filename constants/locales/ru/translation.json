@@ -472,7 +472,7 @@
   "menu.products.import.use_current_import_properties": "Применить свойства текущего импорта",
 
   "error.transfer.surplus.accepted_count": "Введено избыточное количество",
-  "pos.receipt_id": "Чек ID",
+  "pos.receipt_id": "ID",
   "pos.price_list": "Прайс-лист",
   "pos.standard": "Стандартный",
   "pos.customer_placeholder": "Накопительная карта",

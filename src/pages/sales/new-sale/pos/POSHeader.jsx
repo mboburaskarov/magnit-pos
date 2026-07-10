@@ -1,5 +1,5 @@
 import LogoMain from '@icons/LogoMain'
-import { Search, User, Power, X, Printer, Banknote, RefreshCw } from 'lucide-react'
+import { Search, User, X, Printer, RefreshCw, Languages, Users, Lock, FileText, LogOut, ChevronRight } from 'lucide-react'
 import './PosLayout.css'
 
 export const APP_VERSION = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '1.0.1'
@@ -19,10 +19,11 @@ export default function POSHeader({
   t,
   i18n,
   onLogout,
+  onTempLogout,
+  onCloseSession,
   receiptNumber,
   onOpenPrinterSettings,
   isAgentRunning,
-  onOpenCashDrawer,
   onHardRefresh,
   onFocusLiveSearch,
   onEnterBarcodeSearch,
@@ -69,21 +70,6 @@ export default function POSHeader({
         <div className='pos-header-brand'>
           <LogoMain />
         </div>
-        {cashboxName && (
-          <div
-            style={{
-              fontSize: '11px',
-              color: '#9CA3AF',
-              backgroundColor: '#1F2937',
-              padding: '2px 8px',
-              borderRadius: '4px',
-              fontWeight: 600,
-              letterSpacing: '0.3px',
-            }}
-          >
-            {cashboxName}
-          </div>
-        )}
         <button
           type='button'
           className='pos-header-btn'
@@ -100,6 +86,22 @@ export default function POSHeader({
         <div className='pos-status-bar'>
           <div className='pos-status-pill'>
             <span className='pos-status-pulse green'></span>
+            {cashboxName && (
+              <span
+                title={cashboxName}
+                style={{
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  color: '#e5e7eb',
+                  maxWidth: '140px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {cashboxName}
+              </span>
+            )}
           </div>
           <div className='pos-header-divider'></div>
           <div className='pos-status-item'>
@@ -127,11 +129,6 @@ export default function POSHeader({
             title={t('pos.search_title')}
           >
             <Search size={18} />
-          </button>
-
-          {/* Open cash drawer button */}
-          <button type='button' className='pos-header-btn' onClick={onOpenCashDrawer} title={t('pos.printer.test_drawer')}>
-            <Banknote size={18} />
           </button>
 
           <button type='button' className='pos-header-btn' onClick={onOpenPrinterSettings} title={t('pos.printer.title')} style={{ position: 'relative' }}>
@@ -181,48 +178,102 @@ export default function POSHeader({
                   </div>
 
                   <div className='touch-modal-body'>
-                    <div className='touch-modal-section-title'>{t('language')}</div>
+                    <div className='touch-modal-section-title' style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Languages size={13} />
+                      {t('language')}
+                    </div>
+                    <div className='touch-lang-options' style={{ flexDirection: 'row', marginBottom: '18px' }}>
+                      <button
+                        onClick={() => i18n.changeLanguage('uz')}
+                        className={`touch-lang-btn ${i18n.language === 'uz' ? 'is-active' : ''}`}
+                        style={{ height: '48px', padding: '0 12px', justifyContent: 'center', gap: '6px' }}
+                      >
+                        <span className='touch-lang-flag'>🇺🇿</span>
+                        <span style={{ fontSize: '13px' }}>UZ</span>
+                      </button>
+
+                      <button
+                        onClick={() => i18n.changeLanguage('ru')}
+                        className={`touch-lang-btn ${i18n.language === 'ru' ? 'is-active' : ''}`}
+                        style={{ height: '48px', padding: '0 12px', justifyContent: 'center', gap: '6px' }}
+                      >
+                        <span className='touch-lang-flag'>🇷🇺</span>
+                        <span style={{ fontSize: '13px' }}>RU</span>
+                      </button>
+
+                      <button
+                        onClick={() => i18n.changeLanguage('en')}
+                        className={`touch-lang-btn ${i18n.language === 'en' ? 'is-active' : ''}`}
+                        style={{ height: '48px', padding: '0 12px', justifyContent: 'center', gap: '6px' }}
+                      >
+                        <span className='touch-lang-flag'>🇬🇧</span>
+                        <span style={{ fontSize: '13px' }}>EN</span>
+                      </button>
+                    </div>
+
+                    <div className='touch-modal-section-title' style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Users size={13} />
+                      {t('pos.cashier_session')}
+                    </div>
                     <div className='touch-lang-options'>
                       <button
+                        type='button'
+                        className='touch-lang-btn'
                         onClick={() => {
-                          i18n.changeLanguage('uz')
                           setShowLangDropdown(false)
+                          onLogout('transfer')
                         }}
-                        className={`touch-lang-btn ${i18n.language === 'uz' ? 'is-active' : ''}`}
                       >
                         <div className='touch-lang-flag-name'>
-                          <span className='touch-lang-flag'>🇺🇿</span>
-                          <span>O&apos;zbekcha</span>
+                          <Users size={18} />
+                          <span>{t('pos.transfer_shift')}</span>
                         </div>
-                        {i18n.language === 'uz' && <div className='touch-lang-checkmark'>✓</div>}
+                        <ChevronRight size={16} />
                       </button>
 
                       <button
+                        type='button'
+                        className='touch-lang-btn'
                         onClick={() => {
-                          i18n.changeLanguage('ru')
                           setShowLangDropdown(false)
+                          onTempLogout()
                         }}
-                        className={`touch-lang-btn ${i18n.language === 'ru' ? 'is-active' : ''}`}
                       >
                         <div className='touch-lang-flag-name'>
-                          <span className='touch-lang-flag'>🇷🇺</span>
-                          <span>Русский</span>
+                          <Lock size={18} />
+                          <span>{t('pos.temp_logout')}</span>
                         </div>
-                        {i18n.language === 'ru' && <div className='touch-lang-checkmark'>✓</div>}
+                        <ChevronRight size={16} />
                       </button>
 
                       <button
+                        type='button'
+                        className='touch-lang-btn'
                         onClick={() => {
-                          i18n.changeLanguage('en')
                           setShowLangDropdown(false)
+                          onCloseSession()
                         }}
-                        className={`touch-lang-btn ${i18n.language === 'en' ? 'is-active' : ''}`}
                       >
                         <div className='touch-lang-flag-name'>
-                          <span className='touch-lang-flag'>🇬🇧</span>
-                          <span>English</span>
+                          <FileText size={18} />
+                          <span>{t('pos.close_session')}</span>
                         </div>
-                        {i18n.language === 'en' && <div className='touch-lang-checkmark'>✓</div>}
+                        <ChevronRight size={16} />
+                      </button>
+
+                      <button
+                        type='button'
+                        className='touch-lang-btn'
+                        onClick={() => {
+                          setShowLangDropdown(false)
+                          onLogout('logoutConfirm')
+                        }}
+                      >
+                        <div className='touch-lang-flag-name'>
+                          <LogOut size={18} color='#ef4444' />
+                          <span style={{ color: '#ef4444' }}>{t('pos.logout')}</span>
+                        </div>
+                        <ChevronRight size={16} color='#ef4444' />
                       </button>
                     </div>
                   </div>
@@ -230,10 +281,6 @@ export default function POSHeader({
               </div>
             )}
           </div>
-
-          <button className='pos-header-btn logout' onClick={onLogout} title={t('pos.cashier_session')}>
-            <Power size={18} />
-          </button>
         </div>
       </div>
 
