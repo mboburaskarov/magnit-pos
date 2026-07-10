@@ -6,7 +6,7 @@
 :root {
   --pos-bg: #f3f4f6;
   --pos-surface: #ffffff;
-  --pos-header-bg: #111827;
+  --pos-header-bg: #111217;
   --pos-text-primary: #111827;
   --pos-text-secondary: #4b5563;
   --pos-text-muted: #9ca3af;
@@ -64,6 +64,7 @@ body {
 .pos-header-right {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .pos-header-brand {
@@ -86,6 +87,9 @@ body {
 .pos-header-center {
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
   transition:
     opacity 0.25s ease,
     transform 0.25s ease;
@@ -105,6 +109,9 @@ body {
   padding: 6px 16px;
   border-radius: var(--pos-radius-md);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .pos-status-pill {
@@ -142,6 +149,7 @@ body {
   align-items: center;
   font-size: 13px;
   color: #e5e7eb;
+  flex-shrink: 0;
 }
 
 .pos-status-item .status-label {

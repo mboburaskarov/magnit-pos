@@ -15,6 +15,7 @@ import { requests } from '@utils/requests'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
 import { Check, X } from 'lucide-react'
+import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { loadSvgAsEscposHex } from '@utils/escposImage'
 import { buildZReportReceiptLayout } from '@utils/receiptBuilder'
@@ -153,6 +154,7 @@ function CashCloseDrawer({ open, setOpen }) {
   const classes = useStyles()
   const { id } = useParams()
   const navigate = useNavigate()
+  const userData = useSelector((state) => state.user)
   const [company, setCompany] = useState('1')
   const [checkdata, setcheckdata] = useState()
   const [printError, setPrintError] = useState(null)
@@ -172,7 +174,11 @@ function CashCloseDrawer({ open, setOpen }) {
         console.warn('Failed to load logo for Z-Report:', e)
       }
 
-      const layoutLines = buildZReportReceiptLayout(zrepoData, { logoHex })
+      const layoutLines = buildZReportReceiptLayout(zrepoData, {
+        logoHex,
+        name: get(userData, 'store.name'),
+        address: get(userData, 'store.address'),
+      })
       const reqPayload = {
         lines: layoutLines,
       }

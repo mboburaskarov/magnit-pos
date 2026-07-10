@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import { get } from 'lodash'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { Printer } from 'lucide-react'
 import ArrowRightIcon from '../../../src/assets/icons/ArrowRightIcon'
@@ -45,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
   const { t } = useTranslation()
   const classes = useStyles()
+  const userData = useSelector((state) => state.user)
   const [isPrinting, setIsPrinting] = useState(false)
 
   const productCount = get(item, 'product_count', 0)
@@ -112,7 +114,11 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
         isDuplicate: true,
       }
 
-      const layoutLines = buildReceiptLayout(payloadData, { logoHex })
+      const layoutLines = buildReceiptLayout(payloadData, {
+        logoHex,
+        name: get(userData, 'store.name'),
+        address: get(userData, 'store.address'),
+      })
       const reqPayload = {
         lines: layoutLines,
         paymentType: paymentType,

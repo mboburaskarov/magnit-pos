@@ -211,7 +211,11 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
         isDuplicate: true,
       }
 
-      const layoutLines = buildReceiptLayout(payloadData, { logoHex })
+      const layoutLines = buildReceiptLayout(payloadData, {
+        logoHex,
+        name: get(userData, 'store.name'),
+        address: get(userData, 'store.address'),
+      })
       const reqPayload = {
         lines: layoutLines,
         paymentType: paymentType,

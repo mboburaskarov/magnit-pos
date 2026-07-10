@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles'
 import { useEffect, useRef, useState } from 'react'
 import { useMutation } from 'react-query'
 import { useDispatch } from 'react-redux'
+import { error as toastError } from '@utils/toast'
 import { Store, Search, ArrowLeft, ArrowRight, Check, Eye, EyeOff, Delete, CornerDownLeft, RefreshCw, AlertTriangle } from 'lucide-react'
 import { get } from 'lodash'
 import { requests } from '../../../utils/requests'
@@ -244,29 +245,25 @@ const useStyles = makeStyles((theme) => {
     gridScroll: {
       flex: 1,
       overflowY: 'auto',
+      overflowX: 'hidden',
       padding: '4px 8px 32px 0',
       minHeight: 0,
-      '&::-webkit-scrollbar': { width: 10 },
-      '&::-webkit-scrollbar-thumb': {
-        background: '#D5D7E2',
-        borderRadius: 8,
-        border: '3px solid transparent',
-        backgroundClip: 'content-box',
-      },
-      '&::-webkit-scrollbar-track': { background: 'transparent' },
+      scrollbarWidth: 'none',
+      msOverflowStyle: 'none',
+      '&::-webkit-scrollbar': { display: 'none' },
     },
     grid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(212px, 1fr))',
-      gap: 16,
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gap: 14,
       alignContent: 'start',
     },
     card: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      gap: 13,
-      padding: '26px 16px',
+      gap: 11,
+      padding: '22px 14px',
       borderRadius: 16,
       border: '1.5px solid #E5E7EB',
       background: '#fff',
@@ -310,20 +307,20 @@ const useStyles = makeStyles((theme) => {
       },
     },
     cardName: {
-      fontSize: 16,
+      fontSize: 15,
       fontWeight: 600,
       color: '#111217',
-      lineHeight: 1.25,
+      lineHeight: 1.3,
     },
-    cardPosition: { fontSize: 13.5, fontWeight: 500, color: '#6F6F6F' },
+    cardPosition: { fontSize: 12.5, fontWeight: 500, color: '#6F6F6F' },
     cardBusyNote: {
-      fontSize: 12.5,
+      fontSize: 12,
       fontWeight: 600,
       color: '#E23A32',
       lineHeight: 1.35,
     },
     cardActiveNote: {
-      fontSize: 12.5,
+      fontSize: 12,
       fontWeight: 600,
       color: '#1E9E52',
       lineHeight: 1.35,
@@ -361,6 +358,8 @@ const useStyles = makeStyles((theme) => {
     // selected sticky bar
     selectedBar: {
       flexShrink: 0,
+      position: 'relative',
+      zIndex: 5,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -516,7 +515,7 @@ const useStyles = makeStyles((theme) => {
       color: '#6F6F6F',
       marginBottom: 16,
     },
-    fieldWrap: { position: 'relative', width: 320 },
+    fieldWrap: { position: 'relative', width: 320, marginBottom: 12 },
     fieldWrapShake: { animation: '$shake .4s ease' },
     field: {
       height: 64,
@@ -556,7 +555,7 @@ const useStyles = makeStyles((theme) => {
     },
     errorLine: {
       height: 22,
-      margin: '12px 0 20px',
+      margin: '6px 0 10px',
       fontSize: 14,
       fontWeight: 600,
       color: '#E23A32',
@@ -803,10 +802,25 @@ export default function LoginPage() {
     const device_id = localStorage.getItem('device_id') || crypto.randomUUID()
     localStorage.setItem('device_id', device_id)
 
+    const persistSelectedCashbox = () => {
+      localStorage.setItem(
+        'selected_cashbox',
+        JSON.stringify({
+          id: cashbox?.id,
+          name: cashbox?.name,
+          full_name: cashbox?.full_name,
+          store_id: storeId,
+          store_name: cashbox?.store_name || employee?.store?.name,
+          is_open: true,
+        }),
+      )
+    }
+
     try {
       const checkRes = await requests.checkSaleExist({ store_id: storeId, cash_box_id: cashBoxId, device_id })
       const saleId = get(checkRes, 'data.data.sale_id')
       if (saleId) {
+        persistSelectedCashbox()
         window.location.replace(`/sales/pos/${saleId}`)
         return
       }
@@ -818,6 +832,7 @@ export default function LoginPage() {
           const newSaleRes = await requests.saleCreate({ cash_box_operation_id: cashBoxOpId, store_id: storeId })
           const newSaleId = get(newSaleRes, 'data.id')
           if (newSaleId) {
+            persistSelectedCashbox()
             window.location.replace(`/sales/pos/${newSaleId}`)
             return
           }
@@ -956,6 +971,7 @@ export default function LoginPage() {
           ? 'Кассир не найден'
           : 'Не удалось войти. Повторите попытку.'
       setPwError(msg)
+      toastError(msg)
       setPassword('')
       setShakeCount((c) => c + 1)
       console.error('login error:', err)
@@ -1013,6 +1029,7 @@ export default function LoginPage() {
     const pwd = (passwordRef.current || '').replace(/[()\s-]/g, '')
     if (!pwd) {
       setPwError('Введите пароль')
+      toastError('Введите пароль')
       setShakeCount((c) => c + 1)
       return
     }
@@ -1202,7 +1219,7 @@ export default function LoginPage() {
                           <Check size={15} strokeWidth={3} />
                         </span>
                       )}
-                      {renderAvatar(cashier, { size: 58, fontSize: 20, selected })}
+                      {renderAvatar(cashier, { size: 52, fontSize: 18, selected })}
                       <span className={classes.cardName}>{displayName(cashier)}</span>
                       {cashier.position && <span className={classes.cardPosition}>{cashier.position}</span>}
                       {busyIn ? (
@@ -1396,8 +1413,6 @@ export default function LoginPage() {
                 {reveal ? <Eye size={22} /> : <EyeOff size={22} />}
               </button>
             </Box>
-
-            <Box className={classes.errorLine}>{pwError}</Box>
 
             <Box className={classes.keypadGrid}>
               {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((digit) => (

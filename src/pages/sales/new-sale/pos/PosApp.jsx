@@ -52,7 +52,16 @@ export default function PosApp() {
   const [showQuickProducts, setShowQuickProducts] = useState(false)
   const [securityItem, setSecurityItem] = useState(null)
   const [time, setTime] = useState('')
+  const [cashboxName] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('selected_cashbox') || 'null')
+      return saved?.full_name || saved?.name || ''
+    } catch (e) {
+      return ''
+    }
+  })
   const [showCashierSession, setShowCashierSession] = useState(false)
+  const [cashierSessionInitialView, setCashierSessionInitialView] = useState('options')
   const [showPrinterSettings, setShowPrinterSettings] = useState(false)
   const [isLocked, setIsLocked] = useState(false)
   const [showReturnDrawer, setShowReturnDrawer] = useState(false)
@@ -1388,7 +1397,11 @@ export default function PosApp() {
         customer: customerId?.name ? String(customerId.name) : '',
       }
 
-      const layoutLines = buildReceiptLayout(payloadData, { logoHex })
+      const layoutLines = buildReceiptLayout(payloadData, {
+        logoHex,
+        name: get(userData, 'store.name'),
+        address: get(userData, 'store.address'),
+      })
 
       const reqPayload = {
         lines: layoutLines,
@@ -1693,16 +1706,14 @@ export default function PosApp() {
     setShowReturnDrawer(true)
   }
 
-  const handleOpenCashDrawer = async () => {
-    try {
-      const res = await axios.post(`${activeAgentUrl}/cash-drawer/open`)
-      if (res.data && res.data.ok) {
-        success(t('pos.drawer_opened'))
-      } else {
-        error(t('pos.printer.drawer_open_error'))
-      }
-    } catch (err) {
-      error(t('pos.printer.error_prefix') + (err.response?.data?.message || err.message))
+  const handleTempLogout = () => setIsLocked(true)
+
+  const handleCloseSessionShortcut = () => {
+    const operationId = get(cashBoxDetails, 'data.data.cash_box_operation_id')
+    if (operationId) {
+      navigate(`/sales/cash-shift-detail/${operationId}?sale_id=${id}`)
+    } else {
+      error(t('operation_not_found') || 'Смена не найдена')
     }
   }
 
@@ -1720,6 +1731,7 @@ export default function PosApp() {
       {/* ── Top Header ── */}
       <POSHeader
         time={time}
+        cashboxName={cashboxName}
         cashierName={`${get(userData, 'first_name')} ${get(userData, 'last_name') ? `(${get(userData, 'last_name')})` : ''}`}
         userData={userData}
         showSearchInput={showSearchInput}
@@ -1731,11 +1743,12 @@ export default function PosApp() {
         setShowLangDropdown={setShowLangDropdown}
         t={t}
         i18n={i18n}
-        onLogout={() => { handleCloseLiveSearch(); setShowCashierSession(true) }}
+        onLogout={(view = 'options') => { handleCloseLiveSearch(); setCashierSessionInitialView(view); setShowCashierSession(true) }}
+        onTempLogout={handleTempLogout}
+        onCloseSession={handleCloseSessionShortcut}
         receiptNumber={cashBoxDetails?.data?.data?.sale_number || '--'}
         onOpenPrinterSettings={() => { handleCloseLiveSearch(); setShowPrinterSettings(true) }}
         isAgentRunning={isAgentRunning}
-        onOpenCashDrawer={handleOpenCashDrawer}
         onHardRefresh={handleHardRefreshRequest}
         onFocusLiveSearch={() => {
           setShowLiveSearchPanel(true)
@@ -2032,16 +2045,10 @@ export default function PosApp() {
       {/* Cashier Session Modal */}
       <CashierSessionModal
         open={showCashierSession}
+        initialView={cashierSessionInitialView}
         onClose={() => setShowCashierSession(false)}
-        onTempLogout={() => setIsLocked(true)}
-        onCloseSession={() => {
-          const operationId = get(cashBoxDetails, 'data.data.cash_box_operation_id')
-          if (operationId) {
-            navigate(`/sales/cash-shift-detail/${operationId}?sale_id=${id}`)
-          } else {
-            error(t('operation_not_found') || 'Смена не найдена')
-          }
-        }}
+        onTempLogout={handleTempLogout}
+        onCloseSession={handleCloseSessionShortcut}
         t={t}
       />
 
