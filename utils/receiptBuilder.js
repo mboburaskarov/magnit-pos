@@ -234,14 +234,16 @@ export function buildZReportReceiptLayout(zrepo, storeInfo = {}) {
     return finalNum.toFixed(2)
   }
 
-  add(leftRight(`ИД ТЕРМИНАЛА:`, `#${zrepo?.terminalID || ''}`, WIDTH, '.'))
-  add(leftRight(`ВРЕМЯ ОТКРЫТИЯ:`, `${zrepo?.openTime || ''}`, WIDTH, '.'))
-  add(leftRight(`ВРЕМЯ ЗАКРЫТИЯ:`, `${zrepo?.closeTime || ''}`, WIDTH, '.'))
-  add(leftRight(`НОМЕР:`, `+${zrepo?.number || '-'}`, WIDTH, '.'))
-  add(leftRight(`КОЛ-ВО:`, `${zrepo?.count || ''}`, WIDTH, '.'))
-  add(leftRight(`ИТОГО ЧЕКОВ:`, `${zrepo?.totalSaleCount || ''}`, WIDTH, '.'))
-  const lang = (typeof window !== 'undefined' && localStorage.getItem('i18nextLng')) || 'ru'
-  const totalSumLabel = lang.startsWith('uz') ? 'JAMI SUMMA:' : 'ИТОГО СУММА:'
+  if (storeInfo?.cashier) {
+    add(leftRight(`KASSIR:`, storeInfo.cashier, WIDTH, '.'))
+  }
+  add(leftRight(`ID TERMINALI:`, `#${zrepo?.terminalID || ''}`, WIDTH, '.'))
+  add(leftRight(`OCHILISH VAQTI:`, `${zrepo?.openTime || ''}`, WIDTH, '.'))
+  add(leftRight(`YOPILISH VAQTI:`, `${zrepo?.closeTime || ''}`, WIDTH, '.'))
+  add(leftRight(`RAQAM:`, `+${zrepo?.number || '-'}`, WIDTH, '.'))
+  add(leftRight(`SONI:`, `${zrepo?.count || ''}`, WIDTH, '.'))
+  add(leftRight(`JAMI CHEKLAR:`, `${zrepo?.totalSaleCount || ''}`, WIDTH, '.'))
+  const totalSumLabel = 'JAMI SUMMA:'
 
   const totalSaleCash = Number(zrepo?.totalSaleCash || 0)
   const totalSaleCard = Number(zrepo?.totalSaleCard || 0)
@@ -253,19 +255,19 @@ export function buildZReportReceiptLayout(zrepo, storeInfo = {}) {
   const netTotal = totalSales - totalReturns
 
   add(leftRight(totalSumLabel, `${formatVal(netTotal)}`, WIDTH, '.'))
-  add(leftRight(`ИТОГО КАРТЫ:`, `${formatVal(zrepo?.totalSaleCard)}`, WIDTH, '.'))
-  add(leftRight(`ИТОГО НАЛИЧНЫЕ:`, `${formatVal(zrepo?.totalSaleCash)}`, WIDTH, '.'))
-  add(leftRight(`ИТОГО НДС:`, `${formatVal(zrepo?.totalSaleVAT)}`, WIDTH, '.'))
-  add(leftRight(`ИТОГО ВОЗВРАТОВ:`, `${formatVal(zrepo?.totalRefundCount)}`, WIDTH, '.'))
-  add(leftRight(`ИТОГО ВОЗВРАТА НАЛИЧНЫЕ:`, `${formatVal(zrepo?.totalRefundCash)}`, WIDTH, '.'))
-  add(leftRight(`ИТОГО ВОЗВРАТА КАРТЫ:`, `${formatVal(zrepo?.totalRefundCard)}`, WIDTH, '.'))
-  add(leftRight(`ИТОГО ВОЗВРАТА НДС:`, `${formatVal(zrepo?.totalRefundVAT)}`, WIDTH, '.'))
+  add(leftRight(`JAMI KARTA:`, `${formatVal(zrepo?.totalSaleCard)}`, WIDTH, '.'))
+  add(leftRight(`JAMI NAQD:`, `${formatVal(zrepo?.totalSaleCash)}`, WIDTH, '.'))
+  add(leftRight(`JAMI QQS:`, `${formatVal(zrepo?.totalSaleVAT)}`, WIDTH, '.'))
+  add(leftRight(`JAMI QAYTARISHLAR:`, `${formatVal(zrepo?.totalRefundCount)}`, WIDTH, '.'))
+  add(leftRight(`QAYTARISH NAQD:`, `${formatVal(zrepo?.totalRefundCash)}`, WIDTH, '.'))
+  add(leftRight(`QAYTARISH KARTA:`, `${formatVal(zrepo?.totalRefundCard)}`, WIDTH, '.'))
+  add(leftRight(`QAYTARISH QQS:`, `${formatVal(zrepo?.totalRefundVAT)}`, WIDTH, '.'))
   add(leftRight(`LastReceiptsed:`, `${zrepo?.lastReceiptSeq || '-'}`, WIDTH, '.'))
   add(leftRight(`FirstReceiptSeq:`, `${zrepo?.firstReceiptSeq || '-'}`, WIDTH, '.'))
   add(leftRight(`AppletVersion:`, `${zrepo?.appletVersion || '-'}`, WIDTH, '.'))
 
   add(lineSeparator)
-  add(centerText('Отчет о закрытии смены время на компьютере'))
+  add(centerText("Smena yopilish otchyoti, kompyuter vaqti"))
   add(centerText(dayjs().format('DD.MM.YYYY HH:mm:ss')))
   add('[CUT]')
 

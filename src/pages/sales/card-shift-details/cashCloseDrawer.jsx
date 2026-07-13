@@ -178,6 +178,7 @@ function CashCloseDrawer({ open, setOpen }) {
         logoHex,
         name: get(userData, 'store.name'),
         address: get(userData, 'store.address'),
+        cashier: `${get(userData, 'first_name', '')} ${get(userData, 'last_name', '')}`.trim(),
       })
       const reqPayload = {
         lines: layoutLines,
