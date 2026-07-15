@@ -35,7 +35,6 @@ import { topReportTableColumnsSlice } from './tableSlices/topReportsTableColumns
 import { inventoryTableColumnsSlice } from './tableSlices/inventoryTableColumns'
 import { employeesTableColumnsSlice } from './tableSlices/employeesTableColumns'
 import { companiesTableColumnsSlice } from './tableSlices/companiesTableColumns'
-import { cardShiftTableColumnsSlice } from './tableSlices/cardShiftTableColumns'
 import { autoOrderTableColumnsSlice } from './tableSlices/autoOrderTableColumns'
 import { autoOrderDetailSlice } from './tableSlices/autoOrderDetailTableColumns'
 import { writeOffTableColumnsSlice } from './tableSlices/writeOffTableColumns'
@@ -87,7 +86,6 @@ const reducer = combineReducers({
   orderTableColumns: orderTableColumnsSlice,
   productsTableColumns: productsTableColumnsSlice,
   productsTableForChangeByStoreColumns: productsTableForChangeByStoreColumnsSlice,
-  cardShiftTableColumns: cardShiftTableColumnsSlice,
   importsTableColumns: importsTableColumnsSlice,
   expiredImportsTableColumns: expiredImportsTableColumnsSlice,
   inventoryTableColumns: inventoryTableColumnsSlice,

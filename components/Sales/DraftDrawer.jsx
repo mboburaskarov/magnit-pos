@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   drawerHeader: {
     padding: '12px 24px',
     height: '72px',
-    backgroundColor: '#111827',
+    backgroundColor: '#111217',
     borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
     display: 'flex',
     justifyContent: 'space-between',
@@ -125,7 +125,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
                   height: '40px !important',
                   padding: 0,
                   bgcolor: '#fff',
-                  border: '2px solid #cbd5e1',
+                  border: '2px solid #d5d7e2',
                   color: 'dark.500',
                   fontWeight: '600',
                   fontSize: '15px',
@@ -136,7 +136,7 @@ function DraftDrawer({ open, setOpen, cashBoxDetails }) {
                     mr: '8px',
                   },
                   '&:active': {
-                    backgroundColor: '#f1f5f9',
+                    backgroundColor: '#f1f2f5',
                   }
                 }}
                 fullWidth

@@ -138,12 +138,12 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
         )}
 
         {status === 'paid' && (
-          <div className='pos-app-scan-desc' style={{ color: '#16A34A', fontWeight: 700 }}>
+          <div className='pos-app-scan-desc' style={{ color: '#1e9e52', fontWeight: 700 }}>
             ✓ {t('pos.munis.paid', { defaultValue: 'Оплачено' })}
           </div>
         )}
 
-        {status === 'error' && <div className='pos-app-scan-desc' style={{ color: '#DC2626' }}>{errMsg}</div>}
+        {status === 'error' && <div className='pos-app-scan-desc' style={{ color: '#e23a32' }}>{errMsg}</div>}
 
         <div className='pos-security-actions'>
           <button type='button' onClick={onCancel} className='pos-security-btn-cancel'>

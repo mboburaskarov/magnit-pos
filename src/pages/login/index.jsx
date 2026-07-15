@@ -868,7 +868,7 @@ export default function LoginPage() {
       const storeId = cashbox?.store_id || employeeData?.store?.id
 
       const createRes = await requests.createCashOperationBox({
-        cash_amount: Number(openAmount || 0),
+        opened_amount: Number(openAmount || 0),
         cash_box_id: cashbox?.id,
         description: '',
         store_id: storeId,
@@ -929,6 +929,22 @@ export default function LoginPage() {
     return () => window.removeEventListener('keydown', handler)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, isOpening, openAmount])
+
+  // clipboard paste support for the opening amount (the field is a styled div,
+  // not an <input>, so the browser won't handle Ctrl+V by itself)
+  useEffect(() => {
+    if (phase !== PHASE.AMOUNT) return
+    const handler = (e) => {
+      if (isOpening) return
+      const digits = (e.clipboardData?.getData('text') || '').replace(/\D/g, '')
+      if (!digits) return
+      e.preventDefault()
+      setOpenError('')
+      setOpenAmount((a) => (a + digits).slice(0, 12))
+    }
+    window.addEventListener('paste', handler)
+    return () => window.removeEventListener('paste', handler)
+  }, [phase, isOpening])
 
   const { mutate: logIn, isLoading: logInLoading } = useMutation(requests.logIn, {
     onSuccess: ({ data }) => {
@@ -1058,6 +1074,22 @@ export default function LoginPage() {
     return () => window.removeEventListener('keydown', handler)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, loginSuccess, logInLoading, selectedCashier])
+
+  // clipboard paste support for the password (the field is a styled div,
+  // not an <input>, so the browser won't handle Ctrl+V by itself)
+  useEffect(() => {
+    if (phase !== PHASE.PASSWORD) return
+    const handler = (e) => {
+      if (loginSuccess || logInLoading) return
+      const text = (e.clipboardData?.getData('text') || '').replace(/[\r\n]/g, '').trim()
+      if (!text) return
+      e.preventDefault()
+      setPwError('')
+      setPassword((p) => (p + text).slice(0, MAX_PASSWORD))
+    }
+    window.addEventListener('paste', handler)
+    return () => window.removeEventListener('paste', handler)
+  }, [phase, loginSuccess, logInLoading])
 
   const renderAvatar = (cashier, { size, fontSize, selected }) => (
     <Box

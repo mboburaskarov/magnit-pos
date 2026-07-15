@@ -377,17 +377,17 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
               fullWidth
               sx={{
                 height: '40px !important',
-                border: '2px solid #cbd5e1 !important',
+                border: '2px solid #d5d7e2 !important',
                 bgcolor: '#ffffff !important',
-                color: '#1e293b !important',
+                color: '#111217 !important',
                 textTransform: 'none !important',
                 borderRadius: '8px !important',
                 fontWeight: '600 !important',
                 fontSize: '14px !important',
                 boxShadow: 'none !important',
                 '&:hover': {
-                  bgcolor: '#f1f5f9 !important',
-                  borderColor: '#94a3b8 !important',
+                  bgcolor: '#f1f2f5 !important',
+                  borderColor: '#9ca3af !important',
                 },
                 '&:active': {
                   transform: 'scale(0.98)',

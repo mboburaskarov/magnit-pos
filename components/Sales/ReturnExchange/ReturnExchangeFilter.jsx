@@ -76,7 +76,7 @@ export default function ReturnExchangeFilter({ open, setOpen, setRegions }) {
             height: '48px',
           },
           '& svg': {
-            stroke: '#868FAA',
+            stroke: '#9ca3af',
           },
         }}
       >
@@ -139,7 +139,7 @@ export default function ReturnExchangeFilter({ open, setOpen, setRegions }) {
             </Box>
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button
-                sx={{ bgcolor: '#fff !important', border: '1px solid #ECEDF2' }}
+                sx={{ bgcolor: '#fff !important', border: '1px solid #eef0f4' }}
                 fullWidth
                 color='secondary'
                 variant='contained'

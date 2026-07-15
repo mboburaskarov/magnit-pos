@@ -178,6 +178,7 @@ export const requests = {
 
   getRegisterCashData: (cash_box_id) => cash_box_id && request.get(`v1/cash_box_operation/closed-info/${cash_box_id}`),
   getCashBoxOperationInfo: (cash_box_id) => cash_box_id && request.get(`v1/cash_box_operation/info/${cash_box_id}`),
+  getCashBoxOperationDetail: (id) => id && request.get(`v1/cash_box_operation/operation-detail/${id}`),
   closeCashBoxRegister: ({ id, data }) => request.put(`v1/cash_box_operation/close/${id}`, data),
 
   //import
