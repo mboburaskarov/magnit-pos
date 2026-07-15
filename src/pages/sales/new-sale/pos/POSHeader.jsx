@@ -141,7 +141,7 @@ export default function POSHeader({
                   right: -4,
                   width: 10,
                   height: 10,
-                  backgroundColor: '#dc2626',
+                  backgroundColor: '#e23a32',
                   borderRadius: '50%',
                   border: '2px solid #111217',
                 }}
@@ -270,10 +270,10 @@ export default function POSHeader({
                         }}
                       >
                         <div className='touch-lang-flag-name'>
-                          <LogOut size={18} color='#ef4444' />
-                          <span style={{ color: '#ef4444' }}>{t('pos.logout')}</span>
+                          <LogOut size={18} color='#e23a32' />
+                          <span style={{ color: '#e23a32' }}>{t('pos.logout')}</span>
                         </div>
-                        <ChevronRight size={16} color='#ef4444' />
+                        <ChevronRight size={16} color='#e23a32' />
                       </button>
                     </div>
                   </div>

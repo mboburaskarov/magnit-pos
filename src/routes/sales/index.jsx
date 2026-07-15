@@ -1,5 +1,5 @@
 import MainLayout from '@/layouts/MainLayout'
-import CardShiftDetails from '../../pages/sales/card-shift-details'
+import CloseShiftPage from '../../pages/sales/card-shift-details'
 import NewCashRegister from '../../pages/sales/create-cash-register'
 import PosApp from '../../pages/sales/new-sale/pos/PosApp'
 
@@ -18,7 +18,7 @@ const salesRoutes = {
     },
     {
       path: 'cash-shift-detail/:id',
-      children: [{ path: '', element: <CardShiftDetails /> }],
+      children: [{ path: '', element: <CloseShiftPage /> }],
     },
   ],
 }

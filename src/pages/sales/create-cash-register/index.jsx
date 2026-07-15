@@ -676,7 +676,7 @@ function NewCashRegister() {
   const onSubmit = (data) => {
     const device_id = localStorage.getItem('device_id') || crypto.randomUUID()
     const requestBody = {
-      cash_amount: Number(get(data, 'opened_amout') || 0),
+      opened_amount: Number(get(data, 'opened_amout') || 0),
       cash_box_id: get(data, 'registerCash_id.id', null),
       description: '', // Izoh / comment input removed completely
       store_id: get(userData, 'store.id'),

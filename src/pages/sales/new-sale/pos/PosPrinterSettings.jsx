@@ -314,7 +314,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
         {/* Header */}
         <div className="touch-modal-header pos-std-header">
           <div className="touch-modal-userinfo">
-            <div className="touch-modal-avatar" style={{ backgroundColor: isRunning ? 'rgba(22, 163, 74, 0.1)' : 'rgba(220, 38, 38, 0.1)', color: isRunning ? '#16a34a' : '#dc2626' }}>
+            <div className="touch-modal-avatar" style={{ backgroundColor: isRunning ? 'rgba(30, 158, 82, 0.1)' : 'rgba(226, 58, 50, 0.1)', color: isRunning ? '#1e9e52' : '#e23a32' }}>
               <Server size={20} />
             </div>
             <div>
@@ -338,16 +338,16 @@ export default function PosPrinterSettings({ open, onClose, t }) {
             justifyContent: 'space-between',
             padding: '16px',
             borderRadius: '8px',
-            backgroundColor: isRunning ? '#f0fdf4' : '#fef2f2',
-            border: isRunning ? '1px solid #bbf7d0' : '1px solid #fecaca',
+            backgroundColor: isRunning ? '#e9f8ef' : '#fdecec',
+            border: isRunning ? '1px solid #bfe6ce' : '1px solid #f5c4c1',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <Server size={24} color={isRunning ? '#16a34a' : '#dc2626'} />
+              <Server size={24} color={isRunning ? '#1e9e52' : '#e23a32'} />
               <div>
-                <div style={{ fontWeight: '700', color: isRunning ? '#16a34a' : '#dc2626', fontSize: '15px' }}>
+                <div style={{ fontWeight: '700', color: isRunning ? '#1e9e52' : '#e23a32', fontSize: '15px' }}>
                   {isRunning ? t('pos.printer.agent_active') : t('pos.printer.agent_inactive')}
                 </div>
-                <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '2px' }}>
+                <div style={{ fontSize: '12px', color: '#6f6f6f', marginTop: '2px' }}>
                   {isRunning ? `${t('pos.printer.port_label')}${activeUrl.split(':').pop()}` : t('pos.printer.run_agent_hint')}
                 </div>
               </div>
@@ -360,7 +360,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                   style={{
                     height: '40px',
                     padding: '0 12px',
-                    backgroundColor: '#dc2626',
+                    backgroundColor: '#e23a32',
                     color: '#ffffff',
                     border: 'none',
                     borderRadius: '8px',
@@ -396,15 +396,15 @@ export default function PosPrinterSettings({ open, onClose, t }) {
           </div>
 
           {!isRunning && (
-            <div style={{ fontSize: '14px', color: '#ef4444', fontWeight: '600', textAlign: 'center', margin: '0' }}>
+            <div style={{ fontSize: '14px', color: '#e23a32', fontWeight: '600', textAlign: 'center', margin: '0' }}>
               {t('pos.printer.agent_needed')}
               <br/>
-              <span style={{fontSize: '12px', fontWeight: 'normal', color: '#6b7280'}}>{t('pos.printer.run_file_hint')}</span>
+              <span style={{fontSize: '12px', fontWeight: 'normal', color: '#6f6f6f'}}>{t('pos.printer.run_file_hint')}</span>
             </div>
           )}
 
           {/* Mode Selector */}
-          <div style={{ display: 'flex', backgroundColor: '#f3f4f6', padding: '4px', borderRadius: '8px' }}>
+          <div style={{ display: 'flex', backgroundColor: '#f1f3f7', padding: '4px', borderRadius: '8px' }}>
             <button
               onClick={() => setMode('network')}
               style={{
@@ -414,7 +414,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                 borderRadius: '6px',
                 backgroundColor: mode === 'network' ? '#ffffff' : 'transparent',
                 boxShadow: mode === 'network' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                color: mode === 'network' ? '#111827' : '#6b7280',
+                color: mode === 'network' ? '#111217' : '#6f6f6f',
                 fontWeight: mode === 'network' ? '600' : '500',
                 fontSize: '14px',
                 display: 'flex',
@@ -436,7 +436,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                 borderRadius: '6px',
                 backgroundColor: mode === 'local' ? '#ffffff' : 'transparent',
                 boxShadow: mode === 'local' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                color: mode === 'local' ? '#111827' : '#6b7280',
+                color: mode === 'local' ? '#111217' : '#6f6f6f',
                 fontWeight: mode === 'local' ? '600' : '500',
                 fontSize: '14px',
                 display: 'flex',
@@ -463,7 +463,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                   <input
                     type="text"
                     className="pos-cashier-search-input"
-                    style={{ width: '100%', height: '48px', padding: '0 16px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '15px' }}
+                    style={{ width: '100%', height: '48px', padding: '0 16px', borderRadius: '8px', border: '1px solid #d5d7e2', fontSize: '15px' }}
                     placeholder={t('pos.printer.ip_placeholder')}
                     value={printerIP}
                     onChange={(e) => setPrinterIP(e.target.value)}
@@ -477,7 +477,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                   <input
                     type="number"
                     className="pos-cashier-search-input"
-                    style={{ width: '100%', height: '48px', padding: '0 16px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '15px' }}
+                    style={{ width: '100%', height: '48px', padding: '0 16px', borderRadius: '8px', border: '1px solid #d5d7e2', fontSize: '15px' }}
                     placeholder="9100"
                     value={printerPort}
                     onChange={(e) => setPrinterPort(e.target.value)}
@@ -497,7 +497,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                     style={{
                       border: 'none',
                       background: 'none',
-                      color: '#2563eb',
+                      color: '#111217',
                       fontSize: '13px',
                       fontWeight: '600',
                       cursor: 'pointer',
@@ -520,10 +520,10 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                   border: '1px solid #e5e7eb',
                   borderRadius: '8px',
                   padding: '8px',
-                  backgroundColor: '#f9fafb'
+                  backgroundColor: '#f7f9fc'
                 }}>
                   {printersList.length === 0 ? (
-                     <div style={{ padding: '20px', textAlign: 'center', color: '#6b7280', fontSize: '13px' }}>
+                     <div style={{ padding: '20px', textAlign: 'center', color: '#6f6f6f', fontSize: '13px' }}>
                        {isScanning ? t('pos.printer.searching') : t('pos.printer.none_found')}
                      </div>
                   ) : (
@@ -541,8 +541,8 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                           onClick={() => setPrinterName(p.name)}
                           style={{
                             padding: '12px',
-                            backgroundColor: isSelected ? '#eff6ff' : '#ffffff',
-                            border: isSelected ? '1px solid #3b82f6' : '1px solid #e5e7eb',
+                            backgroundColor: isSelected ? '#f4f5f7' : '#ffffff',
+                            border: isSelected ? '1px solid #111217' : '1px solid #e5e7eb',
                             borderRadius: '6px',
                             cursor: 'pointer',
                             display: 'flex',
@@ -551,13 +551,13 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                             transition: 'all 0.2s'
                           }}
                         >
-                           <Box size={20} color={isSelected ? '#3b82f6' : '#9ca3af'} />
+                           <Box size={20} color={isSelected ? '#111217' : '#9ca3af'} />
                            <div style={{ flex: 1 }}>
-                             <div style={{ fontSize: '14px', fontWeight: '600', color: isSelected ? '#1e3a8a' : '#374151' }}>
+                             <div style={{ fontSize: '14px', fontWeight: '600', color: isSelected ? '#111217' : '#374151' }}>
                                {p.name}
-                               {p.recommended && <span style={{ marginLeft: '8px', fontSize: '10px', backgroundColor: '#dcfce7', color: '#166534', padding: '2px 6px', borderRadius: '10px' }}>{t('pos.printer.recommended')}</span>}
+                               {p.recommended && <span style={{ marginLeft: '8px', fontSize: '10px', backgroundColor: '#e9f8ef', color: '#188245', padding: '2px 6px', borderRadius: '10px' }}>{t('pos.printer.recommended')}</span>}
                              </div>
-                             <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                             <div style={{ fontSize: '12px', color: '#6f6f6f' }}>
                                {p.port || 'USB/Local'} {p.isDefault ? ` • ${t('pos.printer.default')}` : ''}
                              </div>
                            </div>
@@ -575,7 +575,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
               </label>
               <select
                 className="pos-cashier-search-input"
-                style={{ width: '100%', height: '48px', padding: '0 16px', borderRadius: '8px', border: '1px solid #cbd5e1', backgroundColor: '#ffffff', fontSize: '15px' }}
+                style={{ width: '100%', height: '48px', padding: '0 16px', borderRadius: '8px', border: '1px solid #d5d7e2', backgroundColor: '#ffffff', fontSize: '15px' }}
                 value={printerModel}
                 onChange={(e) => setPrinterModel(e.target.value)}
                 disabled={!isRunning}
@@ -592,7 +592,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                 <button
                   type="button"
                   className="btn-secondary-touch"
-                  style={{ flex: 1, height: '48px', borderRadius: '8px', border: '1px solid #2563eb', color: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '14px', fontWeight: '600' }}
+                  style={{ flex: 1, height: '48px', borderRadius: '8px', border: '1px solid #111217', color: '#111217', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '14px', fontWeight: '600' }}
                   onClick={handlePingPrinter}
                   disabled={!isRunning || isPinging}
                 >
@@ -603,7 +603,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
                 <button
                   type="button"
                   className="btn-secondary-touch"
-                  style={{ flex: 1, height: '48px', borderRadius: '8px', border: '1px solid #10b981', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '14px', fontWeight: '600' }}
+                  style={{ flex: 1, height: '48px', borderRadius: '8px', border: '1px solid #1e9e52', color: '#1e9e52', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '14px', fontWeight: '600' }}
                   onClick={handleTestDrawer}
                   disabled={!isRunning || isTestingDrawer}
                 >
@@ -615,7 +615,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
               <button
                 type="button"
                 className="btn-secondary-touch"
-                style={{ flex: 1, height: '48px', borderRadius: '8px', border: '1px solid #2563eb', color: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '14px', fontWeight: '600' }}
+                style={{ flex: 1, height: '48px', borderRadius: '8px', border: '1px solid #111217', color: '#111217', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '14px', fontWeight: '600' }}
                 onClick={handleTestPrint}
                 disabled={!isRunning || isTesting}
               >
@@ -637,7 +637,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
             <button
               type="button"
               className="btn-blue-touch"
-              style={{ width: '100%', height: '52px', borderRadius: '8px', backgroundColor: '#2563eb', color: '#ffffff', border: 'none', fontWeight: '700', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: isRunning ? 'pointer' : 'not-allowed', opacity: isRunning ? 1 : 0.6 }}
+              style={{ width: '100%', height: '52px', borderRadius: '8px', backgroundColor: '#111217', color: '#ffffff', border: 'none', fontWeight: '700', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: isRunning ? 'pointer' : 'not-allowed', opacity: isRunning ? 1 : 0.6 }}
               onClick={handleSaveSettings}
               disabled={!isRunning || isSaving}
             >

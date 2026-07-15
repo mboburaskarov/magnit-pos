@@ -100,14 +100,14 @@ export default function CashierSessionModal({
         <div className="touch-modal-body">
           {showLogoutConfirm ? (
             <div style={{ textAlign: 'center', padding: '24px 0' }}>
-              <h3 style={{ margin: '0 0 16px', fontSize: 18, color: '#333' }}>{t('pos.logout_confirm_title')}</h3>
-              <p style={{ margin: '0 0 24px', color: '#6B7280', fontSize: 14 }}>
+              <h3 style={{ margin: '0 0 16px', fontSize: 18, color: '#111217' }}>{t('pos.logout_confirm_title')}</h3>
+              <p style={{ margin: '0 0 24px', color: '#6f6f6f', fontSize: 14 }}>
                 {t('pos.logout_confirm_desc')}
               </p>
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
                 <button
                   onClick={() => setShowLogoutConfirm(false)}
-                  style={{ padding: '10px 20px', background: '#F3F4F6', color: '#4B5563', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
+                  style={{ padding: '10px 20px', background: '#f1f3f7', color: '#6f6f6f', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
                 >
                   {t('cancel')}
                 </button>
@@ -117,7 +117,7 @@ export default function CashierSessionModal({
                     sessionStorage.clear()
                     navigate('/login', { replace: true })
                   }}
-                  style={{ padding: '10px 20px', background: '#EF4444', color: '#FFF', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
+                  style={{ padding: '10px 20px', background: '#e23a32', color: '#FFF', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
                 >
                   {t('pos.logout')}
                 </button>
@@ -175,11 +175,11 @@ export default function CashierSessionModal({
                 className="cashier-option-card"
                 onClick={() => setShowLogoutConfirm(true)}
               >
-                <div className="cashier-option-icon" style={{ color: '#ef4444', backgroundColor: '#fef2f2' }}>
+                <div className="cashier-option-icon" style={{ color: '#e23a32', backgroundColor: '#fdecec' }}>
                   <LogOut size={24} />
                 </div>
                 <div className="cashier-option-info">
-                  <div className="cashier-option-title" style={{ color: '#ef4444' }}>Выйти из аккаунта</div>
+                  <div className="cashier-option-title" style={{ color: '#e23a32' }}>Выйти из аккаунта</div>
                   <div className="cashier-option-desc">Полностью завершить сеанс и перейти на страницу входа</div>
                 </div>
               </button>

@@ -40,7 +40,7 @@ function PosSecurityQrModal({ open, productName, onApprove, onCancel, t }) {
       <div className='pos-security-modal'>
         {/* Icon */}
         <div className='pos-security-icon-container'>
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.2">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e23a32" strokeWidth="2.2">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
           </svg>
         </div>

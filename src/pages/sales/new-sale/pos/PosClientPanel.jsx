@@ -143,7 +143,7 @@ function PosClientPanel({
       {showDropdown && (
         <div style={{
           position: 'absolute', top: '100%', left: 0, right: 0,
-          background: '#fff', border: '1px solid #E0E3E8', borderRadius: 8,
+          background: '#fff', border: '1px solid #e1e5ec', borderRadius: 8,
           boxShadow: '0 8px 24px rgba(0,0,0,0.08)', zIndex: 100, overflow: 'hidden',
           marginTop: 4,
         }}>
@@ -165,13 +165,13 @@ function PosClientPanel({
             <div
               key={item.id || idx}
               style={{
-                padding: '12px 16px', cursor: 'pointer', borderTop: idx > 0 ? '1px solid #F3F4F6' : 'none',
+                padding: '12px 16px', cursor: 'pointer', borderTop: idx > 0 ? '1px solid #f1f3f7' : 'none',
               }}
               onClick={() => selectCustomer(item)}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#F9FAFB'}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#f7f9fc'}
               onMouseLeave={(e) => e.currentTarget.style.background = ''}
             >
-              <div style={{ fontWeight: 600, fontSize: 14, color: '#111827' }}>
+              <div style={{ fontWeight: 600, fontSize: 14, color: '#111217' }}>
                 <Highlighter
                   highlightStyle={{ background: '#FFF3E0', padding: '1px 0' }}
                   searchWords={searchTerm ? searchTerm.split(' ') : []}
@@ -180,7 +180,7 @@ function PosClientPanel({
                 />
               </div>
               {item.balance !== undefined && (
-                <div style={{ fontSize: 12, color: '#16A34A', fontWeight: 600, marginTop: 2 }}>
+                <div style={{ fontSize: 12, color: '#1e9e52', fontWeight: 600, marginTop: 2 }}>
                   {t('pos.balance')}: {thousandDivider(item.balance, t('pos.currency_short'))}
                 </div>
               )}
@@ -190,7 +190,7 @@ function PosClientPanel({
       )}
 
       {searchTerm?.length > 0 && searchTerm.length < 3 && (
-        <div style={{ fontSize: 12, color: '#DC2626', marginTop: 4, paddingLeft: 2 }}>
+        <div style={{ fontSize: 12, color: '#e23a32', marginTop: 4, paddingLeft: 2 }}>
           {t('pos.min_char_warning')}
         </div>
       )}

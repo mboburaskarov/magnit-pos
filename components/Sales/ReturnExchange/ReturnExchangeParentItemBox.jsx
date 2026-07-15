@@ -15,9 +15,9 @@ import { buildReceiptLayout } from '../../../utils/receiptBuilder'
 
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {
-    backgroundColor: '#eff6ff',
-    border: '1px solid #2563eb',
-    color: '#2563eb',
+    backgroundColor: '#f4f5f7',
+    border: '1px solid #111217',
+    color: '#111217',
     width: '36px',
     height: '36px',
     display: 'flex',
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '8px',
     transition: 'all 0.15s ease',
     '&:active': {
-      backgroundColor: '#dbeafe',
+      backgroundColor: '#e9ebf0',
       transform: 'scale(0.95)',
     },
   },
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     height: '36px',
     minWidth: '64px',
     backgroundColor: '#ffffff',
-    border: '1px solid #e2e8f0',
+    border: '1px solid #e9ebf0',
     borderRadius: '8px',
     marginRight: '12px',
     display: 'flex',
@@ -146,14 +146,14 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
       justifyContent={'space-between'}
       alignItems={'center'}
       sx={{
-        border: '1px solid #cbd5e1',
+        border: '1px solid #d5d7e2',
       }}
     >
       <Box display={'flex'} alignItems={'center'}>
         {productCount > 0 && (
           <Box className={classes.productsNumsWrapper}>
             <BagOutline />
-            <Typography ml={'8px'} fontSize={'14px'} fontWeight={'700'} color={'#2563eb'}>
+            <Typography ml={'8px'} fontSize={'14px'} fontWeight={'700'} color={'#111217'}>
               {productCount}
             </Typography>
           </Box>
@@ -178,11 +178,11 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
           )}
           <Box display={'flex'} alignItems={'center'} gap={'8px'}>
             {paymentLabel && (
-              <Typography fontSize={'11px'} fontWeight={'500'} color={'bunker.400'} sx={{ bgcolor: '#f1f5f9', px: '6px', py: '2px', borderRadius: '4px' }}>
+              <Typography fontSize={'11px'} fontWeight={'500'} color={'bunker.400'} sx={{ bgcolor: '#f1f2f5', px: '6px', py: '2px', borderRadius: '4px' }}>
                 {paymentLabel}
               </Typography>
             )}
-            <Typography fontSize={'14px'} fontWeight={'700'} color={'#2563eb'}>
+            <Typography fontSize={'14px'} fontWeight={'700'} color={'#111217'}>
               {thousandDivider(get(item, 'total_amount'), 'сум')}
             </Typography>
           </Box>
@@ -191,9 +191,9 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
         <Box
           onClick={handlePrintDuplicate}
           sx={{
-            backgroundColor: '#f3f4f6',
+            backgroundColor: '#f1f3f7',
             border: '1px solid #e5e7eb',
-            color: '#4b5563',
+            color: '#6f6f6f',
             width: '36px',
             height: '36px',
             display: 'flex',
@@ -206,7 +206,7 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
             opacity: isPrinting ? 0.6 : 1,
             '&:hover': {
               backgroundColor: '#e5e7eb',
-              color: '#111827',
+              color: '#111217',
             },
             '&:active': {
               transform: 'scale(0.95)',

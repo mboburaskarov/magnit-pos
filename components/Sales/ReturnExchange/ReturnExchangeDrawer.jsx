@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   drawerHeader: {
     padding: '10px 24px',
     height: '60px',
-    backgroundColor: '#111827',
+    backgroundColor: '#111217',
     borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
     display: 'flex',
     justifyContent: 'space-between',

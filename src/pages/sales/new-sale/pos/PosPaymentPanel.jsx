@@ -135,7 +135,7 @@ function PosPaymentPanel({
           </div>
         )}
         {discountAmount > 0 && (
-          <div className='pos-summary-row' style={{ color: '#16A34A' }}>
+          <div className='pos-summary-row' style={{ color: '#1e9e52' }}>
             <span>{t('discount')}</span>
             <span>−{thousandDivider(discountAmount, t('pos.currency_short'))}</span>
           </div>
@@ -145,7 +145,7 @@ function PosPaymentPanel({
           <span>{thousandDivider(totalAmount, t('pos.currency_short'))}</span>
         </div>
         {selectedMethod === 'cash' && cashNum > 0 && cashNum < totalAmount && (
-          <div className='pos-summary-row' style={{ color: '#DC2626', fontSize: 13, marginTop: 4 }}>
+          <div className='pos-summary-row' style={{ color: '#e23a32', fontSize: 13, marginTop: 4 }}>
             <span>{t('pos.remaining')}</span>
             <span>{thousandDivider(totalAmount - cashNum, t('pos.currency_short'))}</span>
           </div>
@@ -183,7 +183,7 @@ function PosPaymentPanel({
       {/* ── Cash Input ── */}
       {(selectedMethod === 'cash' || selectedMethod === 'mixed') && (
         <div style={{ padding: '8px 16px 4px' }}>
-          <label style={{ fontSize: 12, fontWeight: 600, color: '#6B7280', display: 'block', marginBottom: 6 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: '#6f6f6f', display: 'block', marginBottom: 6 }}>
             {t('pos.customer_received')}
           </label>
           <input

@@ -27,9 +27,9 @@ function PosQuickItems({
   return (
     <div className='pos-quick-items' role='toolbar' aria-label='Tezkor tanlash'>
       <span style={{
-        flexShrink: 0, fontSize: 11, fontWeight: 700, color: '#6B7280',
+        flexShrink: 0, fontSize: 11, fontWeight: 700, color: '#6f6f6f',
         display: 'flex', alignItems: 'center', paddingRight: 6,
-        borderRight: '1px solid #E0E3E8', marginRight: 4,
+        borderRight: '1px solid #e1e5ec', marginRight: 4,
         whiteSpace: 'nowrap',
       }}>
         ⚡ Tezkor
@@ -47,7 +47,7 @@ function PosQuickItems({
           ) : item.icon ? (
             <img src={item.icon} alt='' style={{ width: 28, height: 28, objectFit: 'contain' }} />
           ) : (
-            <div style={{ width: 28, height: 28, background: '#E0E3E8', borderRadius: 6 }} />
+            <div style={{ width: 28, height: 28, background: '#e1e5ec', borderRadius: 6 }} />
           )}
           <div className='pos-quick-item-name'>{item.name}</div>
           {item.price != null && (

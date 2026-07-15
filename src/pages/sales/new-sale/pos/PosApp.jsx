@@ -1792,8 +1792,8 @@ export default function PosApp() {
         <div
           style={{
             width: '100%',
-            backgroundColor: '#fef2f2',
-            borderBottom: '2px solid #ef4444',
+            backgroundColor: '#fdecec',
+            borderBottom: '2px solid #e23a32',
             padding: '16px 24px',
             display: 'flex',
             justifyContent: 'space-between',
@@ -1805,8 +1805,8 @@ export default function PosApp() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <span style={{ fontSize: '20px' }}>⚠️</span>
             <div>
-              <div style={{ fontWeight: '700', color: '#991b1b', fontSize: '15px' }}>{t('pos.error_new_receipt_title')}</div>
-              <div style={{ fontSize: '13px', color: '#7f1d1d', marginTop: '2px' }}>
+              <div style={{ fontWeight: '700', color: '#c7332c', fontSize: '15px' }}>{t('pos.error_new_receipt_title')}</div>
+              <div style={{ fontSize: '13px', color: '#c7332c', marginTop: '2px' }}>
                 {t('pos.error_new_receipt_desc')}
               </div>
             </div>
@@ -1830,7 +1830,7 @@ export default function PosApp() {
             }}
             style={{
               padding: '10px 18px',
-              backgroundColor: '#ef4444',
+              backgroundColor: '#e23a32',
               color: '#ffffff',
               border: 'none',
               borderRadius: '6px',
@@ -1951,7 +1951,7 @@ export default function PosApp() {
             style={{ width: '450px', maxWidth: '90%', maxHeight: '90vh', overflowY: 'auto', padding: '24px' }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <h3 style={{ margin: 0, fontSize: 18, color: '#333' }}>{t('menu.clients.new_client')}</h3>
+              <h3 style={{ margin: 0, fontSize: 18, color: '#111217' }}>{t('menu.clients.new_client')}</h3>
               <button
                 onClick={() => setIsCustomerModalOpen(false)}
                 style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#9CA3AF' }}
@@ -2084,14 +2084,14 @@ export default function PosApp() {
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           <div className='pos-modal' onClick={(e) => e.stopPropagation()} style={{ width: '400px', maxWidth: '90%', padding: '24px', textAlign: 'center' }}>
-            <h3 style={{ margin: '0 0 16px', fontSize: 18, color: '#333' }}>{t('pos.refresh_confirm_title')}</h3>
+            <h3 style={{ margin: '0 0 16px', fontSize: 18, color: '#111217' }}>{t('pos.refresh_confirm_title')}</h3>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <button
                 onClick={() => setShowHardRefreshConfirmation(false)}
                 style={{
                   padding: '10px 20px',
-                  background: '#F3F4F6',
-                  color: '#4B5563',
+                  background: '#f1f3f7',
+                  color: '#6f6f6f',
                   border: 'none',
                   borderRadius: '6px',
                   cursor: 'pointer',
@@ -2105,7 +2105,7 @@ export default function PosApp() {
                   setShowHardRefreshConfirmation(false)
                   performHardRefresh()
                 }}
-                style={{ padding: '10px 20px', background: '#EF4444', color: '#FFF', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
+                style={{ padding: '10px 20px', background: '#e23a32', color: '#FFF', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
               >
                 {t('pos.refresh')}
               </button>
@@ -2138,7 +2138,7 @@ export default function PosApp() {
                 <button
                   type='button'
                   className='btn-orange-touch'
-                  style={{ flex: 1, height: '48px', borderRadius: '24px', backgroundColor: '#dc2626' }}
+                  style={{ flex: 1, height: '48px', borderRadius: '24px', backgroundColor: '#e23a32' }}
                   onClick={handleCancelConfirm}
                 >
                   {t('yes')}
@@ -2167,12 +2167,12 @@ export default function PosApp() {
           <div style={{
             width: '40px',
             height: '40px',
-            border: '3px solid #e2e8f0',
-            borderTopColor: '#2563eb',
+            border: '3px solid #e9ebf0',
+            borderTopColor: '#111217',
             borderRadius: '50%',
             animation: 'spin 1s linear infinite',
           }} />
-          <div style={{ fontWeight: '600', color: '#1e293b', fontSize: '15px' }}>
+          <div style={{ fontWeight: '600', color: '#111217', fontSize: '15px' }}>
             Yangi chek yaratilmoqda...
           </div>
           <style>{`

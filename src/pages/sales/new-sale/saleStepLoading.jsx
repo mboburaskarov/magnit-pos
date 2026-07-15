@@ -89,7 +89,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(17, 24, 39, 0.75)',
+          backgroundColor: 'rgba(17, 18, 23, 0.75)',
           backdropFilter: 'blur(8px)',
           zIndex: 9000,
         }}
@@ -106,7 +106,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
           maxWidth: 440,
           backgroundColor: '#ffffff',
           borderRadius: '16px',
-          border: '2px solid #cbd5e1',
+          border: '2px solid #d5d7e2',
           boxShadow: 'none',
           zIndex: 9100,
           overflow: 'hidden',
@@ -127,7 +127,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
                 width: '64px',
                 height: '64px',
                 borderRadius: '50%',
-                backgroundColor: hasError ? '#ef4444' : '#22c55e',
+                backgroundColor: hasError ? '#e23a32' : '#1e9e52',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -141,7 +141,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
                 fontSize: '18px',
                 textAlign: 'center',
                 fontWeight: 700,
-                color: '#0f172a',
+                color: '#111217',
                 marginTop: '8px',
               }}
             >
@@ -163,7 +163,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
                 fontWeight: 800,
                 textAlign: 'center',
                 lineHeight: '1',
-                color: '#2563eb',
+                color: '#111217',
                 marginBottom: '20px',
               }}
             >
@@ -175,7 +175,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
                 sx={{
                   height: 12,
                   borderRadius: '100px',
-                  backgroundColor: '#f1f5f9',
+                  backgroundColor: '#f1f2f5',
                   overflow: 'hidden',
                   position: 'relative',
                 }}
@@ -193,7 +193,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
                     borderRadius: '100px',
                     backgroundColor: 'transparent',
                     '& .MuiLinearProgress-bar': {
-                      backgroundColor: '#2563eb',
+                      backgroundColor: '#111217',
                       borderRadius: '100px',
                       transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                     },
@@ -206,7 +206,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
               sx={{
                 fontSize: '20px',
                 fontWeight: 700,
-                color: '#0f172a',
+                color: '#111217',
                 lineHeight: '28px',
                 marginBottom: '8px',
                 textAlign: 'center',
@@ -218,7 +218,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
             <Typography
               sx={{
                 fontSize: '14px',
-                color: '#475569',
+                color: '#6f6f6f',
                 fontWeight: '600',
                 lineHeight: '20px',
                 textAlign: 'center',
