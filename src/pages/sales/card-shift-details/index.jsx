@@ -70,20 +70,20 @@ const useStyles = makeStyles((theme) => {
 
     // ---------- header ----------
     header: {
-      height: 62,
+      height: 54,
       flexShrink: 0,
       background: ACCENT,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: '0 18px',
+      padding: '0 14px',
       color: '#fff',
     },
     headerLeft: { display: 'flex', alignItems: 'center', gap: 14 },
     backBtn: {
-      width: 38,
-      height: 38,
-      borderRadius: 10,
+      width: 32,
+      height: 32,
+      borderRadius: 9,
       border: '1px solid rgba(255,255,255,0.10)',
       background: 'rgba(255,255,255,0.06)',
       color: '#E5E7EB',
@@ -94,16 +94,16 @@ const useStyles = makeStyles((theme) => {
       transition: 'background .15s ease, color .15s ease',
       '&:hover': { background: 'rgba(255,255,255,0.14)', color: '#fff' },
     },
-    headerTitle: { fontSize: 16, fontWeight: 700, color: '#fff', fontFamily: font },
+    headerTitle: { fontSize: 14, fontWeight: 700, color: '#fff', fontFamily: font },
     headerChip: {
       display: 'flex',
       alignItems: 'center',
-      gap: 12,
+      gap: 8,
       background: 'rgba(255,255,255,0.05)',
-      padding: '8px 16px',
-      borderRadius: 11,
+      padding: '6px 12px',
+      borderRadius: 9,
       border: '1px solid rgba(255,255,255,0.08)',
-      fontSize: 13,
+      fontSize: 12,
       color: '#E5E7EB',
     },
     headerChipDivider: { width: 1, height: 14, background: 'rgba(255,255,255,0.15)' },
@@ -116,8 +116,8 @@ const useStyles = makeStyles((theme) => {
     body: {
       flex: 1,
       display: 'flex',
-      gap: 14,
-      padding: 14,
+      gap: 10,
+      padding: 10,
       overflow: 'hidden',
       minHeight: 0,
     },
@@ -132,10 +132,10 @@ const useStyles = makeStyles((theme) => {
       },
       '&::-webkit-scrollbar-track': { background: 'transparent' },
     },
-    leftCol: { flex: 1, display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 },
-    rightCol: { flex: '0 0 388px', display: 'flex', flexDirection: 'column', gap: 12, minWidth: 0 },
+    leftCol: { flex: 1, display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0 },
+    rightCol: { flex: '0 0 320px', display: 'flex', flexDirection: 'column', gap: 9, minWidth: 0 },
     sectionLabel: {
-      fontSize: 13,
+      fontSize: 12,
       fontWeight: 700,
       color: ACCENT,
       textTransform: 'uppercase',
@@ -145,15 +145,15 @@ const useStyles = makeStyles((theme) => {
     },
 
     // ---------- cash-destination options ----------
-    optionsRow: { display: 'flex', gap: 8, flexShrink: 0 },
+    optionsRow: { display: 'flex', gap: 6, flexShrink: 0 },
     optionCard: {
       flex: 1,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'stretch',
-      gap: 10,
-      padding: 14,
-      borderRadius: 13,
+      gap: 8,
+      padding: 11,
+      borderRadius: 11,
       cursor: 'pointer',
       textAlign: 'left',
       fontFamily: font,
@@ -164,9 +164,9 @@ const useStyles = makeStyles((theme) => {
     optionCardSelected: { borderColor: ACCENT },
     optionTop: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' },
     optionGlyphWrap: {
-      width: 36,
-      height: 36,
-      borderRadius: 10,
+      width: 30,
+      height: 30,
+      borderRadius: 9,
       flexShrink: 0,
       display: 'flex',
       alignItems: 'center',
@@ -186,44 +186,44 @@ const useStyles = makeStyles((theme) => {
       color: '#fff',
     },
     optionUncheck: { width: 22, height: 22, borderRadius: '50%', border: '2px solid #D5D7E2', flexShrink: 0 },
-    optionTitle: { fontSize: 13.5, fontWeight: 700, color: ACCENT, lineHeight: 1.32, fontFamily: font },
+    optionTitle: { fontSize: 12.5, fontWeight: 700, color: ACCENT, lineHeight: 1.3, fontFamily: font },
     optionFooter: {
       width: '100%',
       display: 'flex',
       alignItems: 'baseline',
       justifyContent: 'space-between',
-      gap: 6,
+      gap: 5,
       borderTop: '1px dashed #E5E7EB',
-      paddingTop: 8,
+      paddingTop: 6,
     },
     optionAmountLabel: {
-      fontSize: 10.5,
+      fontSize: 10,
       fontWeight: 700,
       color: '#9CA3AF',
       textTransform: 'uppercase',
       letterSpacing: '0.3px',
     },
-    optionAmount: { fontSize: 14, fontWeight: 800, color: ACCENT, whiteSpace: 'nowrap' },
-    unitSm: { fontSize: 10, color: '#9CA3AF', fontWeight: 700 },
+    optionAmount: { fontSize: 13, fontWeight: 800, color: ACCENT, whiteSpace: 'nowrap' },
+    unitSm: { fontSize: 9, color: '#9CA3AF', fontWeight: 700 },
 
     // ---------- amount cards / fields ----------
     moneyCard: {
       cursor: 'pointer',
       background: '#fff',
       border: '1.5px solid #E9EBF0',
-      borderRadius: 14,
-      padding: 14,
+      borderRadius: 12,
+      padding: 11,
       boxShadow: '0 4px 16px rgba(17,18,23,0.04)',
       flexShrink: 0,
       display: 'flex',
       alignItems: 'center',
-      gap: 12,
+      gap: 9,
     },
     moneyCardActive: { borderColor: ACCENT },
     glyphWrap: {
-      width: 40,
-      height: 40,
-      borderRadius: 12,
+      width: 34,
+      height: 34,
+      borderRadius: 10,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -232,19 +232,19 @@ const useStyles = makeStyles((theme) => {
       color: ACCENT,
     },
     moneyInfo: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 3 },
-    moneyLabel: { fontSize: 16.5, fontWeight: 700, lineHeight: 1.2, color: ACCENT, fontFamily: font },
-    moneyExpected: { fontSize: 13.5, fontWeight: 700, color: '#6F6F6F', lineHeight: 1.2, fontFamily: font },
-    moneyRight: { width: 220, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 5 },
+    moneyLabel: { fontSize: 14.5, fontWeight: 700, lineHeight: 1.2, color: ACCENT, fontFamily: font },
+    moneyExpected: { fontSize: 12, fontWeight: 700, color: '#6F6F6F', lineHeight: 1.2, fontFamily: font },
+    moneyRight: { width: 190, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 4 },
     field: {
-      height: 52,
-      borderRadius: 11,
+      height: 44,
+      borderRadius: 10,
       background: '#F7F9FC',
       border: '1px solid #E5E7EB',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: '0 12px',
-      gap: 6,
+      padding: '0 10px',
+      gap: 5,
       cursor: 'pointer',
     },
     fieldActive: {
@@ -253,7 +253,7 @@ const useStyles = makeStyles((theme) => {
       boxShadow: '0 0 0 3px rgba(17,18,23,0.08)',
     },
     fieldText: {
-      fontSize: 19,
+      fontSize: 16,
       fontWeight: 800,
       fontVariantNumeric: 'tabular-nums',
       color: ACCENT,
@@ -274,41 +274,41 @@ const useStyles = makeStyles((theme) => {
       whiteSpace: 'nowrap',
     },
     remainderInfo: { flex: 1, minWidth: 0 },
-    remainderTitle: { fontSize: 15, fontWeight: 700, color: ACCENT, fontFamily: font },
-    remainderSub: { fontSize: 11.5, color: '#9CA3AF', marginTop: 1, fontFamily: font },
+    remainderTitle: { fontSize: 13.5, fontWeight: 700, color: ACCENT, fontFamily: font },
+    remainderSub: { fontSize: 10.5, color: '#9CA3AF', marginTop: 1, fontFamily: font },
 
     // ---------- right column cards ----------
     panelCard: {
       background: '#fff',
       border: '1px solid #E9EBF0',
-      borderRadius: 16,
-      padding: '14px 16px',
+      borderRadius: 13,
+      padding: '11px 13px',
       boxShadow: '0 4px 16px rgba(17,18,23,0.04)',
       flexShrink: 0,
     },
-    panelHead: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 },
-    panelTitle: { fontSize: 14.5, fontWeight: 700, color: ACCENT, fontFamily: font },
-    panelNote: { fontSize: 11, color: '#9CA3AF', fontWeight: 600, fontFamily: font },
+    panelHead: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 },
+    panelTitle: { fontSize: 13, fontWeight: 700, color: ACCENT, fontFamily: font },
+    panelNote: { fontSize: 10, color: '#9CA3AF', fontWeight: 600, fontFamily: font },
     cashlessRow: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      gap: 10,
-      padding: '9px 2px',
+      gap: 8,
+      padding: '7px 2px',
       borderTop: '1px solid #F1F3F7',
     },
-    cashlessName: { display: 'flex', alignItems: 'center', gap: 9, minWidth: 0 },
+    cashlessName: { display: 'flex', alignItems: 'center', gap: 7, minWidth: 0 },
     cashlessDot: { width: 8, height: 8, borderRadius: '50%', background: ACCENT, flexShrink: 0 },
-    cashlessLabel: { fontSize: 13.5, fontWeight: 600, color: '#374151' },
-    cashlessAmount: { fontSize: 14.5, fontWeight: 800, color: ACCENT, whiteSpace: 'nowrap' },
-    unitXs: { fontSize: 11, color: '#9CA3AF', fontWeight: 700 },
+    cashlessLabel: { fontSize: 12.5, fontWeight: 600, color: '#374151' },
+    cashlessAmount: { fontSize: 13, fontWeight: 800, color: ACCENT, whiteSpace: 'nowrap' },
+    unitXs: { fontSize: 10, color: '#9CA3AF', fontWeight: 700 },
 
     // ---------- numpad ----------
     numpadCard: {
       background: '#fff',
       border: '1px solid #E9EBF0',
-      borderRadius: 16,
-      padding: 16,
+      borderRadius: 13,
+      padding: 12,
       boxShadow: '0 4px 16px rgba(17,18,23,0.04)',
       flexShrink: 0,
       display: 'flex',
@@ -316,24 +316,24 @@ const useStyles = makeStyles((theme) => {
       alignItems: 'center',
     },
     numpadLabel: {
-      fontSize: 12,
+      fontSize: 11,
       fontWeight: 700,
       color: ACCENT,
       textTransform: 'uppercase',
       letterSpacing: '0.5px',
-      margin: '2px 0 12px',
+      margin: '2px 0 9px',
       alignSelf: 'flex-start',
       fontFamily: font,
     },
-    keypadGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 96px)', gap: 14 },
+    keypadGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 78px)', gap: 10 },
     keypadBtn: {
-      width: 96,
-      height: 80,
-      borderRadius: 16,
+      width: 78,
+      height: 62,
+      borderRadius: 13,
       border: 'none',
       background: '#EEF0F4',
       color: ACCENT,
-      fontSize: 28,
+      fontSize: 22,
       fontWeight: 700,
       display: 'flex',
       alignItems: 'center',
@@ -346,22 +346,22 @@ const useStyles = makeStyles((theme) => {
       '&:disabled': { cursor: 'default', opacity: 0.7 },
     },
     keypadBtnBack: { background: '#E1E5EC', color: '#6F6F6F' },
-    keypadBtnClear: { background: '#E1E5EC', fontSize: 22 },
+    keypadBtnClear: { background: '#E1E5EC', fontSize: 17 },
 
     // ---------- submit / print retry ----------
     submitBlock: { display: 'flex', flexDirection: 'column', gap: 8, flexShrink: 0 },
-    errorText: { fontSize: 13.5, fontWeight: 600, color: DANGER, textAlign: 'center', fontFamily: font },
+    errorText: { fontSize: 12.5, fontWeight: 600, color: DANGER, textAlign: 'center', fontFamily: font },
     submitBtn: {
-      height: 64,
+      height: 52,
       border: 'none',
-      borderRadius: 16,
-      fontSize: 18,
+      borderRadius: 13,
+      fontSize: 15,
       fontWeight: 700,
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: 10,
+      gap: 8,
       fontFamily: font,
       color: '#fff',
       background: ACCENT,
@@ -370,7 +370,7 @@ const useStyles = makeStyles((theme) => {
     retryCard: {
       background: '#fff',
       border: `1.5px solid ${DANGER}`,
-      borderRadius: 16,
+      borderRadius: 13,
       padding: 16,
       flexShrink: 0,
       display: 'flex',
@@ -789,12 +789,12 @@ function CloseShiftPage() {
       <Box component='header' className={classes.header}>
         <Box className={classes.headerLeft}>
           <Box component='button' type='button' className={classes.backBtn} onClick={goBack} aria-label='Назад'>
-            <ArrowLeft size={18} strokeWidth={2.2} />
+            <ArrowLeft size={16} strokeWidth={2.2} />
           </Box>
           <span className={classes.headerTitle}>Закрытие смены</span>
         </Box>
         <Box className={classes.headerChip}>
-          <User size={14} color='#9CA3AF' />
+          <User size={13} color='#9CA3AF' />
           {cashierName || '—'}
           <span className={classes.headerChipDivider} />
           <span className={classes.headerClock}>
@@ -861,7 +861,7 @@ function CloseShiftPage() {
                   onClick={() => setTarget('closed')}
                 >
                   <span className={classes.glyphWrap}>
-                    <Pencil size={20} strokeWidth={2} />
+                    <Pencil size={17} strokeWidth={2} />
                   </span>
                   <Box className={classes.remainderInfo}>
                     <Typography className={classes.remainderTitle}>Оставить в кассе</Typography>
@@ -875,7 +875,7 @@ function CloseShiftPage() {
                 </Box>
               )}
 
-              <Typography className={classes.sectionLabel} sx={{ marginTop: '6px' }}>
+              <Typography className={classes.sectionLabel} sx={{ marginTop: '4px' }}>
                 Ожидаемые суммы по типам оплаты
               </Typography>
 
@@ -948,7 +948,7 @@ function CloseShiftPage() {
                     aria-label='Удалить'
                     disabled={closing}
                   >
-                    <Delete size={26} />
+                    <Delete size={22} />
                   </button>
                   <button
                     type='button'
@@ -995,11 +995,11 @@ function CloseShiftPage() {
                   >
                     {closing ? (
                       <>
-                        Закрытие… <CircularProgress size={20} sx={{ color: '#fff' }} />
+                        Закрытие… <CircularProgress size={18} sx={{ color: '#fff' }} />
                       </>
                     ) : (
                       <>
-                        Закрыть кассу <ArrowRight size={20} strokeWidth={2.2} />
+                        Закрыть кассу <ArrowRight size={18} strokeWidth={2.2} />
                       </>
                     )}
                   </button>
