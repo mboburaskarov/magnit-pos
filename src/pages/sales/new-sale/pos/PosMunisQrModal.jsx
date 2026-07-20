@@ -3,6 +3,7 @@ import { QRCodeCanvas } from 'qrcode.react'
 import { get } from 'lodash'
 import { requests } from '@utils/requests'
 import thousandDivider from '@utils/thousandDivider'
+import { mertechShowQrOnDevice, mertechShowPaymentResult, mertechClearScreen } from '@utils/mertechDisplay'
 import './PosLayout.css'
 
 const POLL_INTERVAL_MS = 3000
@@ -24,6 +25,7 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
   const [errMsg, setErrMsg] = useState('')
   const [retryNonce, setRetryNonce] = useState(0)
   const paidHandledRef = useRef(false)
+  const deviceQrShownRef = useRef(false) // QR is currently on the Mertech customer display
 
   // Generate the dynamic QR when the modal opens (or on retry)
   useEffect(() => {
@@ -90,13 +92,39 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
     }
   }, [open, status, billNumber])
 
+  // Mirror the QR onto the Mertech customer display (best effort — the sale
+  // never depends on the device; see @utils/mertechDisplay).
+  useEffect(() => {
+    if (!open || status !== 'waiting' || !qr) return
+    deviceQrShownRef.current = mertechShowQrOnDevice(qr)
+  }, [open, status, qr])
+
   // Once paid, finalize the sale (server re-verifies). Guard against double-calls.
   useEffect(() => {
     if (status === 'paid' && !paidHandledRef.current) {
       paidHandledRef.current = true
+      if (deviceQrShownRef.current) {
+        deviceQrShownRef.current = false
+        mertechShowPaymentResult()
+      }
       onPaid?.()
     }
   }, [status, onPaid])
+
+  // Closed/cancelled while the QR is still on the device — clear it
+  useEffect(() => {
+    if (open || !deviceQrShownRef.current) return
+    deviceQrShownRef.current = false
+    mertechClearScreen()
+  }, [open])
+
+  // Same on unmount
+  useEffect(
+    () => () => {
+      if (deviceQrShownRef.current) mertechClearScreen()
+    },
+    [],
+  )
 
   if (!open) return null
 

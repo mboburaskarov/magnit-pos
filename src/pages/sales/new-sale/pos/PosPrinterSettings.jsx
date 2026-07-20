@@ -5,6 +5,7 @@ import { success, error } from '@utils/toast'
 import { buildReceiptLayout } from '@utils/receiptBuilder'
 import { loadSvgAsEscposHex } from '@utils/escposImage'
 import ReceiptPreviewCanvas from '@components/ReceiptPreviewCanvas'
+import PosMertechSettings from './PosMertechSettings'
 import './PosLayout.css'
 
 const AGENT_URL = 'http://localhost:7788'
@@ -651,6 +652,9 @@ export default function PosPrinterSettings({ open, onClose, t }) {
               <ReceiptPreviewCanvas lines={buildReceiptLayout(dummyData, { logoHex })} />
             </div>
           )}
+
+          {/* Customer-facing Mertech SBP QR display (independent of the print agent) */}
+          <PosMertechSettings t={t} />
         </div>
       </div>
     </div>
