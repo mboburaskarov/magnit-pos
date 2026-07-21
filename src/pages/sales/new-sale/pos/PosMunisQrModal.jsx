@@ -67,6 +67,19 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
     }
   }, [open, saleId, amount, retryNonce])
 
+  // The modal stays mounted between sales, so clear the finished sale's state
+  // on close — a leftover status === 'paid' would otherwise auto-fire onPaid()
+  // the moment the modal reopens for the next sale (the paid-finalize effect
+  // re-runs on onPaid identity changes and sees the stale status before the
+  // new QR's setStatus lands), finalizing it with no QR shown and no payment.
+  useEffect(() => {
+    if (open) return
+    setStatus('loading')
+    setQr('')
+    setBillNumber('')
+    setErrMsg('')
+  }, [open])
+
   // Poll for payment while waiting
   useEffect(() => {
     if (!open || status !== 'waiting' || !billNumber) return
@@ -101,7 +114,7 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
 
   // Once paid, finalize the sale (server re-verifies). Guard against double-calls.
   useEffect(() => {
-    if (status === 'paid' && !paidHandledRef.current) {
+    if (open && status === 'paid' && !paidHandledRef.current) {
       paidHandledRef.current = true
       if (deviceQrShownRef.current) {
         deviceQrShownRef.current = false
@@ -109,7 +122,7 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
       }
       onPaid?.()
     }
-  }, [status, onPaid])
+  }, [open, status, onPaid])
 
   // Closed/cancelled while the QR is still on the device — clear it
   useEffect(() => {
