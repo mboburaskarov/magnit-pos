@@ -185,10 +185,13 @@ export default function CheckoutSidebar({
               <div className='payment-row border-top-dashed'>
                 <span className='payment-label'>{t('pos.cash_payment_compact')}:</span>
                 <div className='payment-input-wrapper'>
+                  {/* inputMode='none': amounts are typed on the POS numpad; keep
+                      the OS touch keyboard from flashing when the input is
+                      auto-focused on payment-type selection */}
                   <input
                     ref={receivedAmountInputRef}
                     type='text'
-                    inputMode='numeric'
+                    inputMode='none'
                     value={receivedAmount ? formatNumberUZS(receivedAmount) : ''}
                     onChange={(e) => setReceivedAmount(e.target.value.replace(/\D/g, ''))}
                     onFocus={() => setFocusedPaymentInput('cash')}
@@ -214,7 +217,7 @@ export default function CheckoutSidebar({
                     <input
                       ref={cardPaymentInputRef}
                       type='text'
-                      inputMode='numeric'
+                      inputMode='none'
                       value={cardPaymentAmount ? formatNumberUZS(cardPaymentAmount) : ''}
                       onChange={(e) => setCardPaymentAmount(e.target.value.replace(/\D/g, ''))}
                       onFocus={() => setFocusedPaymentInput('card')}
@@ -251,7 +254,7 @@ export default function CheckoutSidebar({
                   <input
                     ref={secondaryPaymentInputRef}
                     type='text'
-                    inputMode='numeric'
+                    inputMode='none'
                     value={secondaryPaymentAmount ? formatNumberUZS(secondaryPaymentAmount) : ''}
                     onChange={(e) => setSecondaryPaymentAmount(e.target.value.replace(/\D/g, ''))}
                     onFocus={() => setFocusedPaymentInput('secondary')}
