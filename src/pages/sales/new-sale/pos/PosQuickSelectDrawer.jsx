@@ -42,7 +42,7 @@ export default function PosQuickSelectDrawer({ open, onClose, onQuickAdd, isLoad
   }, [activeGroupId])
 
   const handleQuickAdd = (prod) => {
-    onQuickAdd(prod.barcode)
+    onQuickAdd(prod.product_id)
     setAddedProductId(prod.id)
     setTimeout(() => setAddedProductId(null), 800)
   }
