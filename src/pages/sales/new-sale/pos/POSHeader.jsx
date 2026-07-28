@@ -1,4 +1,7 @@
 import LogoMain from '@icons/LogoMain'
+import RussianFlagIcon from '@icons/RussianFlagIcon'
+import UzbekistanFlagIcon from '@icons/UzbekistanFlagIcon'
+import UkFlagIcon from '@icons/UkFlagIcon'
 import { Search, User, X, Printer, RefreshCw, Languages, Users, Lock, FileText, LogOut, ChevronRight } from 'lucide-react'
 import './PosLayout.css'
 
@@ -188,7 +191,7 @@ export default function POSHeader({
                         className={`touch-lang-btn ${i18n.language === 'uz' ? 'is-active' : ''}`}
                         style={{ height: '48px', padding: '0 12px', justifyContent: 'center', gap: '6px' }}
                       >
-                        <span className='touch-lang-flag'>🇺🇿</span>
+                        <span className='touch-lang-flag'><UzbekistanFlagIcon /></span>
                         <span style={{ fontSize: '13px' }}>UZ</span>
                       </button>
 
@@ -197,7 +200,7 @@ export default function POSHeader({
                         className={`touch-lang-btn ${i18n.language === 'ru' ? 'is-active' : ''}`}
                         style={{ height: '48px', padding: '0 12px', justifyContent: 'center', gap: '6px' }}
                       >
-                        <span className='touch-lang-flag'>🇷🇺</span>
+                        <span className='touch-lang-flag'><RussianFlagIcon /></span>
                         <span style={{ fontSize: '13px' }}>RU</span>
                       </button>
 
@@ -206,7 +209,7 @@ export default function POSHeader({
                         className={`touch-lang-btn ${i18n.language === 'en' ? 'is-active' : ''}`}
                         style={{ height: '48px', padding: '0 12px', justifyContent: 'center', gap: '6px' }}
                       >
-                        <span className='touch-lang-flag'>🇬🇧</span>
+                        <span className='touch-lang-flag'><UkFlagIcon /></span>
                         <span style={{ fontSize: '13px' }}>EN</span>
                       </button>
                     </div>

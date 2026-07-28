@@ -22,7 +22,14 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: ['ru', 'uz'],
+    fallbackLng: 'ru',
+    detection: {
+      // Only respect a language the user explicitly picked (saved to localStorage).
+      // Do not auto-detect from the OS/browser locale, so the app always
+      // defaults to Russian on a fresh machine regardless of Windows locale.
+      order: ['localStorage'],
+      caches: ['localStorage'],
+    },
     keySeparator: '.',
     interpolation: {
       escapeValue: false,

@@ -70,7 +70,7 @@ function Providers({ children }) {
     if (user_language) {
       i18n.changeLanguage(user_language)
     } else {
-      i18n.changeLanguage('uz')
+      i18n.changeLanguage('ru')
     }
   }, [])
 
