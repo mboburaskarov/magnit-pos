@@ -388,7 +388,6 @@ function NewCashRegister() {
 
   // Loading, error and status states for the overlay
   const [initLoading, setInitLoading] = useState(true)
-  const [initChecked, setInitChecked] = useState(false)
   const [initError, setInitError] = useState(false)
   const [initErrorMessage, setInitErrorMessage] = useState('')
   const [statusText, setStatusText] = useState('Подключаем POS и подготавливаем чек')
@@ -522,11 +521,12 @@ function NewCashRegister() {
         device_id = userData.store.terminal_ids[0]
       }
 
-      // Guard: if device_id is missing, open device/cashbox selection flow instead of calling API with null.
+      // Guard: if device_id is missing, there's nothing to resolve here — send
+      // the cashier back to /login, which owns the single device-bound
+      // cashbox flow now (no manual cashbox picker).
       if (!device_id) {
-        setInitChecked(true)
-        setInitLoading(false)
         clearTimeout(timer)
+        window.location.replace('/login')
         return
       }
 
@@ -551,14 +551,18 @@ function NewCashRegister() {
         return
       }
 
-      // Complete initialization check successfully (show the creation form)
-      setInitChecked(true)
-      setInitLoading(false)
+      // No active sale on an open cashbox for this device: the manual
+      // cashbox picker below is deprecated (one device = one cashbox now) —
+      // send the cashier to /login to resolve/open their shift there instead.
+      clearTimeout(timer)
+      window.location.replace('/login')
+      return
     } catch (err) {
       if (signal.aborted) return
       console.error('Initialization error:', err)
 
-      // Handle 404 No Open Cashbox as non-fatal
+      // No open cashbox operation for this device: same as above, resolve
+      // it through /login rather than the deprecated manual picker here.
       const isNoOpenCashbox =
         err?.response?.status === 404 ||
         err?.response?.data?.code === 404 ||
@@ -566,9 +570,8 @@ function NewCashRegister() {
         (err?.response?.data?.message && String(err.response.data.message).includes('You have no open cashbox operation'))
 
       if (isNoOpenCashbox) {
-        setInitChecked(true)
-        setInitLoading(false)
         clearTimeout(timer)
+        window.location.replace('/login')
         return
       }
 
