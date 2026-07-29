@@ -230,21 +230,6 @@ export default function POSHeader({
                         className='touch-lang-btn'
                         onClick={() => {
                           setShowLangDropdown(false)
-                          onLogout('transfer')
-                        }}
-                      >
-                        <div className='touch-lang-flag-name'>
-                          <Users size={18} />
-                          <span>{t('pos.transfer_shift')}</span>
-                        </div>
-                        <ChevronRight size={16} />
-                      </button>
-
-                      <button
-                        type='button'
-                        className='touch-lang-btn'
-                        onClick={() => {
-                          setShowLangDropdown(false)
                           onTempLogout()
                         }}
                       >
