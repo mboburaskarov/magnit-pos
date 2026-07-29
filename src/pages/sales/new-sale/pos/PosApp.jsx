@@ -342,7 +342,8 @@ export default function PosApp() {
     },
   )
 
-  const customersList = get(customersRes, 'data.data.data', [])
+  // API returns null (not undefined) when there are no matches, so get()'s default never applies
+  const customersList = get(customersRes, 'data.data.data') || []
 
   // ── Mutations ──
   const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCartItem, {
@@ -1967,11 +1968,16 @@ export default function PosApp() {
               setCustomerId={(c) => {
                 setCustomerId(c)
                 if (c) {
-                  addDiscountCard({
-                    customer_id: c.id,
-                    barcode: c.barcode,
-                    sale_id: id,
-                  })
+                  // Backend returns not.found for an empty barcode or a 0% card.
+                  // Card-less customers are attached at /sale/final instead
+                  // (customer_id + loyalty_card_barcode in submitSale).
+                  if (c.barcode && c.discount_card_percent > 0) {
+                    addDiscountCard({
+                      customer_id: c.id,
+                      barcode: c.barcode,
+                      sale_id: id,
+                    })
+                  }
                 } else {
                   removeDiscountCard({
                     sale_id: id,

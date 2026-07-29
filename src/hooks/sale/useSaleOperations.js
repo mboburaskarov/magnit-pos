@@ -557,7 +557,10 @@ export const useSaleOperations = ({
         referral: serviceType === 'other' ? undefined : serviceType,
         store_id: get(userData, 'store.id'),
         customer_id: get(customerId, 'id'),
-        loyalty_card_barcode: customerId?.loyalty_card_barcode, // Add loyalty card support
+        // Discount-card customers are already attached via /sale/discount-card;
+        // only card-less customers are attached here for loyalty/cashback.
+        loyalty_card_barcode:
+          customerId?.barcode && customerId?.discount_card_percent > 0 ? undefined : customerId?.loyalty_card_barcode,
         total_amount: get(cartItemsList, 'total_amount') ?? get(cartItemsList, 'data.data.total_amount'),
         tax_free: !sendToEpos,
         is_corporate: cartOwnerType == 'corporative',

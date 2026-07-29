@@ -41,8 +41,8 @@ function PosClientPanel({
       barcode: item.discount_card,
       discount_card_percent: item.discount_percent,
       discount_card_barcode: searchTerm === item.discount_card ? item.discount_card : null,
-      loyalty_card_percent: searchTerm === item.loyalty_card_barcode ? item.loyalty_card_percent : null,
-      loyalty_card_barcode: searchTerm === item.loyalty_card_barcode ? item.loyalty_card_barcode : null,
+      loyalty_card_percent: item.loyalty_card_percent,
+      loyalty_card_barcode: item.loyalty_card_barcode,
     })
     setSearchTerm('')
   }
@@ -139,13 +139,12 @@ function PosClientPanel({
         <span className='pos-kbd'>F3</span>
       </div>
 
-      {/* Dropdown */}
+      {/* Results list (in normal flow — an absolute overlay gets clipped by the modal's overflowY) */}
       {showDropdown && (
         <div style={{
-          position: 'absolute', top: '100%', left: 0, right: 0,
           background: '#fff', border: '1px solid #e1e5ec', borderRadius: 8,
-          boxShadow: '0 8px 24px rgba(0,0,0,0.08)', zIndex: 100, overflow: 'hidden',
-          marginTop: 4,
+          boxShadow: '0 8px 24px rgba(0,0,0,0.08)', overflowX: 'hidden', overflowY: 'auto',
+          marginTop: 8, maxHeight: '40vh',
         }}>
           {isSearching && (
             <div style={{ padding: 12, color: '#9CA3AF', fontSize: 13, textAlign: 'center' }}>
