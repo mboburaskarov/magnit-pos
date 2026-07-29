@@ -8,6 +8,7 @@ import { requests } from '@utils/requests'
 import { error, success } from '@utils/toast'
 import { extractNumbers, checkBarcodeWithMarking } from '@utils/checkingMarkingWithBarcode'
 import { containsCyrillic, convertoRuOrEngToEng } from '@utils/convertoRuOrEngToEng'
+import { bypassNextAppExit } from '@hooks/useExitConfirm'
 import { useBarcodeScanner } from '@/hooks/pos/useBarcodeScanner'
 import { useSaleOperations } from '@/hooks/sale/useSaleOperations'
 import { usePrintOperations } from '@/hooks/sale/usePrintOperations'
@@ -34,6 +35,7 @@ import ReturnExchangeDrawer from '@components/Sales/ReturnExchange/ReturnExchang
 import axios from 'axios'
 import PosPrinterSettings from './PosPrinterSettings'
 import EditQuantityDialog from './EditQuantityDialog'
+import PosZReportClosedModal from './PosZReportClosedModal'
 import PosOnScreenKeyboard from './PosOnScreenKeyboard'
 import PosLiveSearchPanel from './PosLiveSearchPanel'
 
@@ -355,8 +357,19 @@ export default function PosApp() {
     },
   })
 
-  const { submitSale, isFinishSaleWithoutAppPaymentType, isSendToEPOS, isGelOldEposCheck, isSendEPOSresponseToBackend, hasError, setHasError } =
-    useSaleOperations({
+  const {
+    submitSale,
+    isFinishSaleWithoutAppPaymentType,
+    isSendToEPOS,
+    isGelOldEposCheck,
+    isSendEPOSresponseToBackend,
+    hasError,
+    setHasError,
+    zReportClosedDialog,
+    confirmOpenZReport,
+    cancelZReportDialog,
+    isOpeningZReport,
+  } = useSaleOperations({
       cartItemsList: posCartItemsList,
       markingsList: {},
       dmedOrganizedList,
@@ -1406,7 +1419,7 @@ export default function PosApp() {
         paidAmount: Number(receivedAmount || cardPaymentAmount || secondaryPaymentAmount || totalAmount || 0),
         changeAmount: roundToOne(Math.max(Number(receivedAmount || 0) - Number(totalAmount || 0), 0)),
         vatAmount: Number(posCartItemsList.vat_sum || 0),
-        chequeType: 'sale',
+        chequeType: get(cashBoxDetails, 'data.data.sale_type') === 'RETURN' ? 'return' : 'sale',
         fiscalSign: qrcodeUrl.fiscal && qrcodeUrl.fiscal !== 'pending' ? String(qrcodeUrl.fiscal) : '',
         fiscalNumber: qrcodeUrl.terminalId && qrcodeUrl.terminalId !== 'pending' ? String(qrcodeUrl.terminalId) : '',
         fiscalDate: qrcodeUrl.datetime && qrcodeUrl.datetime !== 'pending' ? String(qrcodeUrl.datetime) : '',
@@ -1427,11 +1440,9 @@ export default function PosApp() {
       }
 
       if (paymentType === 'cash') {
-        try {
-          await axios.post(`${activeAgentUrl}/cash-drawer/open`)
-        } catch (err) {
+        axios.post(`${activeAgentUrl}/cash-drawer/open`).catch((err) => {
           console.warn('Failed to open cash drawer before print:', err)
-        }
+        })
       }
 
       const res = await axios.post(`${activeAgentUrl}/print/raw-template`, reqPayload, { timeout: 20000 })
@@ -1481,6 +1492,7 @@ export default function PosApp() {
         return Promise.all(keyList.map((key) => caches.delete(key)))
       })
     }
+    bypassNextAppExit()
     setTimeout(() => {
       window.location.reload()
     }, 100)
@@ -1519,6 +1531,7 @@ export default function PosApp() {
       })
       success(t('pos.receipt_cancelled') || 'Чек аннулирован')
       navigate(`/sales/pos/${get(newSaleRes, 'data.id')}`)
+      bypassNextAppExit()
       window.location.reload()
     } catch (err) {
       error(t('pos.error_cancelling_receipt') || 'Ошибка при аннулировании чека')
@@ -1747,6 +1760,7 @@ export default function PosApp() {
         onTempLogout={handleTempLogout}
         onCloseSession={handleCloseSessionShortcut}
         receiptNumber={cashBoxDetails?.data?.data?.sale_number || '--'}
+        isReturnSale={get(cashBoxDetails, 'data.data.sale_type') === 'RETURN'}
         onOpenPrinterSettings={() => { handleCloseLiveSearch(); setShowPrinterSettings(true) }}
         isAgentRunning={isAgentRunning}
         onHardRefresh={handleHardRefreshRequest}
@@ -2019,6 +2033,15 @@ export default function PosApp() {
         expectedPassword={securityPassword}
         onApprove={() => { const item = stornoPendingItem; setStornoPendingItem(null); performStornoProduct(item) }}
         onCancel={() => { setStornoPendingItem(null); clearPOSActionFocus() }}
+        t={t}
+      />
+
+      {/* ZReport Closed Confirm Modal */}
+      <PosZReportClosedModal
+        open={zReportClosedDialog}
+        isLoading={isOpeningZReport}
+        onConfirm={confirmOpenZReport}
+        onCancel={cancelZReportDialog}
         t={t}
       />
 

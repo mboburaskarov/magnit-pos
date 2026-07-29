@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-const WIDTH = 48
+const WIDTH = 40
 
 export function formatMoneyWithoutSuffix(val) {
   const num = Number(val || 0)
@@ -96,6 +96,14 @@ export function buildReceiptLayout(req, storeInfo = {}) {
     add(lineSeparator)
   }
 
+  const isReturnCheque = req.chequeType === 'return'
+  if (isReturnCheque) {
+    add('[BOLD_START]')
+    add(centerText('MAHSULOT QAYTARISH'))
+    add('[BOLD_END]')
+    add(lineSeparator)
+  }
+
   const storeName = storeInfo.name || 'MAGNIT PREMIUM'
   const storeAddress = storeInfo.address || "Shayxontohur\nOlmazor MFY, O'qchi ko'chasi 4, 4A-UY"
   const stir = storeInfo.stir || req.fiscalStir || '305445201'
@@ -112,7 +120,7 @@ export function buildReceiptLayout(req, storeInfo = {}) {
 
   const dateObj = req.date ? dayjs(req.date) : dayjs()
   add(`Kassir: ${req.cashier || 'Kassir'}`)
-  add(leftRight(`Savdo cheki №${req.saleId}`, `Kassa №${req.kassaNumber || '-'}`))
+  add(leftRight(`${isReturnCheque ? 'Qaytarish cheki' : 'Savdo cheki'} №${req.saleId}`, `Kassa №${req.kassaNumber || '-'}`))
   add(leftRight(`Sana: ${dateObj.format('DD.MM.YY')}`, `Vaqt: ${dateObj.format('HH:mm:ss')}`))
   add(`Smena №${req.shiftNumber || '1'}`)
   add(lineSeparator)
@@ -149,7 +157,7 @@ export function buildReceiptLayout(req, storeInfo = {}) {
   add(dashSeparator)
 
   add('[BOLD_START]')
-  add(leftRight('JAMI tolovga:', formatMoney(req.totalAmount), WIDTH, '.'))
+  add(leftRight(isReturnCheque ? 'JAMI qaytarildi:' : 'JAMI tolovga:', formatMoney(req.totalAmount), WIDTH, '.'))
   add('[BOLD_END]')
 
   if (calculatedVatTotal > 0) {
@@ -162,7 +170,7 @@ export function buildReceiptLayout(req, storeInfo = {}) {
     add(leftRight('Chegirma', formatMoney(req.discount), WIDTH, '.'))
   }
 
-  add('Tolov')
+  add(isReturnCheque ? 'Qaytarish turi' : 'Tolov')
   let payTypeLabel = '  Aralash'
   const isCardPayment = req.paymentType === 'card' || req.paymentType === 'cardless'
   if (isCardPayment) {

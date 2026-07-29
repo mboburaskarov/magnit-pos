@@ -1,5 +1,6 @@
 import { requests } from '@utils/requests'
 import { error, success } from '@utils/toast'
+import { bypassNextAppExit } from '@hooks/useExitConfirm'
 import { get } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMutation } from 'react-query'
@@ -18,6 +19,16 @@ const normalizeProductName = (name) =>
     .trim()
     .replace(/\s+/g, ' ')
     .toLowerCase()
+
+// EPOS refuses to fiscalize a sale when its own local Z-report was closed
+// independently of our backend's cashbox session (e.g. closed manually on the
+// terminal), reporting a message such as
+// "ZReport уже был закрыт, выполните операцию открытия ZReport".
+const isZReportClosedMessage = (message) => {
+  if (typeof message !== 'string') return false
+  const normalized = message.toLowerCase()
+  return normalized.includes('zreport') && (normalized.includes('закрыт') || normalized.includes('closed'))
+}
 
 export const useSaleOperations = ({
   cartItemsList,
@@ -50,6 +61,7 @@ export const useSaleOperations = ({
   // failing products incrementally, without re-patching a product or looping.
   const lastEposPayloadRef = useRef(null)
   const patchedProductNamesRef = useRef(new Set())
+  const [zReportClosedDialog, setZReportClosedDialog] = useState(false)
 
   useEffect(() => {
     if (paymentsList?.length == 1 && paymentsList?.[0]?.front_name == 'uzum') {
@@ -170,6 +182,14 @@ export const useSaleOperations = ({
           })
           return
         }
+        // EPOS's own Z-report was closed independently of our backend session.
+        // Offer the cashier a one-click fix instead of a dead-end error: open
+        // the Z-report, then resend the exact same sale payload.
+        if (isZReportClosedMessage(get(data, 'message'))) {
+          setOpenRefreshDialog(false)
+          setZReportClosedDialog(true)
+          return
+        }
         // EPOS lists products whose own class/package (ИКПУ) codes are unknown.
         // Patch those products with the fallback codes and retry before
         // surfacing the error. Returns false once there is nothing new to fix.
@@ -288,10 +308,42 @@ export const useSaleOperations = ({
     },
   })
 
+  // Opens EPOS's Z-report (same call the shift-open screen makes) so a sale
+  // blocked by a closed Z-report can go through without the cashier having to
+  // leave the sale screen.
+  const { mutate: openZReportMutation, isLoading: isOpeningZReport } = useMutation(requests.openZReport, {
+    onSuccess: ({ data }) => {
+      const zOk = get(data, 'error', true) == false || get(data, 'message', '').includes('ERROR_ZREPORT_IS_ALREADY_OPEN')
+      setZReportClosedDialog(false)
+      if (!zOk) {
+        error(get(data, 'message') || 'ZReportni ochib bo‘lmadi')
+        return
+      }
+      if (lastEposPayloadRef.current) {
+        sendToEPOS(lastEposPayloadRef.current)
+      }
+    },
+    onError: (err) => {
+      setZReportClosedDialog(false)
+      error(err?.message || 'ZReportni ochib bo‘lmadi')
+    },
+  })
+
+  const confirmOpenZReport = useCallback(() => {
+    openZReportMutation({ token: 'DXJFX32CN1296678504F2', method: 'openZreport' })
+  }, [openZReportMutation])
+
+  const cancelZReportDialog = useCallback(() => {
+    setZReportClosedDialog(false)
+    error('ZReport yopiq. Sotuvni yakunlash uchun uni oching.')
+    sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ message: 'ZReport is closed' }), sale_id: id })
+  }, [sendEPOSresponseToBackend, id])
+
   // Create sale
   const { mutate: saleCreate } = useMutation(requests.saleCreate, {
     onSuccess: ({ data }) => {
       navigate(`/sales/new-sale/${get(data, 'data.id')}`)
+      bypassNextAppExit()
       window.location.reload()
     },
     onError: () => {
@@ -461,7 +513,7 @@ export const useSaleOperations = ({
         companyAddress: get(userData, 'store.address') || 'Tashkent, Uqchi Street, 4',
         companyINN: '305445201',
         staffName: get(userData, 'full_name'),
-        printerSize: 80,
+        printerSize: 58,
         phoneNumber: get(userData, 'store.phone'),
         companyPhoneNumber: '+998712916999',
         is_corporate: cartOwnerType === 'corporative',
@@ -596,5 +648,9 @@ export const useSaleOperations = ({
     setHasError,
     isGelOldEposCheck,
     hasError,
+    zReportClosedDialog,
+    confirmOpenZReport,
+    cancelZReportDialog,
+    isOpeningZReport,
   }
 }

@@ -9,6 +9,7 @@ import axios from 'axios'
 import { Printer } from 'lucide-react'
 import ArrowRightIcon from '../../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../../src/assets/icons/BagOutline'
+import { requests } from '../../../utils/requests'
 import thousandDivider from '../../../utils/thousandDivider'
 import { loadSvgAsEscposHex } from '../../../utils/escposImage'
 import { buildReceiptLayout } from '../../../utils/receiptBuilder'
@@ -117,7 +118,7 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
         paidAmount: Number(saleData.total_amount || 0),
         changeAmount: 0,
         vatAmount: Number(saleData.vat_sum || 0),
-        chequeType: 'sale',
+        chequeType: saleData.sale_type === 'RETURN' ? 'return' : 'sale',
         fiscalSign: saleData.fiscal_sign || '',
         fiscalNumber: saleData.terminal_id || '',
         fiscalDate: saleData.completed_at || '',

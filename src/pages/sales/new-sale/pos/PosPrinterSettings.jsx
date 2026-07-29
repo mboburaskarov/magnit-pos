@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { X, Play, RefreshCw, Server, Wifi, Usb, Search, Box, Eye } from 'lucide-react'
 import axios from 'axios'
 import { success, error } from '@utils/toast'
+import { bypassNextAppExit } from '@hooks/useExitConfirm'
 import { buildReceiptLayout } from '@utils/receiptBuilder'
 import { loadSvgAsEscposHex } from '@utils/escposImage'
 import ReceiptPreviewCanvas from '@components/ReceiptPreviewCanvas'
@@ -300,6 +301,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
   }
 
   const tryStartAgent = () => {
+    bypassNextAppExit()
     window.location.href = "magnitposprinter://start"
     setTimeout(() => {
       if(!isRunning) {

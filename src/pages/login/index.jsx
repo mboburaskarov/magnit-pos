@@ -12,6 +12,7 @@ import { fetchMachineId } from '../../../utils/deviceAgent'
 import { isDevEnvironment } from '../../../utils/isDevEnvironment'
 import thousandDivider from '../../../utils/thousandDivider'
 import { setUserData } from '../../redux-toolkit/userSlice'
+import { bypassNextAppExit } from '../../hooks/useExitConfirm'
 import LoadingContainer from '/components/LoadingContainer'
 
 // Brand accent for the login experience. The design exposes this as a brand
@@ -795,6 +796,7 @@ export default function LoginPage() {
     const cashBoxId = cashbox?.id
 
     if (!cashBoxId) {
+      bypassNextAppExit()
       window.location.replace('/redirect')
       return
     }
@@ -816,11 +818,20 @@ export default function LoginPage() {
       )
     }
 
+    // Best-effort: this device's cashbox session may already be open in our
+    // backend while the fiscal terminal's own Z-report was independently
+    // closed (e.g. closed manually on the terminal). Re-opening it here is a
+    // no-op when it's already open (ERROR_ZREPORT_IS_ALREADY_OPEN), so it's
+    // safe to fire without blocking login; if it still fails, the sale screen
+    // offers the same fix reactively when a sale actually hits the error.
+    requests.openZReport({ token: 'DXJFX32CN1296678504F2', method: 'openZreport' }).catch(() => {})
+
     try {
       const checkRes = await requests.checkSaleExist({ store_id: storeId, cash_box_id: cashBoxId, device_id })
       const saleId = get(checkRes, 'data.data.sale_id')
       if (saleId) {
         persistSelectedCashbox()
+        bypassNextAppExit()
         window.location.replace(`/sales/pos/${saleId}`)
         return
       }
@@ -833,6 +844,7 @@ export default function LoginPage() {
           const newSaleId = get(newSaleRes, 'data.id')
           if (newSaleId) {
             persistSelectedCashbox()
+            bypassNextAppExit()
             window.location.replace(`/sales/pos/${newSaleId}`)
             return
           }
@@ -892,6 +904,7 @@ export default function LoginPage() {
           is_open: true,
         }),
       )
+      bypassNextAppExit()
       window.location.replace(`/sales/pos/${saleId}`)
     } catch (err) {
       setOpenError(err?.response?.data?.message || err?.message || 'Kassani ochib bo‘lmadi')

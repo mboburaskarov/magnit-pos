@@ -22,6 +22,7 @@ import { success } from '@utils/toast'
 import RamadanIcon from '@/assets/icons/RamadanIcon'
 import { getCurrentEvent } from '@utils/ramadanTime'
 import RamadanDrawer from './RamadanDrawer'
+import { bypassNextAppExit } from '@hooks/useExitConfirm'
 
 const DialogRowBox = ({ children, onClick }) => (
   <Box
@@ -94,6 +95,7 @@ function LayoutHeader() {
   const classes = headerStyles({ isOpen })
   const logout = () => {
     clearAuthSession()
+    bypassNextAppExit()
     window.location.replace('/login')
     navigate('/login')
   }
