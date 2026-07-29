@@ -131,6 +131,7 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
       const reqPayload = {
         lines: layoutLines,
         paymentType: paymentType,
+        qrSizeMm: 35,
       }
 
       const printRes = await axios.post('http://localhost:7788/print/raw-template', reqPayload)

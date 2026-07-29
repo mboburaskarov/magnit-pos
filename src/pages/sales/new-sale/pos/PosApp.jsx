@@ -1408,6 +1408,7 @@ export default function PosApp() {
       const reqPayload = {
         lines: layoutLines,
         paymentType: paymentType,
+        qrSizeMm: 35,
       }
 
       if (paymentType === 'cash') {

@@ -228,6 +228,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
       const reqPayload = {
         lines: layoutLines,
         paymentType: paymentType,
+        qrSizeMm: 35,
       }
 
       const res = await axios.post('http://localhost:7788/print/raw-template', reqPayload)
