@@ -166,7 +166,8 @@ export function buildReceiptLayout(req, storeInfo = {}) {
   let payTypeLabel = '  Aralash'
   const isCardPayment = req.paymentType === 'card' || req.paymentType === 'cardless'
   if (isCardPayment) {
-    payTypeLabel = '  Karta'
+    const schemeLabel = req.cardScheme === 'humo' ? 'Humo' : req.cardScheme === 'uzcard' ? 'UzCard' : ''
+    payTypeLabel = schemeLabel ? `  Karta (${schemeLabel})` : '  Karta'
   } else if (req.paymentType === 'cash') {
     payTypeLabel = '  Naqd'
   } else if (req.paymentType === 'click') {

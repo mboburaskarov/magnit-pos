@@ -1,4 +1,4 @@
-import { Printer, RotateCcw, Pause, History, Edit3, Ban, Slash, Zap, CreditCard } from 'lucide-react'
+import { Printer, RotateCcw, Eye, Edit3, Ban, Slash, Zap, CreditCard } from 'lucide-react'
 import './PosLayout.css'
 
 // Helper: blur focused element after any action button click so scanner Enter
@@ -11,8 +11,7 @@ export default function ActionBar({
   customerId,
   onPrint,
   onReturn,
-  onHold,
-  onOpenHeldSales,
+  onOpenSearch,
   onEditQuantity,
   onCancelSale,
   onStornoProduct,
@@ -22,6 +21,7 @@ export default function ActionBar({
   showPaymentView,
   cashPaymentSelected,
   cardPaymentSelected,
+  cardPaymentType,
   cardPaymentAmount,
   secondaryPaymentMethod,
   secondaryPaymentAmount,
@@ -55,13 +55,22 @@ export default function ActionBar({
             {t('cash')}
           </button>
           <button
-            className={`method-select-btn ${cardPaymentSelected ? 'is-active' : ''}`}
-            onClick={(e) => { onSelectCardPayment(); blurActiveBtn() }}
-            disabled={shouldDisableInactive && !cardPaymentSelected}
+            className={`method-select-btn ${cardPaymentType === 'uzcard' ? 'is-active' : ''}`}
+            onClick={() => { onSelectCardPayment('uzcard'); blurActiveBtn() }}
+            disabled={shouldDisableInactive && cardPaymentType !== 'uzcard'}
             type='button'
           >
-            <img src="/images/uzcard.png" alt="Terminal" className="payment-icon" />
-            {t('card')}
+            <img src="/images/uzcard.png" alt="Uzcard" className="payment-icon" />
+            Uzcard
+          </button>
+          <button
+            className={`method-select-btn ${cardPaymentType === 'humo' ? 'is-active' : ''}`}
+            onClick={() => { onSelectCardPayment('humo'); blurActiveBtn() }}
+            disabled={shouldDisableInactive && cardPaymentType !== 'humo'}
+            type='button'
+          >
+            <img src="/images/humo.png" alt="Humo" className="payment-icon" />
+            Humo
           </button>
           <button
             className={`method-select-btn ${secondaryPaymentMethod === 'click' ? 'is-active' : ''}`}
@@ -96,7 +105,7 @@ export default function ActionBar({
             disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'munis') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'munis')}
             type='button'
           >
-            Munis
+            UzQR
           </button>
           <button
             className={`method-select-btn ${secondaryPaymentMethod === 'loyaltycard' ? 'is-active' : ''}`}
@@ -126,16 +135,16 @@ export default function ActionBar({
         <span>{t('sales') || 'Продажи'}</span>
       </button>
 
-      {/* 3. Hold */}
-      <button className='action-btn neutral-btn' onClick={() => { onHold(); blurActiveBtn() }} type='button'>
-        <Pause size={16} />
-        <span>{t('menu.orders.all.postpone') || 'Отложить'}</span>
+      {/* 3. Preview / Search */}
+      <button className='action-btn neutral-btn' onClick={(e) => { e.currentTarget.blur(); onOpenSearch() }} type='button'>
+        <Eye size={16} />
+        <span>{t('pos.preview') || 'Просмотр'}</span>
       </button>
 
-      {/* 4. Held sales */}
-      <button className='action-btn neutral-btn' onClick={() => { onOpenHeldSales(); blurActiveBtn() }} type='button'>
-        <History size={16} />
-        <span>{t('pos.held_sales') || 'Отложенные'}</span>
+      {/* 4. MagnitGO (coming soon) */}
+      <button className='action-btn neutral-btn' disabled type='button'>
+        <span>MagnitGO</span>
+        <span className='soon-badge'>{t('pos.magnitgo_soon') || 'Скоро'}</span>
       </button>
 
       {/* 5. Edit Quantity (replaces Discount/Скидка) */}
@@ -152,7 +161,7 @@ export default function ActionBar({
       {/* 6. Cancel receipt */}
       <button className='action-btn danger-outline-btn' onClick={() => { onCancelSale(); blurActiveBtn() }} type='button'>
         <Ban size={16} />
-        <span>{t('pos.cancel_receipt') || 'Аннулировать'}</span>
+        <span>{t('pos.cancel_receipt') || 'Отмена чека'}</span>
       </button>
 
       {/* 7. Storno / Remove item */}

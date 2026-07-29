@@ -61,11 +61,9 @@ export const requests = {
   getPaymentTypesList: (filter) => request.get(`v1/payment-type/list${qs.stringify(filter, { addQueryPrefix: true })}`),
 
   //sale
-  getPendingSales: (filter) => request.get(`v1/sale/pending-list${qs.stringify(filter, { addQueryPrefix: true })}`),
   checkingAslName: (data) => request.post(`v1/sale/asil-belgi-barcode`, data),
   confirmAslName: (data) => request.post(`v1/sale/asil-belgi-barcode-confirm/${data}`),
   getAllSalesExcelReport: (filter) => requestEXCEL.get(`v1/sale/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
-  saleMoveToPending: (id) => request.put(`v1/sale/pending/${id}`),
 
   getAllSales: (filter) => request.get(`v1/sale/list${qs.stringify(filter, { addQueryPrefix: true })}`),
   getAllSaleStats: (filter) => request.get(`v1/sale/stats${qs.stringify(filter, { addQueryPrefix: true })}`),

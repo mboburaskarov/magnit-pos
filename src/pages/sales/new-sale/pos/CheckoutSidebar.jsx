@@ -18,6 +18,7 @@ export default function CheckoutSidebar({
   receivedAmount,
   setReceivedAmount,
   cardPaymentSelected,
+  cardPaymentType,
   cardPaymentAmount,
   setCardPaymentAmount,
   secondaryPaymentMethod,
@@ -51,7 +52,7 @@ export default function CheckoutSidebar({
     click: 'Click',
     payme: 'Payme',
     uzum: 'Uzum',
-    munis: 'Munis',
+    munis: 'UzQR',
     loyaltycard: 'Balans',
   }
 
@@ -212,7 +213,7 @@ export default function CheckoutSidebar({
             {cardPaymentSelected && (
               <>
                 <div className={`payment-row ${cashPaymentSelected ? '' : 'border-top-dashed'}`}>
-                  <span className='payment-label'>{t('pos.card_payment')}:</span>
+                  <span className='payment-label'>{cardPaymentType === 'humo' ? 'Humo' : 'Uzcard'}:</span>
                   <div className='payment-input-wrapper'>
                     <input
                       ref={cardPaymentInputRef}

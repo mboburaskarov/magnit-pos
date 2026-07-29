@@ -31,7 +31,6 @@ import PosProductSelectModal from './PosProductSelectModal'
 import SaleProgressSteps from '../saleStepLoading'
 import './PosLayout.css'
 import ReturnExchangeDrawer from '@components/Sales/ReturnExchange/ReturnExchangeDrawer'
-import DraftDrawer from '@components/Sales/DraftDrawer'
 import axios from 'axios'
 import PosPrinterSettings from './PosPrinterSettings'
 import EditQuantityDialog from './EditQuantityDialog'
@@ -42,6 +41,9 @@ export default function PosApp() {
   const { id } = useParams()
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
+  // TODO(temporary, frontend-only): security password is derived from the store name until
+  // this check moves to the backend. Format: "{store_name}#5612@" (e.g. "MG3-Novza#5612@").
+  const securityPassword = `${get(userData, 'store.name') || ''}#5612@`
   const { t, i18n } = useTranslation()
   const queryClient = useQueryClient()
 
@@ -51,6 +53,8 @@ export default function PosApp() {
   const [showLangDropdown, setShowLangDropdown] = useState(false)
   const [showQuickProducts, setShowQuickProducts] = useState(false)
   const [securityItem, setSecurityItem] = useState(null)
+  const [showCancelPasswordModal, setShowCancelPasswordModal] = useState(false)
+  const [stornoPendingItem, setStornoPendingItem] = useState(null)
   const [time, setTime] = useState('')
   const [cashboxName] = useState(() => {
     try {
@@ -65,7 +69,6 @@ export default function PosApp() {
   const [showPrinterSettings, setShowPrinterSettings] = useState(false)
   const [isLocked, setIsLocked] = useState(false)
   const [showReturnDrawer, setShowReturnDrawer] = useState(false)
-  const [showHeldSalesDrawer, setShowHeldSalesDrawer] = useState(false)
   const [showCancelConfirmation, setShowCancelConfirmation] = useState(false)
   const [showHardRefreshConfirmation, setShowHardRefreshConfirmation] = useState(false)
 
@@ -74,7 +77,8 @@ export default function PosApp() {
   const [paymentMethod, setPaymentMethod] = useState(null)
   const [cashPaymentSelected, setCashPaymentSelected] = useState(false)
   const [receivedAmount, setReceivedAmount] = useState('')
-  const [cardPaymentSelected, setCardPaymentSelected] = useState(false)
+  const [cardPaymentType, setCardPaymentType] = useState(null) // null | 'uzcard' | 'humo' — separate terminals/accounts
+  const cardPaymentSelected = !!cardPaymentType
   const [cardPaymentAmount, setRawCardPaymentAmount] = useState('')
   const [secondaryPaymentMethod, setSecondaryPaymentMethod] = useState(null)
   const [secondaryPaymentAmount, setRawSecondaryPaymentAmount] = useState('')
@@ -286,13 +290,14 @@ export default function PosApp() {
     }
 
     if (cardPaymentSelected && Number(cardPaymentAmount) > 0) {
+      const cardSchemeName = cardPaymentType === 'humo' ? 'Humo' : 'Uzcard'
       payments.push({
         amount: Number(cardPaymentAmount),
-        payment_type_id: getPaymentTypeId(['Uzcard', 'Humo', 'card']),
+        payment_type_id: getPaymentTypeId([cardSchemeName, 'card']),
         type: 'card',
-        name: 'Uzcard',
-        app_type: 'Uzcard',
-        front_name: 'card',
+        name: cardSchemeName,
+        app_type: cardSchemeName,
+        front_name: cardPaymentType || 'card',
       })
     }
 
@@ -317,7 +322,7 @@ export default function PosApp() {
     }
 
     return payments
-  }, [cashPaymentSelected, receivedAmount, cardPaymentSelected, cardPaymentAmount, secondaryPaymentMethod, secondaryPaymentAmount, paymentTypesList])
+  }, [cashPaymentSelected, receivedAmount, cardPaymentSelected, cardPaymentType, cardPaymentAmount, secondaryPaymentMethod, secondaryPaymentAmount, paymentTypesList])
 
   const paymentAmount = paymentsList.reduce((sum, item) => sum + Number(item.amount || 0), 0)
   const maxAmount = Number(totalAmount || 0) - paymentAmount
@@ -696,7 +701,7 @@ export default function PosApp() {
   const handleStartPaymentView = () => {
     setCashPaymentSelected(false)
     setReceivedAmount('')
-    setCardPaymentSelected(false)
+    setCardPaymentType(null)
     setCardPaymentAmount('')
     setSecondaryPaymentMethod(null)
     setSecondaryPaymentAmount('')
@@ -732,9 +737,9 @@ export default function PosApp() {
     setPaymentMethod('cash')
   }
 
-  const handleSelectCardPayment = () => {
-    if (cardPaymentSelected) {
-      setCardPaymentSelected(false)
+  const handleSelectCardPayment = (scheme) => {
+    if (cardPaymentType === scheme) {
+      setCardPaymentType(null)
       setCardPaymentAmount('')
       setCartOwnerType('physical')
       if (cashPaymentSelected) {
@@ -750,10 +755,18 @@ export default function PosApp() {
       return
     }
 
+    if (cardPaymentType) {
+      // Switching terminal (Uzcard <-> Humo) without re-entering the amount.
+      setCardPaymentType(scheme)
+      setFocusedPaymentInput('card')
+      setPaymentMethod('card')
+      return
+    }
+
     const remainingAmount = Math.max(Number(totalAmount) - (cashPaymentSelected ? Number(receivedAmount || 0) : 0) - Number(secondaryPaymentAmount || 0), 0)
     if (remainingAmount <= 0) return
 
-    setCardPaymentSelected(true)
+    setCardPaymentType(scheme)
     setCardPaymentAmount(String(remainingAmount))
     setFocusedPaymentInput('card')
     setPaymentMethod('card')
@@ -1268,7 +1281,7 @@ export default function PosApp() {
   const resetPaymentState = () => {
     setCashPaymentSelected(false)
     setReceivedAmount('')
-    setCardPaymentSelected(false)
+    setCardPaymentType(null)
     setCardPaymentAmount('')
     setSecondaryPaymentMethod(null)
     setSecondaryPaymentAmount('')
@@ -1366,6 +1379,7 @@ export default function PosApp() {
         kassaNumber: cashboxName || '-',
         paymentType: paymentType,
         isCorporateCard: qrcodeUrl.cardType === 'corporative',
+        cardScheme: cardPaymentType,
         date: new Date().toISOString(),
         items: cartItems.map((item) => ({
           name: item.name || 'Товар',
@@ -1449,33 +1463,10 @@ export default function PosApp() {
     handleLocalPrint()
   }
 
-  const { mutate: holdSale, isLoading: isHoldingSale } = useMutation(requests.saleMoveToPending, {
-    onSuccess: () => {
-      success(t('pos.sale_held_success') || 'Продажа успешно отложена')
-      requests
-        .saleCreate({
-          cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
-          store_id: get(userData, 'store.id'),
-        })
-        .then(({ data: newSaleData }) => {
-          navigate(`/sales/pos/${get(newSaleData, 'data.id')}`)
-          window.location.reload()
-        })
-        .catch((err) => {
-          error(t('pos.error_creating_sale') || 'Ошибка при создании новой продажи')
-        })
-    },
-    onError: (err) => {
-      error(t('pos.error_holding_sale') || 'Ошибка при откладывании продажи')
-    },
-  })
-
-  const handleHold = () => {
-    if (cartItems.length === 0) {
-      error(t('pos.cart_empty_cannot_hold') || 'Корзина пуста, невозможно отложить')
-      return
-    }
-    holdSale(id)
+  const handleOpenSearch = () => {
+    handleCloseLiveSearch()
+    setShowSearchInput(true)
+    requestAnimationFrame(() => document.getElementById('posSearchQuery')?.focus())
   }
 
   const performHardRefresh = () => {
@@ -1559,6 +1550,7 @@ export default function PosApp() {
   }
 
   // ── Storno: frontend-only cancellation, item remains in API cart ──
+  // Requires admin password confirmation (see stornoPendingItem / PosSecurityQrModal below).
   const handleStornoProduct = () => {
     if (!selectedId) {
       error(t('pos.select_product_to_delete'))
@@ -1571,6 +1563,10 @@ export default function PosApp() {
     }
     if (selectedItem.is_frontend_storno) return
 
+    setStornoPendingItem(selectedItem)
+  }
+
+  const performStornoProduct = (selectedItem) => {
     const stornoCopy = {
       ...selectedItem,
       id: `storno-${selectedItem.id}-${Date.now()}`,
@@ -1879,8 +1875,7 @@ export default function PosApp() {
               customerId={customerId}
               onPrint={handlePrintCurrentCheck}
               onReturn={handleReturn}
-              onHold={handleHold}
-              onOpenHeldSales={() => { handleCloseLiveSearch(); setShowHeldSalesDrawer(true) }}
+              onOpenSearch={handleOpenSearch}
               onEditQuantity={handleEditQuantity}
               onCancelSale={handleCancelSale}
               onStornoProduct={handleStornoProduct}
@@ -1891,6 +1886,7 @@ export default function PosApp() {
               paymentMethod={paymentMethod}
               cashPaymentSelected={cashPaymentSelected}
               cardPaymentSelected={cardPaymentSelected}
+              cardPaymentType={cardPaymentType}
               cardPaymentAmount={cardPaymentAmount}
               secondaryPaymentMethod={secondaryPaymentMethod}
               secondaryPaymentAmount={secondaryPaymentAmount}
@@ -1920,6 +1916,7 @@ export default function PosApp() {
           receivedAmount={receivedAmount}
           setReceivedAmount={setReceivedAmount}
           cardPaymentSelected={cardPaymentSelected}
+          cardPaymentType={cardPaymentType}
           cardPaymentAmount={cardPaymentAmount}
           setCardPaymentAmount={setCardPaymentAmount}
           secondaryPaymentMethod={secondaryPaymentMethod}
@@ -1993,8 +1990,29 @@ export default function PosApp() {
       <PosSecurityQrModal
         open={!!securityItem}
         productName={securityItem?.name}
+        expectedPassword={securityPassword}
         onApprove={handleSecurityApproved}
         onCancel={() => { setSecurityItem(null); clearPOSActionFocus() }}
+        t={t}
+      />
+
+      {/* Security Password Modal — cancel receipt */}
+      <PosSecurityQrModal
+        open={showCancelPasswordModal}
+        expectedPassword={securityPassword}
+        descKey='pos.security.desc_cancel_receipt'
+        onApprove={() => { setShowCancelPasswordModal(false); handleCancelConfirm() }}
+        onCancel={() => { setShowCancelPasswordModal(false); clearPOSActionFocus() }}
+        t={t}
+      />
+
+      {/* Security Password Modal — remove item (storno) */}
+      <PosSecurityQrModal
+        open={!!stornoPendingItem}
+        productName={stornoPendingItem?.name}
+        expectedPassword={securityPassword}
+        onApprove={() => { const item = stornoPendingItem; setStornoPendingItem(null); performStornoProduct(item) }}
+        onCancel={() => { setStornoPendingItem(null); clearPOSActionFocus() }}
         t={t}
       />
 
@@ -2059,16 +2077,17 @@ export default function PosApp() {
       <POSLockScreen open={isLocked} onUnlock={() => setIsLocked(false)} t={t} />
 
       {/* Return Exchange Drawer */}
-      <ReturnExchangeDrawer open={showReturnDrawer} setOpen={setShowReturnDrawer} cashBoxDetails={cashBoxDetails} />
-
-      {/* Held Sales (Draft) Drawer */}
-      <DraftDrawer open={showHeldSalesDrawer} setOpen={setShowHeldSalesDrawer} cashBoxDetails={cashBoxDetails} />
+      <ReturnExchangeDrawer
+        open={showReturnDrawer}
+        setOpen={(v) => { setShowReturnDrawer(v); if (!v) clearPOSActionFocus() }}
+        cashBoxDetails={cashBoxDetails}
+      />
 
       {/* Quick Select Drawer */}
-      <PosQuickSelectDrawer open={showQuickProducts} onClose={() => setShowQuickProducts(false)} onQuickAdd={handleQuickAdd} isLoading={isCartLoading} t={t} />
+      <PosQuickSelectDrawer open={showQuickProducts} onClose={() => { setShowQuickProducts(false); clearPOSActionFocus() }} onQuickAdd={handleQuickAdd} isLoading={isCartLoading} t={t} />
 
       {/* Printer Settings Modal */}
-      <PosPrinterSettings open={showPrinterSettings} onClose={() => setShowPrinterSettings(false)} t={t} />
+      <PosPrinterSettings open={showPrinterSettings} onClose={() => { setShowPrinterSettings(false); clearPOSActionFocus() }} t={t} />
 
       {/* Product Select Modal — shown when search returns multiple results */}
       <PosProductSelectModal
@@ -2142,7 +2161,7 @@ export default function PosApp() {
                   type='button'
                   className='btn-orange-touch'
                   style={{ flex: 1, height: '48px', borderRadius: '24px', backgroundColor: '#e23a32' }}
-                  onClick={handleCancelConfirm}
+                  onClick={() => { setShowCancelConfirmation(false); setShowCancelPasswordModal(true) }}
                 >
                   {t('yes')}
                 </button>

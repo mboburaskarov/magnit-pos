@@ -34,6 +34,12 @@ export default function PosOnScreenKeyboard({
 
   const rows = layouts[language] || layouts.ru
 
+  const numpadRows = [
+    ['7', '8', '9'],
+    ['4', '5', '6'],
+    ['1', '2', '3'],
+  ]
+
   return (
     <div className='pos-keyboard-container' onMouseDown={(e) => e.preventDefault()}>
       {/* Keyboard Header */}
@@ -48,62 +54,91 @@ export default function PosOnScreenKeyboard({
 
       {/* Keyboard Keys */}
       <div className='pos-keyboard-keys'>
-        {rows.map((row, rowIndex) => (
-          <div key={rowIndex} className='pos-keyboard-row'>
-            {row.map((key) => (
-              <button
-                key={key}
-                type='button'
-                className='pos-keyboard-key'
-                onClick={() => handleKeyClick(key)}
-              >
-                {key.toUpperCase()}
-              </button>
-            ))}
+        <div className='pos-keyboard-letters'>
+          {rows.map((row, rowIndex) => (
+            <div key={rowIndex} className='pos-keyboard-row'>
+              {row.map((key) => (
+                <button
+                  key={key}
+                  type='button'
+                  className='pos-keyboard-key'
+                  onClick={() => handleKeyClick(key)}
+                >
+                  {key.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          ))}
+
+          {/* Bottom row actions */}
+          <div className='pos-keyboard-row bottom-row'>
+            <button
+              type='button'
+              className='pos-keyboard-key action-key lang-toggle'
+              onClick={onLanguageChange}
+            >
+              {language.toUpperCase()}
+            </button>
+
+            <button
+              type='button'
+              className='pos-keyboard-key action-key clear-key'
+              onClick={onClear}
+            >
+              {t?.('delete_all') || 'CLEAR'}
+            </button>
+
+            <button
+              type='button'
+              className='pos-keyboard-key space-key'
+              onClick={() => handleKeyClick(' ')}
+            >
+              {language === 'ru' ? 'ПРОБЕЛ' : 'BO\'SH JOY'}
+            </button>
+
+            <button
+              type='button'
+              className='pos-keyboard-key action-key backspace-key'
+              onClick={onBackspace}
+            >
+              ⌫
+            </button>
+
+            <button
+              type='button'
+              className='pos-keyboard-key action-key enter-key'
+              onClick={onEnter}
+            >
+              {t?.('pos.search_title') || 'ENTER'}
+            </button>
           </div>
-        ))}
+        </div>
 
-        {/* Bottom row actions */}
-        <div className='pos-keyboard-row bottom-row'>
-          <button
-            type='button'
-            className='pos-keyboard-key action-key lang-toggle'
-            onClick={onLanguageChange}
-          >
-            {language.toUpperCase()}
-          </button>
-          
-          <button
-            type='button'
-            className='pos-keyboard-key action-key clear-key'
-            onClick={onClear}
-          >
-            {t?.('delete_all') || 'CLEAR'}
-          </button>
-
-          <button
-            type='button'
-            className='pos-keyboard-key space-key'
-            onClick={() => handleKeyClick(' ')}
-          >
-            {language === 'ru' ? 'ПРОБЕЛ' : 'BO\'SH JOY'}
-          </button>
-
-          <button
-            type='button'
-            className='pos-keyboard-key action-key backspace-key'
-            onClick={onBackspace}
-          >
-            ⌫
-          </button>
-
-          <button
-            type='button'
-            className='pos-keyboard-key action-key enter-key'
-            onClick={onEnter}
-          >
-            {t?.('pos.search_title') || 'ENTER'}
-          </button>
+        {/* Numpad */}
+        <div className='pos-keyboard-numpad'>
+          {numpadRows.map((row, rowIndex) => (
+            <div key={rowIndex} className='pos-keyboard-row numpad-row'>
+              {row.map((key) => (
+                <button
+                  key={key}
+                  type='button'
+                  className='pos-keyboard-key numpad-key'
+                  onClick={() => handleKeyClick(key)}
+                >
+                  {key}
+                </button>
+              ))}
+            </div>
+          ))}
+          <div className='pos-keyboard-row numpad-row'>
+            <button
+              type='button'
+              className='pos-keyboard-key numpad-key numpad-zero-key'
+              onClick={() => handleKeyClick('0')}
+            >
+              0
+            </button>
+          </div>
         </div>
       </div>
     </div>

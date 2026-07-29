@@ -56,6 +56,9 @@ export function useBarcodeScanner({ onScan, enabled = true, blockInputs = false 
     if (event.key === 'Enter') {
       const barcode = bufferRef.current.trim()
       if (barcode.length >= MIN_BARCODE_LENGTH) {
+        // Stop the native click-on-focused-element behavior so a scan can
+        // never replay whatever button last held DOM focus.
+        event.preventDefault()
         onScanRef.current?.(barcode)
       }
       bufferRef.current = ''

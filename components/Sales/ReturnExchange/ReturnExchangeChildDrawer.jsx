@@ -181,7 +181,9 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
       }
 
       const cashierNameStr = `${saleData.employee?.first_name || ''} ${saleData.employee?.last_name || ''}`.trim() || 'Кассир'
-      const paymentType = saleData.sale_payments?.[0]?.payment_type?.name?.toLowerCase() || 'cash'
+      const rawPaymentTypeName = (saleData.sale_payments?.[0]?.payment_type?.name || '').toLowerCase()
+      const cardScheme = rawPaymentTypeName === 'humo' ? 'humo' : rawPaymentTypeName === 'uzcard' ? 'uzcard' : null
+      const paymentType = cardScheme ? 'card' : (rawPaymentTypeName || 'cash')
       let kassaNumber = '-'
       try {
         const savedCashbox = JSON.parse(localStorage.getItem('selected_cashbox') || 'null')
@@ -196,6 +198,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
         kassaNumber,
         paymentType: paymentType,
         isCorporateCard: !!saleData.sale_payments?.[0]?.is_corporate,
+        cardScheme,
         date: saleData.completed_at || new Date().toISOString(),
         items: (saleData.products || []).map((item) => ({
           name: item.name || 'Товар',

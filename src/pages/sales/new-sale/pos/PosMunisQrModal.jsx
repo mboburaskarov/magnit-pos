@@ -144,7 +144,7 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
   return (
     <div className='pos-modal-overlay' role='dialog' aria-modal='true'>
       <div className='pos-app-scan-modal'>
-        <div className='pos-app-scan-title'>Munis</div>
+        <div className='pos-app-scan-title'>UzQR</div>
 
         <div className='pos-app-scan-payment-row'>
           <span className='pos-app-scan-payment-label'>{t('pos.total_compact') || 'Сумма'}:</span>

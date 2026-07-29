@@ -3690,9 +3690,27 @@ body {
 
 .pos-keyboard-keys {
   display: flex;
+  flex-direction: row;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+}
+
+.pos-keyboard-letters {
+  display: flex;
   flex-direction: column;
   gap: 5px;
   flex: 1;
+  min-width: 0;
+}
+
+.pos-keyboard-numpad {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 0 0 auto;
+  border-left: 1px solid #d5d7e2;
+  padding-left: 12px;
 }
 
 .pos-keyboard-row {
@@ -3700,6 +3718,23 @@ body {
   justify-content: center;
   gap: 5px;
   width: 100%;
+}
+
+.pos-keyboard-numpad .pos-keyboard-row {
+  justify-content: flex-start;
+}
+
+.pos-keyboard-key.numpad-key {
+  width: 54px;
+  max-width: 54px;
+  flex: none;
+  font-size: 16px;
+}
+
+.pos-keyboard-key.numpad-zero-key {
+  width: 100%;
+  max-width: 100%;
+  flex: 1;
 }
 
 .pos-keyboard-key {

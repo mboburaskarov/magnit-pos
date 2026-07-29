@@ -134,7 +134,13 @@ export default function POSHeader({
             <Search size={18} />
           </button>
 
-          <button type='button' className='pos-header-btn' onClick={onOpenPrinterSettings} title={t('pos.printer.title')} style={{ position: 'relative' }}>
+          <button
+            type='button'
+            className='pos-header-btn'
+            onClick={(e) => { onOpenPrinterSettings(); setTimeout(() => e.currentTarget?.blur(), 0) }}
+            title={t('pos.printer.title')}
+            style={{ position: 'relative' }}
+          >
             <Printer size={18} />
             {!isAgentRunning && (
               <span

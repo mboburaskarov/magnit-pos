@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './PosLayout.css'
 
-function PosSecurityQrModal({ open, productName, onApprove, onCancel, t }) {
+function PosSecurityQrModal({ open, productName, expectedPassword, descKey = 'pos.security.desc', onApprove, onCancel, t }) {
   const inputRef = useRef(null)
   const [value, setValue] = useState('')
   const [error, setError] = useState('')
@@ -20,13 +20,22 @@ function PosSecurityQrModal({ open, productName, onApprove, onCancel, t }) {
     }
   }, [open])
 
+  const validate = () => {
+    const trimmed = value.trim()
+    if (!trimmed) {
+      setError(t('pos.security.error_short'))
+      return false
+    }
+    if (trimmed !== expectedPassword) {
+      setError(t('pos.security.error_invalid'))
+      return false
+    }
+    return true
+  }
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      if (value.trim().length < 4) {
-        setError(t('pos.security.error_invalid'))
-        return
-      }
-      onApprove(value.trim())
+      if (validate()) onApprove(value.trim())
     }
     if (e.key === 'Escape') {
       onCancel()
@@ -48,9 +57,9 @@ function PosSecurityQrModal({ open, productName, onApprove, onCancel, t }) {
         <div className='pos-security-title'>
           {t('pos.security.title')}
         </div>
-        
+
         <div className='pos-security-desc'>
-          {t('pos.security.desc')}
+          {t(descKey)}
         </div>
 
         {productName && (
@@ -87,11 +96,7 @@ function PosSecurityQrModal({ open, productName, onApprove, onCancel, t }) {
           <button
             type='button'
             onClick={() => {
-              if (value.trim().length < 4) {
-                setError(t('pos.security.error_short'))
-                return
-              }
-              onApprove(value.trim())
+              if (validate()) onApprove(value.trim())
             }}
             className='pos-security-btn-confirm'
           >
