@@ -561,11 +561,39 @@ function CloseShiftPage() {
         console.warn('Failed to load logo for Z-Report:', e)
       }
 
-      const layoutLines = buildZReportReceiptLayout(zrepoData, {
+      let kassaNumber = '-'
+      try {
+        const savedCashbox = JSON.parse(localStorage.getItem('selected_cashbox') || 'null')
+        kassaNumber = savedCashbox?.full_name || savedCashbox?.name || '-'
+      } catch (e) {
+        kassaNumber = '-'
+      }
+
+      const keptAmount = company === '3' ? parseAmount(amounts.closed) : company === '2' ? 0 : counted
+      const givenToCompanyAmount = counted - keptAmount
+
+      const enrichedZrepo = {
+        ...zrepoData,
+        moneyRows: moneyFields.map((f) => ({
+          label: f.label,
+          expected: f.expected,
+          fact: parseAmount(amounts[f.key]),
+          diff: f.diff,
+        })),
+        autoRows: autoRows.map((o) => ({ label: o.label, amount: o.amount })),
+        totalExpected,
+        totalEntered,
+        totalDiff,
+        keptInRegister: keptAmount,
+        givenToCompany: givenToCompanyAmount,
+      }
+
+      const layoutLines = buildZReportReceiptLayout(enrichedZrepo, {
         logoHex,
         name: get(userData, 'store.name'),
         address: get(userData, 'store.address'),
         cashier: `${get(userData, 'first_name', '')} ${get(userData, 'last_name', '')}`.trim(),
+        kassaNumber,
       })
       const res = await axios.post('http://localhost:7788/print/raw-template', { lines: layoutLines })
       if (res.data && res.data.ok) {

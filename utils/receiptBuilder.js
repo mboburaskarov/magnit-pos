@@ -223,6 +223,7 @@ export function buildZReportReceiptLayout(zrepo, storeInfo = {}) {
   }
 
   const lineSeparator = '-'.repeat(WIDTH)
+  const doubleSeparator = '='.repeat(WIDTH)
 
   if (storeInfo?.logoHex) {
     add(storeInfo.logoHex)
@@ -234,7 +235,65 @@ export function buildZReportReceiptLayout(zrepo, storeInfo = {}) {
 
   const storeAddress = storeInfo?.address || "Shayxontohur\nOlmazor MFY, O'qchi ko'chasi 4, 4A-UY"
   storeAddress.split('\n').forEach((line) => add(centerText(line)))
-  add('*'.repeat(WIDTH))
+  add('')
+
+  add('[BOLD_START]')
+  add(centerText('SMENA YOPILISH HISOBOTI'))
+  add('[BOLD_END]')
+  add(lineSeparator)
+
+  if (storeInfo?.kassaNumber) {
+    add(leftRight('Kassa', String(storeInfo.kassaNumber), WIDTH, '.'))
+  }
+  add(leftRight("Do'kon", storeInfo?.name || 'MAGNIT PREMIUM', WIDTH, '.'))
+  if (storeInfo?.cashier) {
+    add(leftRight('Kassir', storeInfo.cashier, WIDTH, '.'))
+  }
+  add(leftRight('Sana', dayjs().format('DD.MM.YYYY'), WIDTH, '.'))
+  add(leftRight('Ochilgan', `${zrepo?.openTime || '-'}`, WIDTH, '.'))
+  add(leftRight('Yopilgan', `${zrepo?.closeTime || '-'}`, WIDTH, '.'))
+  add(lineSeparator)
+
+  // Per-payment-type reconciliation: cash/Uzcard/Humo are physically re-counted
+  // by the cashier (kutilgan/fakt/farq); Click/Payme/Uzum/UzQR are auto-trusted.
+  add('[BOLD_START]')
+  add(centerText("TO'LOV TURLARI BO'YICHA HISOBOT"))
+  add('[BOLD_END]')
+  add(lineSeparator)
+
+  const moneyRows = zrepo?.moneyRows || []
+  moneyRows.forEach((row) => {
+    add(leftRight(row.label, formatMoneyWithoutSuffix(row.expected), WIDTH, '.'))
+    add(leftRight('  Fakt', formatMoneyWithoutSuffix(row.fact), WIDTH, '.'))
+    const diffSign = row.diff > 0 ? '+' : row.diff < 0 ? '-' : ''
+    const diffLabel = row.diff > 0 ? '  Farq (ortiqcha)' : row.diff < 0 ? '  Farq (kamomad)' : '  Farq'
+    add(leftRight(diffLabel, `${diffSign}${formatMoneyWithoutSuffix(Math.abs(row.diff))}`, WIDTH, '.'))
+    add(lineSeparator)
+  })
+
+  const autoRows = zrepo?.autoRows || []
+  autoRows.forEach((row) => {
+    add(leftRight(`${row.label} (avto)`, formatMoneyWithoutSuffix(row.amount), WIDTH, '.'))
+  })
+  add(doubleSeparator)
+
+  add('[BOLD_START]')
+  add(leftRight('JAMI (kutilgan)', formatMoneyWithoutSuffix(zrepo?.totalExpected), WIDTH, '.'))
+  add('[BOLD_END]')
+  add(leftRight('JAMI (fakt)', formatMoneyWithoutSuffix(zrepo?.totalEntered), WIDTH, '.'))
+  const totalDiff = Number(zrepo?.totalDiff || 0)
+  const totalDiffSign = totalDiff > 0 ? '+' : totalDiff < 0 ? '-' : ''
+  add('[BOLD_START]')
+  add(leftRight('Umumiy farq', `${totalDiffSign}${formatMoneyWithoutSuffix(Math.abs(totalDiff))}`, WIDTH, '.'))
+  add('[BOLD_END]')
+  add(lineSeparator)
+
+  add('[BOLD_START]')
+  add(centerText('NAQD PULNING TAQSIMOTI'))
+  add('[BOLD_END]')
+  add(leftRight('Kassada qoldi', formatMoneyWithoutSuffix(zrepo?.keptInRegister), WIDTH, '.'))
+  add(leftRight('Kompaniyaga berildi', formatMoneyWithoutSuffix(zrepo?.givenToCompany), WIDTH, '.'))
+  add(lineSeparator)
 
   const formatVal = (val, divide = true) => {
     if (val === undefined || val === null || val === '-') return '-'
@@ -244,16 +303,9 @@ export function buildZReportReceiptLayout(zrepo, storeInfo = {}) {
     return finalNum.toFixed(2)
   }
 
-  if (storeInfo?.cashier) {
-    add(leftRight(`KASSIR:`, storeInfo.cashier, WIDTH, '.'))
-  }
-  add(leftRight(`ID TERMINALI:`, `#${zrepo?.terminalID || ''}`, WIDTH, '.'))
-  add(leftRight(`OCHILISH VAQTI:`, `${zrepo?.openTime || ''}`, WIDTH, '.'))
-  add(leftRight(`YOPILISH VAQTI:`, `${zrepo?.closeTime || ''}`, WIDTH, '.'))
-  add(leftRight(`RAQAM:`, `+${zrepo?.number || '-'}`, WIDTH, '.'))
-  add(leftRight(`SONI:`, `${zrepo?.count || ''}`, WIDTH, '.'))
-  add(leftRight(`JAMI CHEKLAR:`, `${zrepo?.totalSaleCount || ''}`, WIDTH, '.'))
-  const totalSumLabel = 'JAMI SUMMA:'
+  add(centerText("Fiskal Ma'lumotlar"))
+  add(leftRight('ID terminali', `#${zrepo?.terminalID || ''}`, WIDTH, '.'))
+  add(leftRight('Cheklar soni', `${zrepo?.totalSaleCount || ''}`, WIDTH, '.'))
 
   const totalSaleCash = Number(zrepo?.totalSaleCash || 0)
   const totalSaleCard = Number(zrepo?.totalSaleCard || 0)
@@ -264,17 +316,14 @@ export function buildZReportReceiptLayout(zrepo, storeInfo = {}) {
   const totalReturns = totalRefundCash + totalRefundCard
   const netTotal = totalSales - totalReturns
 
-  add(leftRight(totalSumLabel, `${formatVal(netTotal)}`, WIDTH, '.'))
-  add(leftRight(`JAMI KARTA:`, `${formatVal(zrepo?.totalSaleCard)}`, WIDTH, '.'))
-  add(leftRight(`JAMI NAQD:`, `${formatVal(zrepo?.totalSaleCash)}`, WIDTH, '.'))
-  add(leftRight(`JAMI QQS:`, `${formatVal(zrepo?.totalSaleVAT)}`, WIDTH, '.'))
-  add(leftRight(`JAMI QAYTARISHLAR:`, `${formatVal(zrepo?.totalRefundCount)}`, WIDTH, '.'))
-  add(leftRight(`QAYTARISH NAQD:`, `${formatVal(zrepo?.totalRefundCash)}`, WIDTH, '.'))
-  add(leftRight(`QAYTARISH KARTA:`, `${formatVal(zrepo?.totalRefundCard)}`, WIDTH, '.'))
-  add(leftRight(`QAYTARISH QQS:`, `${formatVal(zrepo?.totalRefundVAT)}`, WIDTH, '.'))
-  add(leftRight(`LastReceiptsed:`, `${zrepo?.lastReceiptSeq || '-'}`, WIDTH, '.'))
-  add(leftRight(`FirstReceiptSeq:`, `${zrepo?.firstReceiptSeq || '-'}`, WIDTH, '.'))
-  add(leftRight(`AppletVersion:`, `${zrepo?.appletVersion || '-'}`, WIDTH, '.'))
+  add(leftRight('Fiskal summa (jami)', `${formatVal(netTotal)}`, WIDTH, '.'))
+  add(leftRight('  shu j. karta', `${formatVal(zrepo?.totalSaleCard)}`, WIDTH, '.'))
+  add(leftRight('  shu j. naqd', `${formatVal(zrepo?.totalSaleCash)}`, WIDTH, '.'))
+  add(leftRight('  shu j. QQS', `${formatVal(zrepo?.totalSaleVAT)}`, WIDTH, '.'))
+  add(leftRight('Qaytarishlar soni', `${formatVal(zrepo?.totalRefundCount)}`, WIDTH, '.'))
+  add(leftRight('  qaytarish naqd', `${formatVal(zrepo?.totalRefundCash)}`, WIDTH, '.'))
+  add(leftRight('  qaytarish karta', `${formatVal(zrepo?.totalRefundCard)}`, WIDTH, '.'))
+  add(leftRight('  qaytarish QQS', `${formatVal(zrepo?.totalRefundVAT)}`, WIDTH, '.'))
 
   add(lineSeparator)
   add(centerText("Smena yopilish otchyoti, kompyuter vaqti"))
