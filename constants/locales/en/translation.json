@@ -472,6 +472,8 @@
   "pos.printer.error_prefix": "Error: ",
   "pos.printer.test_sent": "Test receipt sent!",
   "pos.printer.print_error": "Error printing receipt.",
+  "pos.printer.printing_in_progress": "Printing receipt...",
+  "pos.printer.printing_in_progress_hint": "Please wait, the printer is printing the receipt",
   "pos.printer.print_error_prefix": "Print error: ",
   "pos.printer.drawer_signal_sent": "Cash drawer open signal sent!",
   "pos.printer.drawer_open_error": "Error opening drawer.",

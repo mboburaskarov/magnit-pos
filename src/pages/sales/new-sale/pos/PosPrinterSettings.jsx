@@ -53,6 +53,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
   const dummyData = {
     saleId: "00084874",
     cashier: "Amirsaidov Muhammadiso",
+    kassaNumber: "5",
     date: new Date().toISOString(),
     items: [
       { name: "FANTA 0.25 STKL (24)", mxik: "00902001002008001", qty: 1, price: 9900, total: 9900, vatPercent: 12, vatAmount: 1060.71 },

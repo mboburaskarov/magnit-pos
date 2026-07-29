@@ -85,11 +85,20 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
 
       const cashierNameStr = `${saleData.employee?.first_name || ''} ${saleData.employee?.last_name || ''}`.trim() || 'Кассир'
       const paymentType = saleData.sale_payments?.[0]?.payment_type?.name?.toLowerCase() || 'cash'
+      let kassaNumber = '-'
+      try {
+        const savedCashbox = JSON.parse(localStorage.getItem('selected_cashbox') || 'null')
+        kassaNumber = savedCashbox?.full_name || savedCashbox?.name || '-'
+      } catch (e) {
+        kassaNumber = '-'
+      }
 
       const payloadData = {
         saleId: String(saleData.sale_number || ''),
         cashier: cashierNameStr,
+        kassaNumber,
         paymentType: paymentType,
+        isCorporateCard: !!saleData.sale_payments?.[0]?.is_corporate,
         date: saleData.completed_at || new Date().toISOString(),
         items: (saleData.products || []).map((prod) => ({
           name: prod.name || 'Товар',

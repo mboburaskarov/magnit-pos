@@ -15,8 +15,8 @@ export default function ReceiptPreviewCanvas({ lines }) {
     const marginX = 20
     const marginY = 20
     
-    // We assume width is 40 chars
-    const canvasWidth = 40 * charWidth + marginX * 2
+    // We assume width is 48 chars (80mm paper standard)
+    const canvasWidth = 48 * charWidth + marginX * 2
     
     // Calculate required height based on lines
     let requiredHeight = marginY * 2

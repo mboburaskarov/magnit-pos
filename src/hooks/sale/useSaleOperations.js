@@ -461,7 +461,7 @@ export const useSaleOperations = ({
         companyAddress: get(userData, 'store.address') || 'Tashkent, Uqchi Street, 4',
         companyINN: '305445201',
         staffName: get(userData, 'full_name'),
-        printerSize: 58,
+        printerSize: 80,
         phoneNumber: get(userData, 'store.phone'),
         companyPhoneNumber: '+998712916999',
         is_corporate: cartOwnerType === 'corporative',

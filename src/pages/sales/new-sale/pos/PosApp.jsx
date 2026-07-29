@@ -60,6 +60,7 @@ export default function PosApp() {
       return ''
     }
   })
+  const [isPrintingReceipt, setIsPrintingReceipt] = useState(false)
   const [showCashierSession, setShowCashierSession] = useState(false)
   const [cashierSessionInitialView, setCashierSessionInitialView] = useState('options')
   const [showPrinterSettings, setShowPrinterSettings] = useState(false)
@@ -1343,6 +1344,7 @@ export default function PosApp() {
     const finalNewSaleId = newSaleId
     const isPostPayment = !!finalNewSaleId
 
+    setIsPrintingReceipt(true)
     try {
       let logoHex = null
       try {
@@ -1363,7 +1365,9 @@ export default function PosApp() {
       const payloadData = {
         saleId: String(cashBoxDetails?.data?.data?.sale_number || finalNewSaleId || id || ''),
         cashier: cashierNameStr,
+        kassaNumber: cashboxName || '-',
         paymentType: paymentType,
+        isCorporateCard: qrcodeUrl.cardType === 'corporative',
         date: new Date().toISOString(),
         items: cartItems.map((item) => ({
           name: item.name || 'Товар',
@@ -1416,7 +1420,7 @@ export default function PosApp() {
         }
       }
 
-      const res = await axios.post(`${activeAgentUrl}/print/raw-template`, reqPayload)
+      const res = await axios.post(`${activeAgentUrl}/print/raw-template`, reqPayload, { timeout: 20000 })
       if (res.data && res.data.ok) {
         success(t('pos.printer.receipt_printed'))
       } else {
@@ -1426,13 +1430,15 @@ export default function PosApp() {
       console.error('Failed to print receipt locally:', err)
       error(t('pos.printer.no_response'))
     } finally {
-      if (isPostPayment) {
-        await handleSaleTransition(finalNewSaleId)
-      } else {
-        setNewSaleId(false)
-        resetPaymentState()
-        setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
-      }
+      setIsPrintingReceipt(false)
+    }
+
+    if (isPostPayment) {
+      await handleSaleTransition(finalNewSaleId)
+    } else {
+      setNewSaleId(false)
+      resetPaymentState()
+      setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
     }
   }
 
@@ -1982,6 +1988,24 @@ export default function PosApp() {
               isSearching={isSearchingCustomers}
               t={t}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Receipt printing overlay: must stay open for the full duration of the print request, not just the sale/fiscal step */}
+      {isPrintingReceipt && (
+        <div className="touch-modal-overlay">
+          <div className="pos-print-loading-card">
+            <div className="pos-print-loading-spinner" />
+            <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--pos-text-primary, #111217)' }}>
+              {t('pos.printer.printing_in_progress')}
+            </div>
+            <div style={{ fontSize: '13px', color: 'var(--pos-text-secondary, #6f6f6f)' }}>
+              {t('pos.printer.printing_in_progress_hint')}
+            </div>
+            <div className="pos-print-loading-bar-track">
+              <div className="pos-print-loading-bar-fill" />
+            </div>
           </div>
         </div>
       )}

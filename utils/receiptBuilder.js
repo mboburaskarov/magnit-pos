@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-const WIDTH = 40
+const WIDTH = 48
 
 export function formatMoneyWithoutSuffix(val) {
   const num = Number(val || 0)
@@ -108,12 +108,13 @@ export function buildReceiptLayout(req, storeInfo = {}) {
     add('[BOLD_END]')
   }
   storeAddress.split('\n').forEach((line) => add(centerText(line)))
-  add('*'.repeat(WIDTH))
+  add('')
 
-  add(leftRight(`PM №1`, `Sotuvchi: ${req.cashier || 'Kassir'}`))
   const dateObj = req.date ? dayjs(req.date) : dayjs()
-  add(leftRight(`Sotuv №${req.saleId}`, `Smena №${req.shiftNumber || '1'}`))
+  add(`Kassir: ${req.cashier || 'Kassir'}`)
+  add(leftRight(`Savdo cheki №${req.saleId}`, `Kassa №${req.kassaNumber || '-'}`))
   add(leftRight(`Sana: ${dateObj.format('DD.MM.YY')}`, `Vaqt: ${dateObj.format('HH:mm:ss')}`))
+  add(`Smena №${req.shiftNumber || '1'}`)
   add(lineSeparator)
 
   let calculatedVatTotal = 0
@@ -164,7 +165,7 @@ export function buildReceiptLayout(req, storeInfo = {}) {
   add('Tolov')
   let payTypeLabel = '  Aralash'
   if (req.paymentType === 'card' || req.paymentType === 'cardless') {
-    payTypeLabel = '  Karta'
+    payTypeLabel = req.isCorporateCard ? '  Korporativ karta' : '  Karta'
   } else if (req.paymentType === 'cash') {
     payTypeLabel = '  Naqd'
   } else if (req.paymentType === 'click') {
@@ -194,12 +195,15 @@ export function buildReceiptLayout(req, storeInfo = {}) {
   }
   add(leftRight('Check raqami', req.saleId, WIDTH, '.'))
 
+  add(lineSeparator)
+  add('[BOLD_START]')
+  add(centerText('Xaridingiz uchun rahmat!'))
+  add('[BOLD_END]')
+
   if (req.qrData) {
     add(`[QR:${req.qrData}]`)
   }
 
-  add(lineSeparator)
-  add(centerText('***** Xaridingiz uchun raxmat !!! *****'))
   add('[CUT]')
 
   return lines
