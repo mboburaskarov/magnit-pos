@@ -164,8 +164,9 @@ export function buildReceiptLayout(req, storeInfo = {}) {
 
   add('Tolov')
   let payTypeLabel = '  Aralash'
-  if (req.paymentType === 'card' || req.paymentType === 'cardless') {
-    payTypeLabel = req.isCorporateCard ? '  Korporativ karta' : '  Karta'
+  const isCardPayment = req.paymentType === 'card' || req.paymentType === 'cardless'
+  if (isCardPayment) {
+    payTypeLabel = '  Karta'
   } else if (req.paymentType === 'cash') {
     payTypeLabel = '  Naqd'
   } else if (req.paymentType === 'click') {
@@ -176,6 +177,10 @@ export function buildReceiptLayout(req, storeInfo = {}) {
     payTypeLabel = '  Uzum'
   }
   add(leftRight(payTypeLabel, '=' + formatMoney(req.paidAmount), WIDTH, '.'))
+
+  if (isCardPayment && req.isCorporateCard) {
+    add(leftRight('  Karta turi', 'korporativ', WIDTH, '.'))
+  }
 
   if (req.changeAmount > 0) {
     add(leftRight('  Qaytim', formatMoney(req.changeAmount), WIDTH, '.'))

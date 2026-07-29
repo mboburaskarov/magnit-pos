@@ -60,7 +60,6 @@ export default function PosApp() {
       return ''
     }
   })
-  const [isPrintingReceipt, setIsPrintingReceipt] = useState(false)
   const [showCashierSession, setShowCashierSession] = useState(false)
   const [cashierSessionInitialView, setCashierSessionInitialView] = useState('options')
   const [showPrinterSettings, setShowPrinterSettings] = useState(false)
@@ -1344,7 +1343,6 @@ export default function PosApp() {
     const finalNewSaleId = newSaleId
     const isPostPayment = !!finalNewSaleId
 
-    setIsPrintingReceipt(true)
     try {
       let logoHex = null
       try {
@@ -1430,15 +1428,13 @@ export default function PosApp() {
       console.error('Failed to print receipt locally:', err)
       error(t('pos.printer.no_response'))
     } finally {
-      setIsPrintingReceipt(false)
-    }
-
-    if (isPostPayment) {
-      await handleSaleTransition(finalNewSaleId)
-    } else {
-      setNewSaleId(false)
-      resetPaymentState()
-      setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
+      if (isPostPayment) {
+        await handleSaleTransition(finalNewSaleId)
+      } else {
+        setNewSaleId(false)
+        resetPaymentState()
+        setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
+      }
     }
   }
 
@@ -1988,24 +1984,6 @@ export default function PosApp() {
               isSearching={isSearchingCustomers}
               t={t}
             />
-          </div>
-        </div>
-      )}
-
-      {/* Receipt printing overlay: must stay open for the full duration of the print request, not just the sale/fiscal step */}
-      {isPrintingReceipt && (
-        <div className="touch-modal-overlay">
-          <div className="pos-print-loading-card">
-            <div className="pos-print-loading-spinner" />
-            <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--pos-text-primary, #111217)' }}>
-              {t('pos.printer.printing_in_progress')}
-            </div>
-            <div style={{ fontSize: '13px', color: 'var(--pos-text-secondary, #6f6f6f)' }}>
-              {t('pos.printer.printing_in_progress_hint')}
-            </div>
-            <div className="pos-print-loading-bar-track">
-              <div className="pos-print-loading-bar-fill" />
-            </div>
           </div>
         </div>
       )}

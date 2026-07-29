@@ -472,8 +472,6 @@
   "pos.printer.error_prefix": "Xatolik: ",
   "pos.printer.test_sent": "Test cheki yuborildi!",
   "pos.printer.print_error": "Chekni chop etishda xatolik.",
-  "pos.printer.printing_in_progress": "Chek chop etilmoqda...",
-  "pos.printer.printing_in_progress_hint": "Iltimos kuting, printer chekni chiqarmoqda",
   "pos.printer.print_error_prefix": "Chop etishda xatolik: ",
   "pos.printer.drawer_signal_sent": "Pul qutisini ochish signali yuborildi!",
   "pos.printer.drawer_open_error": "Qutini ochishda xatolik.",

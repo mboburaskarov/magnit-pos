@@ -576,8 +576,6 @@
   "pos.printer.error_prefix": "Ошибка: ",
   "pos.printer.test_sent": "Тестовый чек отправлен!",
   "pos.printer.print_error": "Ошибка печати чека.",
-  "pos.printer.printing_in_progress": "Чек печатается...",
-  "pos.printer.printing_in_progress_hint": "Пожалуйста, подождите, принтер печатает чек",
   "pos.printer.print_error_prefix": "Ошибка печати: ",
   "pos.printer.drawer_signal_sent": "Сигнал открытия денежного ящика отправлен!",
   "pos.printer.drawer_open_error": "Ошибка открытия ящика.",
