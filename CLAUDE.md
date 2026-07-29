@@ -24,6 +24,6 @@ This is a touchscreen POS terminal app. Every screen, page, and dialog **must** 
 
 ## Receipt printer target (mandatory)
 
-Our receipt (check) printers use **80mm paper**, not 58mm. When editing the receipt template (`utils/receiptBuilder.js`, `components/ReceiptPreviewCanvas.jsx`), lay text out for 80mm-wide paper (48-column monospace at the printer's default font), not the narrower 58mm width.
+Our receipt (check) printers use **58mm paper**. When editing the receipt template (`utils/receiptBuilder.js`, `components/ReceiptPreviewCanvas.jsx`), lay text out for 58mm-wide paper (40-column monospace at the printer's default font). A prior attempt to switch this to 80mm/48-column broke real printouts (font enlarged and wrapped onto a second line), and was reverted — do not redo that change without confirming on real hardware first.
 
 Note: the actual ESC/POS rendering (font, bold, QR module size, cut) is performed by a separate local native print agent app (`http://localhost:7788` / `:7777`, launched via the `magnitposprinter://` URL scheme) that is **not part of this repository**. This repo only builds a text/tag protocol (`[BOLD_START]`, `[BOLD_END]`, `[QR:data]`, `[HEX:...]`, `[CUT]`) and POSTs it to that agent's `/print/raw-template` endpoint. Physical sizing quirks (paper width, QR pixel size) that persist after a template change may require changes in that external agent, not here.

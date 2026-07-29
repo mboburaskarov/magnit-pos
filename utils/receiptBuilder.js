@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-const WIDTH = 48
+const WIDTH = 40
 
 export function formatMoneyWithoutSuffix(val) {
   const num = Number(val || 0)
