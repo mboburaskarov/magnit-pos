@@ -1,6 +1,7 @@
 import { debounce } from '@mui/material'
 import axios from 'axios'
 import { error } from '../toast'
+import { bypassNextAppExit } from '@hooks/useExitConfirm'
 
 const debouncedShowNotification = debounce(() => error('Нет соединения'), 2000)
 
@@ -91,6 +92,7 @@ request.interceptors.response.use(
     if (err.response.status === 401 || err.response.status === 403) {
       // localStorage.clear()
       localStorage.removeItem('access_token')
+      bypassNextAppExit()
       window.location.replace('/login')
     }
 

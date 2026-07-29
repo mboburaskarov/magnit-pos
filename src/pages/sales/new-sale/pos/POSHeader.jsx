@@ -25,6 +25,7 @@ export default function POSHeader({
   onTempLogout,
   onCloseSession,
   receiptNumber,
+  isReturnSale,
   onOpenPrinterSettings,
   isAgentRunning,
   onHardRefresh,
@@ -111,6 +112,12 @@ export default function POSHeader({
             <span className='status-label'>{t('pos.receipt_id')}:</span>
             <span className='status-val'>{receiptNumber}</span>
           </div>
+          {isReturnSale && (
+            <>
+              <div className='pos-header-divider'></div>
+              <span className='pos-header-return-badge'>{t('pos.return.item_badge')}</span>
+            </>
+          )}
           <div className='pos-header-divider'></div>
           <div className='pos-status-item'>
             <User size={14} style={{ marginRight: 6, color: '#9CA3AF' }} />

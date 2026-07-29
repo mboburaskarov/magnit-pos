@@ -1,5 +1,6 @@
 import { Box, Button, Typography } from '@mui/material'
 import { useState } from 'react'
+import { bypassNextAppExit } from '@hooks/useExitConfirm'
 
 export default function ErrorPage({ errorData }) {
   const [isVIsible, setIsVIsible] = useState(false)
@@ -26,7 +27,13 @@ export default function ErrorPage({ errorData }) {
           <Typography style={{ marginBottom: 16 }} variant='h5'>
             Sorry something went wrong
           </Typography>
-          <Button onClick={() => window.location.replace('/')} primary>
+          <Button
+            onClick={() => {
+              bypassNextAppExit()
+              window.location.replace('/')
+            }}
+            primary
+          >
             Reload
           </Button>
         </Box>
@@ -45,7 +52,13 @@ export default function ErrorPage({ errorData }) {
                 <Typography variant='h1' color='primary' style={{ fontSize: 48, lineHeight: '56px' }}>
                   Error message MAGNIT
                 </Typography>
-                <Button onClick={() => window.location.reload()} primary>
+                <Button
+                  onClick={() => {
+                    bypassNextAppExit()
+                    window.location.reload()
+                  }}
+                  primary
+                >
                   Reload
                 </Button>
               </Box>

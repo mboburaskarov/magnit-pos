@@ -1,5 +1,6 @@
 import { Box, Button, Typography } from '@mui/material'
 import CustomImg from '../../components/CustomImg'
+import { bypassNextAppExit } from '@hooks/useExitConfirm'
 
 export default function ErrorPageLocal({ errorData }) {
   const error = errorData?.error.stack.split(' at ')
@@ -27,7 +28,13 @@ export default function ErrorPageLocal({ errorData }) {
             <Typography variant='h1' color='primary' style={{ fontSize: 48, lineHeight: '56px' }}>
               Error message &quot;MAGNIT&quot;
             </Typography>
-            <Button onClick={() => window.location.reload()} primary>
+            <Button
+              onClick={() => {
+                bypassNextAppExit()
+                window.location.reload()
+              }}
+              primary
+            >
               Reload
             </Button>
           </Box>

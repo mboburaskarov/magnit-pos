@@ -120,6 +120,21 @@ body {
   gap: 8px;
 }
 
+.pos-header-return-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background-color: var(--pos-danger);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 .pos-status-pulse {
   width: 8px;
   height: 8px;
@@ -2061,6 +2076,28 @@ body {
 
 .pos-security-btn-confirm:hover {
   background-color: #c7332c;
+}
+
+.pos-zreport-btn-confirm {
+  flex: 1;
+  height: 50px;
+  border-radius: var(--pos-radius-md);
+  border: none;
+  background-color: var(--pos-success);
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pos-zreport-btn-confirm:hover:not(:disabled) {
+  background-color: #17803f;
+}
+
+.pos-zreport-btn-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .pos-security-help {

@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux'
 import { error, success } from '@utils/toast'
 import { requests } from '@utils/requests'
 import InputPassword from '@components/Inputs/InputPasswordNew'
+import { bypassNextAppExit } from '@hooks/useExitConfirm'
 import { get } from 'lodash'
 
 export default function CashierSessionModal({
@@ -48,6 +49,7 @@ export default function CashierSessionModal({
     onSuccess: ({ data }) => {
       localStorage.setItem('access_token', get(data, 'data.access_token'))
       success(t('menu.sales.shortcuts.change_shift') || 'Cмена изменена')
+      bypassNextAppExit()
       location.reload()
       onClose()
     },

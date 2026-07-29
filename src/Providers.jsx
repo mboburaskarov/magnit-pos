@@ -29,6 +29,7 @@ import { use } from 'react'
 import i18n from './i18n'
 import { I18nextProvider } from 'react-i18next'
 import WebSocketProvider from './context/WebSocketContext'
+import ExitConfirmProvider from './context/ExitConfirmContext'
 import WebviewProvider from './layouts/WebviewProvider'
 
 const queryClient = new QueryClient({
@@ -91,7 +92,9 @@ function Providers({ children }) {
               <ThemeProvider theme={muiTheme}>
                 <StyledEngineProvider injectFirst>
                   <ErrorBoundary>
-                    <WebviewProvider>{children}</WebviewProvider>
+                    <WebviewProvider>
+                      <ExitConfirmProvider>{children}</ExitConfirmProvider>
+                    </WebviewProvider>
                   </ErrorBoundary>
                 </StyledEngineProvider>
               </ThemeProvider>

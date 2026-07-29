@@ -8,6 +8,7 @@ import { Box, Button } from '@mui/material';
 import { requests } from '@utils/requests';
 import { useSelector } from 'react-redux';
 import CloseIcon from '@icons/CloseIcon';
+import { bypassNextAppExit } from '@hooks/useExitConfirm';
 import { useTheme } from '@mui/styles';
 import { useEffect } from 'react';
 import { get } from 'lodash';
@@ -30,6 +31,7 @@ export default function ChangeShift({ open, setOpen }) {
   const { mutate: createShift, isLoading: iscreateShift } = useMutation(requests.createShift, {
     onSuccess: ({ data }) => {
       localStorage.setItem('access_token', get(data, 'data.access_token'))
+      bypassNextAppExit()
       location.reload()
       setOpen(false)
 

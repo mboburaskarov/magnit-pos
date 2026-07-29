@@ -12,6 +12,7 @@ import { useReactToPrint } from 'react-to-print'
 import axios from 'axios'
 import CloseIcon from '../../../src/assets/icons/CloseIcon'
 import LeftArrowIcon from '../../../src/assets/icons/LeftArrow'
+import { bypassNextAppExit } from '../../../src/hooks/useExitConfirm'
 import { requests } from '../../../utils/requests'
 import thousandDivider from '../../../utils/thousandDivider'
 import { error, success } from '../../../utils/toast'
@@ -66,7 +67,6 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
   const userData = useSelector((state) => state.user)
   const [selectedReturnItems, setSelectedReturnItems] = useState([])
   const [returnedSale, setReturnedSale] = useState(null)
-  const [returnedSaleId, setReturnedSaleId] = useState(null)
 
   const documentName = useRef('Cheque')
   const navigate = useNavigate()
@@ -109,29 +109,11 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
     documentTitle: documentName.current,
     removeAfterPrint: true,
     onAfterPrint: () => {
-      if (returnedSale?.isDuplicatePrint) {
-        setReturnedSale(null)
-        return
-      }
-      setChildOpen(false)
-      setOpen(false)
-      if (returnedSaleId) {
-        navigate(`/sales/pos/${returnedSaleId}`)
-        window.location.reload()
-      }
+      setReturnedSale(null)
     },
     onPrintError: (err) => {
       error('Ошибка при печати чека: ' + err)
-      if (returnedSale?.isDuplicatePrint) {
-        setReturnedSale(null)
-        return
-      }
-      setChildOpen(false)
-      setOpen(false)
-      if (returnedSaleId) {
-        navigate(`/sales/pos/${returnedSaleId}`)
-        window.location.reload()
-      }
+      setReturnedSale(null)
     }
   })
 
@@ -145,19 +127,6 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
 
   const classes = useStyles()
 
-  const { mutate: returnSaleItem, isLoading: isreturnSaleItem } = useMutation(requests.returnSaleItem, {
-    onSuccess: ({ data }) => {
-      const resData = get(data, 'data')
-      setReturnedSale(resData)
-      setReturnedSaleId(resData?.id)
-      success('Возврат успешно создан!')
-    },
-    onError: (err) => {
-      error('Ошибка при создании возврата!')
-      console.error('err', err)
-    },
-  })
-
   const {
     data: darftChildList,
     refetch,
@@ -167,6 +136,31 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
   useEffect(() => {
     refetch()
   }, [open])
+
+  const finishReturn = (returnedSaleId) => {
+    setChildOpen(false)
+    setOpen(false)
+    if (returnedSaleId) {
+      navigate(`/sales/pos/${returnedSaleId}`)
+      bypassNextAppExit()
+      window.location.reload()
+    }
+  }
+
+  // Printing happens on demand only (via "Повторный чек", which already
+  // prints the finalized return correctly) — not automatically right after
+  // the return record is created.
+  const { mutate: returnSaleItem, isLoading: isreturnSaleItem } = useMutation(requests.returnSaleItem, {
+    onSuccess: ({ data }) => {
+      const resData = get(data, 'data')
+      success(t('pos.return.success_toast'))
+      finishReturn(resData?.id)
+    },
+    onError: (err) => {
+      error(t('pos.return.error_toast'))
+      console.error('err', err)
+    },
+  })
 
   const handleDuplicatePrint = async () => {
     const saleData = get(darftChildList, 'data.data')
@@ -214,7 +208,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
         paidAmount: Number(saleData.total_amount || 0),
         changeAmount: 0,
         vatAmount: Number(saleData.vat_sum || 0),
-        chequeType: 'sale',
+        chequeType: saleData.sale_type === 'RETURN' ? 'return' : 'sale',
         fiscalSign: saleData.fiscal_sign || '',
         fiscalNumber: saleData.terminal_id || '',
         fiscalDate: saleData.completed_at || '',

@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
+import { useTranslation } from 'react-i18next'
 import thousandDivider from '../../../utils/thousandDivider'
 
 const useStyles = makeStyles((theme) => ({
@@ -14,20 +15,23 @@ const useStyles = makeStyles((theme) => ({
 
 function ReturnExchangeChildItemBox({ item, selectedReturnItems, selectReturnItem, open }) {
   const classes = useStyles()
+  const { t } = useTranslation()
   const bonusAmount = Number(get(item, 'bonus_amount', 0))
   const showBonus = bonusAmount > 0
+  const isSelectedForReturn = selectedReturnItems.some((e) => e?.id == item?.store_product_id)
 
   return (
     <Box display={'flex'} mb={'10px'} height={'68px'} justifyContent={'space-between'}>
-      <Box 
-        borderRadius={'8px'} 
-        p={'8px 16px'} 
-        bgcolor={'bg.10'} 
-        mr={showBonus ? '8px' : '0px'} 
-        display={'flex'} 
-        width={'100%'} 
-        justifyContent={'space-between'} 
+      <Box
+        borderRadius={'8px'}
+        p={'8px 16px'}
+        bgcolor={isSelectedForReturn ? 'red.50' : 'bg.10'}
+        mr={showBonus ? '8px' : '0px'}
+        display={'flex'}
+        width={'100%'}
+        justifyContent={'space-between'}
         alignItems={'center'}
+        sx={isSelectedForReturn ? { border: '1px solid', borderColor: 'red.300' } : undefined}
       >
         <Box display={'flex'} width={'100%'} alignItems={'center'}>
           <Box
@@ -42,14 +46,14 @@ function ReturnExchangeChildItemBox({ item, selectedReturnItems, selectReturnIte
               <input
                 onChange={(e) => selectReturnItem(e, item)}
                 name='checkbox_zero'
-                checked={selectedReturnItems.some((e) => e?.id == item?.store_product_id)}
+                checked={isSelectedForReturn}
                 className='customCheckbox'
                 type='checkbox'
               />
             )}
           </Box>
           <Box display={'flex'} flexDirection={'column'} width={'100%'}>
-            <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+            <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} gap={'8px'}>
               <Typography
                 sx={{
                   display: '-webkit-box',
@@ -65,6 +69,23 @@ function ReturnExchangeChildItemBox({ item, selectedReturnItems, selectReturnIte
               >
                 {get(item, 'name')}
               </Typography>
+              {isSelectedForReturn && (
+                <Typography
+                  sx={{
+                    flexShrink: 0,
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    color: '#ffffff',
+                    bgcolor: 'red.600',
+                    px: '8px',
+                    py: '2px',
+                    borderRadius: '999px',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {t('pos.return.item_badge')}
+                </Typography>
+              )}
             </Box>
             <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} mt={'2px'}>
               <Typography fontSize={'12px'} fontWeight={'500'} color={'bunker.500'}>
