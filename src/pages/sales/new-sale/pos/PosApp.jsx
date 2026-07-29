@@ -182,7 +182,7 @@ export default function PosApp() {
     data: cartItemsRes,
     refetch: refetchCart,
     isLoading: isCartLoading,
-  } = useQuery(['cartItemsList', id], () => requests.getCartItemList({ sale_id: id, limit: 100, offset: 0 }), {
+  } = useQuery(['cartItemsList', id], () => requests.getCartItemList({ sale_id: id, limit: 1000, offset: 0 }), {
     onError: (e) => {
       if (get(e, 'response.data.code') == '409') {
         navigate('/sales/create')
