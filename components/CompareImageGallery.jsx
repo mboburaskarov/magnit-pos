@@ -8,8 +8,10 @@ import getImageUrl from '../utils/getImageUrl'
 import { error } from '../utils/toast'
 import CustomImg from './CustomImg'
 import StyledTooltip from './StyledTooltip'
+import { useTranslation } from 'react-i18next'
 
 const OneSideOfCompare = ({ imagesArr = [], right, backgroundBlack }) => {
+  const { t } = useTranslation()
   if (!Array.isArray(imagesArr) || imagesArr.length === 0) return null
   const [count, setCount] = useState(0)
 
@@ -18,13 +20,9 @@ const OneSideOfCompare = ({ imagesArr = [], right, backgroundBlack }) => {
       <Box position='relative' display='flex' alignItems='center' flexDirection='column'>
         <Typography sx={{ fontSize: 24, fontWeight: 600, color: backgroundBlack ? 'common.white' : 'green.600', mb: 5 }}>
           <Typography fontSize={20} variant='span' color={backgroundBlack ? 'common.white' : 'gray.600'}>
-            {right ? 'Фото продукта: ' : 'Фото заказа: '}
+            {right ? t('pos.photo_of_product') : t('pos.photo_of_order')}{' '}
           </Typography>
-          {count + 1}{' '}
-          <Typography fontSize={20} variant='span' color={backgroundBlack ? 'common.white' : 'gray.600'}>
-            из{' '}
-          </Typography>
-          {imagesArr.length}
+          {t('pos.image_counter', { current: count + 1, total: imagesArr.length })}
         </Typography>
         <Box
           sx={{
@@ -81,14 +79,14 @@ const OneSideOfCompare = ({ imagesArr = [], right, backgroundBlack }) => {
         }}
       >
         {imagesArr[count] && (
-          <StyledTooltip placement='top' title='Скачать фото'>
+          <StyledTooltip placement='top' title={t('pos.download_photo')}>
             <IconButton color='primary' onClick={() => downloadImage(imagesArr[count])}>
               <ArrowDown width={18} height={18} />
             </IconButton>
           </StyledTooltip>
         )}
         {imagesArr.length > 1 && (
-          <StyledTooltip placement='top' title='Скачать все'>
+          <StyledTooltip placement='top' title={t('pos.download_all')}>
             <IconButton color='primary' onClick={() => downloadZip(imagesArr, `Photo: ${count}`)}>
               <ZipIcon width={18} height={18} />
             </IconButton>
@@ -100,12 +98,13 @@ const OneSideOfCompare = ({ imagesArr = [], right, backgroundBlack }) => {
 }
 
 const CompareImageGallery = ({ open, setOpen, imagesArr = [], imagesToCompareArr = [], backgroundBlack }) => {
+  const { t } = useTranslation()
   const hasImages = Array.isArray(imagesArr) && imagesArr.length > 0
   const hasImagesToCompare = Array.isArray(imagesToCompareArr) && imagesToCompareArr.length > 0
   useEffect(() => {
     if (!hasImages && !hasImagesToCompare && open) {
       setOpen(false)
-      error('Ошибка при открытии')
+      error(t('pos.error_opening'))
     }
   }, [open, hasImages, hasImagesToCompare])
   return (

@@ -2,8 +2,10 @@ import { Box, Grid, Typography } from '@mui/material'
 import thousandDivider from '@utils/thousandDivider'
 import IncomeIcon from '@icons/IncomeIcon'
 import { get } from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 function MiniDashboard({ cashShiftStat }) {
+  const { t } = useTranslation()
   const getMiniStat = ({
     current_cash_amount,
     current_cashless_amount,
@@ -16,22 +18,22 @@ function MiniDashboard({ cashShiftStat }) {
   }) => {
     return [
       {
-        title: 'Все доходы кассы',
+        title: t('pos.total_register_income'),
         cash: total_cash_amount,
         cashless: total_cashless_amount,
       },
       {
-        title: 'Расходы на кассу',
+        title: t('pos.register_expenses'),
         cash: total_expense_cash_amount,
         cashless: total_expense_cashless_amount,
       },
       {
-        title: 'Открытая сумма',
+        title: t('pos.opened_amount_label'),
         cash: total_opened_cash_amount,
         cashless: total_opened_cashless_amount,
       },
       {
-        title: 'Текущий статус кассового аппарата',
+        title: t('pos.current_register_status'),
         cash: current_cash_amount,
         cashless: current_cashless_amount,
       },
@@ -90,12 +92,12 @@ function MiniDashboard({ cashShiftStat }) {
               }}
             >
               <Box display={'flex'}>
-                <Typography mr={'4px'}>Наличные -</Typography>
-                <Typography>{thousandDivider(get(stat, 'cash'), 'сум')}</Typography>
+                <Typography mr={'4px'}>{t('cash')} -</Typography>
+                <Typography>{thousandDivider(get(stat, 'cash'), t('pos.currency_short'))}</Typography>
               </Box>
               <Box display={'flex'}>
-                <Typography mr={'4px'}>Безналичный -</Typography>
-                <Typography>{thousandDivider(get(stat, 'cashless'), 'сум')}</Typography>
+                <Typography mr={'4px'}>{t('pos.cashless_label')} -</Typography>
+                <Typography>{thousandDivider(get(stat, 'cashless'), t('pos.currency_short'))}</Typography>
               </Box>
             </Box>
           </Box>

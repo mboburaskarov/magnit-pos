@@ -48,13 +48,13 @@ export default function CashierSessionModal({
   const { mutate: createShift, isLoading: isCreateShiftLoading } = useMutation(requests.createShift, {
     onSuccess: ({ data }) => {
       localStorage.setItem('access_token', get(data, 'data.access_token'))
-      success(t('menu.sales.shortcuts.change_shift') || 'Cмена изменена')
+      success(t('pos.shift_changed_toast'))
       bypassNextAppExit()
       location.reload()
       onClose()
     },
     onError: (err) => {
-      error(t('error_change_shift') || 'Ошибка при смене смены')
+      error(t('pos.error_change_shift'))
       console.error('err', err)
     },
   })
@@ -167,8 +167,8 @@ export default function CashierSessionModal({
                   <FileText size={24} />
                 </div>
                 <div className="cashier-option-info">
-                  <div className="cashier-option-title">{t('pos.close_session') || 'Закрыть сессию + Z-отчет'}</div>
-                  <div className="cashier-option-desc">{t('pos.close_session_desc') || 'Конец смены, печать Z-отчета'}</div>
+                  <div className="cashier-option-title">{t('pos.close_session')}</div>
+                  <div className="cashier-option-desc">{t('pos.close_session_desc')}</div>
                 </div>
               </button>
 
@@ -181,8 +181,8 @@ export default function CashierSessionModal({
                   <LogOut size={24} />
                 </div>
                 <div className="cashier-option-info">
-                  <div className="cashier-option-title" style={{ color: '#e23a32' }}>Выйти из аккаунта</div>
-                  <div className="cashier-option-desc">Полностью завершить сеанс и перейти на страницу входа</div>
+                  <div className="cashier-option-title" style={{ color: '#e23a32' }}>{t('pos.full_logout_option_title')}</div>
+                  <div className="cashier-option-desc">{t('pos.full_logout_option_desc')}</div>
                 </div>
               </button>
             </div>
@@ -204,14 +204,14 @@ export default function CashierSessionModal({
                     }}
                   >
                     <ChevronLeft size={20} />
-                    {t('pos.back') || 'Назад'}
+                    {t('pos.back')}
                   </button>
 
                   <div className="pos-cashier-search-wrapper">
                     <input
                       type="text"
                       className="pos-cashier-search-input"
-                      placeholder={t('pos.search_cashier') || 'Qidirish...'}
+                      placeholder={t('pos.search_cashier')}
                       value={cashierSearchQuery}
                       onChange={(e) => setCashierSearchQuery(e.target.value)}
                       autoFocus
@@ -259,7 +259,7 @@ export default function CashierSessionModal({
                     }}
                   >
                     <ChevronLeft size={20} />
-                    {t('pos.back') || 'Назад'}
+                    {t('pos.back')}
                   </button>
 
                   <FormProvider {...methods}>
@@ -268,7 +268,7 @@ export default function CashierSessionModal({
                       style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
                     >
                       <div className="form-group-touch">
-                        <label className="form-label-touch">{t('pos.select_cashier') || 'Выберите кассира'}</label>
+                        <label className="form-label-touch">{t('pos.select_cashier')}</label>
                         
                         {selectedCashier ? (
                           <div className="pos-selected-cashier-card">
@@ -285,7 +285,7 @@ export default function CashierSessionModal({
                               className="pos-change-cashier-btn"
                               onClick={() => setShowCashierList(true)}
                             >
-                              {t('pos.change') || 'Изменить'}
+                              {t('pos.change_cashier_button')}
                             </button>
                           </div>
                         ) : (
@@ -294,7 +294,7 @@ export default function CashierSessionModal({
                             className="pos-touch-select-trigger"
                             onClick={() => setShowCashierList(true)}
                           >
-                            <span>{t('pos.select_cashier') || 'Выберите кассира'}</span>
+                            <span>{t('pos.select_cashier')}</span>
                             <ChevronRight size={20} />
                           </button>
                         )}
@@ -303,12 +303,12 @@ export default function CashierSessionModal({
                       {selectedCashier && (
                         <>
                           <div className="form-group-touch" style={{ marginTop: '8px' }}>
-                            <label className="form-label-touch">{t('pos.enter_password') || 'Введите пароль'}</label>
+                            <label className="form-label-touch">{t('pos.enter_password')}</label>
                             <InputPassword
                               boxStyle={{ borderRadius: '12px' }}
                               id="password"
                               name="password"
-                              placeholder={t('pos.enter_password') || 'Введите пароль'}
+                              placeholder={t('pos.enter_password')}
                               autoCompleteoff="new-password"
                               required
                               defaultState={true}
@@ -352,7 +352,7 @@ export default function CashierSessionModal({
                               style={{ marginTop: '8px' }}
                               disabled={isConfirmDisabled}
                             >
-                              {isCreateShiftLoading ? t('pos.loading') || 'Загрузка...' : t('pos.confirm') || 'Подтвердить'}
+                              {isCreateShiftLoading ? t('pos.loading') : t('pos.confirm')}
                             </button>
                           </div>
                         </>

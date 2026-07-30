@@ -112,7 +112,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
       setReturnedSale(null)
     },
     onPrintError: (err) => {
-      error('Ошибка при печати чека: ' + err)
+      error(t('pos.printer.print_error_detail', { detail: err }))
       setReturnedSale(null)
     }
   })
@@ -174,7 +174,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
         console.warn('Duplicate logo loading failed:', e)
       }
 
-      const cashierNameStr = `${saleData.employee?.first_name || ''} ${saleData.employee?.last_name || ''}`.trim() || 'Кассир'
+      const cashierNameStr = `${saleData.employee?.first_name || ''} ${saleData.employee?.last_name || ''}`.trim() || t('pos.default_cashier_name')
       const rawPaymentTypeName = (saleData.sale_payments?.[0]?.payment_type?.name || '').toLowerCase()
       const cardScheme = rawPaymentTypeName === 'humo' ? 'humo' : rawPaymentTypeName === 'uzcard' ? 'uzcard' : null
       const paymentType = cardScheme ? 'card' : (rawPaymentTypeName || 'cash')
@@ -195,7 +195,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
         cardScheme,
         date: saleData.completed_at || new Date().toISOString(),
         items: (saleData.products || []).map((item) => ({
-          name: item.name || 'Товар',
+          name: item.name || t('pos.default_product_name'),
           mxik: item.class_code || item.code || '',
           qty: item.quantity || 1,
           price: Number(item.unit_price || 0),
@@ -230,7 +230,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
 
       const res = await axios.post('http://localhost:7788/print/raw-template', reqPayload)
       if (res.data && res.data.ok) {
-        success(t('pos.printer.receipt_printed') || 'Чек напечатан!')
+        success(t('pos.printer.receipt_printed'))
         return
       }
     } catch (err) {
@@ -262,10 +262,10 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
             </Box>
             <Box ml={'16px'}>
               <Typography fontSize={16} lineHeight={'22px'} fontWeight={700}>
-                Продажа #{get(darftChildList, 'data.data.sale_number')}
+                {t('pos.sale_number_title')} #{get(darftChildList, 'data.data.sale_number')}
               </Typography>
               <Typography fontSize={14} lineHeight={'20px'} color={'orange.500'} fontWeight={600}>
-                {thousandDivider(get(darftChildList, 'data.data.total_amount', 0), 'сум')}
+                {thousandDivider(get(darftChildList, 'data.data.total_amount', 0), t('pos.currency_short'))}
               </Typography>
             </Box>
           </Box>
@@ -309,7 +309,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
                 >
                   <input onChange={(e) => selectAllReturnItem(e)} name='checkbox_zero' checked={isAllChecked()} className='customCheckbox' type='checkbox' />
                 </Box>
-                <Typography fontSize={'14px'} fontWeight={600}>Выбрать все</Typography>
+                <Typography fontSize={'14px'} fontWeight={600}>{t('pos.select_all')}</Typography>
               </Box>
             )}
             {get(darftChildList, 'data.data.products', []).map((el) => (
@@ -323,7 +323,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
             <Box display={'grid'} gridTemplateColumns={'repeat(2, 1fr)'} gap={'8px'}>
               <Box bgcolor={'bg.10'} borderRadius={'8px'} padding={'8px 12px'}>
                 <Typography fontSize={11} fontWeight={500} color={'bunker.500'}>
-                  Дата создания
+                  {t('pos.created_date_label')}
                 </Typography>
                 <Typography fontSize={13} mt={'2px'} color={'bunker.950'} fontWeight={600}>
                   {dayjs(get(darftChildList, 'data.data.completed_at')).format('DD.MM.YYYY HH:mm:ss')}
@@ -340,7 +340,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
               {hasValidCustomer && (
                 <Box bgcolor={'bg.10'} borderRadius={'8px'} padding={'8px 12px'} gridColumn={'span 2'}>
                   <Typography fontSize={11} fontWeight={500} color={'bunker.500'}>
-                    Клиент
+                    {t('client')}
                   </Typography>
                   <Typography fontSize={13} mt={'2px'} color={'bunker.950'} fontWeight={600}>
                     {customerName}
@@ -362,7 +362,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
                 lineHeight: '18px',
               }}
             >
-              Поскольку вы перешли в статус возврата, вы больше не можете выполнять какие-либо операции с этой продажей.
+              {t('pos.return.locked_notice')}
             </Typography>
           )}
           <Box
@@ -401,7 +401,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
                 }
               }}
             >
-              Повторный чек
+              {t('pos.return.reprint_receipt')}
             </Button>
 
             {!get(open, 'item.is_returned') && (
@@ -422,7 +422,7 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
                 }}
               >
                 <Typography fontSize={14} color={'white'} fontWeight={600}>
-                  Возврат
+                  {t('pos.return.button')}
                 </Typography>
               </Button>
             )}

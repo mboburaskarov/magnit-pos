@@ -78,18 +78,18 @@ export default function EditQuantityDialog({ open, item, onConfirm, onClose, t }
 
   const getUnitLabel = () => {
     if (!item) return ''
-    if (isWeight) return 'кг'
-    if (item.unit_per_pack > 1) return 'уп'
-    return 'шт'
+    if (isWeight) return t('pos.unit.kg')
+    if (item.unit_per_pack > 1) return t('pos.unit.pack')
+    return t('pos.unit.pcs')
   }
 
   const getCurrentQtyDisplay = () => {
     if (!item) return '—'
     if (isWeight) {
       const grams = (item.quantity || 0) * 1000 + (item.unit_quantity || 0)
-      return `${(grams / 1000).toFixed(3).replace('.', ',')} кг`
+      return `${(grams / 1000).toFixed(3).replace('.', ',')} ${t('pos.unit.kg')}`
     }
-    return `${item.quantity || 1} шт`
+    return `${item.quantity || 1} ${t('pos.unit.pcs')}`
   }
 
   const handleConfirm = () => {
@@ -97,7 +97,7 @@ export default function EditQuantityDialog({ open, item, onConfirm, onClose, t }
     const raw = buffer.trim()
 
     if (!raw || raw === '' || raw === ',') {
-      setErrorMsg(t('pos.edit_qty_invalid') || 'Неверное количество')
+      setErrorMsg(t('pos.edit_qty_invalid'))
       return
     }
 
@@ -105,18 +105,18 @@ export default function EditQuantityDialog({ open, item, onConfirm, onClose, t }
       const normalized = raw.replace(',', '.')
       const kgVal = parseFloat(normalized)
       if (isNaN(kgVal) || kgVal <= 0) {
-        setErrorMsg(t('pos.edit_qty_min') || 'Минимальное количество: 1')
+        setErrorMsg(t('pos.edit_qty_min'))
         return
       }
       onConfirm({ item, kgVal, isWeight: true })
     } else {
       if (raw.includes(',') || raw.includes('.')) {
-        setErrorMsg(t('pos.edit_qty_no_decimal') || 'Штучный товар — без запятой')
+        setErrorMsg(t('pos.edit_qty_no_decimal'))
         return
       }
       const qty = parseInt(raw, 10)
       if (isNaN(qty) || qty < 1) {
-        setErrorMsg(t('pos.edit_qty_min') || 'Минимальное количество: 1')
+        setErrorMsg(t('pos.edit_qty_min'))
         return
       }
       onConfirm({ item, qty, isWeight: false })
@@ -163,7 +163,7 @@ export default function EditQuantityDialog({ open, item, onConfirm, onClose, t }
         {/* Header */}
         <div className='edit-qty-header'>
           <span className='edit-qty-title'>
-            {t('pos.edit_qty_dialog_title') || 'Изменить количество'}
+            {t('pos.edit_qty_dialog_title')}
           </span>
           <button type='button' className='edit-qty-close-btn' onClick={onClose} tabIndex={-1}>
             <X size={16} />
@@ -176,7 +176,7 @@ export default function EditQuantityDialog({ open, item, onConfirm, onClose, t }
           <div className='edit-qty-product-meta'>
             {item.barcode && <span>🔖 {item.barcode}</span>}
             <span>
-              {t('pos.edit_qty_current') || 'Текущее кол-во'}: <strong>{getCurrentQtyDisplay()}</strong>
+              {t('pos.edit_qty_current')}: <strong>{getCurrentQtyDisplay()}</strong>
             </span>
             <span>
               {t('price')}: <strong>{item.unit_price?.toLocaleString?.() || '—'}</strong>
@@ -186,7 +186,7 @@ export default function EditQuantityDialog({ open, item, onConfirm, onClose, t }
 
         {/* Input Display */}
         <div className='edit-qty-input-row'>
-          <span className='edit-qty-label'>{t('pos.edit_qty_new') || 'Новое кол-во'}</span>
+          <span className='edit-qty-label'>{t('pos.edit_qty_new')}</span>
           <div className={`edit-qty-input-display ${errorMsg ? 'is-error' : buffer ? 'is-focused' : ''}`}>
             {getDisplayBuffer()}
           </div>
@@ -230,7 +230,7 @@ export default function EditQuantityDialog({ open, item, onConfirm, onClose, t }
         {/* Action row */}
         <div className='edit-qty-action-row'>
           <button type='button' className='edit-qty-cancel-btn' onClick={onClose} tabIndex={-1}>
-            {t('pos.edit_qty_cancel') || 'Отмена'}
+            {t('pos.edit_qty_cancel')}
           </button>
           <button
             type='button'
@@ -240,7 +240,7 @@ export default function EditQuantityDialog({ open, item, onConfirm, onClose, t }
             tabIndex={-1}
           >
             <Check size={18} />
-            {t('pos.edit_qty_confirm') || 'Подтвердить'}
+            {t('pos.edit_qty_confirm')}
           </button>
         </div>
       </div>

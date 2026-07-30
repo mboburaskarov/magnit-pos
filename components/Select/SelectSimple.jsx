@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Controller, useFormContext } from 'react-hook-form'
 import Select, { components } from 'react-select'
 import DeleteIconBig from '../../src/assets/icons/DeleteIconBig'
@@ -133,6 +134,7 @@ const SelectToUse = ({
   openMenu,
   filterOption,
 }) => {
+  const { t } = useTranslation()
   return (
     <Select
       inputId={id}
@@ -141,8 +143,8 @@ const SelectToUse = ({
       formatOptionLabel={formatOptionLabel}
       isSearchable={isSearchable}
       placeholder={placeholder}
-      noOptionsMessage={() => 'Нет вариантов'}
-      formatCreateLabel={(inputValue) => 'Добавить входное значение ' + inputValue}
+      noOptionsMessage={() => t('components.no_options')}
+      formatCreateLabel={(inputValue) => t('components.add_inputValue', { inputValue })}
       value={value}
       onChange={(val) => onChange(val)}
       isDisabled={disabled}
@@ -182,7 +184,7 @@ function SelectSimple({
   defaultValue,
   boxStyle,
   label,
-  placeholder = 'Введите атрибут',
+  placeholder,
   uncontrolled = false,
   value = '',
   onChange,
@@ -216,6 +218,8 @@ function SelectSimple({
 }) {
   const cls = useStyles()
   const methods = useFormContext()
+  const { t } = useTranslation()
+  placeholder = placeholder || t('pos.enter_attribute_placeholder')
 
   const customStyles = generateCustomStyles({
     withAllSelect,

@@ -87,7 +87,7 @@ function SendRejectedProductDrawer({ open, setOpen, setOpenRejectConfirmDialog, 
                 padding: '20px ',
               }}
             >
-              <Typography>"{values?.search}" - продукт не найден</Typography>
+              <Typography>{t('pos.product_not_found_query', { query: values?.search })}</Typography>
               <Box display={'flex'} justifyContent={'end'} alignItems={'center'}>
                 <OutLineTextFieldThousand
                   setValue={(e) => {
@@ -108,7 +108,7 @@ function SendRejectedProductDrawer({ open, setOpen, setOpenRejectConfirmDialog, 
                     width: '80px',
                     m: '0 10px',
                   }}
-                  placeholder='Введите скидку'
+                  placeholder={t('pos.enter_discount_placeholder')}
                 />
                 <Typography
                   onClick={(e) => {
@@ -127,7 +127,7 @@ function SendRejectedProductDrawer({ open, setOpen, setOpenRejectConfirmDialog, 
                     fontSize: '17px',
                   }}
                 >
-                  Отказ
+                  {t('pos.rejection_label')}
                 </Typography>
               </Box>
             </Box>

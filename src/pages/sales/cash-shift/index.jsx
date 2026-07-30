@@ -83,7 +83,7 @@ export default function CasShiftsPage() {
     onError: (err) => {
       console.error(err)
 
-      error('Ошибка при скачать excel!')
+      error(t('product_drawer.excel_download_error'))
     },
   })
 
@@ -93,7 +93,7 @@ export default function CasShiftsPage() {
     <LoadingContainer readyState={true}>
       <Box display='flex' flexDirection='column' position='relative' pt={'24px'} px={'20px'} pb={'20px'}>
         <Typography variant='h1' fontWeight={700} fontSize={'28px'} lineHeight={'40px'} color={'balck'}>
-          Кассовые смены
+          {t('pos.cash_shifts_title')}
         </Typography>
         <MiniDashboard cashShiftStat={cashShiftStat} />
         <Box columnGap={2} mb={'16px'} display='flex' justifyContent={'space-between'} mt={'16px'} width='100%'>
@@ -108,7 +108,7 @@ export default function CasShiftsPage() {
                 },
               }}
             >
-              <InputSearch fullWidth id='producrs-search' name='search' placeholder={'ID, Филиал'} uncontrolled />
+              <InputSearch fullWidth id='producrs-search' name='search' placeholder={t('pos.id_branch_placeholder')} uncontrolled />
             </Box>
 
             <Box minWidth={113} ml={'16px'}>
@@ -152,7 +152,7 @@ export default function CasShiftsPage() {
             <CheckAccess id={'product-create'}>
               <Box minWidth={156}>
                 <Button sx={{ height: '48px' }} onClick={() => navigate('/sales/cash-shift-history')} fullWidth variant='contained' color='primary'>
-                  История смен
+                  {t('pos.shift_history_title')}
                 </Button>
               </Box>
             </CheckAccess>
@@ -176,7 +176,7 @@ export default function CasShiftsPage() {
             }}
             fullInfoAboutCurrentPage
             emptyTableText={{
-              title: 'Cмены недоступен',
+              title: t('pos.shifts_unavailable_title'),
               description: '...',
             }}
             resetTable={() => dispatch(resetTableHeader({ refetch }))}

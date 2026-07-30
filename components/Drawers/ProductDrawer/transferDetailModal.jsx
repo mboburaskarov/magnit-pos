@@ -66,7 +66,7 @@ export default function TransferDetailModal({ open, refetch, setOpen }) {
       overflowVisible
       onClose={() => setOpen(false)}
       open={open}
-      title={'История перемещение'}
+      title={t('pos.transfer_history_title')}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
     >
       <Box sx={{ overflowY: 'auto', maxHeight: '70vh' }}>
@@ -114,7 +114,7 @@ export default function TransferDetailModal({ open, refetch, setOpen }) {
                     <Typography className='field-data'>{get(item, 'transfer_type')}</Typography>
                   </Grid>
                   <Grid sm={6} lg={6} xl={6} xs={6} item>
-                    <Label>Сотрудник</Label>
+                    <Label>{t('pos.employee_label')}</Label>
                     <Typography className='field-data'>{get(item, 'employee.full_name', 'Unknown')}</Typography>
                   </Grid>
                   <Grid sm={6} lg={6} xl={6} xs={6} item>
@@ -136,7 +136,7 @@ export default function TransferDetailModal({ open, refetch, setOpen }) {
             )}
             {!hasNextPage && allItems.length > 0 && (
               <Box sx={{ textAlign: 'center', padding: '20px', color: 'text.secondary' }}>
-                <Typography variant='body2'>Все записи загружены</Typography>
+                <Typography variant='body2'>{t('pos.all_records_loaded')}</Typography>
               </Box>
             )}
           </>

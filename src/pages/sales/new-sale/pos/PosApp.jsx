@@ -1351,7 +1351,7 @@ export default function PosApp() {
       } catch (err) {
         console.error('Failed to create new sale:', err)
         setSaleCreationError(true)
-        error(t('pos.error_creating_sale') || 'Ошибка при создании новой продажи')
+        error(t('pos.error_creating_sale'))
         return
       }
     } else {
@@ -1385,7 +1385,7 @@ export default function PosApp() {
         paymentType = secondaryPaymentMethod
       }
 
-      const cashierNameStr = `${userData?.first_name || ''} ${userData?.last_name || ''}`.trim() || 'Кассир'
+      const cashierNameStr = `${userData?.first_name || ''} ${userData?.last_name || ''}`.trim() || t('pos.default_cashier_name')
 
       const payloadData = {
         saleId: String(cashBoxDetails?.data?.data?.sale_number || finalNewSaleId || id || ''),
@@ -1396,7 +1396,7 @@ export default function PosApp() {
         cardScheme: cardPaymentType,
         date: new Date().toISOString(),
         items: cartItems.map((item) => ({
-          name: item.name || 'Товар',
+          name: item.name || t('pos.default_product_name'),
           mxik: item.mxik || item.code || '',
           qty: item.unit_per_pack === 1000 
             ? ((item.quantity || 0) * 1000 + (item.unit_quantity || 0)) / 1000
@@ -1529,12 +1529,12 @@ export default function PosApp() {
         cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'),
         store_id: get(userData, 'store.id'),
       })
-      success(t('pos.receipt_cancelled') || 'Чек аннулирован')
+      success(t('pos.receipt_cancelled'))
       navigate(`/sales/pos/${get(newSaleRes, 'data.id')}`)
       bypassNextAppExit()
       window.location.reload()
     } catch (err) {
-      error(t('pos.error_cancelling_receipt') || 'Ошибка при аннулировании чека')
+      error(t('pos.error_cancelling_receipt'))
       console.error(err)
     }
   }
@@ -1726,7 +1726,7 @@ export default function PosApp() {
     if (operationId) {
       navigate(`/sales/cash-shift-detail/${operationId}?sale_id=${id}`)
     } else {
-      error(t('operation_not_found') || 'Смена не найдена')
+      error(t('operation_not_found'))
     }
   }
 

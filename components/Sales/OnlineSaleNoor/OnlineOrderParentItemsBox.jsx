@@ -6,12 +6,12 @@ import { useTranslation } from 'react-i18next'
 import ArrowRightIcon from '../../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../../src/assets/icons/BagOutline'
 import thousandDivider from '../../../utils/thousandDivider'
-export const onlineStatus = [
-  { title: 'Новый', value: 1, color: '#6489ff' },
-  { title: 'Поиск курьера', value: 2, color: '#ff963b' },
-  { title: 'Завершено', value: 3, color: '#00972e' },
-  { title: 'Ожидает курьера', value: 4, color: '#a7a7a7' },
-  { title: 'Отменен', value: -1, color: '#ff0000' },
+export const getOnlineStatus = (t) => [
+  { title: t('pos.online_status_new'), value: 1, color: '#6489ff' },
+  { title: t('switch.title.searching_courier'), value: 2, color: '#ff963b' },
+  { title: t('switch.title.completed'), value: 3, color: '#00972e' },
+  { title: t('switch.title.waiting_courier'), value: 4, color: '#a7a7a7' },
+  { title: t('switch.title.cancelled'), value: -1, color: '#ff0000' },
 ]
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {
@@ -67,7 +67,7 @@ function OnlineOrderParentItemsBox({ setIsOpenChild, item }) {
         </Box>
         <Box>
           <Typography mb={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'bunker.950'}>
-            {t('Онлайн-продажи')} #{get(item, 'sale_number')}
+            {t('pos.online_sales_title')} #{get(item, 'sale_number')}
           </Typography>
           <Box sx={{ display: 'flex' }}>
             <Typography fontSize={'14px'} fontWeight={'500'} lineHeight={'20px'} color={'bunker.500'}>
@@ -79,11 +79,11 @@ function OnlineOrderParentItemsBox({ setIsOpenChild, item }) {
               p={'0 10px'}
               fontWeight={'500'}
               ml={'10px'}
-              bgcolor={onlineStatus.find((el) => el.value === get(item, 'online_status'))?.color}
+              bgcolor={getOnlineStatus(t).find((el) => el.value === get(item, 'online_status'))?.color}
               lineHeight={'20px'}
               color={'white'}
             >
-              {onlineStatus.find((el) => el.value === get(item, 'online_status'))?.title}
+              {getOnlineStatus(t).find((el) => el.value === get(item, 'online_status'))?.title}
             </Typography>
           </Box>
         </Box>
@@ -104,7 +104,7 @@ function OnlineOrderParentItemsBox({ setIsOpenChild, item }) {
             </Typography>
           </Box>
           <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-            {thousandDivider(get(item, 'total_amount'), 'сум')}
+            {thousandDivider(get(item, 'total_amount'), t('pos.currency_short'))}
           </Typography>
         </Box>
         <Box className={classes.rightArrowIcon}>

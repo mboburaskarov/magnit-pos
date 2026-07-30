@@ -73,16 +73,16 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
       // refetchDraftList()
       setChildOpen(false)
       setOpen(false)
-      success('Черновик удален!')
+      success(t('pos.draft_deleted_toast'))
     },
     onError: (err) => {
-      error('Ошибка при Черновик удален!')
+      error(t('pos.draft_delete_error'))
       console.error('err', err)
     },
   })
   const { mutate: completeOnlineOrder, isLoading: isCompleteDraft } = useMutation(requests.completeOnlineOrder, {
     onSuccess: ({ data }) => {
-      success('Заказ принят!')
+      success(t('pos.order_accepted_toast'))
       refetchDraftList()
       refetch()
       // setChildOpen(false)
@@ -90,7 +90,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
       // navigate(`/sales/new-sale/${get(data, 'data')}`)
     },
     onError: (err) => {
-      error('Ошибка при принятии заказа!')
+      error(t('pos.order_accept_error'))
       console.error('err', err)
     },
   })
@@ -101,7 +101,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
       navigate(`/sales/new-sale/${get(open, 'item.id')}`)
     },
     onError: (err) => {
-      error('Ошибка при изменении статуса заказа!')
+      error(t('pos.order_status_change_error'))
       console.error('err', err)
     },
   })
@@ -126,10 +126,10 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
             </Box>
             <Box ml={'16px'}>
               <Typography fontSize={24} lineHeight={'32px'} fontWeight={700}>
-                {t('Онлайн-продажи')} #{get(darftChildList, 'data.data.sale_number')}
+                {t('pos.online_sales_title')} #{get(darftChildList, 'data.data.sale_number')}
               </Typography>
               <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
-                {thousandDivider(get(darftChildList, 'data.data.total_amount', 0), 'сум')}
+                {thousandDivider(get(darftChildList, 'data.data.total_amount', 0), t('pos.currency_short'))}
               </Typography>
             </Box>
           </Box>
@@ -169,7 +169,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
             {/* client_comment */}
             <Box width={'100%'} bgcolor={'bg.10'} my={'8px'} borderRadius={'16px'} padding={'16px'}>
               <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                Комментарий клиента
+                {t('pos.client_comment_label')}
               </Typography>
               <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
                 {ifNotEmpty(get(darftChildList, 'data.data.client_comment'), '-')}
@@ -178,7 +178,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
             <Box display={'flex'} justifyContent={'space-between'}>
               <Box width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
                 <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                  Дата создания
+                  {t('pos.created_date_label')}
                 </Typography>
                 <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
                   {dayjs(get(darftChildList, 'data.data.created_at')).format('DD.MM.YYYY | HH:mm:ss')}
@@ -196,7 +196,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
             <Box display={'flex'} justifyContent={'space-between'}>
               <Box mt={'20px'} width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
                 <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                  Клиент
+                  {t('client')}
                 </Typography>
                 <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
                   {get(darftChildList, 'data.data.customer.full_name') ?? '-'}
@@ -204,18 +204,18 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
               </Box>
               <Box mt={'20px'} width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
                 <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                  Статус
+                  {t('pos.status_label')}
                 </Typography>
                 <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
                   {get(darftChildList, 'data.data.online_status') === 1
-                    ? 'Новый'
+                    ? t('pos.online_status_new')
                     : get(darftChildList, 'data.data.online_status') === 2
-                      ? 'Поиск курьера'
+                      ? t('switch.title.searching_courier')
                       : get(darftChildList, 'data.data.online_status') === 3
-                        ? 'Завершено'
+                        ? t('switch.title.completed')
                         : get(darftChildList, 'data.data.online_status') === 4
-                          ? 'Ожидает курьера'
-                          : 'Отменен'}
+                          ? t('switch.title.waiting_courier')
+                          : t('switch.title.cancelled')}
                 </Typography>
               </Box>
             </Box>
@@ -264,7 +264,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
               >
                 <MarkRectangleIcon />
                 <Typography fontSize={16} ml={'12px'} color={'white'} lineHeight={'24px'} fontWeight={600}>
-                  {t('Оформление заказа ')}
+                  {t('pos.process_order_button')}
                 </Typography>
               </Button>
             ) : get(darftChildList, 'data.data.online_status') === 4 ? (
@@ -280,7 +280,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
               >
                 <MarkRectangleIcon />
                 <Typography fontSize={16} ml={'12px'} color={'white'} lineHeight={'24px'} fontWeight={600}>
-                  {t('Передал курьер ')}
+                  {t('pos.courier_delivered_button')}
                 </Typography>
               </Button>
             ) : get(darftChildList, 'data.data.online_status') === 1 ? (
@@ -298,7 +298,7 @@ function OnlineOrderChildDrawer({ open, refetchDraftList, setChildOpen, setOpen 
               >
                 <MarkRectangleIcon />
                 <Typography fontSize={16} ml={'12px'} color={'white'} lineHeight={'24px'} fontWeight={600}>
-                  {t('Принять ')}
+                  {t('pos.accept_order_button')}
                 </Typography>
               </Button>
             ) : (

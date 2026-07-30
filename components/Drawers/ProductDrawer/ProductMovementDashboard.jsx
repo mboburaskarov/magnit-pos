@@ -7,81 +7,85 @@ import thousandDivider from '@utils/thousandDivider'
 import { error } from '@utils/toast'
 import { get } from 'lodash'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMutation } from 'react-query'
-export const formatCount = (reciveCount, unit_per_pack, canBeMinus = true) => {
+export const formatCount = (reciveCount, unit_per_pack, canBeMinus = true, t) => {
+  const pcsLabel = t ? t('pos.unit.pcs') : 'шт'
+  const packLabel = t ? t('pos.unit.pack') : 'уп'
   const count = canBeMinus ? reciveCount : Math.abs(reciveCount)
-  if (!count || unit_per_pack <= 1 || count < unit_per_pack) return canBeMinus ? `${thousandDivider(count)}шт` : `${thousandDivider(count)}шт`
+  if (!count || unit_per_pack <= 1 || count < unit_per_pack) return `${thousandDivider(count)}${pcsLabel}`
   const packs = canBeMinus ? Math.floor(count / unit_per_pack) : Math.floor(count / unit_per_pack)
   const pieces = canBeMinus ? count % unit_per_pack : Math.floor(count % unit_per_pack)
   let result = ''
-  if (packs > 0) result += `${thousandDivider(packs)}уп`
-  if (pieces > 0) result += ` ${thousandDivider(pieces)}шт`
+  if (packs > 0) result += `${thousandDivider(packs)}${packLabel}`
+  if (pieces > 0) result += ` ${thousandDivider(pieces)}${pcsLabel}`
   return result.trim()
 }
 
 function ProductMovementDashboard({ singleProductDashboard, productData, isLoading = true, unit_per_pack = 1 }) {
   const { values } = useQueryParams()
+  const { t } = useTranslation()
 
   const [collapse, setCollapse] = useState(false)
 
   const items = [
     {
-      title: 'Импорты',
-      collapseTitle: 'Импорты',
+      title: t('product_drawer.movement.imports'),
+      collapseTitle: t('product_drawer.movement.imports'),
       countKey: 'import_count',
       amountKey: 'import_amount',
       variant: 'green',
     },
     {
-      title: 'Возврат от клиента',
-      collapseTitle: 'Возврат или продажи',
+      title: t('product_drawer.movement.return_from_client'),
+      collapseTitle: t('product_drawer.movement.return_or_sales'),
       countKey: 'return_sale_count',
       amountKey: 'return_sale_amount',
       variant: 'green',
     },
     {
-      title: 'Перемещение',
-      collapseTitle: 'Перемещение',
+      title: t('product_drawer.movement.transfer'),
+      collapseTitle: t('product_drawer.movement.transfer'),
       countKey: 'transfer_in_count',
       amountKey: 'transfer_in_amount',
       variant: 'green',
     },
     {
-      title: 'Инвентаризация',
-      collapseTitle: 'Инвентаризация',
+      title: t('product_drawer.movement.inventory'),
+      collapseTitle: t('product_drawer.movement.inventory'),
       countKey: 'inventory_plus_count',
       amountKey: 'inventory_plus_amount',
       variant: 'green',
     },
 
     {
-      title: 'Возврат на склад',
+      title: t('product_drawer.movement.return_to_warehouse'),
       countKey: 'return_to_sklad_count',
       amountKey: 'return_to_sklad_amount',
       variant: 'red',
     },
     {
-      title: 'Продажи',
+      title: t('sales'),
       countKey: 'sale_count',
       amountKey: 'sale_amount',
       variant: 'red',
     },
     {
-      title: 'Перемещение',
+      title: t('product_drawer.movement.transfer'),
       countKey: 'transfer_out_count',
       amountKey: 'transfer_out_amount',
       variant: 'red',
     },
     {
-      title: 'Инвентаризация',
+      title: t('product_drawer.movement.inventory'),
       countKey: 'inventory_minus_count',
       amountKey: 'inventory_minus_amount',
       variant: 'red',
     },
 
     {
-      title: 'Текущее',
-      collapseTitle: 'Текущее',
+      title: t('product_drawer.movement.current'),
+      collapseTitle: t('product_drawer.movement.current'),
       countKey: 'unit_quantity',
       amountKey: 'product_amount',
       variant: 'blue',
@@ -104,7 +108,7 @@ function ProductMovementDashboard({ singleProductDashboard, productData, isLoadi
     merged.inventory_plus_amount += merged.inventory_minus_amount || 0
   }
 
-  const filteredItems = collapse ? items.filter((i) => i.variant !== 'red' || i.title === 'Текущее') : items
+  const filteredItems = collapse ? items.filter((i) => i.variant !== 'red' || i.countKey === 'unit_quantity') : items
 
   const getVariantStyles = (variant) => {
     switch (variant) {
@@ -145,7 +149,7 @@ function ProductMovementDashboard({ singleProductDashboard, productData, isLoadi
         }}
       >
         <Typography fontSize={'18px'} fontWeight={'700'} color={'#111217'}>
-          Статистика движения
+          {t('product_drawer.movement_stats_title')}
         </Typography>
         <Typography
           onClick={() => setCollapse((a) => !a)}
@@ -158,7 +162,7 @@ function ProductMovementDashboard({ singleProductDashboard, productData, isLoadi
             '&:hover': { color: '#111217' },
           }}
         >
-          {collapse ? 'Развернуть' : 'Свернуть'}
+          {collapse ? t('product_drawer.expand') : t('product_drawer.collapse')}
         </Typography>
       </Box>
 
@@ -171,7 +175,7 @@ function ProductMovementDashboard({ singleProductDashboard, productData, isLoadi
         }}
       >
         {filteredItems.map((item, index) => {
-          const isLast = item.title === 'Текущее'
+          const isLast = item.countKey === 'unit_quantity'
           const styles = getVariantStyles(item.variant)
 
           return (
@@ -214,11 +218,11 @@ function ProductMovementDashboard({ singleProductDashboard, productData, isLoadi
               ) : (
                 <>
                   <Typography fontSize={22} mt={'6px'} lineHeight={'1.1'} fontWeight={700} color={styles.textColor}>
-                    {formatCount(Math.abs(get(merged, item.countKey)) || 0, unit_per_pack)}
+                    {formatCount(Math.abs(get(merged, item.countKey)) || 0, unit_per_pack, true, t)}
                   </Typography>
 
                   <Typography fontSize={13} mt={'2px'} lineHeight={'1.2'} color={styles.textColor} fontWeight={600}>
-                    {thousandDivider(get(merged, item.amountKey), 'сум', true)}
+                    {thousandDivider(get(merged, item.amountKey), t('pos.currency_short'), true)}
                   </Typography>
                 </>
               )}

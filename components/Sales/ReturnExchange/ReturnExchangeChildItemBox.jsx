@@ -95,7 +95,7 @@ function ReturnExchangeChildItemBox({ item, selectedReturnItems, selectReturnIte
                 {`${get(item, 'quantity') > 0 ? get(item, 'quantity') : '0'}${
                   get(item, 'unit_quantity') > 0 ? ` (${get(item, 'unit_quantity')}/${get(item, 'unit_per_pack')})` : ''
                 } x `}
-                {thousandDivider(get(item, 'unit_price'))} = {thousandDivider(get(item, 'total_price'), 'сум')}
+                {thousandDivider(get(item, 'unit_price'))} = {thousandDivider(get(item, 'total_price'), t('pos.currency_short'))}
               </Typography>
             </Box>
           </Box>
@@ -112,14 +112,14 @@ function ReturnExchangeChildItemBox({ item, selectedReturnItems, selectReturnIte
           justifyContent={'center'}
         >
           <Typography fontSize={'12px'} fontWeight={'700'} color={'bunker.900'}>
-            Бонус
+            {t('pos.bonus_label')}
           </Typography>
           <Box mt={'2px'} display={'flex'} justifyContent={'space-between'} width={'100%'}>
             <Typography fontSize={'11px'} fontWeight={'600'} color={'purple.500'}>
               {get(item, 'bonus_percent')}%
             </Typography>
             <Typography fontSize={'11px'} fontWeight={'600'} color={'purple.500'}>
-              {thousandDivider(bonusAmount, 'сум')}
+              {thousandDivider(bonusAmount, t('pos.currency_short'))}
             </Typography>
           </Box>
         </Box>

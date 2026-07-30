@@ -162,7 +162,7 @@ export default function ProductTable({
                         }}>
                           {(() => {
                             const grams = (item.quantity || 0) * 1000 + (item.unit_quantity || 0)
-                            return `${(grams / 1000).toFixed(3).replace('.', ',')} кг`
+                            return `${(grams / 1000).toFixed(3).replace('.', ',')} ${t('pos.unit.kg')}`
                           })()}
                         </div>
                       ) : (
@@ -176,8 +176,8 @@ export default function ProductTable({
                           />
                           <span className='unit-badge' style={isStorned ? { textDecoration: 'line-through', opacity: 0.5 } : undefined}>
                             {item.unit_per_pack > 1 && item.unit_quantity > 0
-                              ? `${item.unit_quantity} шт`
-                              : 'уп'}
+                              ? `${item.unit_quantity} ${t('pos.unit.pcs')}`
+                              : t('pos.unit.pack')}
                           </span>
                         </div>
                       )}

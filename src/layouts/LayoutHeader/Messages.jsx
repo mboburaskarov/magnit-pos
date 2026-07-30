@@ -4,10 +4,12 @@ import CloseIcon from '@/assets/icons/CloseIcon'
 import { ArrowRight, ArrowRightAlt } from '@mui/icons-material'
 import { Box, Drawer, Skeleton, Typography } from '@mui/material'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 function MessagesDrawer({ open, onClose, messagesCount, isLoading }) {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   return (
     <Drawer
       anchor='right'
@@ -35,7 +37,7 @@ function MessagesDrawer({ open, onClose, messagesCount, isLoading }) {
           borderBottom: '1px solid #ececec',
         }}
       >
-        <Typography sx={{ fontSize: '18px', fontWeight: '600', color: 'bunker.950' }}>Уведомления</Typography>
+        <Typography sx={{ fontSize: '18px', fontWeight: '600', color: 'bunker.950' }}>{t('pos.notifications_title')}</Typography>
         {/* <CloseIcon color='#000' onClick={() => onClose(false)} /> */}
       </Box>
       {isLoading ? (
@@ -68,7 +70,7 @@ function MessagesDrawer({ open, onClose, messagesCount, isLoading }) {
                 },
               }}
             >
-              <Typography sx={{ fontSize: '16px', fontWeight: '500' }}>У вас {messagesCount} неполученных онлайн-заказа.</Typography>
+              <Typography sx={{ fontSize: '16px', fontWeight: '500' }}>{t('pos.unreceived_online_orders', { count: messagesCount })}</Typography>
               <ArrowRightIcon color='#505050' />
             </Box>
           ) : (
@@ -80,7 +82,7 @@ function MessagesDrawer({ open, onClose, messagesCount, isLoading }) {
                 cursor: 'pointer',
               }}
             >
-              <Typography sx={{ fontSize: '16px', fontWeight: '500' }}>У вас нет уведомлений.</Typography>
+              <Typography sx={{ fontSize: '16px', fontWeight: '500' }}>{t('pos.no_notifications')}</Typography>
             </Box>
           )}
         </>

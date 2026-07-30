@@ -1,5 +1,6 @@
 import CheckAccess from './CheckAccess'
 import { Download, Plus, ChevronUp, ChevronDown } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export default function MgPageHeader({
   title,
@@ -13,9 +14,12 @@ export default function MgPageHeader({
   exportLoading = false,
   showCreate = false,
   onCreate,
-  createLabel = 'Создать',
+  createLabel,
   createPermissionId,
 }) {
+  const { t } = useTranslation()
+  createLabel = createLabel || t('button.add_new.text')
+
   const renderCreateButton = () => (
     <button
       type='button'
@@ -86,7 +90,7 @@ export default function MgPageHeader({
             }}
           >
             {isOpenStats ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            <span>{isOpenStats ? 'Скрыть статистику' : 'Показать статистику'}</span>
+            <span>{isOpenStats ? t('pos.hide_stats') : t('pos.show_stats')}</span>
           </button>
         )}
 
@@ -113,7 +117,7 @@ export default function MgPageHeader({
             }}
           >
             <Download size={16} />
-            <span>Экспорт</span>
+            <span>{t('pos.export_label')}</span>
           </button>
         )}
 

@@ -8,6 +8,7 @@ import { error } from '@utils/toast'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -17,6 +18,7 @@ import { getFilterEndDate, getFilterStartDate } from '@/hooks/getFilterDate'
 import { Link, useLocation } from 'react-router-dom'
 
 export default function ProductHistory({ id, unit_per_pack }) {
+  const { t } = useTranslation()
   const location = useLocation()
 
   // to‘liq hozirgi URL (query bilan)
@@ -55,7 +57,7 @@ export default function ProductHistory({ id, unit_per_pack }) {
   const columns = useMemo(
     () => [
       {
-        headerName: 'Дата',
+        headerName: t('table_columns.date'),
         colId: 'created_at',
         minWidth: 185,
         maxWidth: 185,
@@ -67,7 +69,7 @@ export default function ProductHistory({ id, unit_per_pack }) {
         ),
       },
       {
-        headerName: 'Действие',
+        headerName: t('table_columns.action'),
         colId: 'document_number',
         minWidth: 250,
         maxWidth: 250,
@@ -101,25 +103,25 @@ export default function ProductHistory({ id, unit_per_pack }) {
               sx={{ cursor: 'pointer' }}
             >
               {entryType == '6'
-                ? 'Перемещение '
+                ? t('product_drawer.movement.transfer')
                 : entryType == '5'
-                  ? 'Возврат на склад '
+                  ? t('product_drawer.movement.return_to_warehouse')
                   : entryType == '7'
-                    ? 'Возврат '
+                    ? t('product_drawer.history.return_action')
                     : entryType == '3'
-                      ? 'Списание '
+                      ? t('product_drawer.history.writeoff_action')
                       : entryType == '4'
-                        ? 'Продажa '
+                        ? t('product_drawer.history.sale_action')
                         : entryType == '2'
-                          ? 'Инвентаризация '
-                          : 'Импорт '}
+                          ? t('product_drawer.movement.inventory')
+                          : t('product_drawer.history.import_action')}{' '}
               #{publicId}
             </Typography>
           )
         },
       },
       {
-        headerName: 'Количество',
+        headerName: t('table_columns.quantity'),
         colId: 'accepted_count',
         minWidth: 185,
         maxWidth: 185,
@@ -128,14 +130,14 @@ export default function ProductHistory({ id, unit_per_pack }) {
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <Typography ml={'4px'} color={'bunker.500'}>
-                {formatCount(data?.quantity, unit_per_pack, false)}
+                {formatCount(data?.quantity, unit_per_pack, false, t)}
               </Typography>
             </Box>
           </>
         ),
       },
       {
-        headerName: 'Цена',
+        headerName: t('table_columns.price'),
         colId: 'accepted_count',
         minWidth: 185,
         maxWidth: 185,
@@ -144,14 +146,14 @@ export default function ProductHistory({ id, unit_per_pack }) {
           <>
             <Box display={'flex'} justifyContent={'start'} alignItems={'center'}>
               <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(data?.sum, 'сум')}
+                {thousandDivider(data?.sum, t('pos.currency_short'))}
               </Typography>
             </Box>
           </>
         ),
       },
       {
-        headerName: 'Магазин',
+        headerName: t('table_columns.store'),
         colId: 'store',
         minWidth: 185,
         maxWidth: 285,
@@ -159,7 +161,7 @@ export default function ProductHistory({ id, unit_per_pack }) {
         cellRenderer: ({ data, rowIndex }) => <Typography>{get(data, 'store_name')}</Typography>,
       },
     ],
-    [unit_per_pack],
+    [unit_per_pack, t],
   )
 
   const formattedData = singleProductMovement?.data?.data?.data
@@ -170,7 +172,7 @@ export default function ProductHistory({ id, unit_per_pack }) {
     onError: (err) => {
       console.error(err)
 
-      error('Ошибка при скачать excel!')
+      error(t('product_drawer.excel_download_error'))
     },
   })
   const [oepnModal, setModal] = useState()

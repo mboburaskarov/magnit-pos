@@ -98,8 +98,8 @@ export default function OnlineOrderFilter({ open, setOpen, setRegions }) {
                 name='expired_date'
                 id='expired_date'
                 showYearDropdown
-                label='Дата закрытия'
-                placeholder='Дата закрытия'
+                label={t('pos.closing_date_label')}
+                placeholder={t('pos.closing_date_label')}
               />
               <Box height={'20px'} />
 
@@ -109,7 +109,7 @@ export default function OnlineOrderFilter({ open, setOpen, setRegions }) {
                 id='customers'
                 name='customers'
                 isMulti={false}
-                placeholder={'Выберите клиент'}
+                placeholder={t('input.client.placeholder')}
                 minWidth='auto'
                 isClearable={true}
                 label={t('input.client.label')}

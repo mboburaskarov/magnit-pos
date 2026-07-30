@@ -77,7 +77,7 @@ function DraftParentItemsBox({ setIsOpenChild, item }) {
             </Typography>
           </Box>
           <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-            {thousandDivider(get(item, 'total_price'), 'сум')}
+            {thousandDivider(get(item, 'total_price'), t('pos.currency_short'))}
           </Typography>
         </Box>
         <Box className={classes.rightArrowIcon}>

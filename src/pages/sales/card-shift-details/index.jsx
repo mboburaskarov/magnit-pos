@@ -3,6 +3,7 @@ import { Box, CircularProgress, Typography } from '@mui/material'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
 import axios from 'axios'
@@ -509,6 +510,7 @@ function CloseShiftPage() {
   const classes = useStyles()
   const { id } = useParams()
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const { values } = useQueryParams()
   const userData = useSelector((state) => state.user)
 
@@ -597,7 +599,7 @@ function CloseShiftPage() {
       })
       const res = await axios.post('http://localhost:7788/print/raw-template', { lines: layoutLines })
       if (res.data && res.data.ok) {
-        success('Отчет Z успешно распечатан!')
+        success(t('close_shift.zreport_print_success'))
         submitRegister()
         return true
       } else {
@@ -605,8 +607,8 @@ function CloseShiftPage() {
       }
     } catch (err) {
       console.error('Z-Report printing failed:', err)
-      setPrintError('Не удалось распечатать Z-отчет. Проверьте принтер и агент.')
-      error('Ошибка печати Z-отчета!')
+      setPrintError(t('close_shift.print_failed_desc'))
+      error(t('close_shift.print_error_toast'))
       return false
     }
   }
@@ -614,7 +616,7 @@ function CloseShiftPage() {
   const { mutate: closeCheckZReport, isLoading: iscloseCheckZReport } = useMutation(requests.closeCheckZReport, {
     onSuccess: ({ data }) => {
       if (get(data, 'error', true)) {
-        error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
+        error(`${t('pos.error_prefix')}${get(data, 'message')?.split('Ru:')[1]}`)
         return
       } else {
         const zrepo = get(data, 'message')
@@ -623,7 +625,7 @@ function CloseShiftPage() {
       }
     },
     onError: (err) => {
-      error('Ошибка закрытия кассы! (close Z info Report)')
+      error(t('close_shift.error_closing_register'))
       console.error('err', err)
     },
   })
@@ -637,15 +639,15 @@ function CloseShiftPage() {
           printerSize: 80,
           zReportId: 1,
         })
-        success('Касса закрыта! (cose z report)')
+        success(t('close_shift.register_closed_success'))
         return
       } else {
-        error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
+        error(`${t('pos.error_prefix')}${get(data, 'message')?.split('Ru:')[1]}`)
         return
       }
     },
     onError: (err) => {
-      error('Ошибка закрытия кассы! (close Z Report)')
+      error(t('close_shift.error_closing_register'))
       console.error('err', err)
     },
   })
@@ -658,7 +660,7 @@ function CloseShiftPage() {
       }, 1800)
     },
     onError: (err) => {
-      error('Ошибка закрытия кассы!')
+      error(t('close_shift.error_closing_register'))
       console.error('err', err)
     },
   })
@@ -670,7 +672,7 @@ function CloseShiftPage() {
     const counted = parseAmount(current.amounts.actual)
     const keptAmount = current.company === '3' ? parseAmount(current.amounts.closed) : current.company === '2' ? 0 : counted
     if (keptAmount > counted) {
-      error('Оставшаяся сумма не может быть больше фактической!')
+      error(t('close_shift.error_kept_exceeds_actual'))
       return
     }
     closeCashBoxRegister({
@@ -694,7 +696,7 @@ function CloseShiftPage() {
 
   // Re-countable rows; empty entry shows a neutral badge (no scary red until typed).
   const moneyFields = [
-    { key: 'actual', label: 'Наличные', expected: expectedCash, img: null },
+    { key: 'actual', label: t('close_shift.cash_label'), expected: expectedCash, img: null },
     { key: 'uzcard', label: 'Uzcard', expected: operationDetail.sales_uzcard || 0, img: '/images/uzcard.png' },
     { key: 'humo', label: 'Humo', expected: operationDetail.sales_humo || 0, img: '/images/humo.png' },
   ].map((f) => {
@@ -704,7 +706,12 @@ function CloseShiftPage() {
       ...f,
       empty,
       diff: d,
-      diffText: d === 0 ? 'Совпадает с ожидаемой суммой' : d > 0 ? `Излишек: ${fmt(d)} UZS` : `Недостача: ${fmt(d)} UZS`,
+      diffText:
+        d === 0
+          ? t('close_shift.diff_matches')
+          : d > 0
+          ? t('close_shift.diff_surplus', { amount: fmt(d) })
+          : t('close_shift.diff_shortage', { amount: fmt(d) }),
     }
   })
   const mismatches = moneyFields.filter((f) => f.diff !== 0).map((f) => ({ label: f.label, text: f.diffText }))
@@ -720,9 +727,9 @@ function CloseShiftPage() {
   const anyEntered = moneyFields.some((f) => !f.empty)
 
   const options = [
-    { id: '1', title: 'Оставить всё в кассе', sub: `${fmt(counted)} UZS останется на завтра` },
-    { id: '2', title: 'Сдать всё компании', sub: 'Касса завтра откроется с 0 UZS' },
-    { id: '3', title: 'Разделить', sub: 'Часть в кассе, остальное — компании' },
+    { id: '1', title: t('close_shift.option_keep_all_title'), sub: t('close_shift.option_keep_all_sub', { amount: fmt(counted) }) },
+    { id: '2', title: t('close_shift.option_give_all_title'), sub: t('close_shift.option_give_all_sub') },
+    { id: '3', title: t('close_shift.option_split_title'), sub: t('close_shift.option_split_sub') },
   ]
 
   const finalizePendingCalc = () => {
@@ -812,13 +819,13 @@ function CloseShiftPage() {
       return
     }
     if (amounts.actual === '') {
-      setFormError('Пожалуйста, заполните все поля!')
-      error('Пожалуйста, заполните все поля!')
+      setFormError(t('pos.error_fill_fields'))
+      error(t('pos.error_fill_fields'))
       return
     }
     if (company === '3' && closedNum > counted) {
-      setFormError('Оставляемая сумма не может быть больше фактической')
-      error('Оставшаяся сумма не может быть больше фактической!')
+      setFormError(t('close_shift.error_kept_exceeds_actual'))
+      error(t('close_shift.error_kept_exceeds_actual'))
       return
     }
     setFormError('')
@@ -924,10 +931,10 @@ function CloseShiftPage() {
     <Box className={classes.screen}>
       <Box component='header' className={classes.header}>
         <Box className={classes.headerLeft}>
-          <Box component='button' type='button' className={classes.backBtn} onClick={goBack} aria-label='Назад'>
+          <Box component='button' type='button' className={classes.backBtn} onClick={goBack} aria-label={t('close_shift.back_aria')}>
             <ArrowLeft size={16} strokeWidth={2.2} />
           </Box>
-          <span className={classes.headerTitle}>Закрытие смены</span>
+          <span className={classes.headerTitle}>{t('close_shift.title')}</span>
         </Box>
         <Box className={classes.headerChip}>
           <User size={13} color='#9CA3AF' />
@@ -945,8 +952,10 @@ function CloseShiftPage() {
             <span className={classes.successIcon}>
               <Check size={44} strokeWidth={2.4} />
             </span>
-            <Typography className={classes.successTitle}>Касса закрыта</Typography>
-            <Typography className={classes.successSub}>{printError ? 'Возврат ко входу…' : 'Z-отчёт отправлен на печать. Возврат ко входу…'}</Typography>
+            <Typography className={classes.successTitle}>{t('close_shift.register_closed_title')}</Typography>
+            <Typography className={classes.successSub}>
+              {printError ? t('close_shift.returning_to_login') : t('close_shift.zreport_sent_returning')}
+            </Typography>
           </Box>
         </Box>
       ) : (
@@ -955,10 +964,10 @@ function CloseShiftPage() {
             {/* LEFT: reconciliation ledger */}
             <Box className={classes.ledger}>
               <Box className={classes.thead}>
-                <span>Способ оплаты</span>
-                <span style={{ textAlign: 'right' }}>Ожидается</span>
-                <span style={{ textAlign: 'right', paddingRight: 4 }}>Факт</span>
-                <span style={{ textAlign: 'right' }}>Разница</span>
+                <span>{t('close_shift.payment_method')}</span>
+                <span style={{ textAlign: 'right' }}>{t('close_shift.expected')}</span>
+                <span style={{ textAlign: 'right', paddingRight: 4 }}>{t('close_shift.fact')}</span>
+                <span style={{ textAlign: 'right' }}>{t('close_shift.difference')}</span>
               </Box>
               <Box className={classes.ledgerRows}>
                 {moneyFields.map((f) => {
@@ -987,7 +996,7 @@ function CloseShiftPage() {
                     <span className={classes.cellRight}>
                       <span className={classes.autoChip}>
                         <span className={classes.autoChipLabel}>
-                          <Lock size={11} strokeWidth={2.4} color='#B6BAC4' /> авто
+                          <Lock size={11} strokeWidth={2.4} color='#B6BAC4' /> {t('close_shift.auto_label')}
                         </span>
                         <span className={classes.autoChipVal}>{fmt(o.amount)}</span>
                       </span>
@@ -999,7 +1008,7 @@ function CloseShiftPage() {
                 ))}
               </Box>
               <Box className={classes.tfoot}>
-                <span className={classes.tfootLabel}>Итого</span>
+                <span className={classes.tfootLabel}>{t('close_shift.total')}</span>
                 <span className={classes.tfootNum}>
                   {fmt(totalExpected)} <span className={classes.tfootUnit}>UZS</span>
                 </span>
@@ -1054,7 +1063,7 @@ function CloseShiftPage() {
                           className={`${classes.keypadBtn} ${classes.keypadBtnBack}`}
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={backspaceKey}
-                          aria-label='Удалить'
+                          aria-label={t('close_shift.delete_aria')}
                           disabled={closing}
                         >
                           <Delete size={20} />
@@ -1070,7 +1079,7 @@ function CloseShiftPage() {
                           className={`${classes.keypadBtn} ${classes.keypadBtnOp} ${active ? classes.keypadBtnOpActive : ''}`}
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => pressOperator(k.v)}
-                          aria-label={k.v === '+' ? 'Плюс' : 'Минус'}
+                          aria-label={k.v === '+' ? t('close_shift.plus_aria') : t('close_shift.minus_aria')}
                           disabled={closing}
                         >
                           {k.v === '+' ? <Plus size={20} strokeWidth={2.6} /> : <Minus size={20} strokeWidth={2.6} />}
@@ -1085,7 +1094,7 @@ function CloseShiftPage() {
                           className={`${classes.keypadBtn} ${classes.keypadBtnComma}`}
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={pressComma}
-                          aria-label='Запятая'
+                          aria-label={t('close_shift.comma_aria')}
                           disabled={closing}
                         >
                           ,
@@ -1100,7 +1109,7 @@ function CloseShiftPage() {
                           className={`${classes.keypadBtn} ${classes.keypadBtnClear}`}
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={clearKey}
-                          aria-label='Очистить'
+                          aria-label={t('close_shift.clear_aria')}
                           disabled={closing}
                         >
                           C
@@ -1114,7 +1123,7 @@ function CloseShiftPage() {
                         className={`${classes.keypadBtn} ${classes.keypadBtnEq}`}
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={pressEquals}
-                        aria-label='Равно'
+                        aria-label={t('close_shift.equals_aria')}
                         disabled={closing || !calcState.op}
                       >
                         <Equal size={20} strokeWidth={2.6} />
@@ -1124,7 +1133,7 @@ function CloseShiftPage() {
                 </Box>
               </Box>
 
-              <Typography className={classes.sectionLabel}>Куда деть наличные из кассы?</Typography>
+              <Typography className={classes.sectionLabel}>{t('close_shift.cash_destination_label')}</Typography>
               {options.map((o) => {
                 const selected = company === o.id
                 return (
@@ -1152,8 +1161,8 @@ function CloseShiftPage() {
               {company === '3' && (
                 <Box className={`${classes.splitRow} ${target === 'closed' ? classes.splitRowActive : ''}`} onClick={() => switchTarget('closed')}>
                   <Box className={classes.optionInfo}>
-                    <span className={classes.optionTitle}>Оставить в кассе</span>
-                    <span className={classes.optionSub}>Компании: {fmt(toCompany)} UZS</span>
+                    <span className={classes.optionTitle}>{t('close_shift.split_keep_label')}</span>
+                    <span className={classes.optionSub}>{t('close_shift.split_to_company_amount', { amount: fmt(toCompany) })}</span>
                   </Box>
                   {renderField(amounts.closed, target === 'closed')}
                 </Box>
@@ -1166,10 +1175,10 @@ function CloseShiftPage() {
                   <Typography className={classes.errorText}>{printError}</Typography>
                   <Box display='flex' gap='10px'>
                     <button type='button' className={classes.retryBtn} onClick={() => handleAgentZReportPrint(checkdata)}>
-                      Повторить печать
+                      {t('close_shift.retry_print')}
                     </button>
                     <button type='button' className={classes.skipPrintBtn} onClick={submitRegister} disabled={iscloseCashBoxRegister}>
-                      Завершить без печати
+                      {t('close_shift.finish_without_print')}
                     </button>
                   </Box>
                 </Box>
@@ -1202,11 +1211,11 @@ function CloseShiftPage() {
                   >
                     {closing ? (
                       <>
-                        Закрытие… <CircularProgress size={18} sx={{ color: '#fff' }} />
+                        {t('close_shift.closing_progress')} <CircularProgress size={18} sx={{ color: '#fff' }} />
                       </>
                     ) : (
                       <>
-                        Закрыть кассу <ArrowRight size={18} strokeWidth={2.2} />
+                        {t('close_shift.close_register_btn')} <ArrowRight size={18} strokeWidth={2.2} />
                       </>
                     )}
                   </button>
@@ -1223,8 +1232,8 @@ function CloseShiftPage() {
             <span className={classes.confirmIcon}>
               <AlertTriangle size={30} strokeWidth={2} />
             </span>
-            <Typography className={classes.confirmTitle}>Обнаружено расхождение</Typography>
-            <Typography className={classes.confirmText}>Пересчитанные суммы не совпадают с ожидаемыми. Проверьте перед закрытием кассы:</Typography>
+            <Typography className={classes.confirmTitle}>{t('close_shift.discrepancy_title')}</Typography>
+            <Typography className={classes.confirmText}>{t('close_shift.discrepancy_desc')}</Typography>
             <Box className={classes.mismatchList}>
               {mismatches.map((m) => (
                 <Box key={m.label} className={classes.mismatchRow}>
@@ -1235,10 +1244,10 @@ function CloseShiftPage() {
             </Box>
             <Box className={classes.confirmActions}>
               <button type='button' className={classes.confirmCancel} onClick={() => setConfirmOpen(false)}>
-                Проверить ещё раз
+                {t('close_shift.recheck_btn')}
               </button>
               <button type='button' className={classes.confirmGo} onClick={confirmClose}>
-                Всё равно закрыть
+                {t('close_shift.close_anyway_btn')}
               </button>
             </Box>
           </Box>

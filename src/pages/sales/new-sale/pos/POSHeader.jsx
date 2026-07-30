@@ -293,7 +293,7 @@ export default function POSHeader({
             id='posSearchQuery'
             name='posSearchQuery'
             className='pos-header-search-input'
-            placeholder={t('pos.search_title') || 'Поиск товара...'}
+            placeholder={t('pos.search_title')}
             autoFocus
             autoComplete='off'
             autoCorrect='off'

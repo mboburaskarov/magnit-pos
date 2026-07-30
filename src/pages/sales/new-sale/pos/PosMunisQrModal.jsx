@@ -45,7 +45,7 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
         const bill = get(res, 'data.data.bill_number', '')
         if (!qrValue || !bill) {
           setStatus('error')
-          setErrMsg(t('pos.munis.generate_failed', { defaultValue: 'QR-код не удалось создать' }))
+          setErrMsg(t('pos.munis.generate_failed'))
           return
         }
         setQr(qrValue)
@@ -58,7 +58,7 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
         setErrMsg(
           get(e, 'response.data.data') ||
             get(e, 'response.data.message') ||
-            t('pos.munis.generate_failed', { defaultValue: 'QR-код не удалось создать' }),
+            t('pos.munis.generate_failed'),
         )
       })
 
@@ -147,18 +147,18 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
         <div className='pos-app-scan-title'>UzQR</div>
 
         <div className='pos-app-scan-payment-row'>
-          <span className='pos-app-scan-payment-label'>{t('pos.total_compact') || 'Сумма'}:</span>
+          <span className='pos-app-scan-payment-label'>{t('pos.total_compact')}</span>
           <span className='pos-app-scan-payment-name'>{thousandDivider(Number(amount), t('pos.currency_short'))}</span>
         </div>
 
         {status === 'loading' && (
-          <div className='pos-app-scan-desc'>{t('pos.munis.generating', { defaultValue: 'QR-код создается…' })}</div>
+          <div className='pos-app-scan-desc'>{t('pos.munis.generating')}</div>
         )}
 
         {status === 'waiting' && (
           <>
             <div className='pos-app-scan-desc'>
-              {t('pos.munis.scan_to_pay', { defaultValue: 'Покажите QR-код клиенту для оплаты' })}
+              {t('pos.munis.scan_to_pay')}
             </div>
             <div
               style={{
@@ -173,14 +173,14 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
               <QRCodeCanvas value={qr} size={240} includeMargin />
             </div>
             <div className='pos-app-scan-desc' style={{ fontSize: 13, opacity: 0.7 }}>
-              {t('pos.munis.waiting', { defaultValue: 'Ожидание оплаты…' })}
+              {t('pos.munis.waiting')}
             </div>
           </>
         )}
 
         {status === 'paid' && (
           <div className='pos-app-scan-desc' style={{ color: '#1e9e52', fontWeight: 700 }}>
-            ✓ {t('pos.munis.paid', { defaultValue: 'Оплачено' })}
+            ✓ {t('pos.munis.paid')}
           </div>
         )}
 
@@ -188,7 +188,7 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
 
         <div className='pos-security-actions'>
           <button type='button' onClick={onCancel} className='pos-security-btn-cancel'>
-            {t('pos.security.cancel', { defaultValue: 'Отмена' })}
+            {t('pos.security.cancel')}
           </button>
           {status === 'error' && (
             <button
@@ -196,7 +196,7 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
               onClick={() => setRetryNonce((n) => n + 1)}
               className='pos-app-scan-btn-confirm'
             >
-              {t('retry', { defaultValue: 'Повторить' })}
+              {t('retry')}
             </button>
           )}
         </div>

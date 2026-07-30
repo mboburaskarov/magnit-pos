@@ -7,10 +7,12 @@ import thousandDivider from '@utils/thousandDivider'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 
 export default function ProductRemainsHistory({ id }) {
+  const { t } = useTranslation()
   const { values } = useQueryParams()
   const [offsetCount, setOffsetCount] = useState(0)
   const userData = useSelector((state) => state.user)
@@ -56,7 +58,7 @@ export default function ProductRemainsHistory({ id }) {
   const columns = useMemo(
     () => [
       {
-        headerName: 'Магазин',
+        headerName: t('table_columns.store'),
         colId: 'store_name',
         minWidth: 200,
         maxWidth: 350,
@@ -70,7 +72,7 @@ export default function ProductRemainsHistory({ id }) {
         ),
       },
       {
-        headerName: 'Баркод',
+        headerName: t('table_columns.barcode'),
         colId: 'barcode',
         minWidth: 200,
         maxWidth: 350,
@@ -82,7 +84,7 @@ export default function ProductRemainsHistory({ id }) {
         ),
       },
       {
-        headerName: 'Количество',
+        headerName: t('table_columns.quantity'),
         colId: 'quantity',
         minWidth: 185,
         maxWidth: 185,
@@ -90,27 +92,27 @@ export default function ProductRemainsHistory({ id }) {
         cellRenderer: ({ data, rowIndex }) => <Typography id={`${'quantity'}-${rowIndex}-${data?.store_id}`}>{get(data, 'quantity')}</Typography>,
       },
       {
-        headerName: 'Цена продажи',
+        headerName: t('table_columns.retail_price'),
         colId: 'retail_price',
         minWidth: 185,
         maxWidth: 185,
         width: 185,
         cellRenderer: ({ data, rowIndex }) => (
-          <Typography id={`${'retail_price'}-${rowIndex}-${data?.store_id}`}>{thousandDivider(get(data, 'retail_price'), 'сум')}</Typography>
+          <Typography id={`${'retail_price'}-${rowIndex}-${data?.store_id}`}>{thousandDivider(get(data, 'retail_price'), t('pos.currency_short'))}</Typography>
         ),
       },
       {
-        headerName: 'Цена покупки',
+        headerName: t('table_columns.supply_price'),
         colId: 'retail_price',
         minWidth: 185,
         maxWidth: 185,
         width: 185,
         cellRenderer: ({ data, rowIndex }) => (
-          <Typography id={`${'retail_price'}-${rowIndex}-${data?.store_id}`}>{thousandDivider(get(data, 'supply_price'), 'сум')}</Typography>
+          <Typography id={`${'retail_price'}-${rowIndex}-${data?.store_id}`}>{thousandDivider(get(data, 'supply_price'), t('pos.currency_short'))}</Typography>
         ),
       },
       {
-        headerName: 'Наценка',
+        headerName: t('table_columns.markup'),
         colId: 'retail_price',
         minWidth: 185,
         maxWidth: 185,
@@ -120,7 +122,7 @@ export default function ProductRemainsHistory({ id }) {
         ),
       },
       {
-        headerName: 'НДС',
+        headerName: t('table_columns.vat'),
         colId: 'retail_price',
         minWidth: 185,
         maxWidth: 185,
@@ -130,7 +132,7 @@ export default function ProductRemainsHistory({ id }) {
         ),
       },
       {
-        headerName: 'Срок',
+        headerName: t('table_columns.expire_date'),
         colId: 'retail_price',
         minWidth: 185,
         maxWidth: 185,
@@ -140,7 +142,7 @@ export default function ProductRemainsHistory({ id }) {
         ),
       },
     ],
-    [],
+    [t],
   )
 
   const formattedData = productReaminsDataHistory?.data?.data?.data

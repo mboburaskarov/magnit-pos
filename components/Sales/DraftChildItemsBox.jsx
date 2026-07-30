@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
+import { useTranslation } from 'react-i18next'
 import React from 'react'
 import thousandDivider from '@utils/thousandDivider'
 import CustomImg from '../CustomImg'
@@ -14,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 function DraftChildItemsBox({ item, setIsOpenChild }) {
   const classes = useStyles()
+  const { t } = useTranslation()
   return (
     <Box display={'flex'} mb={'10px'} height={'80px'} justifyContent={'space-between'}>
       <Box borderRadius={'16px'} p={'16px'} bgcolor={'bg.10'} mr={'8px'} display={'flex'} width={'100%'} justifyContent={'space-between'}>
@@ -46,8 +48,8 @@ function DraftChildItemsBox({ item, setIsOpenChild }) {
                 {get(item, 'barcode')}
               </Typography>
               <Typography whiteSpace={'pre'} mt={'4px'} fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-                {get(item, 'quantity')}пч{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}шт` : ''} -{' '}
-                {thousandDivider(get(item, 'total_price'), 'сум')}
+                {get(item, 'quantity')}{t('pos.unit.pack')}{get(item, 'unit_quantity') > 0 ? `/${get(item, 'unit_quantity')}${t('pos.unit.pcs')}` : ''} -{' '}
+                {thousandDivider(get(item, 'total_price'), t('pos.currency_short'))}
               </Typography>
             </Box>
           </Box>
@@ -55,14 +57,14 @@ function DraftChildItemsBox({ item, setIsOpenChild }) {
       </Box>
       <Box borderRadius={'16px'} p={'16px'} minWidth={'160px'} bgcolor={'bg.10'}>
         <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'}>
-          Бонус
+          {t('pos.bonus_label')}
         </Typography>
         <Box mt={'4px'} display={'flex'} justifyContent={'space-between'} width={'100%'}>
           <Typography fontSize={'14px'} fontWeight={'500'} color={'purple.500'} lineHeight={'20px'}>
             {get(item, 'bonus_percent')} %{/* {get(item, 'discount_type') === 'percent' ? '%' : "so'm"} */}
           </Typography>
           <Typography fontSize={'14px'} fontWeight={'500'} color={'purple.500'} lineHeight={'20px'}>
-            {thousandDivider(get(item, 'bonus_amount'), 'сум')}
+            {thousandDivider(get(item, 'bonus_amount'), t('pos.currency_short'))}
           </Typography>
         </Box>
       </Box>

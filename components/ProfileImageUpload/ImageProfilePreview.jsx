@@ -5,6 +5,7 @@ import DeleteIcon from '../../src/assets/icons/DeleteIcon'
 import EditIcon from '../../src/assets/icons/EditIcon'
 import getImageUrl from '@utils/getImageUrl'
 import CustomImg from '../CustomImg'
+import { useTranslation } from 'react-i18next'
 
 const ImagePlaceholder = () => {
   const { mode } = useTheme()
@@ -55,6 +56,7 @@ export default function ImagePreview({
   width,
   withoutTextBox,
 }) {
+  const { t } = useTranslation()
   const [openGallery, setOpenGallery] = useState(false)
   const { mode } = useTheme()
 
@@ -127,7 +129,7 @@ export default function ImagePreview({
                 {...getRootProps()}
               >
                 <Typography fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'orange.500'}>
-                  Обновить изображение
+                  {t('pos.update_image_button')}
                 </Typography>
               </Button>
 
@@ -155,7 +157,7 @@ export default function ImagePreview({
               >
                 <DeleteIcon />{' '}
                 <Typography ml={'12px'} fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'red.700'}>
-                  Удалить
+                  {t('login.delete_aria')}
                 </Typography>
               </Button>
             </>
@@ -215,7 +217,7 @@ export default function ImagePreview({
                   {...getRootProps()}
                 >
                   <Typography fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'orange.500'}>
-                    Обновить изображение
+                    {t('pos.update_image_button')}
                   </Typography>
                 </Button>
 
@@ -243,7 +245,7 @@ export default function ImagePreview({
                 >
                   <DeleteIcon />{' '}
                   <Typography ml={'12px'} fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'red.700'}>
-                    Удалить
+                    {t('login.delete_aria')}
                   </Typography>
                 </Button>
               </>
@@ -275,7 +277,7 @@ export default function ImagePreview({
               {...getRootProps()}
             >
               <Typography fontWeight={'600'} fontSize={'14px'} lineHeight={'20px'} color={'orange.500'}>
-                Обновить изображение
+                {t('pos.update_image_button')}
               </Typography>
             </Button> */}
           </Box>
@@ -318,7 +320,7 @@ export default function ImagePreview({
             }}
           ></Box>
           <Button onClick={() => setOpenGallery(true)} size='small' sx={{ position: 'absolute', bottom: 8, left: 8, zIndex: 8, height: 36, borderRadius: 2 }}>
-            просмотр
+            {t('pos.preview')}
           </Button>
           <Box
             id={`upload-img-preview`}

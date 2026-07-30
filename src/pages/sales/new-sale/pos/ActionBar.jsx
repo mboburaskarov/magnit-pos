@@ -132,19 +132,19 @@ export default function ActionBar({
       {/* 2. Return / Sales */}
       <button className='action-btn neutral-btn' onClick={() => { onReturn(); blurActiveBtn() }} type='button'>
         <RotateCcw size={16} />
-        <span>{t('sales') || 'Продажи'}</span>
+        <span>{t('sales')}</span>
       </button>
 
       {/* 3. Preview / Search */}
       <button className='action-btn neutral-btn' onClick={(e) => { e.currentTarget.blur(); onOpenSearch() }} type='button'>
         <Eye size={16} />
-        <span>{t('pos.preview') || 'Просмотр'}</span>
+        <span>{t('pos.preview')}</span>
       </button>
 
       {/* 4. MagnitGO (coming soon) */}
       <button className='action-btn neutral-btn' disabled type='button'>
         <span>MagnitGO</span>
-        <span className='soon-badge'>{t('pos.magnitgo_soon') || 'Скоро'}</span>
+        <span className='soon-badge'>{t('pos.magnitgo_soon')}</span>
       </button>
 
       {/* 5. Edit Quantity (replaces Discount/Скидка) */}
@@ -155,13 +155,13 @@ export default function ActionBar({
         type='button'
       >
         <Edit3 size={16} />
-        <span>{t('pos.edit_quantity') || 'Изменить кол-во'}</span>
+        <span>{t('pos.edit_quantity')}</span>
       </button>
 
       {/* 6. Cancel receipt */}
       <button className='action-btn danger-outline-btn' onClick={() => { onCancelSale(); blurActiveBtn() }} type='button'>
         <Ban size={16} />
-        <span>{t('pos.cancel_receipt') || 'Отмена чека'}</span>
+        <span>{t('pos.cancel_receipt')}</span>
       </button>
 
       {/* 7. Storno / Remove item */}
@@ -172,7 +172,7 @@ export default function ActionBar({
         type='button'
       >
         <Slash size={16} />
-        <span>{t('pos.remove_item') || 'Убрать товар'}</span>
+        <span>{t('pos.remove_item')}</span>
       </button>
 
       {/* 8. Quick select */}
@@ -182,7 +182,7 @@ export default function ActionBar({
         type='button'
       >
         <Zap size={16} />
-        <span>{t('pos.quick_select') || 'Быстрый выбор'}</span>
+        <span>{t('pos.quick_select')}</span>
       </button>
     </div>
   )

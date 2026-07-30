@@ -293,7 +293,7 @@ export default function OrderDrawer({
                       {t('total')}:
                     </Typography>
                     <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={'bunker.950'}>
-                      {thousandDivider(get(cartItemsList, 'total_amount'), 'сум')}
+                      {thousandDivider(get(cartItemsList, 'total_amount'), t('pos.currency_short'))}
                     </Typography>
                   </Box>
                   <Box
@@ -308,7 +308,7 @@ export default function OrderDrawer({
                       {maxAmount < 0 ? t('return') : t('should_pay')}
                     </Typography>
                     <Typography fontSize={32} fontWeight={'800'} lineHeight={'48px'} color={maxAmount === 0 ? 'green.700' : 'red.700'}>
-                      {thousandDivider(Math.abs(maxAmount), 'сум')}
+                      {thousandDivider(Math.abs(maxAmount), t('pos.currency_short'))}
                     </Typography>
                   </Box>
                 </Box>
@@ -378,7 +378,7 @@ export default function OrderDrawer({
                                   </Typography>
                                   {get(item, 'front_name', false) == 'loyalty_card' && (
                                     <Typography sx={{ fontSize: '14px', color: 'bunker.500', fontWeight: '700' }}>
-                                      {thousandDivider(customerId?.balance, 'сум')}
+                                      {thousandDivider(customerId?.balance, t('pos.currency_short'))}
                                     </Typography>
                                   )}
                                 </Box>

@@ -154,7 +154,7 @@ export default function CheckoutSidebar({
                 letterSpacing: 1,
               }}>
                 {numpadQtyBuffer || '—'}
-                {selectedItemIsWeight ? ' кг' : ' шт'}
+                {selectedItemIsWeight ? ` ${t('pos.unit.kg')}` : ` ${t('pos.unit.pcs')}`}
               </span>
             )}
           </div>
@@ -242,7 +242,7 @@ export default function CheckoutSidebar({
                       onChange={(e) => setCartOwnerType(e.target.checked ? 'corporative' : 'physical')}
                       style={{ cursor: 'pointer', width: '16px', height: '16px', accentColor: 'var(--pos-accent)' }}
                     />
-                    Корпоративная карта
+                    {t('pos.corporate_card_checkbox')}
                   </label>
                 </div>
               </>
