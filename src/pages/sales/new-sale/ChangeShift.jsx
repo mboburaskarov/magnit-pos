@@ -12,12 +12,14 @@ import { bypassNextAppExit } from '@hooks/useExitConfirm';
 import { useTheme } from '@mui/styles';
 import { useEffect } from 'react';
 import { get } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 
 export default function ChangeShift({ open, setOpen }) {
   const userData = useSelector((state) => state.user)
   const methods = useForm()
   const theme = useTheme()
+  const { t } = useTranslation()
   const { reset } = methods
 
   const { data: employees } = useQuery('employees', () => requests.getAllVendors({ store_id: get(userData, 'store.id'), limit: 20, offset: 0 }), {
@@ -35,10 +37,10 @@ export default function ChangeShift({ open, setOpen }) {
       location.reload()
       setOpen(false)
 
-      success('Cмена изменена')
+      success(t('pos.shift_changed_toast'))
     },
     onError: (err) => {
-      error('Ошибка при смене смены')
+      error(t('pos.error_change_shift'))
       console.error('err', err)
     },
   })
@@ -60,7 +62,7 @@ export default function ChangeShift({ open, setOpen }) {
     <StyledEmptyDialog
       onClose={() => setOpen(false)}
       open={open}
-      title={'Передать смену'}
+      title={t('pos.transfer_shift')}
       customButtons={<CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />}
     >
       <Box
@@ -92,8 +94,8 @@ export default function ChangeShift({ open, setOpen }) {
               white
               isClearable={false}
               minWidth='auto'
-              label={'Сотрудник'}
-              placeholder={'Выберите сотрудника'}
+              label={t('pos.employee_label')}
+              placeholder={t('pos.select_employee_placeholder')}
               getOptionLabel={(el) => el.first_name + ' ' + el.last_name}
               options={employees?.data?.data?.data}
             />
@@ -102,7 +104,7 @@ export default function ChangeShift({ open, setOpen }) {
               boxStyle={{ borderRadius: '40px' }}
               id='password'
               name='password'
-              label={'Password'}
+              label={t('pos.password_field_label')}
               autoCompleteoff='new-password'
               required
               defaultState={true}
@@ -112,7 +114,7 @@ export default function ChangeShift({ open, setOpen }) {
             />
             <Box columnGap={2} display='flex' width='100%' mt={'24ppx'}>
               <Button fullWidth variant='contained' type='submit'>
-                Изменить
+                {t('create_register.change_button')}
               </Button>
             </Box>
           </Box>

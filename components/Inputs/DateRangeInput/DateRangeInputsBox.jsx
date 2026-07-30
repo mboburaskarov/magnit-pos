@@ -2,12 +2,14 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/material'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useFormContext } from 'react-hook-form'
 import { useIMask } from 'react-imask'
 import StyledTooltip from '../../StyledTooltip'
 import TextField from '../TextField'
 
 export default function DateRangeInputsBox({ dateState }) {
+  const { t } = useTranslation()
   const { ref: DD_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
   const { ref: HH_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
   const { ref: mm_number_ref } = useIMask({ mask: '00', lazy: true, placeholderChar: '' })
@@ -52,7 +54,7 @@ export default function DateRangeInputsBox({ dateState }) {
           },
         }}
       >
-        <StyledTooltip title={'Нажмите, чтобы добавить временной фильтр'}>
+        <StyledTooltip title={t('date_range.click_to_add_time_filter')}>
           <Box mr={2} display={'flex'} flexDirection={'column'} alignItems={'center'} onClick={() => setShowTime((p) => !p)}>
             {/* <AccessTime sx={{ fontSize: 40, color: '#111111' }} /> */}
             {!showTime ? <ExpandMore sx={{ fontSize: 40, color: '#111111' }} /> : <ExpandLess sx={{ fontSize: 40, color: '#111111' }} />}
@@ -62,13 +64,13 @@ export default function DateRangeInputsBox({ dateState }) {
           <Box flexGrow='50%'>
             <Box columnGap={1} display='flex'>
               <Box width={60}>
-                <TextField inputRef={DD_number_ref} centerMode id='from_day' name='from_day' placeholder='ДД' fullWidth required />
+                <TextField inputRef={DD_number_ref} centerMode id='from_day' name='from_day' placeholder={t('date_format.day_placeholder')} fullWidth required />
               </Box>
               <Box width={60}>
-                <TextField inputRef={MM_number_ref} centerMode id='from_month' name='from_month' placeholder='ММ' fullWidth required />
+                <TextField inputRef={MM_number_ref} centerMode id='from_month' name='from_month' placeholder={t('date_format.month_placeholder')} fullWidth required />
               </Box>
               <Box width={72}>
-                <TextField centerMode inputRef={YYYY_number_ref} id='from_year' name='from_year' placeholder='ГГГГ' fullWidth required />
+                <TextField centerMode inputRef={YYYY_number_ref} id='from_year' name='from_year' placeholder={t('date_format.year_placeholder')} fullWidth required />
               </Box>
             </Box>
           </Box>
@@ -90,7 +92,7 @@ export default function DateRangeInputsBox({ dateState }) {
                   centerMode
                   id='from_hour'
                   name='from_hour'
-                  placeholder='ЦЦ'
+                  placeholder={t('date_format.hour_placeholder')}
                   fullWidth
                   required
                 />
@@ -112,7 +114,7 @@ export default function DateRangeInputsBox({ dateState }) {
                   centerMode
                   id='from_minute'
                   name='from_minute'
-                  placeholder='ММ'
+                  placeholder={t('date_format.minute_placeholder')}
                   fullWidth
                   required
                 />
@@ -135,7 +137,7 @@ export default function DateRangeInputsBox({ dateState }) {
           justifyContent='center'
         >
           {/* <ForwardArrow fill='#bdbdbd' /> */}
-          <Typography>до</Typography>
+          <Typography>{t('date_range.until_label')}</Typography>
 
           {/* <ArrowiconUp /> */}
         </Box>
@@ -143,13 +145,13 @@ export default function DateRangeInputsBox({ dateState }) {
           <Box flexGrow='50%' mr={4}>
             <Box columnGap={1} display='flex'>
               <Box width={60}>
-                <TextField inputRef={DD_end_number_ref} centerMode id='to_day' name='to_day' placeholder='ДД' fullWidth required />
+                <TextField inputRef={DD_end_number_ref} centerMode id='to_day' name='to_day' placeholder={t('date_format.day_placeholder')} fullWidth required />
               </Box>
               <Box width={60}>
-                <TextField inputRef={MM_end_number_ref} centerMode id='to_month' name='to_month' placeholder='ММ' fullWidth required />
+                <TextField inputRef={MM_end_number_ref} centerMode id='to_month' name='to_month' placeholder={t('date_format.month_placeholder')} fullWidth required />
               </Box>
               <Box width={72}>
-                <TextField inputRef={YYYY_end_number_ref} centerMode id='to_year' name='to_year' placeholder='ГГГГ' fullWidth required />
+                <TextField inputRef={YYYY_end_number_ref} centerMode id='to_year' name='to_year' placeholder={t('date_format.year_placeholder')} fullWidth required />
               </Box>
             </Box>
           </Box>
@@ -171,7 +173,7 @@ export default function DateRangeInputsBox({ dateState }) {
                   centerMode
                   id='to_hour'
                   name='to_hour'
-                  placeholder='ЦЦ'
+                  placeholder={t('date_format.hour_placeholder')}
                   fullWidth
                   required
                 />
@@ -193,7 +195,7 @@ export default function DateRangeInputsBox({ dateState }) {
                   centerMode
                   id='to_minute'
                   name='to_minute'
-                  placeholder='ММ'
+                  placeholder={t('date_format.minute_placeholder')}
                   fullWidth
                   required
                 />
@@ -204,7 +206,7 @@ export default function DateRangeInputsBox({ dateState }) {
       </Box>
 
       <Button primary type='submit'>
-        Применить
+        {t('buttons.apply')}
       </Button>
     </Box>
   )

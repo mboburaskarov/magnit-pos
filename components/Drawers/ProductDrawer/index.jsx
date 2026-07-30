@@ -18,6 +18,7 @@ import thousandDivider from '@utils/thousandDivider'
 import dayjs from 'dayjs'
 import { get } from 'lodash'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -100,6 +101,7 @@ export default function ProductDrawer({
   setCurrentIndex,
   setCurrentSaleId,
 }) {
+  const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
   const [unitPerPack, setUnitPerPack] = useState(1)
   const { values } = useQueryParams()
@@ -249,8 +251,8 @@ export default function ProductDrawer({
           </Typography>
           <Box display='inline-flex' alignItems='center' bgcolor='rgba(254, 80, 0, 0.08)' px='12px' py='4px' borderRadius='8px' mt='6px'>
             <Typography fontSize='13px' fontWeight='600' color='#FE5000'>
-              {thousandDivider(getRetailPriceRange(productReaminsDataHistory)?.min, 'сум')} -{' '}
-              {thousandDivider(getRetailPriceRange(productReaminsDataHistory)?.max, 'сум')}
+              {thousandDivider(getRetailPriceRange(productReaminsDataHistory)?.min, t('pos.currency_short'))} -{' '}
+              {thousandDivider(getRetailPriceRange(productReaminsDataHistory)?.max, t('pos.currency_short'))}
             </Typography>
           </Box>
         </Box>
@@ -287,7 +289,7 @@ export default function ProductDrawer({
         }}
       >
         <Typography fontSize='13px' fontWeight='700' color='#787D93' textTransform='uppercase' letterSpacing='0.5px'>
-          Период:
+          {t('product_drawer.period_label')}
         </Typography>
         <DateRangeInput defaultFilterData={{ label: 'Сегодня', start_date: null, end_date: null }} initialNull id='accounting-report-date-range' />
       </Box>
@@ -309,7 +311,7 @@ export default function ProductDrawer({
         {/* History Table */}
         <Box>
           <Typography fontSize={'18px'} fontWeight={'700'} color={'#111217'} mb={1.5}>
-            История продукта
+            {t('product_drawer.history_title')}
           </Typography>
           <ProductHistory id={currentSaleId} unit_per_pack={unitPerPack} />
         </Box>
@@ -319,7 +321,7 @@ export default function ProductDrawer({
         {/* Remains Table */}
         <Box>
           <Typography fontSize={'18px'} fontWeight={'700'} color={'#111217'} mb={1.5}>
-            Остатки
+            {t('product_drawer.remains_title')}
           </Typography>
           <ProductRemainsHistory id={currentSaleId} />
         </Box>
@@ -330,11 +332,11 @@ export default function ProductDrawer({
             <Box sx={{ height: '1px', bgcolor: '#ECEDF2', my: '32px' }} />
             <Box>
               <Typography fontSize={'18px'} fontWeight={'700'} color={'#D32F2F'} mb={1.5}>
-                Причина отклонения
+                {t('product_drawer.rejection_reason_title')}
               </Typography>
               <Box sx={{ bgcolor: '#FFF5F5', borderRadius: '16px', p: '16px', border: '1px dashed #FFE3E3' }}>
                 <Typography sx={{ width: '100%', wordBreak: 'break-word', color: '#D32F2F', fontWeight: 500 }}>
-                  {productData?.data?.data?.rejectedComment || 'Нет'}
+                  {productData?.data?.data?.rejectedComment || t('no')}
                 </Typography>
               </Box>
             </Box>
@@ -346,25 +348,25 @@ export default function ProductDrawer({
         {/* Additional Info Table */}
         <Box sx={{ mb: '120px' }}>
           <Typography fontSize={'18px'} fontWeight={'700'} color={'#111217'} mb={1.5}>
-            Доп. информация
+            {t('product_drawer.additional_info_title')}
           </Typography>
           <DrawerInfoBox
             mt={1}
             mb={1}
             columnGap={2}
             infoData={[
-              { title: 'Код продукта', info: productData?.data?.data?.material_code },
-              { title: 'Баркод', info: thousandDivider(productData?.data?.data?.barcode, '') },
-              { title: 'Цена', info: thousandDivider(productData?.data?.data?.retail_price, 'сум') },
-              { title: 'Производитель', info: productData?.data?.data?.producer?.name },
-              { title: 'Сумма бонуса', info: thousandDivider(productData?.data?.data?.bonus_amount, 'сум') },
-              { title: 'Бонусный процент', info: thousandDivider(productData?.data?.data?.bonus_percent, '%') },
-              { title: 'Время подготовки', info: dayjs(productData?.data?.data?.created_at).format('DD.MM.YYYY') },
-              { title: 'Единицы измерения', info: productData?.data?.data?.unit_type?.unit_name },
-              { title: 'Наименование товара', info: productData?.data?.data?.name },
-              { title: 'Тип', info: productData?.data?.data?.type === 'BUCHET' ? 'Buchet' : 'Market' },
-              { title: 'Описание', info: productData?.data?.data?.description, fullWidth: true },
-              { title: 'Категории', info: productData?.data?.data?.categories?.map((item) => item.name).join('<br>'), fullWidth: true },
+              { title: t('product_drawer.product_code'), info: productData?.data?.data?.material_code },
+              { title: t('table_columns.barcode'), info: thousandDivider(productData?.data?.data?.barcode, '') },
+              { title: t('table_columns.price'), info: thousandDivider(productData?.data?.data?.retail_price, t('pos.currency_short')) },
+              { title: t('table_columns.manufacturer'), info: productData?.data?.data?.producer?.name },
+              { title: t('product_drawer.bonus_amount'), info: thousandDivider(productData?.data?.data?.bonus_amount, t('pos.currency_short')) },
+              { title: t('product_drawer.bonus_percent'), info: thousandDivider(productData?.data?.data?.bonus_percent, '%') },
+              { title: t('product_drawer.prep_time'), info: dayjs(productData?.data?.data?.created_at).format('DD.MM.YYYY') },
+              { title: t('product_drawer.unit_type'), info: productData?.data?.data?.unit_type?.unit_name },
+              { title: t('table_columns.name'), info: productData?.data?.data?.name },
+              { title: t('table_columns.type'), info: productData?.data?.data?.type === 'BUCHET' ? 'Buchet' : 'Market' },
+              { title: t('product_drawer.description'), info: productData?.data?.data?.description, fullWidth: true },
+              { title: t('product_drawer.categories'), info: productData?.data?.data?.categories?.map((item) => item.name).join('<br>'), fullWidth: true },
             ]}
           />
 
@@ -442,12 +444,12 @@ export default function ProductDrawer({
               }}
               className='cash_register_icon_wrapper'
             >
-              Печать ценников
+              {t('product_drawer.print_price_tags')}
             </Box>
           }
           popperData={[
-            { title: 'Пачка', soon: false, clickHandler: () => handlePrint('pack') },
-            { title: 'Штук', soon: false, clickHandler: () => handleUnitPrint('unit') },
+            { title: t('product_drawer.pack_label'), soon: false, clickHandler: () => handlePrint('pack') },
+            { title: t('product_drawer.unit_label'), soon: false, clickHandler: () => handleUnitPrint('unit') },
           ]}
         />
 
@@ -461,7 +463,7 @@ export default function ProductDrawer({
           startIcon={<FontAwesomeIcon width={15} icon={faPen} />}
           fullWidth
         >
-          Редактировать
+          {t('buttons.edit')}
         </Button>
       </Box>
 

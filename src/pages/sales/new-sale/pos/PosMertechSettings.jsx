@@ -98,9 +98,9 @@ export default function PosMertechSettings({ t }) {
     setIsSendingQr(true)
     try {
       await mertechCommand('/showInfoQR', { infoQR: TEST_QR_VALUE }, draftOverrides())
-      success(t('pos.mertech.qr_sent', { defaultValue: 'QR отправлен на дисплей' }))
+      success(t('pos.mertech.qr_sent'))
     } catch (e) {
-      error(t('pos.mertech.command_failed', { defaultValue: 'Не удалось отправить команду на дисплей' }))
+      error(t('pos.mertech.command_failed'))
     } finally {
       setIsSendingQr(false)
     }
@@ -110,9 +110,9 @@ export default function PosMertechSettings({ t }) {
     setIsClearing(true)
     try {
       await mertechCommand('/clearScreen', {}, draftOverrides())
-      success(t('pos.mertech.cleared', { defaultValue: 'Дисплей очищен' }))
+      success(t('pos.mertech.cleared'))
     } catch (e) {
-      error(t('pos.mertech.command_failed', { defaultValue: 'Не удалось отправить команду на дисплей' }))
+      error(t('pos.mertech.command_failed'))
     } finally {
       setIsClearing(false)
     }
@@ -125,7 +125,7 @@ export default function PosMertechSettings({ t }) {
       paidStatusCode: Number(draft.paidStatusCode) || 0,
       clearAfterPaidMs: Math.max(0, Number(draft.clearAfterPaidMs) || 0),
     })
-    success(t('pos.mertech.saved', { defaultValue: 'Настройки дисплея сохранены' }))
+    success(t('pos.mertech.saved'))
   }
 
   return (
@@ -140,23 +140,23 @@ export default function PosMertechSettings({ t }) {
         </div>
         <div>
           <div style={{ fontSize: '15px', fontWeight: '700', color: '#111217' }}>
-            {t('pos.mertech.title', { defaultValue: 'QR-дисплей Mertech (СБП)' })}
+            {t('pos.mertech.title')}
           </div>
           <div style={{ fontSize: '12px', color: '#6f6f6f', marginTop: '2px' }}>
-            {t('pos.mertech.subtitle', { defaultValue: 'Дисплей покупателя для оплаты по QR (Munis)' })}
+            {t('pos.mertech.subtitle')}
           </div>
         </div>
       </div>
 
       <SwitchRow
-        label={t('pos.mertech.enable', { defaultValue: 'Отправлять QR оплаты на дисплей покупателя' })}
+        label={t('pos.mertech.enable')}
         checked={!!draft.enabled}
         onChange={(v) => set({ enabled: v })}
       />
 
       <div>
         <label className='form-label-touch' style={labelStyle}>
-          {t('pos.mertech.driver_url', { defaultValue: 'Адрес драйвера Mertech' })}
+          {t('pos.mertech.driver_url')}
         </label>
         <input
           type='text'
@@ -181,12 +181,12 @@ export default function PosMertechSettings({ t }) {
           }}
         >
           {!testResult.ok
-            ? t('pos.mertech.connect_failed', { defaultValue: 'Драйвер недоступен' })
+            ? t('pos.mertech.connect_failed')
             : testResult.opaque
-              ? t('pos.mertech.connected_opaque', { defaultValue: 'Драйвер отвечает (без CORS — ответы не читаются)' })
+              ? t('pos.mertech.connected_opaque')
               : testResult.version
-                ? t('pos.mertech.connected_version', { defaultValue: 'Драйвер доступен, версия {{version}}', version: testResult.version })
-                : t('pos.mertech.connected', { defaultValue: 'Драйвер доступен' })}
+                ? t('pos.mertech.connected_version', { version: testResult.version })
+                : t('pos.mertech.connected')}
         </div>
       )}
 
@@ -201,8 +201,8 @@ export default function PosMertechSettings({ t }) {
         >
           <Wifi size={16} />
           {isTesting
-            ? t('pos.mertech.testing', { defaultValue: 'Проверка…' })
-            : t('pos.mertech.test_connection', { defaultValue: 'Проверить связь' })}
+            ? t('pos.mertech.testing')
+            : t('pos.mertech.test_connection')}
         </button>
         <button
           type='button'
@@ -212,7 +212,7 @@ export default function PosMertechSettings({ t }) {
           disabled={isSendingQr}
         >
           <Play size={16} />
-          {t('pos.mertech.test_qr', { defaultValue: 'Тестовый QR' })}
+          {t('pos.mertech.test_qr')}
         </button>
         <button
           type='button'
@@ -222,37 +222,37 @@ export default function PosMertechSettings({ t }) {
           disabled={isClearing}
         >
           <Eraser size={16} />
-          {t('pos.mertech.clear_display', { defaultValue: 'Очистить дисплей' })}
+          {t('pos.mertech.clear_display')}
         </button>
       </div>
 
       {/* Behaviour options */}
       <SwitchRow
-        label={t('pos.mertech.show_status_option', { defaultValue: 'Показывать статус «Оплачено» на дисплее' })}
+        label={t('pos.mertech.show_status_option')}
         checked={!!draft.showStatusOnDevice}
         onChange={(v) => set({ showStatusOnDevice: v })}
       />
       <SwitchRow
-        label={t('pos.mertech.cors_fallback', { defaultValue: 'Резервная отправка без CORS (opaque)' })}
+        label={t('pos.mertech.cors_fallback')}
         checked={!!draft.corsFallback}
         onChange={(v) => set({ corsFallback: v })}
       />
 
       <div style={{ display: 'flex', gap: '12px' }}>
         <NumberField
-          label={t('pos.mertech.paid_status_code', { defaultValue: 'Код статуса «Оплачено»' })}
+          label={t('pos.mertech.paid_status_code')}
           value={draft.paidStatusCode}
           onChange={(v) => set({ paidStatusCode: v })}
           placeholder='3'
         />
         <NumberField
-          label={t('pos.mertech.clear_after_paid', { defaultValue: 'Очистка после оплаты (мс)' })}
+          label={t('pos.mertech.clear_after_paid')}
           value={draft.clearAfterPaidMs}
           onChange={(v) => set({ clearAfterPaidMs: v })}
           placeholder='3000'
         />
         <NumberField
-          label={t('pos.mertech.timeout', { defaultValue: 'Таймаут запроса (мс)' })}
+          label={t('pos.mertech.timeout')}
           value={draft.timeoutMs}
           onChange={(v) => set({ timeoutMs: v })}
           placeholder='3000'
@@ -265,7 +265,7 @@ export default function PosMertechSettings({ t }) {
         style={{ width: '100%', height: '52px', borderRadius: '8px', backgroundColor: '#111217', color: '#ffffff', border: 'none', fontWeight: '700', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
         onClick={handleSave}
       >
-        {t('pos.mertech.save', { defaultValue: 'Сохранить настройки дисплея' })}
+        {t('pos.mertech.save')}
       </button>
     </div>
   )

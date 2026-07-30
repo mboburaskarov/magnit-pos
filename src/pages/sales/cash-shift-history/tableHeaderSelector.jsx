@@ -18,7 +18,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'cashbox_name') {
       return {
         ...el,
-        headerName: '	Касса',
+        headerName: t('table_columns.register'),
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box sx={{ '& p': { color: 'orange.500' }, cursor: 'pointer' }} onClick={() => setOpenSaleDrawer({ id: p.data.id })}>
@@ -30,7 +30,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'store_name') {
       return {
         ...el,
-        headerName: 'Магазин',
+        headerName: t('table_columns.store'),
         colId: el.field,
 
         cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),
@@ -39,7 +39,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'start_time') {
       return {
         ...el,
-        headerName: 'Открыть',
+        headerName: t('pos.open_time_label'),
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box>
@@ -54,12 +54,12 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'end_time') {
       return {
         ...el,
-        headerName: 'Закрывать',
+        headerName: t('pos.close_time_label'),
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box>
             <Box display={'flex'} sx={{ whiteSpace: 'pre-line' }}>
-              <Typography>{get(p, 'data.end_time') ? dayjs(get(p, 'data.end_time')).format('DD.MM.YYYY HH:MM:ss') : 'Открыть'}</Typography>
+              <Typography>{get(p, 'data.end_time') ? dayjs(get(p, 'data.end_time')).format('DD.MM.YYYY HH:MM:ss') : t('create_register.status_open')}</Typography>
               <Typography sx={{ ml: '10px' }}>({get(p, 'data.closed_by')})</Typography>
             </Box>
           </Box>
@@ -69,7 +69,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'total_expense_amount') {
       return {
         ...el,
-        headerName: 'Разница',
+        headerName: t('table_columns.difference'),
         colId: el.field,
 
         cellRenderer: memo((p) => (
@@ -94,7 +94,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
                   textAlign: 'center',
                 }}
               >
-                {thousandDivider(get(p, 'data.total_expense_amount'), 'сум')}
+                {thousandDivider(get(p, 'data.total_expense_amount'), t('pos.currency_short'))}
               </Typography>
             </Box>
           </Box>

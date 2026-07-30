@@ -8,6 +8,7 @@ import { get } from 'lodash'
 
 import CustomImg from '../../CustomImg'
 import dayjs from 'dayjs'
+import { useTranslation } from 'react-i18next'
 import StyledTooltip from '@components/StyledTooltip'
 
 const useStyles = makeStyles((theme) => ({
@@ -330,6 +331,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 export default function ResultItem({ index, itemRef, item, searchTerm, product }) {
   const classes = useStyles()
+  const { t } = useTranslation()
   const { values } = useQueryParams()
   const isActive = !dayjs(item.start_date).isAfter(dayjs(), 'day') && !dayjs(item.end_date).isBefore(dayjs(), 'day')
 
@@ -424,7 +426,7 @@ export default function ResultItem({ index, itemRef, item, searchTerm, product }
             >
               <PrizeBoxIcon />
               <Typography ml='4px' color={'white'} fontSize={'10px'} fontWeight={'600'}>
-                {thousandDivider(item.bonus_amount, 'сум')}
+                {thousandDivider(item.bonus_amount, t('pos.currency_short'))}
               </Typography>
             </Box>
           )}

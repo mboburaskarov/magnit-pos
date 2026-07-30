@@ -14,6 +14,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useMutation, useQuery } from 'react-query'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Check, ChevronRight, AlertCircle, Banknote, CreditCard } from 'lucide-react'
 
 const useStyles = makeStyles((theme) => ({
@@ -381,16 +382,17 @@ function NewCashRegister() {
   const classes = useStyles()
   const userData = useSelector((state) => state.user)
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const [canCreate, setCanCreate] = useState(false)
   const methods = useForm()
   const dispatch = useDispatch()
-  const [isEposTurnOn, setisEposTurnOn] = useState({ is_open: true, message: '' })
+  const [isEposTurnOn, setisEposTurnOn] = useState({ is_open: true, message: '', wrongBranch: false })
 
   // Loading, error and status states for the overlay
   const [initLoading, setInitLoading] = useState(true)
   const [initError, setInitError] = useState(false)
   const [initErrorMessage, setInitErrorMessage] = useState('')
-  const [statusText, setStatusText] = useState('Подключаем POS и подготавливаем чек')
+  const [statusText, setStatusText] = useState(t('create_register.connecting_status'))
   const [showTimerHint, setShowTimerHint] = useState(false)
   const [retryAction, setRetryAction] = useState(null)
 
@@ -409,10 +411,10 @@ function NewCashRegister() {
       dispatch(setUserData({ ...data?.data }))
     },
     onError: (err) => {
-      error('Foydalanuvchi ma‘lumotlarini olishda xatolik yuz berdi!')
+      error(t('create_register.user_data_error_toast'))
       setInitError(true)
       setInitLoading(false)
-      setInitErrorMessage('Foydalanuvchi ma‘lumotlarini yuklab bo‘lmadi. Internet aloqasini tekshiring.')
+      setInitErrorMessage(t('create_register.user_data_error_desc'))
       setRetryAction(() => () => {
         setInitError(false)
         setInitLoading(true)
@@ -442,7 +444,7 @@ function NewCashRegister() {
     setInitLoading(true)
     setInitError(false)
     setInitErrorMessage('')
-    setStatusText('Подключаем POS и подготавливаем чек')
+    setStatusText(t('create_register.connecting_status'))
     setShowTimerHint(false)
 
     if (abortControllerRef.current) {
@@ -470,18 +472,18 @@ function NewCashRegister() {
 
     try {
       // Step 1: Check EPOS
-      setStatusText('Проверка соединения с EPOS...')
+      setStatusText(t('create_register.checking_epos_status'))
       const eposStatus = await withTimeout(requests.checkEPOSTurnOn(EPOS_STATUS_PAYLOAD, { signal }))
 
       if (get(eposStatus, 'data.error', true)) {
-        setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
+        setisEposTurnOn({ is_open: false, message: t('create_register.epos_disabled'), wrongBranch: false })
         setInitLoading(false)
         clearTimeout(timer)
         return
       }
 
       // Step 2: Z-Report & Terminal ID check
-      setStatusText('Проверка статуса Z-отчёта...')
+      setStatusText(t('create_register.checking_zreport_status'))
       const zReportStatus = await withTimeout(requests.closeCheckZReport(EPOS_TERMINAL_PAYLOAD, { signal }))
 
       const terminalID = getEposTerminalId(zReportStatus?.data)
@@ -491,7 +493,8 @@ function NewCashRegister() {
       if (!allowedTerminal && hasAccess('check-terminal-id', userData)) {
         setisEposTurnOn({
           is_open: false,
-          message: `Вы в другом филиале! Epos: ${terminalID} AccountID: ${terminalIds?.join(',')}`,
+          message: t('create_register.wrong_branch_message', { terminalID, accountIds: terminalIds?.join(',') }),
+          wrongBranch: true,
         })
         setInitLoading(false)
         clearTimeout(timer)
@@ -499,16 +502,16 @@ function NewCashRegister() {
       }
 
       if (get(zReportStatus, 'data.error', true)) {
-        setisEposTurnOn({ is_open: false, message: 'Программа EPOS отключена. Запустить программу EPOS!' })
+        setisEposTurnOn({ is_open: false, message: t('create_register.epos_disabled'), wrongBranch: false })
         setInitLoading(false)
         clearTimeout(timer)
         return
       }
 
-      setisEposTurnOn({ is_open: true, message: '' })
+      setisEposTurnOn({ is_open: true, message: '', wrongBranch: false })
 
       // Step 3: Check Active Sale
-      setStatusText('Проверка активной кассовой сессии...')
+      setStatusText(t('create_register.checking_active_session'))
 
       let device_id = localStorage.getItem('device_id')
       if (device_id === 'null' || device_id === 'undefined') {
@@ -580,8 +583,8 @@ function NewCashRegister() {
       const isTimeout = err?.message === 'TIMEOUT'
       setInitErrorMessage(
         isTimeout
-          ? 'Время ожидания запроса истекло. Пожалуйста, проверьте подключение к сети и EPOS.'
-          : err?.response?.data?.message || 'Не удалось связаться с сервером кассы. Проверьте подключение.',
+          ? t('create_register.timeout_message')
+          : err?.response?.data?.message || t('create_register.server_connection_failed'),
       )
       setRetryAction(() => () => {
         initStartedRef.current = false
@@ -668,10 +671,10 @@ function NewCashRegister() {
       navigate(`/sales/pos/${saleId}`)
     },
     onError: (err) => {
-      error('Kassani ochib bo‘lmadi')
+      error(t('login.open_shift_failed'))
       console.error('err', err)
       setInitError(true)
-      setInitErrorMessage(err?.response?.data?.message || err?.message || 'Kassani ochib bo‘lmadi')
+      setInitErrorMessage(err?.response?.data?.message || err?.message || t('login.open_shift_failed'))
       setRetryAction(() => () => handleOpenCashbox())
     },
   })
@@ -693,7 +696,7 @@ function NewCashRegister() {
 
   const onError = (err) => {
     console.error('err', err)
-    error('Iltimos, barcha maydonlarni to‘ldiring!')
+    error(t('pos.error_fill_fields'))
   }
 
   const { mutate: openZReport, isLoading: isopenZReport } = useMutation(requests.openZReport, {
@@ -704,22 +707,22 @@ function NewCashRegister() {
         return
       } else {
         if (get(data, 'message', '').includes('Ru:')) {
-          error(`err: ${get(data, 'message')?.split('Ru:')[1]}`)
+          error(`${t('pos.error_prefix')}${get(data, 'message')?.split('Ru:')[1]}`)
         } else {
-          error(`err: ${get(data, 'message', 'Kassani ochib bo‘lmadi (open z report)')}`)
+          error(`${t('pos.error_prefix')}${get(data, 'message', t('login.open_shift_failed'))}`)
         }
       }
     },
     onError: (err) => {
-      error('Kassani ochib bo‘lmadi')
+      error(t('login.open_shift_failed'))
       console.error('err', err)
       setInitError(true)
-      setInitErrorMessage(err?.response?.data?.message || err?.message || 'Kassani ochib bo‘lmadi')
+      setInitErrorMessage(err?.response?.data?.message || err?.message || t('login.open_shift_failed'))
       setRetryAction(() => () => handleOpenCashbox())
     },
   })
 
-  const isEposDisconnected = !isEposTurnOn.is_open && (!isEposTurnOn.message || !isEposTurnOn.message.includes('филиале'))
+  const isEposDisconnected = !isEposTurnOn.is_open && !isEposTurnOn.wrongBranch
 
   useEffect(() => {
     if (!isEposDisconnected) return
@@ -824,7 +827,7 @@ function NewCashRegister() {
       navigate(`/sales/pos/${newSaleId}`)
     } catch (err) {
       console.error('Error continuing open cashbox:', err)
-      error('Kassani davom ettirib bo‘lmadi')
+      error(t('create_register.cannot_continue_cashbox'))
     } finally {
       setIsContinuing(false)
     }
@@ -833,7 +836,7 @@ function NewCashRegister() {
   const handleOpenCashbox = () => {
     const selectedRegister = methods.watch('registerCash_id')
     if (!selectedRegister) {
-      error('Iltimos, kassani tanlang!')
+      error(t('create_register.select_register_first'))
       return
     }
     if (!get(selectedRegister, 'is_open', true)) {
@@ -883,15 +886,15 @@ function NewCashRegister() {
   const selectedRegister = methods.watch('registerCash_id')
   const openingAmount = methods.watch('opened_amout')
 
-  let buttonText = 'Kassani tanlang'
+  let buttonText = t('create_register.select_register_prompt')
   let isSubmitDisabled = true
 
   if (selectedRegister) {
     if (selectedRegister.is_open) {
-      buttonText = 'Davom ettirish (Enter)'
+      buttonText = t('create_register.continue_button')
       isSubmitDisabled = isContinuing
     } else {
-      buttonText = 'Kassani ochish (Enter)'
+      buttonText = t('create_register.open_register_button')
       isSubmitDisabled = isopenZReport || isCreatingCashbox
     }
   }
@@ -969,9 +972,9 @@ function NewCashRegister() {
               <Box sx={{ color: '#ef4444', mb: 3 }}>
                 <AlertCircle size={64} strokeWidth={1.5} />
               </Box>
-              <Typography sx={{ fontWeight: 800, fontSize: '28px', mb: 2, color: '#ffffff' }}>Не удалось создать продажу</Typography>
+              <Typography sx={{ fontWeight: 800, fontSize: '28px', mb: 2, color: '#ffffff' }}>{t('create_register.sale_create_failed_title')}</Typography>
               <Typography sx={{ color: '#94a3b8', fontSize: '16px', mb: 4, lineHeight: 1.5 }}>
-                {initErrorMessage || 'Проверьте подключение и попробуйте снова.'}
+                {initErrorMessage || t('create_register.check_connection_retry')}
               </Typography>
               <Box sx={{ display: 'flex', gap: 2, width: '100%', justifyContent: 'center' }}>
                 <Button
@@ -994,7 +997,7 @@ function NewCashRegister() {
                     },
                   }}
                 >
-                  Повторить
+                  {t('login.retry')}
                 </Button>
                 <Button
                   variant='outlined'
@@ -1014,7 +1017,7 @@ function NewCashRegister() {
                     },
                   }}
                 >
-                  Вернуться назад
+                  {t('create_register.go_back')}
                 </Button>
               </Box>
             </>
@@ -1037,9 +1040,9 @@ function NewCashRegister() {
                   },
                 }}
               />
-              <Typography sx={{ fontWeight: 800, fontSize: '28px', mb: 1, color: '#ffffff' }}>Создание кассы</Typography>
-              <Typography sx={{ color: '#94a3b8', fontSize: '16px', mb: 2, lineHeight: 1.5 }}>Идёт создание кассовой сессии, пожалуйста подождите…</Typography>
-              <Typography sx={{ color: '#64748b', fontSize: '13px', fontWeight: 500 }}>{statusText || 'Подключаем POS и подготавливаем чек'}</Typography>
+              <Typography sx={{ fontWeight: 800, fontSize: '28px', mb: 1, color: '#ffffff' }}>{t('create_register.creating_title')}</Typography>
+              <Typography sx={{ color: '#94a3b8', fontSize: '16px', mb: 2, lineHeight: 1.5 }}>{t('create_register.creating_desc')}</Typography>
+              <Typography sx={{ color: '#64748b', fontSize: '13px', fontWeight: 500 }}>{statusText || t('create_register.connecting_status')}</Typography>
 
               {showTimerHint && (
                 <Typography
@@ -1054,7 +1057,7 @@ function NewCashRegister() {
                     },
                   }}
                 >
-                  Это может занять несколько секунд
+                  {t('create_register.taking_longer_hint')}
                 </Typography>
               )}
             </>
@@ -1073,14 +1076,17 @@ function NewCashRegister() {
               <>
                 <span className={selectedRegister.is_open ? classes.openStoreDot : classes.closeStoreDot} />
                 <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
-                  Kassa {selectedRegister.is_open ? 'Ochiq' : 'Yopiq'} — {selectedRegister.name}
+                  {t('create_register.header_title', {
+                    status: selectedRegister.is_open ? t('create_register.status_open') : t('create_register.status_closed'),
+                    name: selectedRegister.name,
+                  })}
                 </Typography>
               </>
             ) : (
               <>
                 <span className={classes.closeStoreDot} />
                 <Typography fontSize={'24px'} fontWeight={'700'} color={'#ffffff'}>
-                  Kassa Yopiq
+                  {t('create_register.header_no_register')}
                 </Typography>
               </>
             )}
@@ -1093,7 +1099,7 @@ function NewCashRegister() {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <Box>
                   <Typography fontSize={'14px'} fontWeight={'700'} color={'#475569'} mb={'8px'}>
-                    Kassa *
+                    {t('create_register.register_label')}
                   </Typography>
 
                   {showRegisterList ? (
@@ -1102,7 +1108,7 @@ function NewCashRegister() {
                         <input
                           type='text'
                           className={classes.registerSearchInput}
-                          placeholder='Kassani qidirish...'
+                          placeholder={t('create_register.search_register_placeholder')}
                           value={registerSearchQuery}
                           onChange={(e) => setRegisterSearchQuery(e.target.value)}
                           autoFocus
@@ -1202,7 +1208,7 @@ function NewCashRegister() {
                                       borderRadius: '4px',
                                     }}
                                   >
-                                    Ochiq
+                                    {t('create_register.status_open')}
                                   </span>
                                 ) : (
                                   <span
@@ -1215,7 +1221,7 @@ function NewCashRegister() {
                                       borderRadius: '4px',
                                     }}
                                   >
-                                    Yopiq
+                                    {t('create_register.status_closed')}
                                   </span>
                                 )}
                               </div>
@@ -1247,7 +1253,7 @@ function NewCashRegister() {
                                     borderRadius: '6px',
                                   }}
                                 >
-                                  Ochiq
+                                  {t('create_register.status_open')}
                                 </Box>
                               ) : (
                                 <Box
@@ -1261,18 +1267,18 @@ function NewCashRegister() {
                                     borderRadius: '6px',
                                   }}
                                 >
-                                  Yopiq
+                                  {t('create_register.status_closed')}
                                 </Box>
                               )}
                             </Box>
                           </div>
                           <button type='button' className={classes.changeRegisterBtn} onClick={() => setShowRegisterList(true)}>
-                            O&apos;zgartirish
+                            {t('create_register.change_button')}
                           </button>
                         </div>
                       ) : (
                         <button type='button' className={classes.touchSelectTrigger} onClick={() => setShowRegisterList(true)}>
-                          <span>Kassirni tanlang</span>
+                          <span>{t('create_register.select_register_prompt')}</span>
                           <ChevronRight size={20} />
                         </button>
                       )}
@@ -1287,8 +1293,8 @@ function NewCashRegister() {
                       type='number'
                       fullWidth
                       name='opened_amout'
-                      label='Ochilish miqdori'
-                      placeholder='Miqdorni kiriting'
+                      label={t('create_register.opening_amount_label')}
+                      placeholder={t('login.enter_amount_placeholder')}
                       onFocus={() => setFocusedInput('opened_amout')}
                     />
                   </Box>
@@ -1303,7 +1309,7 @@ function NewCashRegister() {
                       <Banknote size={24} strokeWidth={1.5} />
                     </Box>
                     <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
-                      Naqd
+                      {t('create_register.cash_card_label')}
                     </Typography>
                   </Box>
                   <Box my={'12px'} border={'1px solid'} borderColor={'#f1f5f9'} />
@@ -1323,7 +1329,7 @@ function NewCashRegister() {
                       <CreditCard size={24} strokeWidth={1.5} />
                     </Box>
                     <Typography fontSize={'18px'} fontWeight={'700'} color={'#0f172a'}>
-                      Karta
+                      {t('create_register.card_label')}
                     </Typography>
                   </Box>
                   <Box my={'12px'} border={'1px solid'} borderColor={'#f1f5f9'} />
@@ -1373,14 +1379,16 @@ function NewCashRegister() {
         <Box className={classes.eposIconContainer}>
           <AlertCircle size={36} strokeWidth={2} />
         </Box>
-        <Typography className={classes.eposTitle}>{isEposTurnOn.message?.includes('филиале') ? 'Неверный филиал' : 'EPOS не запущен'}</Typography>
+        <Typography className={classes.eposTitle}>
+          {isEposTurnOn.wrongBranch ? t('create_register.wrong_branch_title') : t('create_register.epos_not_running_title')}
+        </Typography>
         <Typography className={classes.eposDescription}>
-          {isEposTurnOn.message?.includes('филиале') ? isEposTurnOn.message : 'Для продолжения работы запустите программу EPOS на этом компьютере.'}
+          {isEposTurnOn.wrongBranch ? isEposTurnOn.message : t('create_register.epos_not_running_desc')}
         </Typography>
         <Box className={classes.eposStatusRow}>
           <span className={classes.eposStatusDot} />
           <Typography className={classes.eposStatusText}>
-            {isEposTurnOn.message?.includes('филиале') ? 'Статус: ошибка терминала' : 'Статус: отключено'}
+            {isEposTurnOn.wrongBranch ? t('create_register.status_terminal_error') : t('create_register.status_disconnected')}
           </Typography>
         </Box>
       </Dialog>

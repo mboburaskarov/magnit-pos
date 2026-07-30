@@ -50,7 +50,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'cashbox_name') {
       return {
         ...el,
-        headerName: '	Касса',
+        headerName: t('table_columns.register'),
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box sx={{ '& p': { color: 'orange.500' }, cursor: 'pointer' }} onClick={() => setOpenSaleDrawer({ id: p.data.id })}>
@@ -62,7 +62,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'store_name') {
       return {
         ...el,
-        headerName: 'Магазин',
+        headerName: t('table_columns.store'),
         colId: el.field,
 
         cellRenderer: memo((p) => <SimpleText {...p} type='store_name' />),
@@ -72,18 +72,18 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'is_open') {
       return {
         ...el,
-        headerName: 'Состояние',
+        headerName: t('table_columns.state'),
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box>
             {get(p, 'data.is_open', false) ? (
               <Box>
-                <Typography sx={(theme) => ({ fontWeight: '600', color: theme.palette.green[500] })}>Открыта с</Typography>
+                <Typography sx={(theme) => ({ fontWeight: '600', color: theme.palette.green[500] })}>{t('pos.opened_since')}</Typography>
                 <Typography>{dayjs(get(p, 'data.start_time')).format('DD.MM.YYYY HH:MM:ss')}</Typography>
               </Box>
             ) : (
               <Box>
-                <Typography sx={(theme) => ({ fontWeight: '600', color: theme.palette.red[500] })}>Закрыта с</Typography>
+                <Typography sx={(theme) => ({ fontWeight: '600', color: theme.palette.red[500] })}>{t('pos.closed_since')}</Typography>
                 <Typography>{dayjs(get(p, 'data.end_time')).format('DD.MM.YYYY HH:MM:ss')}</Typography>
               </Box>
             )}
@@ -94,7 +94,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'opened_amount') {
       return {
         ...el,
-        headerName: 'Сумма открытия',
+        headerName: t('pos.opened_amount_label'),
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box width='100%'>
@@ -103,7 +103,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
                 <MoneyOutlineIcon />
               </IconWrapper>
               <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(p.data?.opened_amount, 'сум')}
+                {thousandDivider(p.data?.opened_amount, t('pos.currency_short'))}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'start'}>
@@ -111,7 +111,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
                 <CartOutlineIcon />
               </IconWrapper>
               <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(p.data?.opened_cashless_amount, 'сум')}
+                {thousandDivider(p.data?.opened_cashless_amount, t('pos.currency_short'))}
               </Typography>
             </Box>
           </Box>
@@ -121,7 +121,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
     if (el.field === 'current_amount') {
       return {
         ...el,
-        headerName: 'Текущая касса',
+        headerName: t('pos.current_register_label'),
         colId: el.field,
         cellRenderer: memo((p) => (
           <Box width='100%'>
@@ -130,7 +130,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
                 <MoneyOutlineIcon />
               </IconWrapper>
               <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(p.data?.cash_amount, 'сум')}
+                {thousandDivider(p.data?.cash_amount, t('pos.currency_short'))}
               </Typography>
             </Box>
             <Box display={'flex'} justifyContent={'start'} alignItems={'start'}>
@@ -138,7 +138,7 @@ export default function tableHeaderSelector({ productsColumns, t, setOpenSaleDra
                 <CartOutlineIcon />
               </IconWrapper>
               <Typography ml={'4px'} color={'bunker.500'}>
-                {thousandDivider(p.data?.cashless_amount, 'сум')}
+                {thousandDivider(p.data?.cashless_amount, t('pos.currency_short'))}
               </Typography>
             </Box>
           </Box>

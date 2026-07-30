@@ -72,10 +72,10 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
       // refetchDraftList()
       setChildOpen(false)
       // setOpen(false)
-      success('Черновик удален!')
+      success(t('pos.draft_deleted_toast'))
     },
     onError: (err) => {
-      error('Ошибка при Черновик удален!')
+      error(t('pos.draft_delete_error'))
       console.error('err', err)
     },
   })
@@ -87,7 +87,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
       navigate(`/sales/new-sale/${get(data, 'data')}`)
     },
     onError: (err) => {
-      error('Ошибка при создании Черновик!')
+      error(t('pos.draft.create_error'))
       console.error('err', err)
     },
   })
@@ -119,16 +119,16 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
                     {t('draft')} #{get(darftChildList, 'data.data.draft_number')}
                   </Typography>
                   <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
-                    {thousandDivider(get(darftChildList, 'data.data.total_price', 0), 'сум')}
+                    {thousandDivider(get(darftChildList, 'data.data.total_price', 0), t('pos.currency_short'))}
                   </Typography>
                 </>
               ) : (
                 <>
                   <Typography fontSize={24} lineHeight={'32px'} fontWeight={700}>
-                    {t('Отложка')} #{get(darftChildList, 'data.data.sale_number')}
+                    {t('pos.draft_title')} #{get(darftChildList, 'data.data.sale_number')}
                   </Typography>
                   <Typography fontSize={16} lineHeight={'24px'} color={'orange.500'} fontWeight={600}>
-                    {thousandDivider(get(darftChildList, 'data.data.total_amount', 0), 'сум')}
+                    {thousandDivider(get(darftChildList, 'data.data.total_amount', 0), t('pos.currency_short'))}
                   </Typography>
                 </>
               )}
@@ -179,7 +179,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
             <Box display={'flex'} justifyContent={'space-between'}>
               <Box width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
                 <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                  Дата создания
+                  {t('pos.created_date_label')}
                 </Typography>
                 <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
                   {dayjs(get(darftChildList, 'data.data.draft_time')).format('DD.MM.YYYY | HH:mm:ss')}
@@ -196,7 +196,7 @@ function DraftChildDrawer({ open, refetchDraftList, setChildOpen, setOpen }) {
             </Box>
             <Box mt={'20px'} width={'100%'} bgcolor={'bg.10'} mr={'8px'} borderRadius={'16px'} padding={'16px'}>
               <Typography fontSize={14} lineHeight={'20px'} fontWeight={500} color={'bunker.500'}>
-                Клиент
+                {t('client')}
               </Typography>
               <Typography fontSize={16} mt={'4px'} color={'bunker.950'} lineHeight={'24px'} fontWeight={600}>
                 {get(darftChildList, 'data.data.customer.full_name') ?? '-'}

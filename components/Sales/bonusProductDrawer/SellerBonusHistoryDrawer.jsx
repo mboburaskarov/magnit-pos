@@ -8,6 +8,7 @@ import { requests } from '@utils/requests'
 import { error } from '@utils/toast'
 import { get } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery } from 'react-query'
 
 import AgGridTable from '../../AgGridTable/AgGridTable'
@@ -28,52 +29,56 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const columns = [
-  {
-    autoHeight: true,
-    field: 'sale_number',
-    minWidth: 60,
-    width: 120,
-    headerName: 'ID',
-    colId: 'sale_number',
-    label: 'ID',
-    name: 'sale_number',
-  },
-  {
-    autoHeight: true,
-    field: 'product_name',
-    minWidth: 450,
-    headerName: 'Название продукта',
-    colId: 'product_name',
-    label: 'Название продукта',
-    name: 'product_name',
-  },
-  {
-    autoHeight: true,
-    field: 'quantity',
-    minWidth: 60,
-    width: 120,
-    headerName: 'Кол-во',
-    colId: 'quantity',
-    label: 'Кол-во',
-    name: 'quantity',
-  },
-  {
-    autoHeight: true,
-    field: 'bonus_amount',
-    minWidth: 60,
-    width: 120,
-    headerName: 'Сумма бонуса',
-    colId: 'bonus_amount',
-    label: 'Сумма бонуса',
-    name: 'bonus_amount',
-  },
-]
-
 function SellerBonusHistoryDrawer({ open, setOpen }) {
   const classes = useStyles()
   const theme = useTheme()
+  const { t } = useTranslation()
   const { values } = useQueryParams()
+
+  const columns = useMemo(
+    () => [
+      {
+        autoHeight: true,
+        field: 'sale_number',
+        minWidth: 60,
+        width: 120,
+        headerName: 'ID',
+        colId: 'sale_number',
+        label: 'ID',
+        name: 'sale_number',
+      },
+      {
+        autoHeight: true,
+        field: 'product_name',
+        minWidth: 450,
+        headerName: t('table_columns.name'),
+        colId: 'product_name',
+        label: t('table_columns.name'),
+        name: 'product_name',
+      },
+      {
+        autoHeight: true,
+        field: 'quantity',
+        minWidth: 60,
+        width: 120,
+        headerName: t('table_columns.quantity'),
+        colId: 'quantity',
+        label: t('table_columns.quantity'),
+        name: 'quantity',
+      },
+      {
+        autoHeight: true,
+        field: 'bonus_amount',
+        minWidth: 60,
+        width: 120,
+        headerName: t('product_drawer.bonus_amount'),
+        colId: 'bonus_amount',
+        label: t('product_drawer.bonus_amount'),
+        name: 'bonus_amount',
+      },
+    ],
+    [t],
+  )
 
   const [offsetCount, setOffsetCount] = useState(0)
   const [isOpenChild, setIsOpenChild] = useState(false)
@@ -115,7 +120,7 @@ function SellerBonusHistoryDrawer({ open, setOpen }) {
     },
     onError: (err) => {
       console.error(err)
-      error('Ошибка при скачать excel!')
+      error(t('product_drawer.excel_download_error'))
     },
   })
 
@@ -132,7 +137,7 @@ function SellerBonusHistoryDrawer({ open, setOpen }) {
         <Box>
           <Box display={'flex'} justifyContent={'space-between'} className={classes.drawerHeader}>
             <Typography fontSize={24} lineHeight={'48px'} fontWeight={700}>
-              История бонусов
+              {t('pos.bonus_history_title')}
             </Typography>
             <CloseIcon color={theme.palette.black} onClick={() => setOpen(false)} />
           </Box>

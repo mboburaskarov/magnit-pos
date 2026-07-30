@@ -57,8 +57,8 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
   const getPaymentLabel = (el) => {
     const payName = el.payment_type_name || el.payment_type?.name || (typeof el.payment_type === 'string' ? el.payment_type : null)
     if (payName) {
-      if (payName.toLowerCase() === 'cash') return 'Наличные'
-      if (payName.toLowerCase() === 'card' || payName.toLowerCase() === 'cardless') return 'Карта'
+      if (payName.toLowerCase() === 'cash') return t('cash')
+      if (payName.toLowerCase() === 'card' || payName.toLowerCase() === 'cardless') return t('create_register.card_label')
       return payName
     }
     return null
@@ -84,7 +84,7 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
         console.warn('Duplicate logo loading failed:', logoErr)
       }
 
-      const cashierNameStr = `${saleData.employee?.first_name || ''} ${saleData.employee?.last_name || ''}`.trim() || 'Кассир'
+      const cashierNameStr = `${saleData.employee?.first_name || ''} ${saleData.employee?.last_name || ''}`.trim() || t('pos.default_cashier_name')
       const rawPaymentTypeName = (saleData.sale_payments?.[0]?.payment_type?.name || '').toLowerCase()
       const cardScheme = rawPaymentTypeName === 'humo' ? 'humo' : rawPaymentTypeName === 'uzcard' ? 'uzcard' : null
       const paymentType = cardScheme ? 'card' : (rawPaymentTypeName || 'cash')
@@ -105,7 +105,7 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
         cardScheme,
         date: saleData.completed_at || new Date().toISOString(),
         items: (saleData.products || []).map((prod) => ({
-          name: prod.name || 'Товар',
+          name: prod.name || t('pos.default_product_name'),
           mxik: prod.class_code || prod.code || '',
           qty: prod.quantity || 1,
           price: Number(prod.unit_price || 0),
@@ -174,7 +174,7 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
         )}
         <Box>
           <Typography mb={'2px'} fontSize={'14px'} fontWeight={'700'} color={'bunker.950'}>
-            {get(item, 'sale_type') === 'RETURN' ? `Возврат #` : `Продажа #`}
+            {get(item, 'sale_type') === 'RETURN' ? `${t('pos.return.button')} #` : `${t('pos.sale_number_title')} #`}
             {get(item, 'sale_number')}
           </Typography>
           <Typography fontSize={'12px'} fontWeight={'500'} color={'bunker.500'}>
@@ -197,7 +197,7 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
               </Typography>
             )}
             <Typography fontSize={'14px'} fontWeight={'700'} color={'#111217'}>
-              {thousandDivider(get(item, 'total_amount'), 'сум')}
+              {thousandDivider(get(item, 'total_amount'), t('pos.currency_short'))}
             </Typography>
           </Box>
         </Box>

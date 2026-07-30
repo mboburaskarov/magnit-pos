@@ -241,10 +241,10 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
       closeDrawer()
       refetch()
       setInputTree({ name: '' })
-      success('Создать категорию!')
+      success(t('pos.category_created_toast'))
     },
     onError: (err) => {
-      error('Ошибка при Создать категорию!')
+      error(t('pos.category_create_error'))
       console.error('err', err)
     },
   })
@@ -252,10 +252,10 @@ export default function CreateEditCategories({ open, closeDrawer, isLoading = fa
     onSuccess: () => {
       closeDrawer()
       refetch()
-      success('Изменить категорию!')
+      success(t('pos.category_updated_toast'))
     },
     onError: (err) => {
-      error('Ошибка при Изменить категорию!')
+      error(t('pos.category_update_error'))
       console.error('err', err)
     },
   })

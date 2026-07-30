@@ -9,7 +9,8 @@
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "tauri": "tauri",
-    "check:unused": "ts-prune"
+    "check:unused": "ts-prune",
+    "i18n:check": "node scripts/check-i18n.js"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

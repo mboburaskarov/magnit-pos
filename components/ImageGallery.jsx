@@ -2,6 +2,7 @@ import { Report } from '@mui/icons-material'
 import { Box, IconButton, Typography } from '@mui/material'
 import { get } from 'lodash'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import ArrowDown from '../src/assets/icons/ArrowDown'
 import BackArrowIcon from '../src/assets/icons/BackArrow'
 import ZipIcon from '../src/assets/icons/ZipIcon'
@@ -12,6 +13,7 @@ import CustomImg from './CustomImg'
 import StyledTooltip from './StyledTooltip'
 
 const ImageGallery = ({ open, setOpen, imagesArr, name, canAlert = false }) => {
+  const { t } = useTranslation()
   const [count, setCount] = useState(0)
   if (!imagesArr?.length) {
     return null
@@ -50,13 +52,9 @@ const ImageGallery = ({ open, setOpen, imagesArr, name, canAlert = false }) => {
       <Box position='relative' display='flex' alignItems='center' flexDirection='column'>
         <Typography sx={{ fontSize: 24, fontWeight: 600, color: 'white', mb: 5 }}>
           <Typography fontSize={20} variant='span' color='white'>
-            Фото {name || 'продукта'}:
+            {name ? t('pos.photo_of_named', { name }) : t('pos.photo_of_product')}{' '}
           </Typography>
-          {count + 1}{' '}
-          <Typography fontSize={20} variant='span' color='white'>
-            из{' '}
-          </Typography>
-          {imagesArr?.length || 1}
+          {t('pos.image_counter', { current: count + 1, total: imagesArr?.length || 1 })}
         </Typography>
         <Box
           sx={{
@@ -167,18 +165,18 @@ const ImageGallery = ({ open, setOpen, imagesArr, name, canAlert = false }) => {
           >
             <Report />
             <Box width={'5px'} />
-            Сообщить об ошибке
+            {t('pos.report_error_button')}
           </Typography>
         )}
       </Box>
       <Box sx={{ position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, bottom: 40, right: 32 }}>
-        <StyledTooltip placement='top' title='Скачать фото'>
+        <StyledTooltip placement='top' title={t('pos.download_photo')}>
           <IconButton onClick={() => downloadImage(imagesArr[count])}>
             <ArrowDown style={{ fill: '#000' }} width={18} height={18} />
           </IconButton>
         </StyledTooltip>
         {imagesArr?.length > 1 && (
-          <StyledTooltip placement='top' title='Скачать все'>
+          <StyledTooltip placement='top' title={t('pos.download_all')}>
             <IconButton onClick={() => downloadZip(imagesArr, `Photo: ${count}`)}>
               <ZipIcon fill='#119676' width={18} height={18} />
             </IconButton>

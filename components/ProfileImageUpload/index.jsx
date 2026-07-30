@@ -8,13 +8,15 @@ import { error } from '@utils/toast'
 import ImagePreview from './ImageProfilePreview'
 import Label from '../Label'
 import { get } from 'lodash'
-const errotTypes = {
-  400: 'Не удалось привязать файл или Размер файла превышает максимальный предел 5, МБ',
-  422: 'Недопустимый тип файла. Разрешены только .jpg, .jpeg и .png',
-  500: 'Не удалось сохранить файл',
-}
+import { useTranslation } from 'react-i18next'
 
 export default function ImageUpload({ id, images, setEditingImage, setIsEditMode, onChange, isEditMode, label, width, height, type, withoutTextBox }) {
+  const { t } = useTranslation()
+  const errotTypes = {
+    400: t('pos.upload_error_attach_size'),
+    422: t('pos.upload_error_invalid_type'),
+    500: t('pos.upload_error_save_failed'),
+  }
   const [uploadedImages, setUploadedImages] = useState(images || [])
 
   const filterAndSetImages = (data) => {
@@ -69,7 +71,7 @@ export default function ImageUpload({ id, images, setEditingImage, setIsEditMode
 
   return (
     <Box width={withoutTextBox ? 'auto' : '100%'}>
-      <Label mb={1.5}>{label || 'Фото'}</Label>
+      <Label mb={1.5}>{label || t('pos.photo_label')}</Label>
       <Box sx={{ position: 'relative', display: 'flex', width: '100%', maxWidth: '100%', height: '100%', minHeight: 48, columnGap: 3 }}>
         <ImagePreview
           setIsEditMode={setIsEditMode}
@@ -110,13 +112,13 @@ export default function ImageUpload({ id, images, setEditingImage, setIsEditMode
           >
             <input id={id} {...getInputProps()} data-test='upload-photo' />
             <Box>
-              <Typography fontWeight={600}>Перетащите фото в эту область</Typography>
+              <Typography fontWeight={600}>{t('pos.drag_photo_here')}</Typography>
             </Box>
             <Typography color='textSecondary' fontWeight={600}>
-              - или -
+              {t('pos.or_divider')}
             </Typography>
             <Typography fontWeight={600} color='green.500'>
-              Нажмите для обзора
+              {t('pos.click_to_browse')}
             </Typography>
           </Box>
         )}

@@ -1,9 +1,11 @@
 import { Box, LinearProgress, Typography } from '@mui/material'
 import SuccessIcon from '@icons/SuccessIcon'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import ErrorIcon from '@icons/ErrorIcon'
 
 export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, isGelOldEposCheck, setHasError, isSendToEPOS, isSendEPOSresponseToBackend, hasError }) {
+  const { t } = useTranslation()
   const [showModal, setShowModal] = useState(false)
   const [currentStep, setCurrentStep] = useState(null)
 
@@ -30,7 +32,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
     // Xato holatini birinchi tekshirish
     if (hasError) {
       setCurrentStep({
-        label: 'Ошибка',
+        label: t('pos.step_error'),
         progress: 100,
         startProgress: 100,
         endProgress: 100,
@@ -45,28 +47,28 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
     // Keyingi steplarni ketma-ket tekshirish
     else if (isFinishSaleWithoutAppPaymentType) {
       setCurrentStep({
-        label: 'Товар проверяется',
+        label: t('pos.step_checking_product'),
         progress: 15,
         startProgress: 0,
         endProgress: 30,
       })
     } else if (isSendToEPOS || isGelOldEposCheck) {
       setCurrentStep({
-        label: 'Sending to EPOS',
+        label: t('pos.step_sending_to_epos'),
         progress: 45,
         startProgress: 30,
         endProgress: 60,
       })
     } else if (isSendEPOSresponseToBackend) {
       setCurrentStep({
-        label: 'Продажа завершается',
+        label: t('pos.step_finishing_sale'),
         progress: 80,
         startProgress: 60,
         endProgress: 100,
       })
     } else if (allDone) {
       setCurrentStep({
-        label: 'Завершено',
+        label: t('switch.title.completed'),
         progress: 100,
         startProgress: 100,
         endProgress: 100,
@@ -145,7 +147,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
                 marginTop: '8px',
               }}
             >
-              {hasError ? 'Произошла ошибка. Попробуйте снова.' : 'Чек печатается'}
+              {hasError ? t('pos.step_error_desc') : t('pos.step_printing_receipt')}
             </Typography>
           </Box>
         ) : (
@@ -224,7 +226,7 @@ export default function SaleProgressSteps({ isFinishSaleWithoutAppPaymentType, i
                 textAlign: 'center',
               }}
             >
-              Do not refresh the page until the process is complete.
+              {t('pos.step_no_refresh_warning')}
             </Typography>
           </Box>
         )}

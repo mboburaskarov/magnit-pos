@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMutation } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 // Fallback class/package codes used to retry an EPOS request when one or more
 // products fail with their own class_code/package_code.
@@ -52,6 +53,7 @@ export const useSaleOperations = ({
 }) => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const userData = useSelector((state) => state.user)
   const sendToEpos = true
   const [payType, setPayType] = useState(undefined)
@@ -89,7 +91,7 @@ export const useSaleOperations = ({
         return
       }
       if (!JSON.parse(sendToEpos) || get(cashBoxDetails, 'data.data.service_type') === 'uzum') {
-        success('Продажа завершена!')
+        success(t('pos.sale_finished_toast'))
         setNewSaleId('888')
         setQrcodeUrl({ qr: '', fiscal: 'No', cardType: cartOwnerType })
       } else {
@@ -102,32 +104,34 @@ export const useSaleOperations = ({
 
       if (get(err, 'response.status') === 409) {
         saleCreate({ cash_box_operation_id: get(cashBoxDetails, 'data.data.cash_box_operation_id'), store_id: get(userData, 'store.id') })
-        error('Эта продажа уже закрыта. (uz: Bu sotuv yakunlangan - barcha sotuvlar sahifasidan tekshiring)')
+        error(t('pos.sale_already_closed'))
         return
       }
       if (get(err, 'response.data.data') === 'prescription.expired') {
-        error('Срок действия указанного рецепта истёк.')
+        error(t('pos.prescription_expired'))
         return
       }
       if (get(err, 'response.data.data') === 'invalid.sale.amount') {
-        error('Несоответствие торговой суммы')
+        error(t('pos.trade_amount_mismatch'))
         return
       }
       if (get(err, 'response.data.data') === 'failed payment with click') {
-        error('На вашем счете Click недостаточно средств.')
+        error(t('pos.click_insufficient_funds'))
         return
       }
 
-      let errorMessage = 'Ошибка при Продажа завершена'
+      let errorMessage = t('pos.error_finishing_sale_default')
       try {
         const errorData = get(err, 'response.data.data')
         if (errorData) {
           const parsedError = typeof errorData === 'string' ? JSON.parse(errorData) : errorData
-          errorMessage = `Ошибка при Продажа завершена: ${parsedError?.message || errorData}`
+          errorMessage = t('pos.error_finishing_sale_detail', { detail: parsedError?.message || errorData })
         }
       } catch (parseError) {
         console.warn('Failed to parse error response:', parseError)
-        errorMessage = `Ошибка при Продажа завершена:: ${get(err, 'response.data.data') || get(err, 'data') || get(err, 'message') || 'Неизвестная ошибка'}`
+        errorMessage = t('pos.error_finishing_sale_detail', {
+          detail: get(err, 'response.data.data') || get(err, 'data') || get(err, 'message') || t('pos.unknown_error'),
+        })
       }
       error(errorMessage)
       return
@@ -148,11 +152,11 @@ export const useSaleOperations = ({
       sendEPOSresponseToBackend({ error: false, response_data: JSON.stringify(data), sale_id: id })
     },
     onError: (err) => {
-      let message = 'Данная продажа ранее была оформлена на уплату налогов. Скачайте этот чек из раздела «Все продажи».'
+      const message = t('pos.sale_previously_sent_tax_desc')
       sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify(err), sale_id: id })
       setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
       setOpenRefreshDialog(false)
-      error(`Oldin eposga yuborilgan savdo: ${message}`)
+      error(t('pos.sale_previously_sent_epos', { message }))
       throw new Error(`InnerError: ${message}`)
     },
   })
@@ -205,7 +209,7 @@ export const useSaleOperations = ({
       setHasError({ hasError: true, errorType: 'Epos' })
       setQrcodeUrl({ qr: 'pending', fiscal: 'pending' })
       setOpenRefreshDialog(false)
-      error(err?.message || 'Ошибка при EPOS')
+      error(err?.message || t('pos.epos_error_generic'))
       if (!err.message.includes('InnerError')) {
         sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ ...err }), sale_id: id })
       }
@@ -304,7 +308,7 @@ export const useSaleOperations = ({
       setHasError({ hasError: true, errorType: 'Epos result' })
 
       setOpenRefreshDialog(false)
-      error(`Ошибка результата: ${get(response, 'data.data')}`)
+      error(t('pos.result_error', { detail: get(response, 'data.data') }))
     },
   })
 
@@ -316,7 +320,7 @@ export const useSaleOperations = ({
       const zOk = get(data, 'error', true) == false || get(data, 'message', '').includes('ERROR_ZREPORT_IS_ALREADY_OPEN')
       setZReportClosedDialog(false)
       if (!zOk) {
-        error(get(data, 'message') || 'ZReportni ochib bo‘lmadi')
+        error(get(data, 'message') || t('pos.zreport_open_failed'))
         return
       }
       if (lastEposPayloadRef.current) {
@@ -325,7 +329,7 @@ export const useSaleOperations = ({
     },
     onError: (err) => {
       setZReportClosedDialog(false)
-      error(err?.message || 'ZReportni ochib bo‘lmadi')
+      error(err?.message || t('pos.zreport_open_failed'))
     },
   })
 
@@ -335,7 +339,7 @@ export const useSaleOperations = ({
 
   const cancelZReportDialog = useCallback(() => {
     setZReportClosedDialog(false)
-    error('ZReport yopiq. Sotuvni yakunlash uchun uni oching.')
+    error(t('pos.zreport_closed_confirm_toast'))
     sendEPOSresponseToBackend({ error: true, response_data: JSON.stringify({ message: 'ZReport is closed' }), sale_id: id })
   }, [sendEPOSresponseToBackend, id])
 
@@ -347,7 +351,7 @@ export const useSaleOperations = ({
       window.location.reload()
     },
     onError: () => {
-      error('Ошибка при создании продажи')
+      error(t('pos.error_creating_sale'))
     },
   })
 
@@ -573,7 +577,7 @@ export const useSaleOperations = ({
   const submitSale = useCallback(
     (paymentsList, otpData, maxAmount, cartOwnerType) => {
       if (cartItemsListLoading) {
-        error('Продукты загружаются. Пожалуйста, повторите попытку позже.')
+        error(t('pos.products_loading_retry'))
         return
       }
       // Handle both formats: lite order (with payment_type_id) and full order (with id)

@@ -250,11 +250,11 @@ function ShortcutsDrawer() {
             ) : (
               <>
                 <Box className={classes.leftSideBox}>
-                  <Typography>{'Открыть новую вкладку'}</Typography>
+                  <Typography>{t('pos.open_new_tab')}</Typography>
                   <ShortcutWrapper shortcut='T' margin='0 0 0 8px' />
                 </Box>
                 <Box className={classes.leftSideBox}>
-                  <Typography>{'Открыть список черновиков'}</Typography>
+                  <Typography>{t('pos.open_drafts_list')}</Typography>
                   <ShortcutWrapper shortcut='D' margin='0 0 0 8px' />
                 </Box>
               </>

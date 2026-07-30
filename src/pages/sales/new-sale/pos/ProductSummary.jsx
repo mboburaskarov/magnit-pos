@@ -32,9 +32,9 @@ export default function ProductSummary({
             <div className='active-product-calc'>
               <span className='calc-math'>
                 {selectedItem.unit_per_pack > 1 && selectedItem.unit_quantity > 0 ? (
-                  `${selectedItem.unit_quantity} ${selectedItem.unit_per_pack === 1000 ? (t('pos.unit.g') || 'г') : (t('pos.unit.pcs') || 'шт')} × `
+                  `${selectedItem.unit_quantity} ${selectedItem.unit_per_pack === 1000 ? t('pos.unit.g') : t('pos.unit.pcs')} × `
                 ) : (
-                  `${selectedItem.quantity} ${t('pos.unit.pack') || 'уп'} × `
+                  `${selectedItem.quantity} ${t('pos.unit.pack')} × `
                 )}
                 {formatNumberUZS(selectedItem.unit_price)} UZS
               </span>

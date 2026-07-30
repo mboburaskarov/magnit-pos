@@ -47,7 +47,7 @@ export default function PosOnScreenKeyboard({
         <span className='pos-keyboard-title'>
           {language === 'ru' ? 'Экранная клавиатура (RU)' : 'Ekran klaviaturasi (UZ)'}
         </span>
-        <button type='button' className='pos-keyboard-close-btn' onClick={onClose} title={t?.('pos.cancel') || 'Close'}>
+        <button type='button' className='pos-keyboard-close-btn' onClick={onClose} title={t?.('pos.cancel')}>
           <X size={18} />
         </button>
       </div>
@@ -85,7 +85,7 @@ export default function PosOnScreenKeyboard({
               className='pos-keyboard-key action-key clear-key'
               onClick={onClear}
             >
-              {t?.('delete_all') || 'CLEAR'}
+              {t?.('pos.keyboard_clear_key')}
             </button>
 
             <button
@@ -109,7 +109,7 @@ export default function PosOnScreenKeyboard({
               className='pos-keyboard-key action-key enter-key'
               onClick={onEnter}
             >
-              {t?.('pos.search_title') || 'ENTER'}
+              {t?.('pos.keyboard_enter_key')}
             </button>
           </div>
         </div>

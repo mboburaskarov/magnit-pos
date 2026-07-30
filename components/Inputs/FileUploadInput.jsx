@@ -7,8 +7,10 @@ import { requests } from '@utils/requests'
 import { error } from '@utils/toast'
 import getImageUrl from '@utils/getImageUrl'
 import StyledTooltip from '../StyledTooltip'
+import { useTranslation } from 'react-i18next'
 
 export default function FileUploadInput({ id, onChange, label, placeholder, defaultValue }) {
+  const { t } = useTranslation()
   const [file, setFile] = useState(defaultValue || null)
 
   const { mutate: uploadFile, isLoading: isUploadingFile } = useMutation(requests.fileUpload, {
@@ -17,7 +19,7 @@ export default function FileUploadInput({ id, onChange, label, placeholder, defa
       onChange(data?.[0])
     },
     onError: (err) => {
-      error('Ошибка при загрузке файла!')
+      error(t('pos.file_upload_error'))
       console.error(err)
     },
   })
@@ -45,7 +47,7 @@ export default function FileUploadInput({ id, onChange, label, placeholder, defa
         >
           {file?.key ? (
             <a target='_blank' rel='noreferrer' href={getImageUrl(file?.key)}>
-              <StyledTooltip title='Просмотреть'>
+              <StyledTooltip title={t('pos.preview')}>
                 <FileIcon width={20} />
               </StyledTooltip>
             </a>
@@ -53,7 +55,7 @@ export default function FileUploadInput({ id, onChange, label, placeholder, defa
             <FileIcon width={20} />
           )}
           <Typography whiteSpace='nowrap' color={file?.name ? 'gray.600' : 'gray.400'} ml={1}>
-            {isUploadingFile ? 'Файл загружается...' : file?.name ? `${file?.name} ${(file?.size / 1024).toFixed(1)} KB` : placeholder}
+            {isUploadingFile ? t('pos.file_uploading') : file?.name ? `${file?.name} ${(file?.size / 1024).toFixed(1)} KB` : placeholder}
           </Typography>
           <input accept='.pdf,.doc,.txt,.docx' onChange={onHandleChange} id={id} style={{ opacity: '0', width: 0 }} type='file' />
         </Box>

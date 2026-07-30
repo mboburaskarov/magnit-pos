@@ -4,6 +4,7 @@ import { Box, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import { get } from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 import OutLineTextFieldThousand from '../../Inputs/OutLineTextFieldThousand'
 import CustomImg from '../../CustomImg'
@@ -323,6 +324,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 export default function ResultItem({ index, setOpenRejectConfirmDialog, itemRef, item, isSimilar = false, searchTerm, product }) {
   const classes = useStyles()
+  const { t } = useTranslation()
   const [itemCount, setItemcount] = useState(1)
   const { values } = useQueryParams()
 
@@ -416,7 +418,7 @@ export default function ResultItem({ index, setOpenRejectConfirmDialog, itemRef,
                   width: '80px',
                   m: '0 10px',
                 }}
-                placeholder='Введите скидку'
+                placeholder={t('pos.enter_discount_placeholder')}
               />
               <Typography
                 onClick={(e) => {
@@ -435,7 +437,7 @@ export default function ResultItem({ index, setOpenRejectConfirmDialog, itemRef,
                   fontSize: '17px',
                 }}
               >
-                Отказ
+                {t('pos.rejection_label')}
               </Typography>
             </Box>
           )}

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { WifiOff, RefreshCw } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
 export default function PwaUpdatesAndOffline() {
+  const { t } = useTranslation()
   const [isOffline, setIsOffline] = useState(!navigator.onLine)
 
   // Register PWA service worker with auto-update capability
@@ -68,10 +70,10 @@ export default function PwaUpdatesAndOffline() {
             <WifiOff size={40} />
           </div>
           <h1 style={{ fontSize: '28px', fontWeight: '800', marginBottom: '12px', letterSpacing: '-0.5px' }}>
-            Соединение потеряно
+            {t('pos.offline_title')}
           </h1>
           <p style={{ fontSize: '16px', color: '#9ca3af', maxWidth: '440px', lineHeight: '1.5', marginBottom: '32px' }}>
-            Терминал Magnit POS временно отключен от сети. Оплата и кассовые операции недоступны до восстановления подключения к интернету.
+            {t('pos.offline_desc')}
           </p>
           <div style={{
             fontSize: '13px',
@@ -89,7 +91,7 @@ export default function PwaUpdatesAndOffline() {
               display: 'inline-block',
               animation: 'pulse 1.5s infinite ease-in-out'
             }} />
-            Ожидание сети...
+            {t('pos.waiting_for_network')}
             <style dangerouslySetInnerHTML={{__html: `
               @keyframes pulse {
                 0%, 100% { opacity: 0.4; transform: scale(0.9); }
@@ -122,10 +124,10 @@ export default function PwaUpdatesAndOffline() {
         }}>
           <div>
             <h4 style={{ fontSize: '16px', fontWeight: '700', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <RefreshCw size={18} style={{ color: '#2563eb' }} /> Доступно обновление
+              <RefreshCw size={18} style={{ color: '#2563eb' }} /> {t('pos.update_available_title')}
             </h4>
             <p style={{ fontSize: '13px', color: '#9ca3af', marginTop: '6px', margin: 0, lineHeight: '1.4' }}>
-              Для применения новой версии приложения Magnit POS требуется перезапуск.
+              {t('pos.update_available_desc')}
             </p>
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
@@ -152,7 +154,7 @@ export default function PwaUpdatesAndOffline() {
               onMouseDown={(e) => e.target.style.transform = 'scale(0.96)'}
               onMouseUp={(e) => e.target.style.transform = 'none'}
             >
-              Обновить сейчас
+              {t('pos.update_now_button')}
             </button>
             <button
               type="button"
@@ -172,7 +174,7 @@ export default function PwaUpdatesAndOffline() {
               onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.08)'}
               onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
             >
-              Позже
+              {t('pos.later_button')}
             </button>
           </div>
           <style dangerouslySetInnerHTML={{__html: `

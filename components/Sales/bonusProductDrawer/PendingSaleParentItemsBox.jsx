@@ -82,7 +82,7 @@ function PendingSaleParentItemsBox({ setIsOpenChild, item }) {
       <Box display={'flex'} width={'100px'} minWidth={'120px'}>
         <Box mr={'16px'}>
           <Typography fontSize={'16px'} fontWeight={'600'} lineHeight={'24px'} color={'orange.500'}>
-            {thousandDivider(get(item, 'bonus_amount'), 'сум')}
+            {thousandDivider(get(item, 'bonus_amount'), t('pos.currency_short'))}
           </Typography>
           <Typography fontSize={'14px'}>
             {get(item, 'quantity')} ({get(item, 'unit_quantity')}/{get(item, 'unit_per_pack')})

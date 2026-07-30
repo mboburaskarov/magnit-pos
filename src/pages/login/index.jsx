@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles'
 import { useEffect, useRef, useState } from 'react'
 import { useMutation } from 'react-query'
 import { useDispatch } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { error as toastError } from '@utils/toast'
 import { Store, Search, ArrowLeft, ArrowRight, Check, Eye, EyeOff, Delete, CornerDownLeft, RefreshCw, AlertTriangle } from 'lucide-react'
 import { get } from 'lodash'
@@ -21,9 +22,6 @@ import LoadingContainer from '/components/LoadingContainer'
 const ACCENT = '#111217'
 const ACCENT_HOVER = '#2A2D38'
 const MAX_PASSWORD = 32
-
-const WEEKDAYS = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота']
-const MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
 
 const useStyles = makeStyles((theme) => {
   const font = theme.fontFamily.Gilroy
@@ -693,6 +691,9 @@ function initials(cashier) {
 export default function LoginPage() {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const { t } = useTranslation()
+  const WEEKDAYS = t('login.weekdays', { returnObjects: true })
+  const MONTHS = t('login.months', { returnObjects: true })
 
   const [phase, setPhase] = useState(PHASE.LOADING)
   const [store, setStore] = useState(null)
@@ -741,9 +742,8 @@ export default function LoginPage() {
     } catch (err) {
       console.error('device agent unreachable:', err)
       setBlockInfo({
-        title: 'Устройство недоступно',
-        message:
-          'Не удалось связаться с агентом устройства. Убедитесь, что Magnit Device Agent запущен на этом компьютере, и повторите попытку.',
+        title: t('login.device_unavailable_title'),
+        message: t('login.device_unavailable_message'),
       })
       setPhase(PHASE.ERROR)
       return
@@ -769,14 +769,13 @@ export default function LoginPage() {
       const key = err?.response?.data?.data
       if (err?.response?.status === 404 || key === 'device.not.registered') {
         setBlockInfo({
-          title: 'Устройство не зарегистрировано',
-          message:
-            'Эта касса не привязана к магазину. Обратитесь к администратору, чтобы зарегистрировать устройство и получить доступ к смене.',
+          title: t('login.device_not_registered_title'),
+          message: t('login.device_not_registered_message'),
         })
       } else {
         setBlockInfo({
-          title: 'Ошибка',
-          message: 'Не удалось получить данные устройства. Повторите попытку.',
+          title: t('login.generic_error_title'),
+          message: t('login.generic_error_message'),
         })
       }
       setPhase(PHASE.ERROR)
@@ -869,7 +868,7 @@ export default function LoginPage() {
       const zOk = get(zData, 'error', true) == false || get(zData, 'message', '').includes('ERROR_ZREPORT_IS_ALREADY_OPEN')
       if (!zOk) {
         const msg = get(zData, 'message', '')
-        setOpenError(msg.includes('Ru:') ? msg.split('Ru:')[1] : msg || 'Kassani ochib bo‘lmadi')
+        setOpenError(msg.includes('Ru:') ? msg.split('Ru:')[1] : msg || t('login.open_shift_failed'))
         setIsOpening(false)
         return
       }
@@ -907,7 +906,7 @@ export default function LoginPage() {
       bypassNextAppExit()
       window.location.replace(`/sales/pos/${saleId}`)
     } catch (err) {
-      setOpenError(err?.response?.data?.message || err?.message || 'Kassani ochib bo‘lmadi')
+      setOpenError(err?.response?.data?.message || err?.message || t('login.open_shift_failed'))
       setIsOpening(false)
     }
   }
@@ -991,14 +990,14 @@ export default function LoginPage() {
       const key = err?.response?.data?.data
       const msg =
         key === 'cashier.busy.in.another.cashbox'
-          ? 'Смена уже открыта в другой кассе. Закройте её, чтобы войти на этой.'
+          ? t('login.error_busy_in_another_cashbox')
           : key === 'device.not.registered'
-          ? 'Устройство не зарегистрировано. Обратитесь к администратору.'
+          ? t('login.error_device_not_registered')
           : status === 409
-          ? 'Неверный пароль'
+          ? t('login.error_wrong_password')
           : status === 404
-          ? 'Кассир не найден'
-          : 'Не удалось войти. Повторите попытку.'
+          ? t('login.error_cashier_not_found')
+          : t('login.error_login_failed')
       setPwError(msg)
       toastError(msg)
       setPassword('')
@@ -1014,7 +1013,7 @@ export default function LoginPage() {
   // name of the other cashbox where this cashier's open session lives, or ''
   const busyCashboxName = (cashier) =>
     cashier?.active_cashbox_id && cashier.active_cashbox_id !== cashbox?.id
-      ? cashier.active_cashbox_name || 'другой кассе'
+      ? cashier.active_cashbox_name || t('login.busy_other_cashbox')
       : ''
 
   const pickCashier = (cashier) => {
@@ -1057,8 +1056,8 @@ export default function LoginPage() {
     if (logInLoading || loginSuccess || !selectedCashier) return
     const pwd = (passwordRef.current || '').replace(/[()\s-]/g, '')
     if (!pwd) {
-      setPwError('Введите пароль')
-      toastError('Введите пароль')
+      setPwError(t('login.password_required'))
+      toastError(t('login.password_required'))
       setShakeCount((c) => c + 1)
       return
     }
@@ -1130,10 +1129,10 @@ export default function LoginPage() {
     const dateLabel = `${now.getDate()} ${MONTHS[now.getMonth()]}`
     const hint =
       variant === 'error'
-        ? 'Это устройство ещё не привязано к магазину.\nВход невозможен, пока касса не настроена.'
+        ? t('login.hint_error')
         : variant === 'password'
-        ? 'Введите пароль, чтобы открыть смену.\nНе сообщайте свой пароль другим сотрудникам.'
-        : 'Рабочая смена начинается с входа кассира.\nВыберите себя из списка, чтобы продолжить.'
+        ? t('login.hint_password')
+        : t('login.hint_select')
 
     return (
       <Box className={classes.rail}>
@@ -1156,7 +1155,7 @@ export default function LoginPage() {
             <Box className={classes.railChip}>
               <Store size={20} />
               <span className={classes.railChipText} style={{ opacity: 0.85 }}>
-                Магазин не определён
+                {t('login.store_not_defined')}
               </span>
             </Box>
           ) : store?.name ? (
@@ -1191,13 +1190,13 @@ export default function LoginPage() {
             <Typography className={classes.errorText}>{blockInfo?.message}</Typography>
             {machineId && (
               <Box className={classes.deviceChip}>
-                <span className={classes.deviceChipLabel}>ID устройства</span>
+                <span className={classes.deviceChipLabel}>{t('login.device_id_label')}</span>
                 <span className={classes.deviceChipValue}>{machineId}</span>
               </Box>
             )}
             <button type="button" className={classes.retryBtn} onClick={loadDeviceInfo}>
               <RefreshCw size={20} />
-              Повторить
+              {t('login.retry')}
             </button>
           </Box>
         </Box>
@@ -1217,16 +1216,16 @@ export default function LoginPage() {
           <Box className={classes.selectHeader}>
             <Box>
               <Box className={classes.selectTitleRow}>
-                <Typography className={classes.selectTitle}>Выберите кассира</Typography>
+                <Typography className={classes.selectTitle}>{t('login.select_cashier_title')}</Typography>
                 <span className={classes.countBadge}>{cashiers.length}</span>
               </Box>
-              <Typography className={classes.selectSubtitle}>Нажмите на своё имя, затем введите пароль</Typography>
+              <Typography className={classes.selectSubtitle}>{t('login.select_cashier_subtitle')}</Typography>
             </Box>
             <Box className={classes.searchWrap}>
               <Search size={20} className={classes.searchIcon} />
               <input
                 type="text"
-                placeholder="Поиск по имени"
+                placeholder={t('login.search_placeholder')}
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value)
@@ -1240,9 +1239,7 @@ export default function LoginPage() {
           <Box className={classes.gridScroll}>
             {filtered.length === 0 ? (
               <Box className={classes.emptyState}>
-                {q
-                  ? `По запросу «${query}» кассиров не найдено`
-                  : 'Для этого магазина не найдено кассиров. Обратитесь к администратору.'}
+                {q ? t('login.no_cashiers_found_query', { query }) : t('login.no_cashiers_found')}
               </Box>
             ) : (
               <Box className={classes.grid}>
@@ -1255,7 +1252,7 @@ export default function LoginPage() {
                       component="button"
                       type="button"
                       disabled={Boolean(busyIn)}
-                      title={busyIn ? `Смена открыта в кассе «${busyIn}». Закройте её, чтобы войти здесь.` : undefined}
+                      title={busyIn ? t('login.busy_cashbox_tooltip', { name: busyIn }) : undefined}
                       className={`${classes.card} ${selected ? classes.cardSelected : ''} ${busyIn ? classes.cardDisabled : ''}`}
                       onClick={() => pickCashier(cashier)}
                     >
@@ -1268,9 +1265,9 @@ export default function LoginPage() {
                       <span className={classes.cardName}>{displayName(cashier)}</span>
                       {cashier.position && <span className={classes.cardPosition}>{cashier.position}</span>}
                       {busyIn ? (
-                        <span className={classes.cardBusyNote}>Закройте смену в кассе «{busyIn}»</span>
+                        <span className={classes.cardBusyNote}>{t('login.busy_cashbox_note', { name: busyIn })}</span>
                       ) : cashier.id === activeCashierId ? (
-                        <span className={classes.cardActiveNote}>Смена на этой кассе</span>
+                        <span className={classes.cardActiveNote}>{t('login.active_cashbox_note')}</span>
                       ) : null}
                     </Box>
                   )
@@ -1289,7 +1286,7 @@ export default function LoginPage() {
                 </Box>
               </Box>
               <button type="button" className={classes.continueBtn} onClick={goToPassword}>
-                Продолжить
+                {t('login.continue')}
                 <ArrowRight size={20} strokeWidth={2.2} />
               </button>
             </Box>
@@ -1299,11 +1296,15 @@ export default function LoginPage() {
         {switchTarget && (
           <Box className={classes.confirmOverlay}>
             <Box className={classes.confirmPanel}>
-              <Typography className={classes.confirmTitle}>Переключить кассу?</Typography>
+              <Typography className={classes.confirmTitle}>{t('login.switch_cashbox_title')}</Typography>
               <Typography className={classes.confirmText}>
-                Касса{cashbox?.name ? ` «${cashbox.name}»` : ''} сейчас закреплена за{' '}
-                {activeCashier ? `кассиром ${displayName(activeCashier)}` : 'другим кассиром'}. После входа смена
-                будет переключена на {displayName(switchTarget)}.
+                {t('login.switch_cashbox_text', {
+                  cashboxLabel: cashbox?.name ? ` «${cashbox.name}»` : '',
+                  currentCashier: activeCashier
+                    ? t('login.cashier_role', { name: displayName(activeCashier) })
+                    : t('login.other_cashier_role'),
+                  newCashier: displayName(switchTarget),
+                })}
               </Typography>
               <Box className={classes.confirmActions}>
                 <button
@@ -1311,7 +1312,7 @@ export default function LoginPage() {
                   className={`${classes.confirmBtn} ${classes.confirmBtnCancel}`}
                   onClick={() => setSwitchTarget(null)}
                 >
-                  Отмена
+                  {t('login.cancel')}
                 </button>
                 <button
                   type="button"
@@ -1321,7 +1322,7 @@ export default function LoginPage() {
                     setSwitchTarget(null)
                   }}
                 >
-                  Продолжить
+                  {t('login.continue')}
                 </button>
               </Box>
             </Box>
@@ -1346,7 +1347,7 @@ export default function LoginPage() {
 
           <Box className={classes.pwEntry}>
             <Typography className={classes.promptLabel}>
-              {openError ? 'Iltimos, qaytadan urinib ko‘ring' : 'Kassa ochilish miqdorini kiriting (UZS)'}
+              {openError ? t('login.retry_prompt') : t('login.enter_opening_amount')}
             </Typography>
 
             <Box className={classes.fieldWrap}>
@@ -1354,7 +1355,7 @@ export default function LoginPage() {
                 {openAmount.length > 0 ? (
                   <span className={classes.fieldValue}>{thousandDivider(openAmount)}</span>
                 ) : (
-                  <span className={classes.fieldPlaceholder}>Miqdorni kiriting</span>
+                  <span className={classes.fieldPlaceholder}>{t('login.enter_amount_placeholder')}</span>
                 )}
               </Box>
             </Box>
@@ -1379,7 +1380,7 @@ export default function LoginPage() {
                 className={`${classes.keypadBtn} ${classes.keypadBtnBack}`}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={backspaceAmount}
-                aria-label="Удалить"
+                aria-label={t('login.delete_aria')}
                 disabled={isOpening}
               >
                 <Delete size={26} />
@@ -1398,7 +1399,7 @@ export default function LoginPage() {
                 className={`${classes.keypadBtn} ${classes.keypadBtnEnter}`}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={submitOpenAmount}
-                aria-label="Открыть смену"
+                aria-label={t('login.open_shift_aria')}
                 disabled={isOpening}
               >
                 {isOpening ? <CircularProgress size={24} sx={{ color: '#fff' }} /> : <CornerDownLeft size={26} strokeWidth={2.2} />}
@@ -1417,7 +1418,7 @@ export default function LoginPage() {
       <Box className={classes.contentCenter}>
         <button type="button" className={classes.backLink} onClick={backToSelect}>
           <ArrowLeft size={20} strokeWidth={2.2} />
-          Назад к списку
+          {t('login.back_to_list')}
         </button>
 
         <Box className={classes.identity}>
@@ -1431,13 +1432,13 @@ export default function LoginPage() {
             <span className={classes.successIcon}>
               <Check size={44} strokeWidth={2.4} />
             </span>
-            <Typography className={classes.successTitle}>Вход выполнен</Typography>
-            <Typography className={classes.successSub}>Открываем смену…</Typography>
+            <Typography className={classes.successTitle}>{t('login.login_success')}</Typography>
+            <Typography className={classes.successSub}>{t('login.opening_shift')}</Typography>
           </Box>
         ) : (
           <Box className={classes.pwEntry}>
             <Typography className={classes.promptLabel}>
-              {pwError ? 'Попробуйте ввести пароль ещё раз' : 'Введите пароль от учётной записи'}
+              {pwError ? t('login.retry_password_prompt') : t('login.enter_account_password')}
             </Typography>
 
             <Box key={shakeCount} className={`${classes.fieldWrap} ${pwError ? classes.fieldWrapShake : ''}`}>
@@ -1445,7 +1446,7 @@ export default function LoginPage() {
                 {password.length > 0 ? (
                   <span className={classes.fieldValue}>{reveal ? password : '•'.repeat(password.length)}</span>
                 ) : (
-                  <span className={classes.fieldPlaceholder}>Введите пароль</span>
+                  <span className={classes.fieldPlaceholder}>{t('login.password_required')}</span>
                 )}
               </Box>
               <button
@@ -1453,7 +1454,7 @@ export default function LoginPage() {
                 className={classes.revealBtn}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => setReveal((r) => !r)}
-                aria-label={reveal ? 'Скрыть пароль' : 'Показать пароль'}
+                aria-label={reveal ? t('login.hide_password') : t('login.show_password')}
               >
                 {reveal ? <Eye size={22} /> : <EyeOff size={22} />}
               </button>
@@ -1476,7 +1477,7 @@ export default function LoginPage() {
                 className={`${classes.keypadBtn} ${classes.keypadBtnBack}`}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={backspace}
-                aria-label="Удалить"
+                aria-label={t('login.delete_aria')}
               >
                 <Delete size={26} />
               </button>
@@ -1493,7 +1494,7 @@ export default function LoginPage() {
                 className={`${classes.keypadBtn} ${classes.keypadBtnEnter}`}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={submitPassword}
-                aria-label="Войти"
+                aria-label={t('login.login_aria')}
                 disabled={logInLoading}
               >
                 {logInLoading ? <CircularProgress size={24} sx={{ color: '#fff' }} /> : <CornerDownLeft size={26} strokeWidth={2.2} />}

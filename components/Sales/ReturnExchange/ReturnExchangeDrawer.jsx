@@ -91,7 +91,7 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
       {!isOpenChild ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
           <Box className={classes.drawerHeader}>
-            <Typography className={classes.drawerTitle}>{t('sales') || 'Продажи'}</Typography>
+            <Typography className={classes.drawerTitle}>{t('sales')}</Typography>
             <button type='button' className={classes.closeButton} onClick={() => setOpen(false)}>
               <X size={20} />
             </button>
@@ -101,7 +101,7 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
             <InputSearch
               fullWidth
               uncontrolled
-              placeholder={'Поиск: ID'}
+              placeholder={t('pos.search_by_id_placeholder')}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   height: '40px !important',
@@ -118,7 +118,7 @@ function ReturnExchangeDrawer({ open, setOpen, cashBoxDetails }) {
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', px: '24px', pb: '16px' }}>
             <ListWithPagination
               isFlex={true}
-              emptyText='Продажи за сегодня и вчера не найдены'
+              emptyText={t('pos.no_sales_today_yesterday')}
               limitQuery='returnLimit'
               request={(filter) => requests.getAllSales(filter)}
               customFilter={returnExchangeListFilter}

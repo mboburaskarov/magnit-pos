@@ -8,6 +8,7 @@ import localeData from 'dayjs/plugin/localeData'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import * as qs from 'qs'
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ArrowDown from '../../../src/assets/icons/ArrowDown'
 import { useQueryParams } from '../../../src/hooks/useQueryParams'
@@ -21,30 +22,30 @@ dayjs.extend(isSameOrBefore)
 dayjs.extend(weekOfYear)
 dayjs.extend(localeData)
 dayjs.locale('ru')
-const customDateRanges = () => [
+const customDateRanges = (t) => [
   {
     id: 'yesterday',
-    label: 'Вчера',
+    label: t('date_range.yesterday'),
     values: [dayjs().subtract(1, 'day').format('DD.MM.YYYY'), dayjs().subtract(1, 'day').format('DD.MM.YYYY')],
   },
   {
     id: 'today',
-    label: 'Сегодня',
+    label: t('date_range.today'),
     values: [dayjs().format('DD.MM.YYYY'), dayjs().format('DD.MM.YYYY')],
   },
   {
     id: 'week',
-    label: 'На этой неделе',
+    label: t('date_range.this_week'),
     values: [dayjs().startOf('week').format('DD.MM.YYYY'), dayjs().endOf('week').format('DD.MM.YYYY')],
   },
   {
     id: 'month',
-    label: 'Это месяц',
+    label: t('date_range.this_month'),
     values: [dayjs().startOf('month').format('DD.MM.YYYY'), dayjs().format('DD.MM.YYYY')],
   },
   {
     id: 'year',
-    label: 'В этом году',
+    label: t('date_range.this_year'),
     values: [dayjs().startOf('year').format('DD.MM.YYYY'), dayjs().format('DD.MM.YYYY')],
   },
 ]
@@ -66,6 +67,7 @@ export default function DateRangeInputWithoutSelct({
     enteredTo: today,
     month: tomorrow,
   }
+  const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
   const { values } = useQueryParams()
@@ -80,16 +82,16 @@ export default function DateRangeInputWithoutSelct({
         to: dayjs(values?.end_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.end_date, 'YYYY-MM-DD').toDate() : today,
         enteredTo: dayjs(values?.end_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.end_date, 'YYYY-MM-DD').toDate() : today,
       })
-      setCustomDateRangeSelected(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
-      setselectedId(customDateRanges().find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today')
+      setCustomDateRangeSelected(getLabelForDateRange(values?.start_date, values?.end_date) || t('date_range.today'))
+      setselectedId(customDateRanges(t).find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today')
     } else if (values?.start_date) {
       setDateState({
         from: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
         to: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
         enteredTo: dayjs(values?.start_date, 'YYYY-MM-DD').isValid() ? dayjs(values?.start_date, 'YYYY-MM-DD').toDate() : today,
       })
-      setCustomDateRangeSelected(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
-      setselectedId(customDateRanges().find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today')
+      setCustomDateRangeSelected(getLabelForDateRange(values?.start_date, values?.end_date) || t('date_range.today'))
+      setselectedId(customDateRanges(t).find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today')
     }
   }, [values?.start_date, values?.end_date])
 
@@ -144,9 +146,9 @@ export default function DateRangeInputWithoutSelct({
     return `${strtDate.charAt(0).toUpperCase() + strtDate.slice(1)} - ${end_Date.charAt(0).toUpperCase() + end_Date.slice(1)}`
   }
 
-  const [customDateRangeSelected, setCustomDateRangeSelected] = useState(getLabelForDateRange(values?.start_date, values?.end_date) || 'Сегодня')
+  const [customDateRangeSelected, setCustomDateRangeSelected] = useState(getLabelForDateRange(values?.start_date, values?.end_date) || t('date_range.today'))
   const [selectedId, setselectedId] = useState(
-    customDateRanges().find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today'
+    customDateRanges(t).find((el) => el.label == getLabelForDateRange(values?.start_date, values?.end_date))?.id || 'today'
   )
   return (
     <Box minWidth={'190px'}>
@@ -169,11 +171,11 @@ export default function DateRangeInputWithoutSelct({
               '& > span': { lineHeight: '19px', color: 'gray.600', fontWeight: 600, ml: 1, mr: '2px !important' },
             }}
           >
-            <p>{customDateRangeSelected || 'Выберите дату'}</p>
+            <p>{customDateRangeSelected || t('date_range.select_date')}</p>
           </Box>
         }
         popperContentProps={{
-          customDateRanges: customDateRanges(),
+          customDateRanges: customDateRanges(t),
           onCustomRangeSelect: (name) => {
             setselectedId(name)
           },

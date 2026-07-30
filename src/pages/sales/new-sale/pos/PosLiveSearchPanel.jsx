@@ -40,13 +40,13 @@ export default function PosLiveSearchPanel({
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Search size={16} className='search-icon-dimmed' />
           <span className='pos-live-search-title'>
-            {t?.('pos.search_title') || 'Результаты поиска'}
+            {t?.('pos.search_title')}
           </span>
           <span className='pos-live-search-count-badge'>
-            {t?.('pos.product_select.found', { count: products.length }) || `Найдено: ${products.length}`}
+            {t?.('pos.product_select.found', { count: products.length })}
           </span>
         </div>
-        <button type='button' className='pos-live-search-close' onClick={onClose} title={t?.('pos.cancel') || 'Close'}>
+        <button type='button' className='pos-live-search-close' onClick={onClose} title={t?.('pos.cancel')}>
           <X size={18} />
         </button>
       </div>
@@ -72,13 +72,13 @@ export default function PosLiveSearchPanel({
                         {product.barcode && <span className='meta-barcode'>{product.barcode}</span>}
                         {product.barcode && <span className='meta-dot'>·</span>}
                         <span className='meta-stock'>
-                          {t?.('leftover') || 'остаток'}: {product.pack_quantity ?? 0} {t?.('pos.unit.pcs') || 'шт'}
+                          {t?.('leftover')}: {product.pack_quantity ?? 0} {t?.('pos.unit.pcs')}
                         </span>
                       </div>
                     </div>
                     <div className='pos-live-search-item-right'>
                       <div className='pos-live-search-item-price'>
-                        {thousandDivider(product.retail_price)} <span className='price-currency'>{t?.('pos.currency_short') || 'UZS'}</span>
+                        {thousandDivider(product.retail_price)} <span className='price-currency'>{t?.('pos.currency_short')}</span>
                       </div>
                     </div>
                   </div>
@@ -90,14 +90,14 @@ export default function PosLiveSearchPanel({
               !query || !query.trim() ? (
                 <div className='pos-live-search-empty'>
                   <div className='empty-emoji'>🔍</div>
-                  <div className='empty-title'>{t?.('pos.search_instructions') || 'Поиск товаров'}</div>
-                  <div className='empty-desc'>{t?.('pos.search_instructions_desc') || 'Введите название или штрих-код'}</div>
+                  <div className='empty-title'>{t?.('pos.search_instructions')}</div>
+                  <div className='empty-desc'>{t?.('pos.search_instructions_desc')}</div>
                 </div>
               ) : (
                 <div className='pos-live-search-empty'>
                   <div className='empty-emoji'>🔍</div>
-                  <div className='empty-title'>{t?.('product_not_found') || 'Товар не найден'}</div>
-                  <div className='empty-desc'>Проверьте название или штрих-код</div>
+                  <div className='empty-title'>{t?.('product_not_found')}</div>
+                  <div className='empty-desc'>{t?.('pos.product_not_found_desc')}</div>
                 </div>
               )
             )
@@ -108,7 +108,7 @@ export default function PosLiveSearchPanel({
             <div className='pos-live-search-loading-overlay'>
               <div className='spinner'></div>
               <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--pos-text-secondary)' }}>
-                {t?.('pos.loading') || 'Загрузка...'}
+                {t?.('pos.loading')}
               </span>
             </div>
           )}
@@ -118,40 +118,40 @@ export default function PosLiveSearchPanel({
         <div className='pos-live-search-preview-column'>
           {previewProduct ? (
             <div className='pos-live-search-preview-card'>
-              <div className='preview-label-header'>{t?.('pos.selected_item') || 'Детали товара'}</div>
+              <div className='preview-label-header'>{t?.('pos.selected_item')}</div>
               <div className='preview-name-title'>{previewProduct.name}</div>
-              
+
               <div className='preview-details-list'>
                 <div className='preview-details-row'>
-                  <span className='detail-name'>{t?.('table_columns.barcode') || 'Штрих-код'}:</span>
+                  <span className='detail-name'>{t?.('table_columns.barcode')}:</span>
                   <span className='detail-val monospace'>{previewProduct.barcode || '—'}</span>
                 </div>
-                
+
                 <div className='preview-details-row'>
-                  <span className='detail-name'>{t?.('price') || 'Цена'}:</span>
+                  <span className='detail-name'>{t?.('price')}:</span>
                   <span className='detail-val preview-price-highlight'>
-                    {thousandDivider(previewProduct.retail_price)} {t?.('pos.currency_short') || 'UZS'}
+                    {thousandDivider(previewProduct.retail_price)} {t?.('pos.currency_short')}
                   </span>
                 </div>
 
                 <div className='preview-details-row'>
-                  <span className='detail-name'>{t?.('leftover') || 'Остаток'}:</span>
+                  <span className='detail-name'>{t?.('leftover')}:</span>
                   <span className='detail-val'>
-                    {previewProduct.pack_quantity ?? 0} {t?.('pos.unit.pcs') || 'шт'}
+                    {previewProduct.pack_quantity ?? 0} {t?.('pos.unit.pcs')}
                   </span>
                 </div>
 
                 <div className='preview-details-row'>
-                  <span className='detail-name'>{t?.('table_columns.type') || 'Тип'}:</span>
+                  <span className='detail-name'>{t?.('table_columns.type')}:</span>
                   <span className='detail-val'>
-                    {previewProduct.unit_per_pack > 1 ? (t?.('pos.unit.pack') || 'уп') : (t?.('pos.unit.pcs') || 'шт')}
+                    {previewProduct.unit_per_pack > 1 ? t?.('pos.unit.pack') : t?.('pos.unit.pcs')}
                   </span>
                 </div>
               </div>
             </div>
           ) : (
             <div className='pos-live-search-preview-placeholder'>
-              <span>{t?.('pos.selected_item_placeholder') || 'Детали выбранного товара отобразятся здесь'}</span>
+              <span>{t?.('pos.selected_item_placeholder')}</span>
             </div>
           )}
         </div>
