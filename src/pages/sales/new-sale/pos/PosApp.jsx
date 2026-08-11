@@ -413,7 +413,7 @@ export default function PosApp() {
       if (storeId && device_id) {
         const checkRes = await requests.checkSaleExist({ store_id: storeId, device_id })
         const isOpen = get(checkRes, 'data.data.is_open', false)
-        openCashboxId = get(checkRes, 'data.data.cash_box_id')
+        openCashboxId = get(checkRes, 'data.data.cash_box_operation_id')
         if (!isOpen) {
           error(t('pos.cashbox_closed_redirect') || 'Kassa yopilgan, iltimos kassani oching')
           navigate('/sales/create')
