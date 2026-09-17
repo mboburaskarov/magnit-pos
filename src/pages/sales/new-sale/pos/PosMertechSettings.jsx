@@ -1,132 +1,73 @@
-import { useState } from 'react'
-import { QrCode, Wifi, Eraser, Play } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { QrCode, RefreshCw, Eraser, Play } from 'lucide-react'
 import { success, error } from '@utils/toast'
-import {
-  getMertechSettings,
-  saveMertechSettings,
-  mertechTestConnection,
-  mertechCommand,
-} from '@utils/mertechDisplay'
+import { mertechDisplayInfo, mertechTestQr, mertechTestClear } from '@utils/mertechDisplay'
 
 const TEST_QR_VALUE = 'https://magnit.uz'
 
-const labelStyle = { fontSize: '13px', fontWeight: '700', color: '#374151', marginBottom: '6px', display: 'block' }
-const inputStyle = { width: '100%', height: '48px', padding: '0 16px', borderRadius: '8px', border: '1px solid #d5d7e2', fontSize: '15px' }
-
-function SwitchRow({ label, checked, onChange }) {
-  return (
-    <div
-      onClick={() => onChange(!checked)}
-      style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', padding: '4px 0' }}
-    >
-      <span style={{ fontSize: '13px', fontWeight: '700', color: '#374151' }}>{label}</span>
-      <span
-        style={{
-          width: '44px',
-          height: '26px',
-          borderRadius: '13px',
-          backgroundColor: checked ? '#1e9e52' : '#d5d7e2',
-          position: 'relative',
-          flexShrink: 0,
-          transition: 'background-color 0.2s',
-        }}
-      >
-        <span
-          style={{
-            position: 'absolute',
-            top: '3px',
-            left: checked ? '21px' : '3px',
-            width: '20px',
-            height: '20px',
-            borderRadius: '50%',
-            backgroundColor: '#ffffff',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-            transition: 'left 0.2s',
-          }}
-        />
-      </span>
-    </div>
-  )
-}
-
-function NumberField({ label, value, onChange, placeholder }) {
-  return (
-    <div style={{ flex: 1 }}>
-      <label className='form-label-touch' style={labelStyle}>{label}</label>
-      <input
-        type='number'
-        className='pos-cashier-search-input'
-        style={inputStyle}
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </div>
-  )
+const buttonStyle = {
+  flex: 1,
+  height: '48px',
+  borderRadius: '8px',
+  border: '1px solid #111217',
+  color: '#111217',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  fontSize: '14px',
+  fontWeight: '600',
 }
 
 /**
- * Customer-facing Mertech SBP QR display configuration, rendered as a section
- * of the printer/devices settings modal. Settings persist in localStorage
- * (see @utils/mertechDisplay) and are read by the Munis payment modal.
+ * Customer-facing Mertech SBP QR display — status panel in the devices settings
+ * modal.
+ *
+ * There is nothing to configure here any more. The local device agent finds the
+ * display by its USB vendor id and the POS mirrors the Munis QR onto it
+ * automatically, so this section only answers "is it plugged in and working?"
+ * — which is the question worth asking while setting a cashbox up.
  */
 export default function PosMertechSettings({ t }) {
-  const [draft, setDraft] = useState(getMertechSettings)
-  const [isTesting, setIsTesting] = useState(false)
+  const [info, setInfo] = useState(null) // agent's report, or null when unreachable
+  const [isChecking, setIsChecking] = useState(true)
   const [isSendingQr, setIsSendingQr] = useState(false)
   const [isClearing, setIsClearing] = useState(false)
-  const [testResult, setTestResult] = useState(null) // { ok, version, opaque } | { ok: false }
 
-  const set = (patch) => setDraft((d) => ({ ...d, ...patch }))
-
-  // Test buttons use the unsaved form values so the cashier can verify before saving
-  const draftOverrides = () => ({
-    ...draft,
-    timeoutMs: Number(draft.timeoutMs) || 3000,
-    enabled: true,
-  })
-
-  const handleTestConnection = async () => {
-    setIsTesting(true)
-    setTestResult(null)
-    const res = await mertechTestConnection(draftOverrides())
-    setTestResult(res)
-    setIsTesting(false)
+  const refresh = async () => {
+    setIsChecking(true)
+    setInfo(await mertechDisplayInfo())
+    setIsChecking(false)
   }
+
+  useEffect(() => {
+    refresh()
+  }, [])
 
   const handleTestQr = async () => {
     setIsSendingQr(true)
-    try {
-      await mertechCommand('/showInfoQR', { infoQR: TEST_QR_VALUE }, draftOverrides())
-      success(t('pos.mertech.qr_sent'))
-    } catch (e) {
-      error(t('pos.mertech.command_failed'))
-    } finally {
-      setIsSendingQr(false)
-    }
+    const res = await mertechTestQr(TEST_QR_VALUE)
+    if (res.ok) success(t('pos.mertech.qr_sent'))
+    else error(t('pos.mertech.command_failed'))
+    setIsSendingQr(false)
   }
 
   const handleClearDisplay = async () => {
     setIsClearing(true)
-    try {
-      await mertechCommand('/clearScreen', {}, draftOverrides())
-      success(t('pos.mertech.cleared'))
-    } catch (e) {
-      error(t('pos.mertech.command_failed'))
-    } finally {
-      setIsClearing(false)
-    }
+    const res = await mertechTestClear()
+    if (res.ok) success(t('pos.mertech.cleared'))
+    else error(t('pos.mertech.command_failed'))
+    setIsClearing(false)
   }
 
-  const handleSave = () => {
-    saveMertechSettings({
-      ...draft,
-      timeoutMs: Number(draft.timeoutMs) || 3000,
-      paidStatusCode: Number(draft.paidStatusCode) || 0,
-      clearAfterPaidMs: Math.max(0, Number(draft.clearAfterPaidMs) || 0),
-    })
-    success(t('pos.mertech.saved'))
-  }
+  const detected = Boolean(info?.detected)
+  const statusText = isChecking
+    ? t('pos.mertech.testing')
+    : !info
+      ? t('pos.mertech.agent_unreachable')
+      : detected
+        ? t('pos.mertech.detected', { port: info.port })
+        : t('pos.mertech.not_detected')
 
   return (
     <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -134,7 +75,10 @@ export default function PosMertechSettings({ t }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <div
           className='touch-modal-avatar'
-          style={{ backgroundColor: draft.enabled ? 'rgba(30, 158, 82, 0.1)' : 'rgba(0, 0, 0, 0.05)', color: draft.enabled ? '#1e9e52' : '#6f6f6f' }}
+          style={{
+            backgroundColor: detected ? 'rgba(30, 158, 82, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+            color: detected ? '#1e9e52' : '#6f6f6f',
+          }}
         >
           <QrCode size={20} />
         </div>
@@ -148,125 +92,37 @@ export default function PosMertechSettings({ t }) {
         </div>
       </div>
 
-      <SwitchRow
-        label={t('pos.mertech.enable')}
-        checked={!!draft.enabled}
-        onChange={(v) => set({ enabled: v })}
-      />
-
-      <div>
-        <label className='form-label-touch' style={labelStyle}>
-          {t('pos.mertech.driver_url')}
-        </label>
-        <input
-          type='text'
-          className='pos-cashier-search-input'
-          style={inputStyle}
-          placeholder='http://localhost:1234'
-          value={draft.baseUrl}
-          onChange={(e) => set({ baseUrl: e.target.value })}
-        />
+      {/* Detection status */}
+      <div
+        style={{
+          padding: '10px 14px',
+          borderRadius: '8px',
+          fontSize: '13px',
+          fontWeight: '600',
+          backgroundColor: isChecking ? '#f4f4f5' : detected ? '#e9f8ef' : '#fdecec',
+          color: isChecking ? '#6f6f6f' : detected ? '#1e9e52' : '#e23a32',
+        }}
+      >
+        {statusText}
       </div>
 
-      {/* Connection test result */}
-      {testResult && (
-        <div
-          style={{
-            padding: '10px 14px',
-            borderRadius: '8px',
-            fontSize: '13px',
-            fontWeight: '600',
-            backgroundColor: testResult.ok ? (testResult.opaque ? '#fff7e6' : '#e9f8ef') : '#fdecec',
-            color: testResult.ok ? (testResult.opaque ? '#b45309' : '#1e9e52') : '#e23a32',
-          }}
-        >
-          {!testResult.ok
-            ? t('pos.mertech.connect_failed')
-            : testResult.opaque
-              ? t('pos.mertech.connected_opaque')
-              : testResult.version
-                ? t('pos.mertech.connected_version', { version: testResult.version })
-                : t('pos.mertech.connected')}
-        </div>
-      )}
+      <div style={{ fontSize: '12px', color: '#6f6f6f' }}>{t('pos.mertech.auto_hint')}</div>
 
-      {/* Test actions */}
+      {/* Actions */}
       <div style={{ display: 'flex', gap: '12px' }}>
-        <button
-          type='button'
-          className='btn-secondary-touch'
-          style={{ flex: 1, height: '48px', borderRadius: '8px', border: '1px solid #111217', color: '#111217', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '14px', fontWeight: '600' }}
-          onClick={handleTestConnection}
-          disabled={isTesting}
-        >
-          <Wifi size={16} />
-          {isTesting
-            ? t('pos.mertech.testing')
-            : t('pos.mertech.test_connection')}
+        <button type='button' className='btn-secondary-touch' style={buttonStyle} onClick={refresh} disabled={isChecking}>
+          <RefreshCw size={16} />
+          {isChecking ? t('pos.mertech.testing') : t('pos.mertech.check')}
         </button>
-        <button
-          type='button'
-          className='btn-secondary-touch'
-          style={{ flex: 1, height: '48px', borderRadius: '8px', border: '1px solid #111217', color: '#111217', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '14px', fontWeight: '600' }}
-          onClick={handleTestQr}
-          disabled={isSendingQr}
-        >
+        <button type='button' className='btn-secondary-touch' style={buttonStyle} onClick={handleTestQr} disabled={isSendingQr}>
           <Play size={16} />
           {t('pos.mertech.test_qr')}
         </button>
-        <button
-          type='button'
-          className='btn-secondary-touch'
-          style={{ flex: 1, height: '48px', borderRadius: '8px', border: '1px solid #111217', color: '#111217', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '14px', fontWeight: '600' }}
-          onClick={handleClearDisplay}
-          disabled={isClearing}
-        >
+        <button type='button' className='btn-secondary-touch' style={buttonStyle} onClick={handleClearDisplay} disabled={isClearing}>
           <Eraser size={16} />
           {t('pos.mertech.clear_display')}
         </button>
       </div>
-
-      {/* Behaviour options */}
-      <SwitchRow
-        label={t('pos.mertech.show_status_option')}
-        checked={!!draft.showStatusOnDevice}
-        onChange={(v) => set({ showStatusOnDevice: v })}
-      />
-      <SwitchRow
-        label={t('pos.mertech.cors_fallback')}
-        checked={!!draft.corsFallback}
-        onChange={(v) => set({ corsFallback: v })}
-      />
-
-      <div style={{ display: 'flex', gap: '12px' }}>
-        <NumberField
-          label={t('pos.mertech.paid_status_code')}
-          value={draft.paidStatusCode}
-          onChange={(v) => set({ paidStatusCode: v })}
-          placeholder='3'
-        />
-        <NumberField
-          label={t('pos.mertech.clear_after_paid')}
-          value={draft.clearAfterPaidMs}
-          onChange={(v) => set({ clearAfterPaidMs: v })}
-          placeholder='3000'
-        />
-        <NumberField
-          label={t('pos.mertech.timeout')}
-          value={draft.timeoutMs}
-          onChange={(v) => set({ timeoutMs: v })}
-          placeholder='3000'
-        />
-      </div>
-
-      <button
-        type='button'
-        className='btn-blue-touch'
-        style={{ width: '100%', height: '52px', borderRadius: '8px', backgroundColor: '#111217', color: '#ffffff', border: 'none', fontWeight: '700', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-        onClick={handleSave}
-      >
-        {t('pos.mertech.save')}
-      </button>
     </div>
   )
 }

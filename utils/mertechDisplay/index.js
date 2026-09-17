@@ -1,127 +1,146 @@
 import axios from 'axios'
 
 /**
- * Mertech SBP QR display driver client.
+ * Customer-facing Mertech SBP QR display.
  *
- * The Mertech driver (https://docs.mertech.ru/sbp/protocol/REST_API.html) runs
- * on the cashbox machine as a service, talks to the customer-facing QR display
- * over Serial/BLE and exposes a local REST API (default http://localhost:1234).
+ * The POS mirrors whatever QR is on the cashier's screen onto the customer's
+ * display, shows a tick when the payment lands, and blanks it again. That is
+ * the whole contract — there is nothing to configure.
  *
- * The POS only mirrors the Munis payment QR onto that display:
- *   POST /showInfoQR      { infoQR }   — render an arbitrary QR string
- *   POST /displayStatus   { status }   — show a transaction status screen
- *   POST /clearScreen                  — clear the display
- *   GET  /version                      — health check
+ * Transport is the local magnit-device-agent, which owns the display's serial
+ * port the same way it owns the receipt printer:
  *
- * All display commands are best effort: a sale must never depend on the
- * device being reachable.
+ *   POST /qr-display/show   { text }   — render a QR
+ *   POST /qr-display/paid              — render the payment-accepted tick
+ *   POST /qr-display/clear             — blank the display
+ *   GET  /qr-display/info              — which serial port was detected
+ *
+ * The agent auto-detects the display by USB vendor id, so a cashbox with the
+ * hardware plugged in needs no setup and one without it simply never answers.
+ * (This used to talk to Mertech's own driver on localhost:1234, which had to be
+ * installed per machine and only exists for Windows and Linux.)
+ *
+ * ── Every call here is best effort ──
+ * These functions never throw, never reject and are never awaited by the sale
+ * flow. A missing, unplugged or broken display must not slow down or interrupt
+ * a payment, so failures are swallowed on purpose and only logged in dev.
  */
 
-const SETTINGS_KEY = 'mertech_display_settings'
+// Same pair the POS already probes for the printer agent (see PosApp.jsx).
+const AGENT_URLS = ['http://localhost:7788', 'http://127.0.0.1:7777']
+const TIMEOUT_MS = 2500
 
-export const MERTECH_DEFAULT_SETTINGS = {
-  enabled: false, // master switch: mirror Munis QR to the customer display
-  baseUrl: 'http://localhost:1234',
-  timeoutMs: 3000,
-  showStatusOnDevice: true, // show the "paid" status screen after payment
-  // /displayStatus codes are not enumerated in the driver docs; 3 matches the
-  // documented example, so it is kept configurable per driver version.
-  paidStatusCode: 3,
-  clearAfterPaidMs: 3000, // how long the "paid" status stays before clearing
-  corsFallback: true, // resend as opaque (no-cors) if the driver has no CORS headers
+// Remembers which listener answered last, so the common case is one request
+// instead of a failed 7788 followed by a 7777 retry on every command.
+let preferredUrl = null
+
+function orderedUrls() {
+  if (!preferredUrl) return AGENT_URLS
+  return [preferredUrl, ...AGENT_URLS.filter((u) => u !== preferredUrl)]
 }
 
-export function getMertechSettings() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || 'null')
-    return { ...MERTECH_DEFAULT_SETTINGS, ...(saved || {}) }
-  } catch {
-    return { ...MERTECH_DEFAULT_SETTINGS }
+function logFailure(what, e) {
+  if (import.meta.env.DEV) {
+    // eslint-disable-next-line no-console
+    console.debug(`[qr-display] ${what} failed (ignored):`, e?.message || e)
   }
 }
 
-export function saveMertechSettings(patch) {
-  const merged = { ...getMertechSettings(), ...(patch || {}) }
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(merged))
-  return merged
-}
-
-function commandUrl(settings, path) {
-  const base = String(settings.baseUrl || MERTECH_DEFAULT_SETTINGS.baseUrl).replace(/\/+$/, '')
-  return `${base}${path}`
-}
-
-async function postCommand(settings, path, body) {
-  const url = commandUrl(settings, path)
-  try {
-    const res = await axios.post(url, body ?? {}, { timeout: settings.timeoutMs })
-    return res.data
-  } catch (e) {
-    // No e.response = the browser never got a readable answer. A driver without
-    // CORS headers is indistinguishable from a dead one here, and display
-    // commands don't need a readable response — resend opaque (text/plain body
-    // avoids the preflight the driver can't answer).
-    if (settings.corsFallback && !e.response) {
-      await fetch(url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(body ?? {}) })
-      return null
+/** Try each agent URL in turn. Resolves with the response, or throws if none answered. */
+async function post(path, body) {
+  let lastError
+  for (const base of orderedUrls()) {
+    try {
+      const res = await axios.post(`${base}${path}`, body ?? {}, { timeout: TIMEOUT_MS })
+      preferredUrl = base
+      return res.data
+    } catch (e) {
+      lastError = e
     }
-    throw e
   }
+  throw lastError
 }
 
-/** Send a raw driver command with the saved settings (optionally overridden, e.g. an unsaved settings form). Throws on failure. */
-export function mertechCommand(path, body, overrides) {
-  const settings = { ...getMertechSettings(), ...(overrides || {}) }
-  return postCommand(settings, path, body)
-}
-
-/** @returns {ok, version, opaque?, error?} — opaque means the driver responded but CORS hides the body. */
-export async function mertechTestConnection(overrides) {
-  const settings = { ...getMertechSettings(), ...(overrides || {}) }
-  const url = commandUrl(settings, '/version')
+/**
+ * Dispatch a display command and forget about it.
+ *
+ * The try/catch is not redundant with the .catch(): post() is async so it
+ * rejects rather than throws, but the argument expressions around it are
+ * evaluated synchronously, and these run inside a React effect on the payment
+ * path. Anything that escaped here would break the payment modal, so nothing
+ * is allowed to escape.
+ */
+function fireAndForget(path, body, what) {
   try {
-    const res = await axios.get(url, { timeout: settings.timeoutMs })
-    return { ok: true, version: res?.data?.version || '' }
+    post(path, body).catch((e) => logFailure(what, e))
   } catch (e) {
-    if (settings.corsFallback && !e.response) {
-      try {
-        await fetch(url, { mode: 'no-cors' })
-        return { ok: true, version: '', opaque: true }
-      } catch {
-        // fall through to the failure result
-      }
-    }
-    return { ok: false, error: e?.message || 'unreachable' }
+    logFailure(what, e)
   }
 }
 
-/** Mirror the Munis payment QR onto the customer display. @returns whether a command was dispatched. */
+/**
+ * Mirror a QR onto the customer display. Fire-and-forget by design: returns
+ * immediately and swallows every failure.
+ */
 export function mertechShowQrOnDevice(qr) {
-  const settings = getMertechSettings()
-  if (!qr || !settings.enabled) return false
-  postCommand(settings, '/showInfoQR', { infoQR: String(qr) }).catch(() => {})
-  return true
+  if (!qr) return
+  fireAndForget('/qr-display/show', { text: String(qr) }, 'show')
 }
 
-/** Payment landed: show the "paid" status screen, then clear after the configured delay. */
-export function mertechShowPaymentResult() {
-  const settings = getMertechSettings()
-  if (!settings.enabled) return false
-  const clear = () => postCommand(settings, '/clearScreen', {}).catch(() => {})
-  if (!settings.showStatusOnDevice) {
-    clear()
-    return true
-  }
-  postCommand(settings, '/displayStatus', { status: Number(settings.paidStatusCode) })
-    .catch(() => {})
-    .finally(() => setTimeout(clear, Math.max(0, Number(settings.clearAfterPaidMs) || 0)))
-  return true
-}
-
-/** Clear the customer display (payment cancelled / modal closed). */
+/** Blank the customer display. Fire-and-forget, same as above. */
 export function mertechClearScreen() {
-  const settings = getMertechSettings()
-  if (!settings.enabled) return false
-  postCommand(settings, '/clearScreen', {}).catch(() => {})
-  return true
+  fireAndForget('/qr-display/clear', {}, 'clear')
+}
+
+/**
+ * Show the payment-accepted tick on the customer display. Fire-and-forget: the
+ * customer has already paid by the time this runs, so a display that cannot be
+ * reached changes nothing about the sale.
+ *
+ * The device holds the tick until something else is sent, so the caller decides
+ * how long it stays up.
+ */
+export function mertechShowPaid() {
+  fireAndForget('/qr-display/paid', {}, 'paid')
+}
+
+/**
+ * Diagnostics for the devices settings screen — the one place that *does* want
+ * to see the outcome. Resolves to the agent's report, or null if unreachable.
+ */
+export async function mertechDisplayInfo() {
+  for (const base of orderedUrls()) {
+    try {
+      const { data } = await axios.get(`${base}/qr-display/info`, { timeout: TIMEOUT_MS })
+      preferredUrl = base
+      return data
+    } catch (e) {
+      logFailure('info', e)
+    }
+  }
+  return null
+}
+
+/**
+ * Settings-screen test button. Unlike the mirroring calls this one is awaited
+ * and reports its outcome, so the technician setting a cashbox up can see
+ * whether the display actually answered.
+ */
+export async function mertechTestQr(text) {
+  try {
+    const data = await post('/qr-display/show', { text: String(text) })
+    return { ok: Boolean(data?.ok), message: data?.message || '' }
+  } catch (e) {
+    return { ok: false, message: e?.message || 'agent unreachable' }
+  }
+}
+
+/** Settings-screen clear button — awaited counterpart of mertechClearScreen. */
+export async function mertechTestClear() {
+  try {
+    const data = await post('/qr-display/clear', {})
+    return { ok: Boolean(data?.ok), message: data?.message || '' }
+  } catch (e) {
+    return { ok: false, message: e?.message || 'agent unreachable' }
+  }
 }
