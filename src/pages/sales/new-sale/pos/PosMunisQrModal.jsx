@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
+import { CheckCircle2 } from 'lucide-react'
 import { get } from 'lodash'
 import { requests } from '@utils/requests'
 import thousandDivider from '@utils/thousandDivider'
-import { mertechShowQrOnDevice, mertechShowPaymentResult, mertechClearScreen } from '@utils/mertechDisplay'
+import { mertechShowQrOnDevice, mertechShowPaid, mertechClearScreen } from '@utils/mertechDisplay'
 import './PosLayout.css'
 
 const POLL_INTERVAL_MS = 3000
+// How long the paid tick stays on the cashier's screen before the sale is
+// finalized, and on the customer's display before it is blanked.
+const PAID_HOLD_MS = 1200
+const PAID_DEVICE_MS = 4000
 
 /**
  * PosMunisQrModal
@@ -25,7 +30,16 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
   const [errMsg, setErrMsg] = useState('')
   const [retryNonce, setRetryNonce] = useState(0)
   const paidHandledRef = useRef(false)
-  const deviceQrShownRef = useRef(false) // QR is currently on the Mertech customer display
+  const deviceShowingRef = useRef('none') // 'none' | 'qr' | 'paid' — what the customer display holds
+  const deviceClearTimerRef = useRef(null)
+  const onPaidRef = useRef(onPaid)
+
+  // Track the latest onPaid without making it an effect dependency: PosApp
+  // redefines it on every render, and the paid effect below must not be torn
+  // down and restarted in the middle of its hold.
+  useEffect(() => {
+    onPaidRef.current = onPaid
+  })
 
   // Generate the dynamic QR when the modal opens (or on retry)
   useEffect(() => {
@@ -105,39 +119,88 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
     }
   }, [open, status, billNumber])
 
-  // Mirror the QR onto the Mertech customer display (best effort — the sale
-  // never depends on the device; see @utils/mertechDisplay).
-  useEffect(() => {
-    if (!open || status !== 'waiting' || !qr) return
-    deviceQrShownRef.current = mertechShowQrOnDevice(qr)
-  }, [open, status, qr])
+  // The Mertech customer display mirrors this modal: the QR while the modal
+  // shows one, then the paid tick when the payment lands, then blank.
+  //
+  // Best effort throughout. These calls are fire-and-forget and never awaited,
+  // so a missing or broken display cannot delay or interrupt the payment (see
+  // @utils/mertechDisplay).
+  const qrOnScreen = open && status === 'waiting' && Boolean(qr)
+  const deviceIntent = !open ? 'blank' : status === 'paid' ? 'paid' : qrOnScreen ? 'qr' : 'blank'
 
-  // Once paid, finalize the sale (server re-verifies). Guard against double-calls.
   useEffect(() => {
-    if (open && status === 'paid' && !paidHandledRef.current) {
-      paidHandledRef.current = true
-      if (deviceQrShownRef.current) {
-        deviceQrShownRef.current = false
-        mertechShowPaymentResult()
+    const cancelClearTimer = () => {
+      if (deviceClearTimerRef.current) {
+        clearTimeout(deviceClearTimerRef.current)
+        deviceClearTimerRef.current = null
       }
-      onPaid?.()
     }
-  }, [open, status, onPaid])
 
-  // Closed/cancelled while the QR is still on the device — clear it
-  useEffect(() => {
-    if (open || !deviceQrShownRef.current) return
-    deviceQrShownRef.current = false
-    mertechClearScreen()
-  }, [open])
+    if (deviceIntent === 'qr') {
+      cancelClearTimer()
+      deviceShowingRef.current = 'qr'
+      mertechShowQrOnDevice(qr)
+      return
+    }
 
-  // Same on unmount
+    if (deviceIntent === 'paid') {
+      if (deviceShowingRef.current === 'paid') return // already sent for this sale
+      cancelClearTimer()
+      deviceShowingRef.current = 'paid'
+      mertechShowPaid()
+      // The device holds the tick until it is told otherwise, and this modal
+      // closes well before then — so the blank is scheduled here rather than
+      // driven by the intent going back to 'blank' below.
+      deviceClearTimerRef.current = setTimeout(() => {
+        deviceClearTimerRef.current = null
+        deviceShowingRef.current = 'none'
+        mertechClearScreen()
+      }, PAID_DEVICE_MS)
+      return
+    }
+
+    // Only a QR is blanked eagerly. A tick is left to its own timer, so closing
+    // the modal doesn't wipe the confirmation the customer was just shown.
+    if (deviceShowingRef.current === 'qr') {
+      deviceShowingRef.current = 'none'
+      mertechClearScreen()
+    }
+  }, [deviceIntent, qr])
+
+  // Unmounted with something still on the display (route change, hard close).
   useEffect(
     () => () => {
-      if (deviceQrShownRef.current) mertechClearScreen()
+      if (deviceClearTimerRef.current) clearTimeout(deviceClearTimerRef.current)
+      if (deviceShowingRef.current !== 'none') {
+        deviceShowingRef.current = 'none'
+        mertechClearScreen()
+      }
     },
     [],
   )
+
+  // Once paid, hold the tick on screen for a beat so the cashier actually sees
+  // it, then finalize the sale (server re-verifies). Guard against double-calls.
+  useEffect(() => {
+    if (!open || status !== 'paid' || paidHandledRef.current) return
+    paidHandledRef.current = true
+
+    let fired = false
+    const finalize = () => {
+      if (fired) return
+      fired = true
+      onPaidRef.current?.()
+    }
+
+    // finalize() also runs on cleanup, never just the timer: the customer has
+    // already paid, so finalization must not be skipped because the effect was
+    // torn down early (unmount, or the modal closed from elsewhere).
+    const timer = setTimeout(finalize, PAID_HOLD_MS)
+    return () => {
+      clearTimeout(timer)
+      finalize()
+    }
+  }, [open, status])
 
   if (!open) return null
 
@@ -179,8 +242,18 @@ function PosMunisQrModal({ open, saleId, amount, onPaid, onCancel, t }) {
         )}
 
         {status === 'paid' && (
-          <div className='pos-app-scan-desc' style={{ color: '#1e9e52', fontWeight: 700 }}>
-            ✓ {t('pos.munis.paid')}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 10,
+              padding: '20px 0',
+              color: '#1e9e52',
+            }}
+          >
+            <CheckCircle2 size={72} strokeWidth={2.5} />
+            <div style={{ fontSize: 18, fontWeight: 700 }}>{t('pos.munis.paid')}</div>
           </div>
         )}
 

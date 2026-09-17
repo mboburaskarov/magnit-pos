@@ -7,6 +7,18 @@ const blurActiveBtn = () => {
   setTimeout(() => document.activeElement?.blur(), 0)
 }
 
+// When the sale was created from an online order, the customer already picked a
+// payment method (orders.payment_type). Map that value to the POS payment
+// buttons the cashier is allowed to use — everything else stays disabled.
+// CARD / TERMINAL cover both card networks since the physical terminal decides.
+const ORDER_PAYMENT_ALLOWED = {
+  CASH: ['cash'],
+  CARD: ['uzcard', 'humo'],
+  TERMINAL: ['uzcard', 'humo'],
+  CLICK: ['click'],
+  PAYME: ['payme'],
+}
+
 export default function ActionBar({
   customerId,
   onPrint,
@@ -19,6 +31,7 @@ export default function ActionBar({
   showQuickProducts,
   onToggleQuickProducts,
   showPaymentView,
+  orderPaymentType,
   cashPaymentSelected,
   cardPaymentSelected,
   cardPaymentType,
@@ -41,6 +54,13 @@ export default function ActionBar({
   const isPaymentAmountEnough = totalPaid >= Number(totalAmount) && Number(totalAmount) > 0
   const shouldDisableInactive = isPaymentAmountEnough || selectedPaymentCount >= 2
 
+  // Sale created from an online order → lock the cashier to the method the
+  // customer already chose. Unknown/empty values fail open (no restriction).
+  const allowedOrderMethods = orderPaymentType
+    ? ORDER_PAYMENT_ALLOWED[String(orderPaymentType).toUpperCase()]
+    : null
+  const isMethodBlocked = (method) => Boolean(allowedOrderMethods) && !allowedOrderMethods.includes(method)
+
   if (showPaymentView) {
     return (
       <div className='pos-action-bar-premium payment-methods-action-grid'>
@@ -48,7 +68,7 @@ export default function ActionBar({
           <button
             className={`method-select-btn ${cashPaymentSelected ? 'is-active' : ''}`}
             onClick={(e) => { onSelectCashPayment(); blurActiveBtn() }}
-            disabled={shouldDisableInactive && !cashPaymentSelected}
+            disabled={(shouldDisableInactive && !cashPaymentSelected) || isMethodBlocked('cash')}
             type='button'
           >
             <span style={{ fontSize: 18, marginRight: 6 }}>💵</span>
@@ -57,7 +77,7 @@ export default function ActionBar({
           <button
             className={`method-select-btn ${cardPaymentType === 'uzcard' ? 'is-active' : ''}`}
             onClick={() => { onSelectCardPayment('uzcard'); blurActiveBtn() }}
-            disabled={shouldDisableInactive && cardPaymentType !== 'uzcard'}
+            disabled={(shouldDisableInactive && cardPaymentType !== 'uzcard') || isMethodBlocked('uzcard')}
             type='button'
           >
             <img src="/images/uzcard.png" alt="Uzcard" className="payment-icon" />
@@ -66,7 +86,7 @@ export default function ActionBar({
           <button
             className={`method-select-btn ${cardPaymentType === 'humo' ? 'is-active' : ''}`}
             onClick={() => { onSelectCardPayment('humo'); blurActiveBtn() }}
-            disabled={shouldDisableInactive && cardPaymentType !== 'humo'}
+            disabled={(shouldDisableInactive && cardPaymentType !== 'humo') || isMethodBlocked('humo')}
             type='button'
           >
             <img src="/images/humo.png" alt="Humo" className="payment-icon" />
@@ -75,7 +95,7 @@ export default function ActionBar({
           <button
             className={`method-select-btn ${secondaryPaymentMethod === 'click' ? 'is-active' : ''}`}
             onClick={() => { onSelectSecondaryPayment('click'); blurActiveBtn() }}
-            disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'click') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'click')}
+            disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'click') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'click') || isMethodBlocked('click')}
             type='button'
           >
             <img src="/images/click.png" alt="Click" className="payment-icon" />
@@ -84,7 +104,7 @@ export default function ActionBar({
           <button
             className={`method-select-btn ${secondaryPaymentMethod === 'payme' ? 'is-active' : ''}`}
             onClick={() => { onSelectSecondaryPayment('payme'); blurActiveBtn() }}
-            disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'payme') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'payme')}
+            disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'payme') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'payme') || isMethodBlocked('payme')}
             type='button'
           >
             <img src="/images/payme.png" alt="Payme" className="payment-icon" />
@@ -93,7 +113,7 @@ export default function ActionBar({
           <button
             className={`method-select-btn ${secondaryPaymentMethod === 'uzum' ? 'is-active' : ''}`}
             onClick={() => { onSelectSecondaryPayment('uzum'); blurActiveBtn() }}
-            disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'uzum') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'uzum')}
+            disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'uzum') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'uzum') || isMethodBlocked('uzum')}
             type='button'
           >
             <img src="/uzum.png" alt="Uzum" className="payment-icon" />
@@ -102,7 +122,7 @@ export default function ActionBar({
           <button
             className={`method-select-btn ${secondaryPaymentMethod === 'munis' ? 'is-active' : ''}`}
             onClick={() => { onSelectSecondaryPayment('munis'); blurActiveBtn() }}
-            disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'munis') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'munis')}
+            disabled={(shouldDisableInactive && secondaryPaymentMethod !== 'munis') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'munis') || isMethodBlocked('munis')}
             type='button'
           >
             UzQR
@@ -110,7 +130,7 @@ export default function ActionBar({
           <button
             className={`method-select-btn ${secondaryPaymentMethod === 'loyaltycard' ? 'is-active' : ''}`}
             onClick={() => { onSelectSecondaryPayment('loyaltycard'); blurActiveBtn() }}
-            disabled={!customerId || (shouldDisableInactive && secondaryPaymentMethod !== 'loyaltycard') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'loyaltycard')}
+            disabled={!customerId || (shouldDisableInactive && secondaryPaymentMethod !== 'loyaltycard') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'loyaltycard') || isMethodBlocked('loyaltycard')}
             type='button'
           >
             <CreditCard size={18} className="payment-icon-svg" style={{ marginRight: 6 }} />

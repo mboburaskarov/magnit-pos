@@ -1899,6 +1899,7 @@ export default function PosApp() {
               onToggleQuickProducts={() => { handleCloseLiveSearch(); setShowQuickProducts(!showQuickProducts) }}
               showPaymentView={showPaymentView}
               paymentMethod={paymentMethod}
+              orderPaymentType={get(cashBoxDetails, 'data.data.order_payment_type', '')}
               cashPaymentSelected={cashPaymentSelected}
               cardPaymentSelected={cardPaymentSelected}
               cardPaymentType={cardPaymentType}
