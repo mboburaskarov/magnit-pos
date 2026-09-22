@@ -6,7 +6,7 @@ import { Box, Button, Typography, Dialog } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import hasAccess from '@utils/hasAccess'
 import { requests } from '@utils/requests'
-import { EPOS_STATUS_PAYLOAD, EPOS_TERMINAL_PAYLOAD, getEposTerminalId, isAllowedTerminal } from '@utils/terminalAccess'
+import { EPOS_STATUS_PAYLOAD, EPOS_TERMINAL_PAYLOAD, getEposTerminalId, isAllowedTerminal, isZReportOpenOk } from '@utils/terminalAccess'
 import { error } from '@utils/toast'
 import { get } from 'lodash'
 import { useEffect, useState, useRef, useCallback } from 'react'
@@ -701,7 +701,7 @@ function NewCashRegister() {
 
   const { mutate: openZReport, isLoading: isopenZReport } = useMutation(requests.openZReport, {
     onSuccess: ({ data }) => {
-      if (get(data, 'error', true) == false || get(data, 'message', '').includes('ERROR_ZREPORT_IS_ALREADY_OPEN')) {
+      if (isZReportOpenOk(data)) {
         localStorage.setItem('leftZreportCount', get(data, 'leftZreportCount', 999))
         methods.handleSubmit((data) => onSubmit(data), onError)()
         return

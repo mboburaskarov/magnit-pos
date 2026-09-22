@@ -16,6 +16,8 @@ export default function ProductTable({
   pendingQuantityUpdates = {},
   pendingNewItems = {},
   stornedIds = new Set(),
+  markingMissingById = {},
+  onMarkingClick,
 }) {
   const { t } = useTranslation()
 
@@ -121,10 +123,15 @@ export default function ProductTable({
                   return !isStale && !exists
                 }).length
 
+                // How many DataMatrix codes this line still owes. Surfaced in
+                // the row so a blocked line is visible at a glance and one tap
+                // from its prompt, instead of only showing up at payment.
+                const markingMissing = markingMissingById[item.id] || 0
+
                 return (
                   <tr
                     key={item.id}
-                    className={`pos-table-row ${isSelected ? 'is-selected' : ''} ${isUpdating ? 'pos-row-updating' : ''} ${isStorned ? 'pos-row-storned' : ''}`}
+                    className={`pos-table-row ${isSelected ? 'is-selected' : ''} ${isUpdating ? 'pos-row-updating' : ''} ${isStorned ? 'pos-row-storned' : ''} ${markingMissing > 0 ? 'pos-row-needs-marking' : ''}`}
                     onClick={() => {
                       if (isStorned) return
                       onSelectRow?.(item.id)
@@ -140,6 +147,20 @@ export default function ProductTable({
                         {item.name}
                         {isStorned && (
                           <span className='storno-badge'>{t('pos.storno_badge') || 'STORNO'}</span>
+                        )}
+                        {markingMissing > 0 && !isStorned && (
+                          <button
+                            type='button'
+                            className='marking-badge'
+                            title={t('pos.marking_missing_hint')}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              onMarkingClick?.(item.id)
+                            }}
+                          >
+                            <ScanBarcode size={12} strokeWidth={2.4} />
+                            {t('pos.marking_badge', { count: markingMissing })}
+                          </button>
                         )}
                       </div>
                     </td>

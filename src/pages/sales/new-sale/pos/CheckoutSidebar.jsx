@@ -6,6 +6,8 @@ import Numpad from './Numpad'
 import './PosLayout.css'
 
 export default function CheckoutSidebar({
+  markingBlocked = false,
+  markingBlockedCount = 0,
   saleId,
   cashBoxDetails,
   customerId,
@@ -167,11 +169,18 @@ export default function CheckoutSidebar({
           <button
             className='pos-primary-checkout-btn'
             onClick={onStartPaymentView}
-            disabled={cartItems.length === 0}
+            disabled={cartItems.length === 0 || markingBlocked}
           >
             <span>{t('pos.go_to_payment')}</span>
             <CornerDownLeft size={18} style={{ marginLeft: 8 }} />
           </button>
+
+          {/* Say WHY the button is dead — otherwise it just looks broken. */}
+          {markingBlocked && (
+            <div className='pos-marking-blocked-hint'>
+              {t('pos.marking_blocked_hint', { count: markingBlockedCount })}
+            </div>
+          )}
         </div>
       ) : (
         <div className='pos-sidebar-flow payment-flow-active'>
@@ -330,7 +339,7 @@ export default function CheckoutSidebar({
             <button
               className='payment-confirm-btn'
               onClick={handleCheckout}
-              disabled={isCheckoutLoading || cartItems.length === 0 || totalPaid < totalAmount}
+              disabled={isCheckoutLoading || cartItems.length === 0 || totalPaid < totalAmount || markingBlocked}
             >
               {isCheckoutLoading ? t('pos.payment_processing') : t('pos.complete_payment')}
             </button>

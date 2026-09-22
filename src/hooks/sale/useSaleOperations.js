@@ -1,6 +1,7 @@
 import { requests } from '@utils/requests'
 import { error, success } from '@utils/toast'
 import { bypassNextAppExit } from '@hooks/useExitConfirm'
+import { isZReportOpenOk } from '@utils/terminalAccess'
 import { get } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMutation } from 'react-query'
@@ -34,6 +35,7 @@ const isZReportClosedMessage = (message) => {
 export const useSaleOperations = ({
   cartItemsList,
   markingsList,
+  markingRequiredForAll = false,
   dmedOrganizedList,
   dmedPrescriptionsList,
   serviceType,
@@ -317,7 +319,7 @@ export const useSaleOperations = ({
   // leave the sale screen.
   const { mutate: openZReportMutation, isLoading: isOpeningZReport } = useMutation(requests.openZReport, {
     onSuccess: ({ data }) => {
-      const zOk = get(data, 'error', true) == false || get(data, 'message', '').includes('ERROR_ZREPORT_IS_ALREADY_OPEN')
+      const zOk = isZReportOpenOk(data)
       setZReportClosedDialog(false)
       if (!zOk) {
         error(get(data, 'message') || t('pos.zreport_open_failed'))
@@ -384,12 +386,42 @@ export const useSaleOperations = ({
   }
 
   const getReadyDataForOFD = (data) => {
+    // `data` is the backend's per-line fiscal override list. It can legitimately
+    // arrive as null (nothing matched), and lodash `get` does not substitute a
+    // default for null — so normalise here rather than letting `.find` throw
+    // after the sale is already committed.
+    const finals = Array.isArray(data) ? data : []
+
+    // Two fiscalization modes, picked by the global "marking required" switch.
+    //
+    // ON  — every line is sent with its real ИКПУ and package code, and with the
+    //       scanned DataMatrix in `label`. This is what the tax catalogue
+    //       expects for goods it lists as requiring marking.
+    //
+    // OFF — every line is sent under the generic classification below, with no
+    //       marking code. That classification is not on the tax catalogue's
+    //       "requires marking" list, so EPOS accepts the receipt without one.
+    //       This is the operator's deliberate choice: it is the same pair the
+    //       fallback retry has always substituted, and it means a receipt does
+    //       NOT carry the product's own classification while the switch is off.
+    const fiscalizeAsExempt = !markingRequiredForAll
+
     const readyData = []
     let leftLoayCardSum = paymentsList?.find((el) => el.front_name == 'loyalty_card')?.amount
     const cartItemsArray = Array.isArray(get(cartItemsList, 'data')) ? get(cartItemsList, 'data') : get(cartItemsList, 'data.data.data', [])
     console.log(cartItemsArray, paymentsList)
     cartItemsArray.map((el) => {
-      if (!el?.is_marking) {
+      const override = finals.find((final) => final.cart_item_id === el.id)
+      const classCode = fiscalizeAsExempt ? FALLBACK_EPOS_CLASS_CODE : override?.classCode || el.class_code
+      const packageCode = fiscalizeAsExempt ? FALLBACK_EPOS_PACKAGE_CODE : override?.packageCode || el.package_code
+
+      // With the switch off no marking reaches the receipt, even if the cashier
+      // scanned one: a code sent against the exempt classification would be a
+      // contradiction EPOS has no reason to accept. It is still recorded on the
+      // cart item and printed on the paper cheque.
+      const slots = fiscalizeAsExempt ? {} : markingsList[el.id] || {}
+
+      if (!el?.is_marking || fiscalizeAsExempt) {
         let leftPrice = el.total_price
         const price = el.total_price
         let otherSum = 0
@@ -409,7 +441,7 @@ export const useSaleOperations = ({
         const discountSum = parseFloat((discount * 100).toFixed(2))
 
         readyData.push({
-          barcode: data.find((final) => final.cart_item_id === el.id)?.barcode || el.barcode,
+          barcode: finals.find((final) => final.cart_item_id === el.id)?.barcode || el.barcode,
 
           amount: (el.quantity + el.unit_amount) * 1000,
           price: parseFloat((price * 100).toFixed(2)),
@@ -419,12 +451,12 @@ export const useSaleOperations = ({
 
           label: '',
           name: el.name,
-          classCode: data.find((final) => final.cart_item_id === el.id)?.classCode || el.class_code,
-          packageCode: data.find((final) => final.cart_item_id === el.id)?.packageCode || el.package_code,
+          classCode,
+          packageCode,
           other: parseFloat(other),
           ownerType: 0,
         })
-      } else if (Object.keys(markingsList[el.id] || {}).length === 0) {
+      } else if (Object.keys(slots).length === 0) {
         // marking items without markingsList data — treat as regular item
         const price = el.total_price
         const discount = get(el, 'discount_amount') * el.quantity + el.discount_unit_amount * el.unit_quantity
@@ -441,7 +473,7 @@ export const useSaleOperations = ({
         }
         const other = parseFloat((otherSum * 100).toFixed(2))
         readyData.push({
-          barcode: data.find((final) => final.cart_item_id === el.id)?.barcode || el.barcode,
+          barcode: finals.find((final) => final.cart_item_id === el.id)?.barcode || el.barcode,
           amount: (el.quantity + el.unit_amount) * 1000,
           price: parseFloat((price * 100).toFixed(2)),
           discount: discountSum,
@@ -449,14 +481,21 @@ export const useSaleOperations = ({
           vat: parseFloat(((((price - discount - otherSum) * get(el, 'vat_percent')) / (get(el, 'vat_percent') + 100)) * 100).toFixed(2)),
           label: '',
           name: el.name,
-          classCode: data.find((final) => final.cart_item_id === el.id)?.classCode || el.class_code,
-          packageCode: data.find((final) => final.cart_item_id === el.id)?.packageCode || el.package_code,
+          classCode,
+          packageCode,
           other,
           ownerType: 0,
         })
       } else {
-        Object.values(markingsList[el.id] || {}).map((marking, index) => {
-          const price = el.quantity > index ? el.unit_price : el.unit_quantity_price * el.unit_quantity
+        Object.values(slots).map((marking, index) => {
+          // The remainder slot takes whatever is left of the line rather than
+          // recomputing from unit_quantity_price, which the backend rounds to
+          // two decimals. Subtracting makes Σ over the split ≡ total_price by
+          // construction — and also survives unit_price (stamped when the line
+          // was added) drifting from total_price after a mid-sale repricing.
+          const price = el.quantity > index
+            ? el.unit_price
+            : el.total_price - el.quantity * el.unit_price
           let otherSum = 0
 
           if (leftLoayCardSum > 0) {
@@ -473,7 +512,7 @@ export const useSaleOperations = ({
           const discountSum = parseFloat((discount * 100).toFixed(2))
 
           readyData.push({
-            barcode: data.find((final) => final.cart_item_id === el.id)?.barcode || el.barcode,
+            barcode: finals.find((final) => final.cart_item_id === el.id)?.barcode || el.barcode,
             amount: el.quantity > index ? (el.quantity / el.quantity) * 1000 : el.unit_amount * 1000,
             price: parseFloat((price * 100).toFixed(2)),
 
@@ -482,8 +521,8 @@ export const useSaleOperations = ({
             vat: parseFloat(((((price - discount - otherSum) * get(el, 'vat_percent')) / (get(el, 'vat_percent') + 100)) * 100).toFixed(2)),
             label: marking,
             name: el.name,
-            classCode: data.find((final) => final.cart_item_id === el.id)?.classCode || el.class_code,
-            packageCode: data.find((final) => final.cart_item_id === el.id)?.packageCode || el.package_code,
+            classCode,
+            packageCode,
             other: parseFloat(other),
             ownerType: 0,
           })
@@ -505,7 +544,9 @@ export const useSaleOperations = ({
 
   const sendEPOSData = useCallback(
     (data) => {
-      const items = prepareEPOSData(get(data, 'data.data.items', '[]'))
+      // `|| []` not a lodash default: the field is null, not undefined, when
+      // no line needed a fiscal override, and the default only covers undefined.
+      const items = prepareEPOSData(get(data, 'data.data.items') || [])
       const qrToken = JSON.parse(data?.config?.data)?.payment_types[0]?.otp_data || undefined
 
       const payload = {

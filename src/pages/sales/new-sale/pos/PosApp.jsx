@@ -7,6 +7,7 @@ import { get } from 'lodash'
 import { requests } from '@utils/requests'
 import { error, success } from '@utils/toast'
 import { extractNumbers, checkBarcodeWithMarking } from '@utils/checkingMarkingWithBarcode'
+import { isLooseWeightLine, markingSlotCount, hasMarkingShape } from '@utils/posLines'
 import { containsCyrillic, convertoRuOrEngToEng } from '@utils/convertoRuOrEngToEng'
 import { bypassNextAppExit } from '@hooks/useExitConfirm'
 import { useBarcodeScanner } from '@/hooks/pos/useBarcodeScanner'
@@ -27,6 +28,7 @@ import PosQuickSelectDrawer from './PosQuickSelectDrawer'
 import ActionBar from './ActionBar'
 import PosSecurityQrModal from './PosSecurityQrModal'
 import PosAppScanModal from './PosAppScanModal'
+import PosMarkingScanModal from './PosMarkingScanModal'
 import PosMunisQrModal from './PosMunisQrModal'
 import PosProductSelectModal from './PosProductSelectModal'
 import SaleProgressSteps from '../saleStepLoading'
@@ -188,6 +190,7 @@ export default function PosApp() {
     data: cartItemsRes,
     refetch: refetchCart,
     isLoading: isCartLoading,
+    dataUpdatedAt: cartUpdatedAt,
   } = useQuery(['cartItemsList', id], () => requests.getCartItemList({ sale_id: id, limit: 1000, offset: 0 }), {
     onError: (e) => {
       if (get(e, 'response.data.code') == '409') {
@@ -198,6 +201,13 @@ export default function PosApp() {
 
   const cartItems = get(cartItemsRes, 'data.data.data', [])
   const totalAmount = get(cartItemsRes, 'data.data.total_amount', 0)
+
+  // Global "marking required for all products" switch. It rides on the cart
+  // response rather than a settings endpoint of its own, so a till picks up a
+  // flip within one refresh and makes no extra request. Absent data means
+  // false: during a backend wobble under-enforcing beats blocking every sale
+  // at every till at once.
+  const markingRequiredForAll = get(cartItemsRes, 'data.data.marking_required_for_all', false)
 
   // itemOrder maintains frontend interaction ordering (last scanned/updated items at the top)
   const [itemOrder, setItemOrder] = useState([])
@@ -238,6 +248,72 @@ export default function PosApp() {
   const displayCartItems = useMemo(() => {
     return [...activeCartItems, ...frontendStornoItems]
   }, [frontendStornoItems, activeCartItems])
+
+  // Does this line demand a marking code? Either the product itself is flagged,
+  // or the global switch is on — in which case weight/loose lines stay exempt,
+  // since there is no DataMatrix printed on a banana.
+  // Does this line need a code scanned?
+  //
+  // Only while the global switch is on. With it off the receipt is fiscalized
+  // under the generic exempt classification and carries no marking at all, so
+  // prompting for one would stop the till to collect a code that is then never
+  // sent. Weight/loose lines stay exempt either way — there is no DataMatrix
+  // printed on a banana.
+  const needsMarking = useCallback(
+    (item) => markingRequiredForAll && !isLooseWeightLine(item),
+    [markingRequiredForAll],
+  )
+
+  // Is a code MANDATORY on this line, as opposed to merely asked for?
+  //
+  // Only the global switch makes it mandatory, and never for a weight/loose
+  // line. This is what decides both consequences: Skip removes the line rather
+  // than dismissing the prompt, and payment is blocked while the line owes a
+  // code.
+  //
+  // A product flagged is_marking with the switch OFF is deliberately NOT
+  // mandatory — it prompts and it shows its badge, but the cashier may skip it
+  // and finish the sale exactly as before, with the receipt going to the OFD
+  // carrying an empty label. Forcing those to block would quietly make every
+  // marked product unsellable the moment the flag was set.
+  const markingIsMandatory = needsMarking
+
+  // Markings live on the cart item in the backend (cart_items.markings), so the
+  // receipt and the OFD payload read them from the server cart rather than from
+  // local state — they survive a reload and a cashier handover.
+  //
+  // getReadyDataForOFD emits one receipt line per entry of this map, so the
+  // entry count has to equal the line's fiscal slots — one per whole pack plus
+  // one for any remainder — not the number of codes scanned. Otherwise an
+  // un-scanned unit disappears from the receipt and its total stops matching
+  // the sale. Un-scanned slots are therefore kept as empty strings, and surplus
+  // codes left behind by a quantity edit are clamped off.
+  const markingsList = useMemo(() => {
+    const res = {}
+    activeCartItems.forEach((item) => {
+      const marks = (Array.isArray(item.markings) ? item.markings : []).filter(Boolean)
+      if (!marks.length) return
+
+      const slots = markingSlotCount(item)
+      if (slots <= 0) return
+
+      const out = {}
+      for (let i = 0; i < slots; i += 1) out[i] = marks[i] || ''
+      res[item.id] = out
+    })
+    return res
+  }, [activeCartItems])
+
+  // How many marking codes a line still owes. Must agree with markingsList slot
+  // for slot, or the prompt would never close.
+  const missingMarkingCount = useCallback(
+    (item) => {
+      if (!needsMarking(item)) return 0
+      const scanned = (Array.isArray(item.markings) ? item.markings : []).filter(Boolean).length
+      return Math.max(0, markingSlotCount(item) - scanned)
+    },
+    [needsMarking],
+  )
 
   const setCardPaymentAmount = useCallback((val) => {
     setRawCardPaymentAmount((prev) => {
@@ -348,14 +424,110 @@ export default function PosApp() {
   const customersList = get(customersRes, 'data.data.data') || []
 
   // ── Mutations ──
+  // Cart item the cashier is currently being asked to scan a marking for.
+  // `since` is the moment the prompt was opened: the cart in hand at that point
+  // still shows the quantity from before the scan, so its marking count must
+  // not be trusted until a fresh cart has arrived.
+  const [markingTargetState, setMarkingTargetState] = useState(null)
+  const markingTargetId = markingTargetState?.id || null
+
+  const setMarkingTargetId = useCallback((nextId) => {
+    setMarkingTargetState(nextId ? { id: nextId, since: Date.now() } : null)
+  }, [])
+
+  const markingTarget = useMemo(
+    () => activeCartItems.find((item) => item.id === markingTargetId) || null,
+    [activeCartItems, markingTargetId],
+  )
+
+  const markingTargetMissing = markingTarget ? missingMarkingCount(markingTarget) : 0
+
+  const markingTargetRef = useRef(null)
+  useEffect(() => {
+    markingTargetRef.current = markingTargetMissing > 0 ? markingTarget : null
+  }, [markingTarget, markingTargetMissing])
+
+  // Close the prompt as soon as the line owes nothing — the refetch after each
+  // saved marking is what drives this. A target that is not in the cart yet, or
+  // whose cart snapshot predates the scan that opened the prompt, is left alone.
+  useEffect(() => {
+    if (!markingTargetState || !markingTarget) return
+    if (cartUpdatedAt <= markingTargetState.since) return
+    if (missingMarkingCount(markingTarget) === 0) {
+      setMarkingTargetState(null)
+    }
+  }, [markingTargetState, markingTarget, missingMarkingCount, cartUpdatedAt])
+
+  // Lines still owing a marking code. Payment is blocked while any exist.
+  const markingMissingById = useMemo(() => {
+    const res = {}
+    activeCartItems.forEach((item) => {
+      const missing = missingMarkingCount(item)
+      if (missing > 0) res[item.id] = missing
+    })
+    return res
+  }, [activeCartItems, missingMarkingCount])
+
+  // Only mandatory lines stand between the cashier and the payment screen.
+  const blockingMarkingItems = useMemo(
+    () => activeCartItems.filter((item) => markingMissingById[item.id] && markingIsMandatory(item)),
+    [activeCartItems, markingMissingById, markingIsMandatory],
+  )
+
   const { mutate: saveMarkingToCartItem } = useMutation(requests.saveMarkingToCartItem, {
     onSuccess: () => {
       success(t('pos.marking_updated'))
+      refetchCart()
     },
-    onError: () => {
+    onError: (err) => {
+      const key = get(err, 'response.data.data') || get(err, 'response.data.message')
+      if (key === 'marking.product.mismatch') {
+        error(t('pos.marking_mismatch'))
+        return
+      }
+      if (key === 'duplicate' || key === 'already.exists') {
+        error(t('pos.marking_duplicate'))
+        return
+      }
       error(t('pos.marking_save_error'))
     },
   })
+
+  // Persist one scanned DataMatrix against a cart item.
+  //
+  // Two checks, deliberately different in kind:
+  //
+  //  - shape: is this a DataMatrix at all? Always applied. It is what stops a
+  //    plain product barcode — or the next item scanned while this prompt still
+  //    holds focus — from being stored as this line's marking and printed on
+  //    the fiscal receipt.
+  //  - provenance: was this code printed for THIS product? Only when the global
+  //    switch is off. With every line demanding a code, a false rejection born
+  //    of our own bad barcode data would make an item unsellable, so the server
+  //    records the mismatch and accepts it.
+  //
+  // Note the provenance check only fires when a GTIN was actually parsed: the
+  // server accepts codes it cannot parse, and rejecting them here would make
+  // manual entry impossible.
+  const submitMarkingForItem = useCallback(
+    (item, rawValue) => {
+      const value = (rawValue || '').trim()
+      if (!item || !value) return
+      const marking = containsCyrillic(value) ? convertoRuOrEngToEng(value) : value
+
+      if (!hasMarkingShape(marking)) {
+        error(t('pos.marking_not_a_code'))
+        return
+      }
+      if (!markingRequiredForAll && item.barcode && extractNumbers(marking) &&
+          !checkBarcodeWithMarking(item.barcode, marking)) {
+        error(t('pos.marking_mismatch'))
+        return
+      }
+      saveMarkingToCartItem({ id: item.id, data: { marking } })
+    },
+    [saveMarkingToCartItem, markingRequiredForAll, t],
+  )
 
   const {
     submitSale,
@@ -371,7 +543,8 @@ export default function PosApp() {
     isOpeningZReport,
   } = useSaleOperations({
       cartItemsList: posCartItemsList,
-      markingsList: {},
+      markingsList,
+      markingRequiredForAll,
       dmedOrganizedList,
       dmedPrescriptionsList,
       serviceType: 'other',
@@ -496,16 +669,22 @@ export default function PosApp() {
           setSelectedId(newId)
         }
 
-        const origScanVal = variables.originalScannedValue
-        if (origScanVal && origScanVal.length > 37 && get(data, 'data.is_marking', false)) {
-          if (checkBarcodeWithMarking(data?.data?.barcode, origScanVal) && data?.data?.barcode.length > 0) {
-            const marking = containsCyrillic(origScanVal) ? convertoRuOrEngToEng(origScanVal) : origScanVal
-            saveMarkingToCartItem({
-              id: data?.data?.store_product_id,
-              data: {
-                marking: marking,
-              },
-            })
+        // Marked goods must reach the OFD with a DataMatrix per unit. If the
+        // cashier already scanned the marking itself we keep it and stay quiet;
+        // a plain barcode scan means we still have to ask for one.
+        // The create response is the raw cart_items row, so it carries no
+        // unit_per_pack and cannot tell a weight line from a piece one. Decide
+        // conservatively here and let the prompt's own open-condition — which
+        // reads the full cart line, weight exemption included — have the final
+        // say. A target set for an exempt line simply never opens and clears on
+        // the next cart refresh.
+        if (markingRequiredForAll) {
+          const origScanVal = variables.originalScannedValue
+          const scannedMarking = origScanVal && extractNumbers(origScanVal) ? origScanVal : null
+          if (scannedMarking) {
+            submitMarkingForItem(get(data, 'data'), scannedMarking)
+          } else if (newId) {
+            setMarkingTargetId(newId)
           }
         }
       },
@@ -712,7 +891,19 @@ export default function PosApp() {
     }
   }
 
+  // Both payment entry points go through here. The button is disabled too, but
+  // handleCheckout is also reachable from the app-scan and Munis callbacks, so
+  // the guard has to live in the handlers rather than only in the UI.
+  const blockedByMarking = () => {
+    const blocker = blockingMarkingItems[0]
+    if (!blocker) return false
+    error(t('pos.marking_blocked_checkout', { name: blocker.name }))
+    setMarkingTargetId(blocker.id)
+    return true
+  }
+
   const handleStartPaymentView = () => {
+    if (blockedByMarking()) return
     setCashPaymentSelected(false)
     setReceivedAmount('')
     setCardPaymentType(null)
@@ -814,6 +1005,7 @@ export default function PosApp() {
   }
 
   const handleCheckout = async () => {
+    if (blockedByMarking()) return
     if (!paymentsList.length) {
       error(t('pos.error_select_payment_type'))
       return
@@ -891,6 +1083,14 @@ export default function PosApp() {
   const handleBarcodeScan = async (scannedBarcode) => {
     if (!scannedBarcode) return
 
+    // The prompt keeps its input focused (which pauses useBarcodeScanner), but
+    // if focus was lost the scan still lands here — route it to the line that
+    // is waiting for a marking instead of adding another product.
+    if (markingTargetRef.current) {
+      submitMarkingForItem(markingTargetRef.current, scannedBarcode)
+      return
+    }
+
     // 1. Extract barcode from marking if it is a datamatrix
     let searchBarcode = scannedBarcode
     if (scannedBarcode.length >= 37) {
@@ -946,12 +1146,13 @@ export default function PosApp() {
           },
         })
 
-        if (scannedBarcode.length > 37) {
-          const marking = containsCyrillic(scannedBarcode) ? convertoRuOrEngToEng(scannedBarcode) : scannedBarcode
-          saveMarkingToCartItem({
-            id: existing.store_product_id,
-            data: { marking },
-          })
+        if (needsMarking(existing)) {
+          if (extractNumbers(scannedBarcode)) {
+            submitMarkingForItem(existing, scannedBarcode)
+          } else {
+            // the quantity just went up, so the line owes one more marking
+            setMarkingTargetId(existing.id)
+          }
         }
         return
       }
@@ -1250,6 +1451,18 @@ export default function PosApp() {
     onScan: handleBarcodeScan,
     enabled: !isLocked,
   })
+
+  // Skip means two different things. With marking required it is the only way
+  // past a code that cannot be read, so it takes the line off the cheque
+  // instead of waving it through unmarked. Otherwise it just closes the prompt,
+  // exactly as before.
+  const handleMarkingSkip = () => {
+    const target = markingTarget
+    setMarkingTargetId(null)
+    if (target && markingIsMandatory(target)) {
+      deleteItem(target.id)
+    }
+  }
 
   const handleQtyIncrease = (item) => {
     setSelectedId(item.id)
@@ -1871,6 +2084,9 @@ export default function PosApp() {
                 const item = displayCartItems.find((i) => i.id === rowId)
                 if (item?.is_frontend_storno) return
                 setSelectedId(rowId)
+                // Tapping a line that still owes a code reopens its prompt —
+                // the cashier's natural move after dismissing it.
+                if (markingMissingById[rowId]) setMarkingTargetId(rowId)
               }}
               onQtyIncrease={handleQtyIncrease}
               onQtyDecrease={handleQtyDecrease}
@@ -1879,6 +2095,8 @@ export default function PosApp() {
               pendingQuantityUpdates={pendingQuantityUpdates}
               pendingNewItems={pendingNewItems}
               stornedIds={stornedIds}
+              markingMissingById={markingMissingById}
+              onMarkingClick={setMarkingTargetId}
             />
           </div>
 
@@ -1920,6 +2138,8 @@ export default function PosApp() {
 
         {/* ── Right Section (Sidebar) ── */}
         <CheckoutSidebar
+          markingBlocked={blockingMarkingItems.length > 0}
+          markingBlockedCount={blockingMarkingItems.length}
           saleId={id}
           cashBoxDetails={cashBoxDetails}
           customerId={customerId}
@@ -2046,6 +2266,19 @@ export default function PosApp() {
         t={t}
       />
 
+      {/* Marking scan prompt */}
+      <PosMarkingScanModal
+        open={Boolean(markingTarget) && markingTargetMissing > 0}
+        productName={get(markingTarget, 'name', '')}
+        scanned={(get(markingTarget, 'markings') || []).filter(Boolean).length}
+        required={markingTarget ? markingSlotCount(markingTarget) : 1}
+        skipRemoves={Boolean(markingTarget) && markingIsMandatory(markingTarget)}
+        onSubmit={(value) => submitMarkingForItem(markingTarget, value)}
+        onSkip={handleMarkingSkip}
+        onDismiss={() => setMarkingTargetId(null)}
+        t={t}
+      />
+
       {/* Edit Quantity Dialog */}
       <EditQuantityDialog
         open={showEditQtyDialog}
@@ -2061,7 +2294,7 @@ export default function PosApp() {
           <RippedPaperItem
             qrcodeUrl={qrcodeUrl}
             qrcode='pending'
-            markingsList={{}}
+            markingsList={markingsList}
             paymentsList={paymentsList}
             cartItemsList={posCartItemsList}
             id='cheque_of_orders'

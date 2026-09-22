@@ -108,6 +108,36 @@ export default function PosMertechSettings({ t }) {
 
       <div style={{ fontSize: '12px', color: '#6f6f6f' }}>{t('pos.mertech.auto_hint')}</div>
 
+      {/* When nothing was detected, show what the machine actually offers — it
+          is the difference between "no driver installed" (empty list) and
+          "plugged in but unrecognised" (a port is listed). */}
+      {!isChecking && info && !detected && Array.isArray(info.ports) && (
+        <div
+          style={{
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            padding: '10px 14px',
+            fontSize: '12px',
+            color: '#374151',
+            maxHeight: '160px',
+            overflowY: 'auto',
+          }}
+        >
+          <div style={{ fontWeight: 700, marginBottom: '6px' }}>{t('pos.mertech.ports_seen')}</div>
+          {info.ports.length === 0 ? (
+            <div style={{ color: '#e23a32' }}>{t('pos.mertech.no_ports')}</div>
+          ) : (
+            info.ports.map((p) => (
+              <div key={p.port} style={{ fontFamily: 'monospace', lineHeight: 1.6 }}>
+                {p.port}
+                {p.isUsb ? ` — USB ${p.vid || '?'}:${p.pid || '?'}` : ' — non-USB'}
+                {p.product ? ` — ${p.product}` : ''}
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
       {/* Actions */}
       <div style={{ display: 'flex', gap: '12px' }}>
         <button type='button' className='btn-secondary-touch' style={buttonStyle} onClick={refresh} disabled={isChecking}>

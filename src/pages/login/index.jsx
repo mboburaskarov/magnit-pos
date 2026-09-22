@@ -12,6 +12,7 @@ import { request, eposRequest } from '../../../utils/axios'
 import { fetchMachineId } from '../../../utils/deviceAgent'
 import { isDevEnvironment } from '../../../utils/isDevEnvironment'
 import thousandDivider from '../../../utils/thousandDivider'
+import { isZReportOpenOk } from '../../../utils/terminalAccess'
 import { setUserData } from '../../redux-toolkit/userSlice'
 import { bypassNextAppExit } from '../../hooks/useExitConfirm'
 import LoadingContainer from '/components/LoadingContainer'
@@ -865,7 +866,7 @@ export default function LoginPage() {
     try {
       const zRes = await requests.openZReport({ token: 'DXJFX32CN1296678504F2', method: 'openZreport' })
       const zData = zRes?.data
-      const zOk = get(zData, 'error', true) == false || get(zData, 'message', '').includes('ERROR_ZREPORT_IS_ALREADY_OPEN')
+      const zOk = isZReportOpenOk(zData)
       if (!zOk) {
         const msg = get(zData, 'message', '')
         setOpenError(msg.includes('Ru:') ? msg.split('Ru:')[1] : msg || t('login.open_shift_failed'))

@@ -3841,3 +3841,43 @@ body {
 .pos-keyboard-key.action-key.clear-key {
   font-size: 11px;
 }
+
+/* A line still owing a DataMatrix code: amber rail on the row, and a badge in
+   the name cell that reopens the scan prompt. */
+.pos-table-row.pos-row-needs-marking {
+  box-shadow: inset 3px 0 0 0 #f59e0b;
+}
+
+.marking-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+  margin-left: 6px;
+  vertical-align: middle;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.marking-badge:hover {
+  background-color: #fde68a;
+}
+
+.pos-marking-blocked-hint {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background-color: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  color: #92400e;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}

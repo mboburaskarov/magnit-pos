@@ -207,14 +207,17 @@ function RippedPaperCheck({
                   >
                     <Typography>O'lchov birligi: {get(el, 'package_name', '-')}</Typography>
                     <Typography>MXIK: {get(el, 'class_code', '-')}</Typography>
-                    {get(el, 'is_marking') && (
-                      <Box>
-                        {Object.values(markingsList[get(el, 'id')] || {})?.length > 0 &&
-                          Object.values(markingsList[get(el, 'id')] || {}).map((val, idx) => (
-                            <Typography key={`mk-${val}-${idx}`}>MK: {val.slice(0, 32)}</Typography>
-                          ))}
-                      </Box>
-                    )}
+                    {/* Gated on the codes, not on is_marking: with marking
+                        required globally a line can carry codes while the
+                        product itself is not flagged, and those must still be
+                        printed. A line with no codes renders nothing either way. */}
+                    <Box>
+                      {Object.values(markingsList[get(el, 'id')] || {})
+                        .filter(Boolean)
+                        .map((val, idx) => (
+                          <Typography key={`mk-${val}-${idx}`}>MK: {val.slice(0, 32)}</Typography>
+                        ))}
+                    </Box>
 
                     <Typography>ShtKod: {get(el, 'barcode', '-')}</Typography>
                   </Box>
