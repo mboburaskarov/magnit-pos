@@ -14,6 +14,13 @@ import { useTranslation } from 'react-i18next'
 const FALLBACK_EPOS_CLASS_CODE = '07616003001000002'
 const FALLBACK_EPOS_PACKAGE_CODE = '1624156'
 
+// A payment tendered from the customer's loyalty balance. The backend and the
+// full-order drawer call it 'loyalty_card'; the POS screen historically sent
+// 'loyaltycard'. Both are accepted here so the receipt is right either way.
+const LOYALTY_PAYMENT_KEYS = ['loyalty_card', 'loyaltycard']
+const isLoyaltyPayment = (payment) =>
+  LOYALTY_PAYMENT_KEYS.includes(payment?.type) || LOYALTY_PAYMENT_KEYS.includes(payment?.front_name)
+
 // Normalizes a product name for comparison between our cart items and the names
 // EPOS echoes back inside its error message (e.g. "...: [F SHAFTOL]").
 const normalizeProductName = (name) =>
@@ -407,7 +414,7 @@ export const useSaleOperations = ({
     const fiscalizeAsExempt = !markingRequiredForAll
 
     const readyData = []
-    let leftLoayCardSum = paymentsList?.find((el) => el.front_name == 'loyalty_card')?.amount
+    let leftLoayCardSum = paymentsList?.find(isLoyaltyPayment)?.amount
     const cartItemsArray = Array.isArray(get(cartItemsList, 'data')) ? get(cartItemsList, 'data') : get(cartItemsList, 'data.data.data', [])
     console.log(cartItemsArray, paymentsList)
     cartItemsArray.map((el) => {
@@ -578,7 +585,11 @@ export const useSaleOperations = ({
           receivedEps:
             payType == 2
               ? parseFloat(
-                  (paymentsList.filter((item) => item.amount && item.type !== 'cash').reduce((sum, item) => sum + (item.amount || 0), 0) * 100).toFixed(2),
+                  (
+                    paymentsList
+                      .filter((item) => item.amount && item.type !== 'cash' && !isLoyaltyPayment(item))
+                      .reduce((sum, item) => sum + (item.amount || 0), 0) * 100
+                  ).toFixed(2),
                 )
               : 0,
           receivedCard:
@@ -587,7 +598,7 @@ export const useSaleOperations = ({
               : parseFloat(
                   (
                     paymentsList
-                      .filter((item) => item.amount && item.type !== 'cash' && item.type !== 'loyalty_card')
+                      .filter((item) => item.amount && item.type !== 'cash' && !isLoyaltyPayment(item))
                       .reduce((sum, item) => sum + (item.amount || 0), 0) * 100
                   ).toFixed(2),
                 ),

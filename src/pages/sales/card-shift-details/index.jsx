@@ -140,6 +140,7 @@ const useStyles = makeStyles((theme) => {
     },
     rowActive: { background: '#F1F2F5', borderLeftColor: ACCENT },
     rowAuto: { cursor: 'default' },
+    balanceNote: { padding: '10px 16px 14px', fontSize: 12, lineHeight: 1.45, color: '#8A8F9C' },
     cellLabel: { display: 'flex', alignItems: 'center', gap: 11, fontSize: 14, fontWeight: 700, minWidth: 0 },
     cellLabelAuto: { color: '#8A8F9C' },
     glyphWrap: {
@@ -541,6 +542,10 @@ function CloseShiftPage() {
   const operationDetail = get(operationDetailRes, 'data.data', {})
   const cashExpenses = (operationDetail.expenses || []).reduce((sum, e) => (e.payment_kind === 'cash' ? sum + (e.amount || 0) : sum), 0)
   const expectedCash = (operationDetail.opened_amount || 0) + (operationDetail.cash_net_amount || 0) - cashExpenses
+  // Money that actually arrived through an acquirer. Balance redemption
+  // (sales_loyalty_card) is intentionally excluded: it discharges bonuses the
+  // company already accrued, no funds move, so it must not inflate the cashless
+  // amount posted back as close_cashless_amount.
   const availableCashless =
     (operationDetail.open_cashless_amount || 0) +
     (operationDetail.sales_uzcard || 0) +
@@ -548,7 +553,9 @@ function CloseShiftPage() {
     (operationDetail.sales_click || 0) +
     (operationDetail.sales_payme || 0) +
     (operationDetail.sales_uzum || 0) +
-    (operationDetail.sales_munis || 0)
+    (operationDetail.sales_munis || 0) +
+    (operationDetail.sales_alif || 0) +
+    (operationDetail.sales_uzum_tezkor || 0)
 
   const stateRef = useRef({})
   stateRef.current = { amounts, company, availableCashless }
@@ -692,7 +699,18 @@ function CloseShiftPage() {
     { key: 'payme', label: 'Payme', img: '/images/payme.png', amount: operationDetail.sales_payme || 0 },
     { key: 'uzum', label: 'Uzum', img: '/uzum.png', amount: operationDetail.sales_uzum || 0 },
     { key: 'uzqr', label: 'UzQR', img: null, amount: operationDetail.sales_munis || 0 },
+    // Rarely used, so they show up only on the shifts that actually took them.
+    ...(operationDetail.sales_alif ? [{ key: 'alif', label: 'Alif', img: null, amount: operationDetail.sales_alif }] : []),
+    ...(operationDetail.sales_uzum_tezkor
+      ? [{ key: 'uzumtezkor', label: 'Uzum Tezkor', img: '/uzum.png', amount: operationDetail.sales_uzum_tezkor }]
+      : []),
+    // Balance is part of the shift's revenue but is not money to hand over, so it
+    // sits among the locked rows and stays out of the counted totals below.
+    ...(operationDetail.sales_loyalty_card
+      ? [{ key: 'balans', label: 'Balans', img: null, amount: operationDetail.sales_loyalty_card }]
+      : []),
   ]
+  const hasBalanceRow = Boolean(operationDetail.sales_loyalty_card)
 
   // Re-countable rows; empty entry shows a neutral badge (no scary red until typed).
   const moneyFields = [
@@ -1006,6 +1024,7 @@ function CloseShiftPage() {
                     </span>
                   </Box>
                 ))}
+                {hasBalanceRow && <Box className={classes.balanceNote}>{t('close_shift.balance_note')}</Box>}
               </Box>
               <Box className={classes.tfoot}>
                 <span className={classes.tfootLabel}>{t('close_shift.total')}</span>

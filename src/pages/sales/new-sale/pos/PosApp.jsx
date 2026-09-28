@@ -388,14 +388,17 @@ export default function PosApp() {
         loyaltycard: 'Balans',
       }
       const appName = appNameByMethod[secondaryPaymentMethod]
+      const paymentTypeKey = secondaryPaymentMethod === 'loyaltycard' ? 'loyalty_card' : secondaryPaymentMethod
 
       payments.push({
         amount: Number(secondaryPaymentAmount),
-        payment_type_id: getPaymentTypeId([appName, secondaryPaymentMethod]),
-        type: secondaryPaymentMethod === 'loyaltycard' ? 'loyaltycard' : 'app',
+        // matches payment_types by name ('Balans') or front_name ('loyalty_card');
+        // the raw selector key is kept so the other methods still resolve.
+        payment_type_id: getPaymentTypeId([appName, secondaryPaymentMethod, paymentTypeKey]),
+        type: secondaryPaymentMethod === 'loyaltycard' ? 'loyalty_card' : 'app',
         name: appName,
         app_type: secondaryPaymentMethod,
-        front_name: secondaryPaymentMethod,
+        front_name: paymentTypeKey,
       })
     }
 
@@ -998,8 +1001,16 @@ export default function PosApp() {
     const remainingAmount = Math.max(Number(totalAmount) - cashAmount - Number(cardPaymentAmount || 0), 0)
     if (remainingAmount <= 0) return
 
+    // Never pre-fill more balance than the customer has: the backend rejects
+    // amount > balance with invalid.sale.amount, which would dead-end the cashier
+    // on a sale that can never go through. (Nothing is fiscalized in that case —
+    // EPOS only runs from the finalize mutation's onSuccess.) Mirrors the guard in
+    // useFullOrderPayments.
+    const prefillAmount =
+      method === 'loyaltycard' ? Math.min(remainingAmount, Number(customerId?.balance || 0)) : remainingAmount
+
     setSecondaryPaymentMethod(method)
-    setSecondaryPaymentAmount(String(remainingAmount))
+    setSecondaryPaymentAmount(String(prefillAmount))
     setFocusedPaymentInput('secondary')
     setPaymentMethod(method)
   }

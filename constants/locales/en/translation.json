@@ -717,6 +717,7 @@
   "close_shift.fact": "Actual",
   "close_shift.difference": "Difference",
   "close_shift.auto_label": "auto",
+  "close_shift.balance_note": "Balans is a customer bonus write-off. It is not cash in the drawer and nothing is handed over.",
   "close_shift.total": "Total",
   "close_shift.delete_aria": "Delete",
   "close_shift.plus_aria": "Plus",
