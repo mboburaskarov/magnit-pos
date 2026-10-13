@@ -13,6 +13,12 @@ import LoadingContainer from '@components/LoadingContainer'
 import thousandDivider from '@utils/thousandDivider'
 import { error, success } from '@utils/toast'
 import { requests } from '@utils/requests'
+import {
+  terminalInfo,
+  terminalPaymentPayload,
+  terminalReconciliation,
+  waitForTerminalOperation,
+} from '@utils/paymentTerminal'
 import { loadSvgAsEscposHex } from '@utils/escposImage'
 import { buildZReportReceiptLayout } from '@utils/receiptBuilder'
 
@@ -659,6 +665,45 @@ function CloseShiftPage() {
     },
   })
 
+  // «Сверка итогов» on the bank terminal, run as part of closing so the
+  // cashier never has to do it on the device by hand. Bounded and best effort:
+  // a shift that cannot be closed is a cashier who cannot go home.
+  const TERMINAL_RECONCILIATION_TIMEOUT_MS = 60000
+  const terminalAttachedRef = useRef(false)
+  const [isReconciling, setIsReconciling] = useState(false)
+
+  // Asked once, on mount, so the close path adds no latency at all on a till
+  // that has no terminal (most of them, during the rollout).
+  useEffect(() => {
+    let cancelled = false
+    terminalInfo().then((info) => {
+      if (!cancelled) terminalAttachedRef.current = Boolean(info?.detected)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const runTerminalReconciliation = async () => {
+    if (!terminalAttachedRef.current) return null
+    setIsReconciling(true)
+    try {
+      const started = await terminalReconciliation()
+      const deadline = Date.now() + TERMINAL_RECONCILIATION_TIMEOUT_MS
+      const finished = await waitForTerminalOperation({
+        operationId: started?.operation_id,
+        shouldStop: () => Date.now() > deadline,
+      })
+      return finished ? terminalPaymentPayload(finished) : null
+    } catch {
+      // No terminal, or it did not answer. The shift closes either way; the
+      // сверка can be run from the devices settings panel afterwards.
+      return null
+    } finally {
+      setIsReconciling(false)
+    }
+  }
+
   const { mutate: closeCashBoxRegister, isLoading: iscloseCashBoxRegister } = useMutation(requests.closeCashBoxRegister, {
     onSuccess: () => {
       setStatus('done')
@@ -672,9 +717,9 @@ function CloseShiftPage() {
     },
   })
 
-  const closing = iscloseZReport || iscloseCheckZReport || iscloseCashBoxRegister
+  const closing = iscloseZReport || iscloseCheckZReport || iscloseCashBoxRegister || isReconciling
 
-  const submitRegister = () => {
+  const submitRegister = async () => {
     const current = stateRef.current
     const counted = parseAmount(current.amounts.actual)
     const keptAmount = current.company === '3' ? parseAmount(current.amounts.closed) : current.company === '2' ? 0 : counted
@@ -682,6 +727,7 @@ function CloseShiftPage() {
       error(t('close_shift.error_kept_exceeds_actual'))
       return
     }
+    const terminalReconciliationResult = await runTerminalReconciliation()
     closeCashBoxRegister({
       id,
       data: {
@@ -689,6 +735,7 @@ function CloseShiftPage() {
         company_amount: counted - keptAmount,
         close_cashless_amount: current.availableCashless,
         is_company: current.company === '2',
+        ...(terminalReconciliationResult ? { terminal_reconciliation: terminalReconciliationResult } : {}),
       },
     })
   }

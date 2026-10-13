@@ -627,7 +627,11 @@ export const useSaleOperations = ({
   })
 
   const submitSale = useCallback(
-    (paymentsList, otpData, maxAmount, cartOwnerType) => {
+    // terminalPayment is what the bank terminal did, when the card was charged
+    // through the integrated device. It rides along with the finalize because
+    // the charge happens BEFORE the sale is submitted — this is the one moment
+    // at which both the card operation and the sale are known.
+    (paymentsList, otpData, maxAmount, cartOwnerType, terminalPayment) => {
       if (cartItemsListLoading) {
         error(t('pos.products_loading_retry'))
         return
@@ -673,6 +677,7 @@ export const useSaleOperations = ({
         tax_free: !sendToEpos,
         is_corporate: cartOwnerType == 'corporative',
         marking_data: markingData,
+        ...(terminalPayment ? { terminal_payment: terminalPayment } : {}),
       })
     },
     [

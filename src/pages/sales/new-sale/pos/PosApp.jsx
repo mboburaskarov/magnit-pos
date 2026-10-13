@@ -8,6 +8,7 @@ import { requests } from '@utils/requests'
 import { error, success } from '@utils/toast'
 import { extractNumbers, checkBarcodeWithMarking } from '@utils/checkingMarkingWithBarcode'
 import { isLooseWeightLine, markingSlotCount, hasMarkingShape } from '@utils/posLines'
+import { terminalInfo } from '@utils/paymentTerminal'
 import { containsCyrillic, convertoRuOrEngToEng } from '@utils/convertoRuOrEngToEng'
 import { bypassNextAppExit } from '@hooks/useExitConfirm'
 import { useBarcodeScanner } from '@/hooks/pos/useBarcodeScanner'
@@ -30,6 +31,7 @@ import PosSecurityQrModal from './PosSecurityQrModal'
 import PosAppScanModal from './PosAppScanModal'
 import PosMarkingScanModal from './PosMarkingScanModal'
 import PosMunisQrModal from './PosMunisQrModal'
+import PosTerminalPaymentModal from './PosTerminalPaymentModal'
 import PosProductSelectModal from './PosProductSelectModal'
 import SaleProgressSteps from '../saleStepLoading'
 import './PosLayout.css'
@@ -89,6 +91,11 @@ export default function PosApp() {
   const [focusedPaymentInput, setFocusedPaymentInput] = useState('cash')
   const [showAppScanModal, setShowAppScanModal] = useState(false)
   const [showMunisQrModal, setShowMunisQrModal] = useState(false)
+  // Card payments are driven through the bank terminal only where one is
+  // actually attached. A till without it keeps the old flow exactly: the
+  // cashier charges the card on a standalone terminal and types the tender in.
+  const [terminalDetected, setTerminalDetected] = useState(false)
+  const [showTerminalModal, setShowTerminalModal] = useState(false)
   const [productSelectList, setProductSelectList] = useState([])
   const [pendingWeightGrams, setPendingWeightGrams] = useState(null)
   const [pendingScannedValue, setPendingScannedValue] = useState(null)
@@ -404,6 +411,19 @@ export default function PosApp() {
 
     return payments
   }, [cashPaymentSelected, receivedAmount, cardPaymentSelected, cardPaymentType, cardPaymentAmount, secondaryPaymentMethod, secondaryPaymentAmount, paymentTypesList])
+
+  // What the bank terminal has to charge: the card part of the sale, which on
+  // a split payment is less than the total. Read off paymentsList rather than
+  // cardPaymentAmount so it is the same figure the ERP will be told about.
+  // A return sale refunds the card the parent sale was charged on; the server
+  // attaches that operation to the return's own read.
+  const isReturnSale = get(cashBoxDetails, 'data.data.sale_type') === 'RETURN'
+  const terminalRefundOrderId = get(cashBoxDetails, 'data.data.parent_terminal_transaction.order_id', '')
+
+  const terminalCardAmount = useMemo(
+    () => paymentsList.filter((p) => p.type === 'card').reduce((sum, p) => sum + Number(p.amount || 0), 0),
+    [paymentsList],
+  )
 
   const paymentAmount = paymentsList.reduce((sum, item) => sum + Number(item.amount || 0), 0)
   const maxAmount = Number(totalAmount || 0) - paymentAmount
@@ -1015,6 +1035,19 @@ export default function PosApp() {
     setPaymentMethod(method)
   }
 
+  // Is a bank terminal attached to this till? Asked once, on mount. Both "no"
+  // and "the agent is unreachable" mean the same thing here: leave the card
+  // flow exactly as it was before this feature existed.
+  useEffect(() => {
+    let cancelled = false
+    terminalInfo().then((info) => {
+      if (!cancelled) setTerminalDetected(Boolean(info?.detected))
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const handleCheckout = async () => {
     if (blockedByMarking()) return
     if (!paymentsList.length) {
@@ -1077,6 +1110,20 @@ export default function PosApp() {
       return
     }
 
+    // Bank terminal: charge the card through the device, then submit the sale
+    // with the RRN attached. Only when a terminal is actually attached — a
+    // till without one falls through to the old flow, where the cashier has
+    // already charged the card on a standalone terminal by hand.
+    //
+    // On a return the same modal refunds the card instead, addressed by the
+    // ORIGINAL payment's order_id. A return whose original was not paid on the
+    // terminal (cash, or a sale from before this feature) has no order_id to
+    // reverse, so it falls through and is refunded the way it always was.
+    if (terminalDetected && terminalCardAmount > 0 && (!isReturnSale || terminalRefundOrderId)) {
+      setShowTerminalModal(true)
+      return
+    }
+
     const effectiveMaxAmount = numEffective - paymentAmount
     submitSale(paymentsList, undefined, effectiveMaxAmount, cartOwnerType)
   }
@@ -1089,6 +1136,13 @@ export default function PosApp() {
   const handleMunisPaid = () => {
     setShowMunisQrModal(false)
     submitSale(paymentsList, undefined, maxAmount, cartOwnerType)
+  }
+
+  // The card has been charged by the time this runs, so the sale is submitted
+  // whatever else happens — the terminal payload only rides along with it.
+  const handleTerminalApproved = (terminalPayment) => {
+    setShowTerminalModal(false)
+    submitSale(paymentsList, undefined, maxAmount, cartOwnerType, terminalPayment)
   }
 
   const handleBarcodeScan = async (scannedBarcode) => {
@@ -2334,6 +2388,18 @@ export default function PosApp() {
         amount={Number(paymentsList.find((p) => p.app_type === 'munis')?.amount || 0)}
         onPaid={handleMunisPaid}
         onCancel={() => { setShowMunisQrModal(false); clearPOSActionFocus() }}
+        t={t}
+      />
+
+      {/* Bank terminal card payment */}
+      <PosTerminalPaymentModal
+        open={showTerminalModal}
+        mode={isReturnSale ? 'refund' : 'pay'}
+        saleId={id}
+        amount={terminalCardAmount}
+        refundOrderId={terminalRefundOrderId}
+        onDone={handleTerminalApproved}
+        onCancel={() => { setShowTerminalModal(false); clearPOSActionFocus() }}
         t={t}
       />
 
