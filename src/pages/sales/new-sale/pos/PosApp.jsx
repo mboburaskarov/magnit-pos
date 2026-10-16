@@ -245,8 +245,49 @@ export default function PosApp() {
     })
   }, [sortedCartItems, frontendStornoItems])
 
+  // Lines linked by an N+X promotion (Акция N+X) render back to back, so the
+  // gift sits against the line that earned it. nx_promo_id is the group key: the
+  // free limit is per receipt, so one promotion forms at most one group in a sale.
+  //
+  // Grouping here, rather than teaching itemOrder about groups, is what leaves
+  // the five "bump to top" call sites alone: whichever member the cashier last
+  // touched is still highest in itemOrder and so leads its group, and this pass
+  // pulls its siblings in behind it. A `+` tap can therefore never split a gift
+  // from its trigger.
   const displayCartItems = useMemo(() => {
-    return [...activeCartItems, ...frontendStornoItems]
+    const byPromo = new Map()
+    for (const line of activeCartItems) {
+      if (!line?.nx_promo_id) continue
+      if (!byPromo.has(line.nx_promo_id)) byPromo.set(line.nx_promo_id, [])
+      byPromo.get(line.nx_promo_id).push(line)
+    }
+
+    let grouped = activeCartItems
+    if (byPromo.size > 0) {
+      const emitted = new Set()
+      grouped = []
+      for (const line of activeCartItems) {
+        if (emitted.has(line.id)) continue
+        const group = line?.nx_promo_id ? byPromo.get(line.nx_promo_id) : null
+        if (!group) {
+          grouped.push(line)
+          emitted.add(line.id)
+          continue
+        }
+        // nx_group_position lets the row draw the ends of the bracket, so a
+        // multi-line group reads as one block rather than two striped rows
+        group.forEach((member, idx) => {
+          emitted.add(member.id)
+          grouped.push({
+            ...member,
+            nx_group_position:
+              group.length === 1 ? 'only' : idx === 0 ? 'first' : idx === group.length - 1 ? 'last' : 'middle',
+          })
+        })
+      }
+    }
+
+    return [...grouped, ...frontendStornoItems]
   }, [frontendStornoItems, activeCartItems])
 
   // Does this line demand a marking code? Either the product itself is flagged,
@@ -410,8 +451,12 @@ export default function PosApp() {
 
   const effectiveTotalAmount = totalAmount
 
+  // The «Скидка» line on the printed receipt. nx_discount_amount is added because
+  // an N+X give-away never touches discount_price — it is a line total the
+  // backend computed, and leaving it out made the paper total disagree with the
+  // screen total the customer was charged.
   const totalDiscount = useMemo(() => {
-    return activeCartItems.reduce((acc, item) => acc + (item.discount_price || 0), 0)
+    return activeCartItems.reduce((acc, item) => acc + (item.discount_price || 0) + (Number(item.nx_discount_amount) || 0), 0)
   }, [activeCartItems])
 
   // Search customers query

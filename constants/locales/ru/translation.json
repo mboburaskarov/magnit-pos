@@ -1039,5 +1039,7 @@
   "pos.report_error_button": "Сообщить об ошибке",
   "pos.download_photo": "Скачать фото",
   "pos.download_all": "Скачать все",
-  "pos.error_opening": "Ошибка при открытии"
+  "pos.error_opening": "Ошибка при открытии",
+  "pos.nx.badge_title": "Акция N+X",
+  "pos.nx.free_count": "{{count}} бесплатно"
 }

@@ -17,6 +17,12 @@
   --pos-danger-bg: #fdecec;
   --pos-success: #1e9e52;
   --pos-success-bg: #e9f8ef;
+  /* N+X promotion (Акция N+X): a third semantic colour, distinct from the
+     amber a missing marking already owns and from the red of a storno. */
+  --pos-promo: #7c3aed;
+  --pos-promo-bg: #f3efff;
+  --pos-promo-border: #c4b5fd;
+  --pos-promo-text: #5b21b6;
   --pos-radius-sm: 4px;
   --pos-radius-md: 8px;
   --pos-radius-lg: 12px;
@@ -3880,4 +3886,87 @@ body {
   font-size: 12px;
   font-weight: 600;
   text-align: center;
+}
+
+/* ── N+X promotion (Акция N+X) ──────────────────────────────────────────────
+   Lines linked by one promotion are rendered back to back by PosApp, and a
+   violet rail down their left edge turns that adjacency into one visible block:
+   a cross-product promo is two rows that belong together, and the cashier has to
+   be able to see that the soap is free BECAUSE of the shampoo above it.
+
+   The rail follows the precedent set by .pos-row-needs-marking (an inset
+   box-shadow, which costs no layout), with the corners rounded only at the ends
+   of the group so the bracket closes.
+
+   The row KEEPS the ordinary background, hover and selection of every other
+   product: the rail and the badge carry the meaning, and a tinted row made the
+   cart read as two kinds of line. Do not reintroduce a background-color here. */
+.pos-table-row.pos-row-nx {
+  box-shadow: inset 3px 0 0 0 var(--pos-promo);
+}
+
+.pos-table-row.pos-row-nx-first td:first-child {
+  border-top-left-radius: var(--pos-radius-md);
+}
+
+.pos-table-row.pos-row-nx-last td:first-child {
+  border-bottom-left-radius: var(--pos-radius-md);
+}
+
+.pos-table-row.pos-row-nx-only td:first-child {
+  border-radius: var(--pos-radius-md) 0 0 var(--pos-radius-md);
+}
+
+/* a storned row is history: no rail. The red storned background comes from
+   .pos-row-storned, which every cancelled line already carries. */
+.pos-table-row.pos-row-nx.pos-row-storned {
+  box-shadow: none;
+}
+
+/* «1+1 · 2 бесплатно» in the name cell. Same shape as .marking-badge so the two
+   read as one family, in the promo colour rather than amber. */
+.nx-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--pos-promo-bg);
+  color: var(--pos-promo-text);
+  border: 1px solid var(--pos-promo-border);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+  margin-left: 6px;
+  vertical-align: middle;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.nx-badge.is-gift {
+  background-color: var(--pos-promo);
+  border-color: var(--pos-promo);
+  color: #ffffff;
+}
+
+/* The receipt still charges unit_price, so the line total is the gross and the
+   give-away is a discount on it: show both, gross struck through. */
+.nx-total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.2;
+}
+
+.nx-total-gross {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pos-text-muted);
+  text-decoration: line-through;
+}
+
+.nx-total-net {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--pos-promo-text);
 }

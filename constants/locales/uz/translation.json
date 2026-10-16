@@ -954,5 +954,7 @@
   "pos.report_error_button": "Xatolik haqida xabar berish",
   "pos.download_photo": "Rasmni yuklab olish",
   "pos.download_all": "Barchasini yuklab olish",
-  "pos.error_opening": "Ochishda xatolik"
+  "pos.error_opening": "Ochishda xatolik",
+  "pos.nx.badge_title": "N+X aksiya",
+  "pos.nx.free_count": "{{count}} dona bepul"
 }

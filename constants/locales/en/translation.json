@@ -954,5 +954,7 @@
   "pos.report_error_button": "Report an error",
   "pos.download_photo": "Download photo",
   "pos.download_all": "Download all",
-  "pos.error_opening": "Error opening"
+  "pos.error_opening": "Error opening",
+  "pos.nx.badge_title": "N+X promotion",
+  "pos.nx.free_count": "{{count}} free"
 }

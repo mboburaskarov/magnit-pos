@@ -9,6 +9,20 @@ import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
+// What actually came off this line, for the fiscal receipt.
+//
+// An N+X give-away (Акция N+X) is the EXACT line figure the backend recorded, so
+// it is taken as-is. discount_amount carries the same money divided by the line's
+// packs — the shape every other consumer of that field expects — and multiplying
+// it back out leaves a few tiyin against the total the sale was really charged
+// (3 free of 7 at 10 000 reconstructs as 29 999.97).
+const fiscalLineDiscount = (el) => {
+  const nx = Number(el?.nx_discount_amount) || 0
+  if (nx > 0) return nx
+  return get(el, 'discount_amount') * el.quantity + el.discount_unit_amount * el.unit_quantity
+}
+
+
 // Fallback class/package codes used to retry an EPOS request when one or more
 // products fail with their own class_code/package_code.
 const FALLBACK_EPOS_CLASS_CODE = '07616003001000002'
@@ -444,7 +458,7 @@ export const useSaleOperations = ({
           }
         }
         const other = (otherSum * 100).toFixed(2)
-        const discount = get(el, 'discount_amount') * el.quantity + el.discount_unit_amount * el.unit_quantity
+        const discount = fiscalLineDiscount(el)
         const discountSum = parseFloat((discount * 100).toFixed(2))
 
         readyData.push({
@@ -466,7 +480,7 @@ export const useSaleOperations = ({
       } else if (Object.keys(slots).length === 0) {
         // marking items without markingsList data — treat as regular item
         const price = el.total_price
-        const discount = get(el, 'discount_amount') * el.quantity + el.discount_unit_amount * el.unit_quantity
+        const discount = fiscalLineDiscount(el)
         const discountSum = parseFloat((discount * 100).toFixed(2))
         let otherSum = 0
         if (leftLoayCardSum > 0) {
@@ -515,7 +529,18 @@ export const useSaleOperations = ({
             }
           }
           const other = (otherSum * 100).toFixed(2)
-          const discount = el.quantity > index ? get(el, 'discount_amount') * (el.quantity / el.quantity) : el.discount_unit_amount * el.unit_quantity
+          // One row per DataMatrix, so the discount is spread a pack at a time.
+          // For an N+X the per-pack share is a rounded figure, so the LAST pack
+          // carries the remainder and Σ over the slots is exactly the line's
+          // give-away — the same reason `price` above subtracts rather than
+          // recomputing. With no N+X this is the per-pack figure it always was.
+          const nxGiveAway = Number(el?.nx_discount_amount) || 0
+          const perPackDiscount = get(el, 'discount_amount')
+          const discount = el.quantity > index
+            ? nxGiveAway > 0 && index === el.quantity - 1
+              ? nxGiveAway - perPackDiscount * (el.quantity - 1)
+              : perPackDiscount
+            : el.discount_unit_amount * el.unit_quantity
           const discountSum = parseFloat((discount * 100).toFixed(2))
 
           readyData.push({
