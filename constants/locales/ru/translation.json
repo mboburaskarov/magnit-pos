@@ -1070,5 +1070,7 @@
   "pos.terminal.reconciliation": "Сверка итогов",
   "pos.terminal.reconciling": "Сверка…",
   "pos.terminal.reconciliation_done": "Сверка выполнена",
-  "pos.terminal.reconciliation_failed": "Сверка не выполнена"
+  "pos.terminal.reconciliation_failed": "Сверка не выполнена",
+  "pos.nx.badge_title": "Акция N+X",
+  "pos.nx.free_count": "{{count}} бесплатно"
 }

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import thousandDivider from '@utils/thousandDivider'
 import { formatNumberUZS } from '@utils/formatUZS'
-import { ScanBarcode } from 'lucide-react'
+import { Gift, ScanBarcode } from 'lucide-react'
 import QuantityStepper from './QuantityStepper'
 import './PosLayout.css'
 
@@ -128,10 +128,19 @@ export default function ProductTable({
                 // from its prompt, instead of only showing up at payment.
                 const markingMissing = markingMissingById[item.id] || 0
 
+                // N+X promotion (Акция N+X). A line is only DISCOUNTED when
+                // money actually came off it: belonging to a promotion is not
+                // the same thing, and a single unit of a 1+1 belongs while still
+                // paying full price — it shows the rule badge with no «free» count.
+                const nxGiveAway = Number(item.nx_discount_amount) || 0
+                const nxDiscounted = !isStorned && nxGiveAway > 0
+                const inNxPromo = !isStorned && !!item.nx_promo_id
+                const nxGroupClass = inNxPromo ? `pos-row-nx pos-row-nx-${item.nx_group_position || 'only'}` : ''
+
                 return (
                   <tr
                     key={item.id}
-                    className={`pos-table-row ${isSelected ? 'is-selected' : ''} ${isUpdating ? 'pos-row-updating' : ''} ${isStorned ? 'pos-row-storned' : ''} ${markingMissing > 0 ? 'pos-row-needs-marking' : ''}`}
+                    className={`pos-table-row ${isSelected ? 'is-selected' : ''} ${isUpdating ? 'pos-row-updating' : ''} ${isStorned ? 'pos-row-storned' : ''} ${markingMissing > 0 ? 'pos-row-needs-marking' : ''} ${nxGroupClass}`}
                     onClick={() => {
                       if (isStorned) return
                       onSelectRow?.(item.id)
@@ -161,6 +170,19 @@ export default function ProductTable({
                             <ScanBarcode size={12} strokeWidth={2.4} />
                             {t('pos.marking_badge', { count: markingMissing })}
                           </button>
+                        )}
+                        {/* «1+1» plus how many units of THIS line went free, so
+                            the cashier can answer "why is it cheaper" without
+                            opening anything */}
+                        {inNxPromo && (
+                          <span
+                            className={`nx-badge ${nxDiscounted ? 'is-gift' : ''}`}
+                            title={item.nx_promo_name || t('pos.nx.badge_title')}
+                          >
+                            <Gift size={12} strokeWidth={2.4} />
+                            {item.nx_rule || ''}
+                            {nxDiscounted ? ` · ${t('pos.nx.free_count', { count: item.nx_free_quantity || 0 })}` : ''}
+                          </span>
                         )}
                       </div>
                     </td>
@@ -204,7 +226,19 @@ export default function ProductTable({
                       )}
                     </td>
                     <td className='col-price text-right'>{formatNumberUZS(item.unit_price)}</td>
-                    <td className='col-total text-right font-bold'>{formatNumberUZS(item.total_price)}</td>
+                    <td className='col-total text-right font-bold'>
+                      {nxDiscounted ? (
+                        // gross struck through, net beneath it: the receipt keeps
+                        // charging unit_price, so the line total is the gross and
+                        // the give-away is a discount on it
+                        <div className='nx-total'>
+                          <span className='nx-total-gross'>{formatNumberUZS(item.total_price)}</span>
+                          <span className='nx-total-net'>{formatNumberUZS(Number(item.total_price) - nxGiveAway)}</span>
+                        </div>
+                      ) : (
+                        formatNumberUZS(item.total_price)
+                      )}
+                    </td>
                   </tr>
                 )
               })}

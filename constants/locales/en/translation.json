@@ -985,5 +985,7 @@
   "pos.terminal.reconciliation": "Reconciliation",
   "pos.terminal.reconciling": "Reconciling…",
   "pos.terminal.reconciliation_done": "Reconciliation done",
-  "pos.terminal.reconciliation_failed": "Reconciliation failed"
+  "pos.terminal.reconciliation_failed": "Reconciliation failed",
+  "pos.nx.badge_title": "N+X promotion",
+  "pos.nx.free_count": "{{count}} free"
 }

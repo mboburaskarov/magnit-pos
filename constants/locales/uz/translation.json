@@ -985,5 +985,7 @@
   "pos.terminal.reconciliation": "Yakuniy svertka",
   "pos.terminal.reconciling": "Svertka…",
   "pos.terminal.reconciliation_done": "Svertka bajarildi",
-  "pos.terminal.reconciliation_failed": "Svertka bajarilmadi"
+  "pos.terminal.reconciliation_failed": "Svertka bajarilmadi",
+  "pos.nx.badge_title": "N+X aksiya",
+  "pos.nx.free_count": "{{count}} dona bepul"
 }

@@ -495,6 +495,12 @@ const useStyles = makeStyles((theme) => {
 })
 
 const fmt = (n) => thousandDivider(Math.round(Math.abs(Number(n) || 0)))
+// Same formatting, but keeps a minus sign. fmt() drops it (its callers add their
+// own + / − around a difference), which silently turned an expected figure that
+// came out negative into a positive one — a shift can refund more on a tender than
+// it sold on it, since a return is booked to the shift that rang it and not to the
+// one that made the sale.
+const fmtSigned = (n) => (Number(n) < 0 ? `−${fmt(n)}` : fmt(n))
 const parseAmount = (raw) => Number(String(raw || '').replace(',', '.')) || 0
 
 const formatAmountDisplay = (raw) => {
@@ -548,20 +554,30 @@ function CloseShiftPage() {
   const operationDetail = get(operationDetailRes, 'data.data', {})
   const cashExpenses = (operationDetail.expenses || []).reduce((sum, e) => (e.payment_kind === 'cash' ? sum + (e.amount || 0) : sum), 0)
   const expectedCash = (operationDetail.opened_amount || 0) + (operationDetail.cash_net_amount || 0) - cashExpenses
+  // What a payment type is worth AT CLOSE: the `net_*` figure, which is the
+  // shift's sales on that type MINUS the returns refunded to it. The `sales_*`
+  // figures next to them count finished sales only, so on a shift that refunded
+  // a card they overstate what the acquirer is holding — one real shift sold
+  // 60 581 422 on Uzcard and refunded 54 100 000 of it, and this screen used to
+  // ask the cashier to find the whole 60 581 422. Cash has always been reported
+  // net (cash_net_amount, above), so this also makes every row mean the same
+  // thing. `??` and not `||`: a net figure of 0 is a real answer, and only a
+  // response that predates the field should fall back to the gross one.
+  const netOf = (type) => operationDetail[`net_${type}`] ?? operationDetail[`sales_${type}`] ?? 0
   // Money that actually arrived through an acquirer. Balance redemption
-  // (sales_loyalty_card) is intentionally excluded: it discharges bonuses the
-  // company already accrued, no funds move, so it must not inflate the cashless
-  // amount posted back as close_cashless_amount.
+  // (loyalty_card) is intentionally excluded: it discharges bonuses the company
+  // already accrued, no funds move, so it must not inflate the cashless amount
+  // posted back as close_cashless_amount.
   const availableCashless =
     (operationDetail.open_cashless_amount || 0) +
-    (operationDetail.sales_uzcard || 0) +
-    (operationDetail.sales_humo || 0) +
-    (operationDetail.sales_click || 0) +
-    (operationDetail.sales_payme || 0) +
-    (operationDetail.sales_uzum || 0) +
-    (operationDetail.sales_munis || 0) +
-    (operationDetail.sales_alif || 0) +
-    (operationDetail.sales_uzum_tezkor || 0)
+    netOf('uzcard') +
+    netOf('humo') +
+    netOf('click') +
+    netOf('payme') +
+    netOf('uzum') +
+    netOf('munis') +
+    netOf('alif') +
+    netOf('uzum_tezkor')
 
   const stateRef = useRef({})
   stateRef.current = { amounts, company, availableCashless }
@@ -741,29 +757,35 @@ function CloseShiftPage() {
   }
 
   // Automatically reconciled payment types — same 58px rows, locked chip in "Факт".
+  // A rarely-used tender takes a row when the shift touched it AT ALL: a type that
+  // sold and was then fully refunded nets to 0, and leaving that row out would hide
+  // the refund instead of showing it as 0.
+  const touched = (type) => Boolean(netOf(type) || operationDetail[`sales_${type}`])
   const autoRows = [
-    { key: 'click', label: 'Click', img: '/images/click.png', amount: operationDetail.sales_click || 0 },
-    { key: 'payme', label: 'Payme', img: '/images/payme.png', amount: operationDetail.sales_payme || 0 },
-    { key: 'uzum', label: 'Uzum', img: '/uzum.png', amount: operationDetail.sales_uzum || 0 },
-    { key: 'uzqr', label: 'UzQR', img: null, amount: operationDetail.sales_munis || 0 },
+    { key: 'click', label: 'Click', img: '/images/click.png', amount: netOf('click') },
+    { key: 'payme', label: 'Payme', img: '/images/payme.png', amount: netOf('payme') },
+    { key: 'uzum', label: 'Uzum', img: '/uzum.png', amount: netOf('uzum') },
+    // UzQR is the Munis QR tender (sales.munis) — the QR the customer scans at the
+    // till, see PosMunisQrModal.
+    { key: 'uzqr', label: 'UzQR', img: null, amount: netOf('munis') },
     // Rarely used, so they show up only on the shifts that actually took them.
-    ...(operationDetail.sales_alif ? [{ key: 'alif', label: 'Alif', img: null, amount: operationDetail.sales_alif }] : []),
-    ...(operationDetail.sales_uzum_tezkor
-      ? [{ key: 'uzumtezkor', label: 'Uzum Tezkor', img: '/uzum.png', amount: operationDetail.sales_uzum_tezkor }]
+    ...(touched('alif') ? [{ key: 'alif', label: 'Alif', img: null, amount: netOf('alif') }] : []),
+    ...(touched('uzum_tezkor')
+      ? [{ key: 'uzumtezkor', label: 'Uzum Tezkor', img: '/uzum.png', amount: netOf('uzum_tezkor') }]
       : []),
     // Balance is part of the shift's revenue but is not money to hand over, so it
     // sits among the locked rows and stays out of the counted totals below.
-    ...(operationDetail.sales_loyalty_card
-      ? [{ key: 'balans', label: 'Balans', img: null, amount: operationDetail.sales_loyalty_card }]
+    ...(touched('loyalty_card')
+      ? [{ key: 'balans', label: 'Balans', img: null, amount: netOf('loyalty_card') }]
       : []),
   ]
-  const hasBalanceRow = Boolean(operationDetail.sales_loyalty_card)
+  const hasBalanceRow = touched('loyalty_card')
 
   // Re-countable rows; empty entry shows a neutral badge (no scary red until typed).
   const moneyFields = [
     { key: 'actual', label: t('close_shift.cash_label'), expected: expectedCash, img: null },
-    { key: 'uzcard', label: 'Uzcard', expected: operationDetail.sales_uzcard || 0, img: '/images/uzcard.png' },
-    { key: 'humo', label: 'Humo', expected: operationDetail.sales_humo || 0, img: '/images/humo.png' },
+    { key: 'uzcard', label: 'Uzcard', expected: netOf('uzcard'), img: '/images/uzcard.png' },
+    { key: 'humo', label: 'Humo', expected: netOf('humo'), img: '/images/humo.png' },
   ].map((f) => {
     const empty = amounts[f.key] === ''
     const d = parseAmount(amounts[f.key]) - f.expected
@@ -1045,7 +1067,7 @@ function CloseShiftPage() {
                         </span>
                         {f.label}
                       </span>
-                      <span className={classes.cellExpected}>{fmt(f.expected)}</span>
+                      <span className={classes.cellExpected}>{fmtSigned(f.expected)}</span>
                       <span className={classes.cellRight}>{renderField(amounts[f.key], active)}</span>
                       <span className={classes.cellRight}>{renderDiffPill(f)}</span>
                     </Box>
@@ -1057,13 +1079,13 @@ function CloseShiftPage() {
                       <span className={classes.glyphWrap}>{o.img ? <img src={o.img} alt='' className={classes.brandLogo} /> : <CashlessGlyph />}</span>
                       {o.label}
                     </span>
-                    <span className={`${classes.cellExpected} ${classes.cellExpectedAuto}`}>{fmt(o.amount)}</span>
+                    <span className={`${classes.cellExpected} ${classes.cellExpectedAuto}`}>{fmtSigned(o.amount)}</span>
                     <span className={classes.cellRight}>
                       <span className={classes.autoChip}>
                         <span className={classes.autoChipLabel}>
                           <Lock size={11} strokeWidth={2.4} color='#B6BAC4' /> {t('close_shift.auto_label')}
                         </span>
-                        <span className={classes.autoChipVal}>{fmt(o.amount)}</span>
+                        <span className={classes.autoChipVal}>{fmtSigned(o.amount)}</span>
                       </span>
                     </span>
                     <span className={classes.cellRight}>
@@ -1076,7 +1098,7 @@ function CloseShiftPage() {
               <Box className={classes.tfoot}>
                 <span className={classes.tfootLabel}>{t('close_shift.total')}</span>
                 <span className={classes.tfootNum}>
-                  {fmt(totalExpected)} <span className={classes.tfootUnit}>UZS</span>
+                  {fmtSigned(totalExpected)} <span className={classes.tfootUnit}>UZS</span>
                 </span>
                 <span className={classes.tfootNum} style={{ paddingRight: 11 }}>
                   {fmt(totalEntered)} <span className={classes.tfootUnit}>UZS</span>
