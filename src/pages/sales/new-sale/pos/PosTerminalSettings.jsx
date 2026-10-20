@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CreditCard, RefreshCw, Receipt, Search } from 'lucide-react'
+import { CreditCard, RefreshCw, Receipt, Search, Plug } from 'lucide-react'
 import { success, error } from '@utils/toast'
 import {
   TERMINAL_STATE,
@@ -25,23 +25,34 @@ const buttonStyle = {
 /**
  * Bank payment terminal — status panel in the devices settings modal.
  *
- * Nothing is configured from here: the local device agent finds the terminal
- * on its USB port and the payment screen uses it automatically. This answers
- * the two questions worth asking while setting a cashbox up — "is it detected"
- * and "does it answer" — plus «Сверка итогов» on demand, which is otherwise
- * only run at shift close.
+ * Nothing is configured from here: the local device agent knows which driver
+ * this till runs and the payment screen uses it automatically. This answers the
+ * two questions worth asking while setting a cashbox up — "is it detected" and
+ * "does it answer" — plus «Сверка итогов» on demand, which is otherwise only
+ * run at shift close.
+ *
+ * The panel reshapes itself for the ARCUS driver, because the two have
+ * different questions. A Rahmat terminal is found by walking the machine's
+ * serial ports, so the useful diagnosis is a list of what is there. ARCUS is a
+ * program installed on this machine that owns the port itself, so the question
+ * is whether it is installed — and it offers something the serial driver cannot:
+ * a documented, money-safe connection check (/o72) that asks the pinpad
+ * directly whether it is answering.
  */
 export default function PosTerminalSettings({ t }) {
   const [info, setInfo] = useState(null) // the agent's report, or null when unreachable
   const [isChecking, setIsChecking] = useState(true)
   const [isProbing, setIsProbing] = useState(false)
   const [isReconciling, setIsReconciling] = useState(false)
+  const [isPinging, setIsPinging] = useState(false)
 
-  const refresh = async ({ probe = false } = {}) => {
+  const refresh = async ({ probe = false, ping = false } = {}) => {
     if (probe) setIsProbing(true)
+    else if (ping) setIsPinging(true)
     else setIsChecking(true)
-    setInfo(await terminalInfo({ probe }))
+    setInfo(await terminalInfo({ probe, ping }))
     setIsProbing(false)
+    setIsPinging(false)
     setIsChecking(false)
   }
 
@@ -67,12 +78,16 @@ export default function PosTerminalSettings({ t }) {
   }
 
   const detected = Boolean(info?.detected)
+  const isArcus = info?.transport === 'arcus'
+  // Where the terminal was found. On ARCUS that is a directory rather than a
+  // port — ARCUS holds the port, we hold ARCUS.
+  const location = info?.port || info?.dir || ''
   const statusText = isChecking
     ? t('pos.terminal.checking')
     : !info
       ? t('pos.terminal.agent_unreachable')
       : detected
-        ? t('pos.terminal.detected', { port: info.port })
+        ? t('pos.terminal.detected', { port: location })
         : info.message || t('pos.terminal.not_detected')
 
   return (
@@ -110,7 +125,33 @@ export default function PosTerminalSettings({ t }) {
         {statusText}
       </div>
 
-      <div style={{ fontSize: '12px', color: '#6f6f6f' }}>{t('pos.terminal.setup_hint')}</div>
+      <div style={{ fontSize: '12px', color: '#6f6f6f' }}>
+        {t(isArcus ? 'pos.terminal.setup_hint_arcus' : 'pos.terminal.setup_hint')}
+      </div>
+
+      {/* The pinpad's own answer to /o72, when it has been asked for. Separate
+          from the status line above, which only says whether ARCUS is there. */}
+      {isArcus && info?.ping && (
+        <div
+          style={{
+            padding: '10px 14px',
+            borderRadius: '8px',
+            fontSize: '13px',
+            fontWeight: '600',
+            backgroundColor: info.ping.ok ? '#e9f8ef' : '#fdecec',
+            color: info.ping.ok ? '#1e9e52' : '#e23a32',
+          }}
+        >
+          {info.ping.message || (info.ping.ok ? t('pos.terminal.ping_ok') : t('pos.terminal.ping_failed'))}
+          {info.ping.response_code ? ` (${info.ping.response_code})` : ''}
+        </div>
+      )}
+
+      {isArcus && Array.isArray(info?.schemes) && info.schemes.length > 0 && (
+        <div style={{ fontSize: '12px', color: '#374151' }}>
+          {t('pos.terminal.schemes')}: <span style={{ fontFamily: 'monospace' }}>{info.schemes.join(', ')}</span>
+        </div>
+      )}
 
       {/* With nothing detected, what the machine actually offers is the whole
           diagnosis: an empty list means integration mode is not running on the
@@ -148,18 +189,34 @@ export default function PosTerminalSettings({ t }) {
           <RefreshCw size={16} />
           {isChecking ? t('pos.terminal.checking') : t('pos.terminal.check')}
         </button>
-        {/* Probing writes to every serial port, so it is a deliberate button
-            rather than something the status read does on its own. */}
-        <button
-          type='button'
-          className='btn-secondary-touch'
-          style={buttonStyle}
-          onClick={() => refresh({ probe: true })}
-          disabled={isProbing}
-        >
-          <Search size={16} />
-          {isProbing ? t('pos.terminal.probing') : t('pos.terminal.probe')}
-        </button>
+        {/* Two different second buttons, because the two drivers are asked
+            different things. Probing writes a payment frame at every serial
+            port on the machine, which is why it is a deliberate button and not
+            part of the status read; the ARCUS connection check talks to the
+            pinpad and so must not run on a loop either. */}
+        {isArcus ? (
+          <button
+            type='button'
+            className='btn-secondary-touch'
+            style={buttonStyle}
+            onClick={() => refresh({ ping: true })}
+            disabled={isPinging || !detected}
+          >
+            <Plug size={16} />
+            {isPinging ? t('pos.terminal.pinging') : t('pos.terminal.ping')}
+          </button>
+        ) : (
+          <button
+            type='button'
+            className='btn-secondary-touch'
+            style={buttonStyle}
+            onClick={() => refresh({ probe: true })}
+            disabled={isProbing}
+          >
+            <Search size={16} />
+            {isProbing ? t('pos.terminal.probing') : t('pos.terminal.probe')}
+          </button>
+        )}
         <button
           type='button'
           className='btn-secondary-touch'

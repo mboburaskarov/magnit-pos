@@ -977,6 +977,12 @@
   "pos.terminal.settings_title": "Payment terminal",
   "pos.terminal.settings_subtitle": "Card payments are driven from the till",
   "pos.terminal.setup_hint": "On the terminal: Rahmat POS → Settings → Integration settings (PIN 1234) → Start → «COM port [USB]». The cable must be in a USB 3.0 port.",
+  "pos.terminal.setup_hint_arcus": "ARCUS 2 must be installed on this machine (C:\\Arcus2). On the pinpad: Settings (PIN 1937 → 55555) → COM port settings → \"Usbdev-Arcus\". The sale screen is the working screen.",
+  "pos.terminal.ping": "Pinpad link",
+  "pos.terminal.pinging": "Checking…",
+  "pos.terminal.ping_ok": "The pinpad answers",
+  "pos.terminal.ping_failed": "The pinpad does not answer",
+  "pos.terminal.schemes": "Configured schemes",
   "pos.terminal.ports_seen": "Ports found",
   "pos.terminal.no_ports": "This machine reports no serial ports at all",
   "pos.terminal.check": "Check",
@@ -987,5 +993,7 @@
   "pos.terminal.reconciliation_done": "Reconciliation done",
   "pos.terminal.reconciliation_failed": "Reconciliation failed",
   "pos.nx.badge_title": "N+X promotion",
-  "pos.nx.free_count": "{{count}} free"
+  "pos.nx.free_count": "{{count}} free",
+  "pos.terminal.receipt_no": "Receipt no.",
+  "pos.terminal.auth_code": "Auth code"
 }

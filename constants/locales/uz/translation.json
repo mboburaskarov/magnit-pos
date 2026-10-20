@@ -977,6 +977,12 @@
   "pos.terminal.settings_title": "To‘lov terminali",
   "pos.terminal.settings_subtitle": "Karta bilan to‘lov kassa orqali boshqariladi",
   "pos.terminal.setup_hint": "Terminalda: Rahmat POS → Sozlamalar → Integratsiya sozlamalari (PIN 1234) → Ishga tushirish → «COM port [USB]». Kabel USB 3.0 portga ulangan bo‘lsin.",
+  "pos.terminal.setup_hint_arcus": "ARCUS 2 shu kompyuterda o‘rnatilgan bo‘lishi kerak (C:\\Arcus2). Pin-padda: Sozlamalar (PIN 1937 → 55555) → COM-port sozlamalari → «Usbdev-Arcus». «Sotuv rejimi» ekrani ishchi ekran.",
+  "pos.terminal.ping": "Pin-pad bilan aloqa",
+  "pos.terminal.pinging": "Tekshirilmoqda…",
+  "pos.terminal.ping_ok": "Pin-pad javob beradi",
+  "pos.terminal.ping_failed": "Pin-pad javob bermaydi",
+  "pos.terminal.schemes": "Sozlangan sxemalar",
   "pos.terminal.ports_seen": "Topilgan portlar",
   "pos.terminal.no_ports": "Bu kompyuterda hech qanday port yo‘q",
   "pos.terminal.check": "Tekshirish",
@@ -987,5 +993,7 @@
   "pos.terminal.reconciliation_done": "Svertka bajarildi",
   "pos.terminal.reconciliation_failed": "Svertka bajarilmadi",
   "pos.nx.badge_title": "N+X aksiya",
-  "pos.nx.free_count": "{{count}} dona bepul"
+  "pos.nx.free_count": "{{count}} dona bepul",
+  "pos.terminal.receipt_no": "Chek №",
+  "pos.terminal.auth_code": "Avt. kodi"
 }

@@ -1062,6 +1062,12 @@
   "pos.terminal.settings_title": "Платёжный терминал",
   "pos.terminal.settings_subtitle": "Оплата картой управляется из кассы",
   "pos.terminal.setup_hint": "На терминале: Rahmat POS → Настройки → Настройки интеграции (PIN 1234) → Запустить → «COM порт [USB]». Кабель — в порт USB 3.0.",
+  "pos.terminal.setup_hint_arcus": "ARCUS 2 должен быть установлен на этом компьютере (C:\\Arcus2). На пин-паде: Настройки (PIN 1937 → 55555) → настройки COM-порта → «Usbdev-Arcus». Экран «Режим продажи» — рабочий.",
+  "pos.terminal.ping": "Связь с пин-падом",
+  "pos.terminal.pinging": "Проверяем…",
+  "pos.terminal.ping_ok": "Пин-пад отвечает",
+  "pos.terminal.ping_failed": "Пин-пад не отвечает",
+  "pos.terminal.schemes": "Настроенные схемы",
   "pos.terminal.ports_seen": "Найденные порты",
   "pos.terminal.no_ports": "На этом компьютере нет ни одного порта",
   "pos.terminal.check": "Проверить",
@@ -1072,5 +1078,7 @@
   "pos.terminal.reconciliation_done": "Сверка выполнена",
   "pos.terminal.reconciliation_failed": "Сверка не выполнена",
   "pos.nx.badge_title": "Акция N+X",
-  "pos.nx.free_count": "{{count}} бесплатно"
+  "pos.nx.free_count": "{{count}} бесплатно",
+  "pos.terminal.receipt_no": "Чек №",
+  "pos.terminal.auth_code": "Код авт."
 }

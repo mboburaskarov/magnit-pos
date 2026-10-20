@@ -1,8 +1,23 @@
 import axios from 'axios'
 
 /**
- * Bank payment terminal — the "Rahmat POS" app on a Sunmi P3, Multicard
- * acquiring, plugged into the till over USB.
+ * Bank payment terminal, driven from the till.
+ *
+ * Two of them exist behind this one client, and the POS does not care which a
+ * till has: the agent is configured for one driver and answers in the same
+ * shape either way.
+ *
+ *   rahmat  the "Rahmat POS" app on a Sunmi P3, Multicard acquiring, reached
+ *           over USB or the local network.
+ *   arcus   a PAX pinpad on SmartVista, reached through the ARCUS 2 module
+ *           installed on the till.
+ *
+ * The one place the difference surfaces here is a REFUND. On Rahmat a reversal
+ * is addressed by the original payment's order_id; on ARCUS it is addressed by
+ * the receipt number the terminal printed, optionally with the authorisation
+ * code, which together let the terminal find the operation in its own journal
+ * without the customer's card. So a refund sends all of them and the agent
+ * uses what its driver needs.
  *
  * Until now a card sale was two disconnected acts: the cashier charged the card
  * on a standalone terminal and then typed the tender in here by hand. The sale
@@ -13,9 +28,9 @@ import axios from 'axios'
  * Transport is the local magnit-device-agent, the only process on the till that
  * can open a COM port:
  *
- *   POST /payment-terminal/pay            { order_id, amount }  — charge a card
- *   POST /payment-terminal/refund         { order_id }          — refund an earlier payment
- *   POST /payment-terminal/reconciliation                       — «Сверка итогов»
+ *   POST /payment-terminal/pay            { order_id, amount, scheme }
+ *   POST /payment-terminal/refund         { order_id, receipt_no, auth_code, amount, scheme }
+ *   POST /payment-terminal/reconciliation { scheme }            — «Сверка итогов»
  *   POST /payment-terminal/cancel                               — reject what is running
  *   GET  /payment-terminal/operation                            — poll the outcome
  *   GET  /payment-terminal/info                                 — which port was detected
@@ -109,27 +124,61 @@ export function fromTiyin(tiyin) {
  * Start a card payment. Resolves with the pending operation; the caller polls.
  * Rejects when the terminal could not even be handed the request.
  */
-export async function terminalPay({ orderId, amount }) {
+export async function terminalPay({ orderId, amount, scheme = '' }) {
   const data = await request('post', '/payment-terminal/pay', {
     order_id: orderId,
     amount: toTiyin(amount),
+    // Which tender button the cashier pressed, 'uzcard' or 'humo'. A Rahmat
+    // terminal ignores it — it reads the card and decides — while ARCUS needs
+    // it, because the acquirer maps the two schemes onto different ops.ini and
+    // cashreg.ini files and therefore different installations.
+    scheme,
   })
   return data?.operation || null
 }
 
 /**
- * Start a refund of an earlier payment. orderId is the ORIGINAL payment's id —
- * it is the only thing that tells the acquirer which transaction to reverse —
- * and the customer has to present the same card at the terminal.
+ * Start a refund of an earlier payment.
+ *
+ * All four addressing fields are sent and the agent's driver takes what it
+ * needs, because there is no single answer to "what identifies the operation
+ * being reversed":
+ *
+ *   orderId    the ORIGINAL payment's id — what `refund_terminal` carries on
+ *              the Rahmat protocol, which has no id of its own for a reversal.
+ *   receiptNo  the receipt number the ARCUS terminal printed. «Отмена по
+ *              номеру чека» is addressed by it, and it is the normal path.
+ *   authCode   with the amount and the last four digits of the PAN, this lets
+ *              the terminal find the operation in its journal and reverse it
+ *              WITHOUT the customer's card — including on a later day, after
+ *              the batch has been closed.
+ *   amount     the sum to return. A «Возврат» performs a new operation for it.
+ *
+ * All of them come off the ERP's record of the original payment, which is why
+ * the sale has to be loaded before it can be refunded.
  */
-export async function terminalRefund({ orderId }) {
-  const data = await request('post', '/payment-terminal/refund', { order_id: orderId })
+export async function terminalRefund({ orderId, receiptNo = '', authCode = '', amount = 0, scheme = '' }) {
+  const data = await request('post', '/payment-terminal/refund', {
+    order_id: orderId,
+    receipt_no: receiptNo,
+    auth_code: authCode,
+    amount: amount ? toTiyin(amount) : 0,
+    scheme,
+  })
   return data?.operation || null
 }
 
-/** Start the end-of-day settlement. Polled like everything else. */
-export async function terminalReconciliation() {
-  const data = await request('post', '/payment-terminal/reconciliation', {})
+/**
+ * Start the end-of-day settlement. Polled like everything else.
+ *
+ * NOTE for a two-profile ARCUS till: this settles the configuration `scheme`
+ * selects (the default one when it is empty). Whether a till configured for
+ * both Uzcard and Humo needs a settlement per configuration is a question for
+ * the acquirer — it depends on whether the two share a batch — and running one
+ * is deliberately not guessed at here.
+ */
+export async function terminalReconciliation({ scheme = '' } = {}) {
+  const data = await request('post', '/payment-terminal/reconciliation', { scheme })
   return data?.operation || null
 }
 
@@ -163,9 +212,10 @@ export async function terminalOperation() {
  * exactly as before this feature existed, with the cashier charging the card
  * on a standalone terminal and typing the tender in.
  */
-export async function terminalInfo({ probe = false } = {}) {
+export async function terminalInfo({ probe = false, ping = false } = {}) {
+  const query = [probe ? 'probe=1' : '', ping ? 'ping=1' : ''].filter(Boolean).join('&')
   try {
-    return await request('get', `/payment-terminal/info${probe ? '?probe=1' : ''}`, null)
+    return await request('get', `/payment-terminal/info${query ? `?${query}` : ''}`, null)
   } catch {
     return null
   }
@@ -222,14 +272,28 @@ export function terminalPaymentPayload(operation, { parentOrderId } = {}) {
   return {
     order_id: operation.order_id,
     parent_order_id: parentOrderId || '',
+    // Which integration charged the card, as the agent reports it. An agent
+    // from before the second driver sends nothing, and the ERP reads an empty
+    // provider as rahmat — which is what such a till is.
+    provider: operation.provider || '',
     status: operation.state,
     amount: fromTiyin(operation.amount),
     rrn: operation.rrn || '',
     card_pan: operation.card_pan || '',
-    ps: operation.ps || '',
+    // "The payment system as the terminal named the card": Rahmat answers in
+    // `ps` (its QR methods only), ARCUS in card_type / application_label.
+    ps: operation.ps || operation.card_type || '',
     desc_ru: operation.desc_ru || '',
     desc_uz: operation.desc_uz || '',
     transport: operation.transport || '',
+    // ARCUS only, and not diagnostics: receipt_no is what a reversal is
+    // addressed by and auth_code is what finds the operation when the customer
+    // comes back without the card. The terminal printed them and this is the
+    // only copy that reaches the ERP.
+    response_code: operation.response_code || '',
+    auth_code: operation.auth_code || '',
+    receipt_no: operation.receipt_no || '',
+    terminal_id: operation.terminal_id || '',
     response: operation.response ?? null,
   }
 }

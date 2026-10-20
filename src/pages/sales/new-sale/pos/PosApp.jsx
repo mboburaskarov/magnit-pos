@@ -459,7 +459,23 @@ export default function PosApp() {
   // A return sale refunds the card the parent sale was charged on; the server
   // attaches that operation to the return's own read.
   const isReturnSale = get(cashBoxDetails, 'data.data.sale_type') === 'RETURN'
-  const terminalRefundOrderId = get(cashBoxDetails, 'data.data.parent_terminal_transaction.order_id', '')
+  const parentTerminalTx = get(cashBoxDetails, 'data.data.parent_terminal_transaction', null)
+  const terminalRefundOrderId = get(parentTerminalTx, 'order_id', '')
+  const terminalRefundReceiptNo = get(parentTerminalTx, 'receipt_no', '')
+  const terminalRefundAuthCode = get(parentTerminalTx, 'auth_code', '')
+
+  // Can the card actually be reversed from the till? The answer depends on the
+  // integration that charged it, because the two address a reversal by
+  // different things — and a return with no usable basis has to fall through to
+  // the old flow rather than opening a modal that cannot succeed.
+  //
+  // ARCUS reverses by the receipt number the terminal printed (or finds the
+  // operation by its authorisation code); our own order_id means nothing to it.
+  // Rahmat reverses by that order_id and has neither of the others.
+  const terminalRefundable =
+    get(parentTerminalTx, 'provider', '') === 'arcus'
+      ? Boolean(terminalRefundReceiptNo || terminalRefundAuthCode)
+      : Boolean(terminalRefundOrderId)
 
   const terminalCardAmount = useMemo(
     () => paymentsList.filter((p) => p.type === 'card').reduce((sum, p) => sum + Number(p.amount || 0), 0),
@@ -1160,11 +1176,12 @@ export default function PosApp() {
     // till without one falls through to the old flow, where the cashier has
     // already charged the card on a standalone terminal by hand.
     //
-    // On a return the same modal refunds the card instead, addressed by the
-    // ORIGINAL payment's order_id. A return whose original was not paid on the
-    // terminal (cash, or a sale from before this feature) has no order_id to
-    // reverse, so it falls through and is refunded the way it always was.
-    if (terminalDetected && terminalCardAmount > 0 && (!isReturnSale || terminalRefundOrderId)) {
+    // On a return the same modal refunds the card instead, addressed by what
+    // the original payment left behind — see terminalRefundable. A return whose
+    // original was not paid on the terminal (cash, or a sale from before this
+    // feature) has nothing to reverse, so it falls through and is refunded the
+    // way it always was.
+    if (terminalDetected && terminalCardAmount > 0 && (!isReturnSale || terminalRefundable)) {
       setShowTerminalModal(true)
       return
     }
@@ -2442,7 +2459,10 @@ export default function PosApp() {
         mode={isReturnSale ? 'refund' : 'pay'}
         saleId={id}
         amount={terminalCardAmount}
+        scheme={cardPaymentType || ''}
         refundOrderId={terminalRefundOrderId}
+        refundReceiptNo={terminalRefundReceiptNo}
+        refundAuthCode={terminalRefundAuthCode}
         onDone={handleTerminalApproved}
         onCancel={() => { setShowTerminalModal(false); clearPOSActionFocus() }}
         t={t}

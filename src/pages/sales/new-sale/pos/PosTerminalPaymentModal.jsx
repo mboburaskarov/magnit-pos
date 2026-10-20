@@ -74,7 +74,14 @@ function PosTerminalPaymentModal({
   mode = 'pay', // 'pay' | 'refund'
   saleId,
   amount,
+  scheme = '', // 'uzcard' | 'humo' — selects the ARCUS configuration
   refundOrderId, // the ORIGINAL payment's order_id, for mode='refund'
+  // The rest of what addresses a reversal, read off the original payment. Which
+  // of these is required depends on the driver: Rahmat reverses by order_id,
+  // ARCUS by the receipt number the terminal printed (and with the auth code,
+  // without the customer's card at all). All are sent; the agent picks.
+  refundReceiptNo = '',
+  refundAuthCode = '',
   onDone,
   onCancel,
   t,
@@ -180,8 +187,14 @@ function PosTerminalPaymentModal({
         setStatus('starting')
         try {
           const started = isRefund
-            ? await terminalRefund({ orderId: refundOrderId })
-            : await terminalPay({ orderId, amount })
+            ? await terminalRefund({
+                orderId: refundOrderId,
+                receiptNo: refundReceiptNo,
+                authCode: refundAuthCode,
+                amount,
+                scheme,
+              })
+            : await terminalPay({ orderId, amount, scheme })
           if (stopped) return
           operationId = started?.operation_id || null
           setOperation(started)
@@ -212,6 +225,9 @@ function PosTerminalPaymentModal({
     return () => {
       stopped = true
     }
+    // scheme and the two refund-basis props are deliberately NOT dependencies:
+    // they are fixed for a given sale, and a re-run of this effect starts a
+    // second card operation.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, saleId, mode, amount, refundOrderId, attempt])
 
@@ -309,10 +325,22 @@ function PosTerminalPaymentModal({
             <div style={{ fontSize: 18, fontWeight: 700 }}>
               {isRefund ? t('pos.terminal.refunded') : t('pos.terminal.approved')}
             </div>
-            {operation?.card_pan && (
-              <div className='pos-app-scan-desc' style={{ fontSize: 13, opacity: 0.7 }}>
+            {(operation?.card_pan || operation?.receipt_no) && (
+              <div className='pos-app-scan-desc' style={{ fontSize: 13, opacity: 0.7, textAlign: 'center' }}>
                 {operation.card_pan}
                 {operation.rrn ? ` · RRN ${operation.rrn}` : ''}
+                {/* The receipt number and the authorisation code are what a
+                    reversal is addressed by on ARCUS. They are printed on the
+                    terminal's own slip, and showing them here is what lets a
+                    cashier read one back to support without digging the paper
+                    out of the bin. */}
+                {operation.receipt_no ? (
+                  <>
+                    <br />
+                    {t('pos.terminal.receipt_no')}: {operation.receipt_no}
+                    {operation.auth_code ? ` · ${t('pos.terminal.auth_code')}: ${operation.auth_code}` : ''}
+                  </>
+                ) : null}
               </div>
             )}
           </div>
