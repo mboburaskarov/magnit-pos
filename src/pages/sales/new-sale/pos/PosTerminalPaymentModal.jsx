@@ -144,6 +144,19 @@ function PosTerminalPaymentModal({
         setMessage(op.desc_ru || op.desc_uz || t('pos.terminal.declined'))
         return
       }
+      // A cancel the CASHIER asked for is not an outcome nobody knows. The
+      // card was not charged as far as the till is aware, nothing was
+      // submitted, and the screen that says "the card may have been charged"
+      // would send someone hunting for money that never moved.
+      //
+      // What it must still say is the part the till cannot do: killing the
+      // operation stops US waiting, and the pinpad keeps the amount on screen
+      // until its red key is pressed.
+      if (op.cancelled) {
+        setStatus('cancelled')
+        setMessage(op.desc_ru || op.desc_uz || '')
+        return
+      }
       setStatus('failed')
       setMessage(op.error || op.desc_ru || t('pos.terminal.unknown_desc'))
     }
@@ -404,6 +417,30 @@ function PosTerminalPaymentModal({
           </div>
         )}
 
+        {status === 'cancelled' && (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 10,
+              padding: '18px 0',
+              color: '#6f6f6f',
+            }}
+          >
+            <XCircle size={64} strokeWidth={2.5} />
+            <div style={{ fontSize: 17, fontWeight: 700 }}>{t('pos.terminal.cancelled')}</div>
+            <div className='pos-app-scan-desc' style={{ fontSize: 13, textAlign: 'center' }}>
+              {t('pos.terminal.cancelled_desc')}
+            </div>
+            {message && (
+              <div className='pos-app-scan-desc' style={{ fontSize: 12, opacity: 0.7 }}>
+                {message}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className='pos-security-actions'>
           <button
             type='button'
@@ -415,7 +452,7 @@ function PosTerminalPaymentModal({
               ? t('pos.terminal.cancel')
               : t('pos.security.cancel')}
           </button>
-          {(status === 'declined' || status === 'failed' || status === 'unresolved') && (
+          {(status === 'declined' || status === 'failed' || status === 'unresolved' || status === 'cancelled') && (
             <button
               type='button'
               onClick={() => setAttempt((n) => n + 1)}

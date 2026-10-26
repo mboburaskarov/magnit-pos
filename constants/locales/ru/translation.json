@@ -1054,6 +1054,8 @@
   "pos.terminal.unfinished_desc": "Проверьте экран терминала: предыдущий платёж мог пройти. Убедитесь перед повтором.",
   "pos.terminal.cancel": "Отменить",
   "pos.terminal.cancelling": "Отменяем…",
+  "pos.terminal.cancelled": "Операция отменена",
+  "pos.terminal.cancelled_desc": "С карты ничего не списано. Если на терминале всё ещё горит сумма — нажмите на нём красную кнопку.",
   "pos.terminal.unavailable": "Терминал недоступен",
   "pos.terminal.checking": "Проверка…",
   "pos.terminal.agent_unreachable": "Агент устройств недоступен",

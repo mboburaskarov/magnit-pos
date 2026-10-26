@@ -969,6 +969,8 @@
   "pos.terminal.unfinished_desc": "Check the terminal screen: the previous payment may have gone through. Make sure before retrying.",
   "pos.terminal.cancel": "Cancel",
   "pos.terminal.cancelling": "Cancelling…",
+  "pos.terminal.cancelled": "Cancelled",
+  "pos.terminal.cancelled_desc": "Nothing was charged. If the terminal still shows the amount, press its red key.",
   "pos.terminal.unavailable": "The terminal is unavailable",
   "pos.terminal.checking": "Checking…",
   "pos.terminal.agent_unreachable": "The device agent is unreachable",

@@ -969,6 +969,8 @@
   "pos.terminal.unfinished_desc": "Terminal ekranini tekshiring: oldingi to‘lov o‘tgan bo‘lishi mumkin. Takrorlashdan oldin tekshirib oling.",
   "pos.terminal.cancel": "Bekor qilish",
   "pos.terminal.cancelling": "Bekor qilinmoqda…",
+  "pos.terminal.cancelled": "Amal bekor qilindi",
+  "pos.terminal.cancelled_desc": "Kartadan hech narsa yechilmadi. Agar terminalda summa hali ham turgan bo‘lsa — undagi qizil tugmani bosing.",
   "pos.terminal.unavailable": "Terminal mavjud emas",
   "pos.terminal.checking": "Tekshirilmoqda…",
   "pos.terminal.agent_unreachable": "Qurilma agenti ishlamayapti",
