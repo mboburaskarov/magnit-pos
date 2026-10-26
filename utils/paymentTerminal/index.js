@@ -105,7 +105,21 @@ export const TERMINAL_STATE = {
   APPROVED: 'approved',
   DECLINED: 'declined',
   FAILED: 'failed',
+  // Not a state the agent reports: the till lost track of the operation it
+  // started. See waitForTerminalOperation.
+  LOST: 'lost',
 }
+
+// How many consecutive polls may fail to find OUR operation before the till
+// stops waiting for it.
+//
+// Polling is otherwise unbounded on purpose — a payment waits on a person, and
+// a minute of silence is a customer looking for their card, not a fault. What
+// must be bounded is the case where the ANSWER stops making sense: the agent
+// restarted and lost its slot, or it is reporting someone else's operation. The
+// cashier would otherwise sit in front of a modal that can never resolve, with
+// its cancel button disabled, and that happened on a real till.
+const LOST_POLL_LIMIT = 20
 
 // Remembers which listener answered last, so the common case is one request
 // instead of a failed 7788 followed by a 7777 retry every time.
@@ -336,6 +350,8 @@ export async function terminalProviders() {
  * possible.
  */
 export async function waitForTerminalOperation({ operationId, provider = '', onTick, shouldStop } = {}) {
+  let lost = 0
+
   // eslint-disable-next-line no-constant-condition
   while (true) {
     if (shouldStop?.()) return null
@@ -353,14 +369,19 @@ export async function waitForTerminalOperation({ operationId, provider = '', onT
       }
     }
 
-    if (operation) {
-      // A result for a DIFFERENT operation is not ours — it is the previous
-      // sale's, still sitting in the agent's slot for this terminal.
-      const isOurs = !operationId || operation.operation_id === operationId
-      if (isOurs) {
-        onTick?.(operation)
-        if (operation.state && operation.state !== TERMINAL_STATE.PENDING) return operation
-      }
+    // A result for a DIFFERENT operation is not ours — it is the previous
+    // sale's, still sitting in the agent's slot for this terminal.
+    const isOurs = operation && (!operationId || operation.operation_id === operationId)
+    if (isOurs) {
+      lost = 0
+      onTick?.(operation)
+      if (operation.state && operation.state !== TERMINAL_STATE.PENDING) return operation
+    } else if (++lost >= LOST_POLL_LIMIT) {
+      // The agent cannot tell us what happened to an operation we started. The
+      // card may well have been charged, so this is reported as an unknown
+      // outcome and never as a decline — but it IS reported, because a modal
+      // that waits for ever is how a till stops being a till.
+      return { operation_id: operationId, state: TERMINAL_STATE.LOST }
     }
 
     await new Promise((resolve) => setTimeout(resolve, TERMINAL_POLL_INTERVAL_MS))

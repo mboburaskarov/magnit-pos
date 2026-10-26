@@ -97,6 +97,11 @@ function PosTerminalPaymentModal({
   const [message, setMessage] = useState('')
   const [elapsed, setElapsed] = useState(0)
   const [cancelling, setCancelling] = useState(false)
+  // A cancel that has not settled after this long stops disabling the button
+  // and turns it into a way out. The operation is still the terminal's to
+  // finish — this only stops the modal from holding the register hostage while
+  // it does.
+  const [cancelStuck, setCancelStuck] = useState(false)
   const [attempt, setAttempt] = useState(0)
 
   const onDoneRef = useRef(onDone)
@@ -152,6 +157,11 @@ function PosTerminalPaymentModal({
       // What it must still say is the part the till cannot do: killing the
       // operation stops US waiting, and the pinpad keeps the amount on screen
       // until its red key is pressed.
+      if (op.state === TERMINAL_STATE.LOST) {
+        setStatus('unresolved')
+        setMessage(t('pos.terminal.unfinished_desc'))
+        return
+      }
       if (op.cancelled) {
         setStatus('cancelled')
         setMessage(op.desc_ru || op.desc_uz || '')
@@ -293,6 +303,13 @@ function PosTerminalPaymentModal({
     }
     // Ask the terminal to abandon the operation, but keep the modal open: the
     // terminal still answers for itself, and that answer is the outcome.
+    if (cancelStuck) {
+      // Second press, after the first went nowhere. Let go of the screen and
+      // leave the pending record in place: re-opening this sale's payment
+      // recovers the operation rather than charging a second time.
+      onCancel?.()
+      return
+    }
     setCancelling(true)
     const res = await terminalCancel({ provider })
     if (!res.ok) {
@@ -300,6 +317,16 @@ function PosTerminalPaymentModal({
       setMessage(res.message)
     }
   }
+
+  // Arm the escape ten seconds after a cancel was asked for.
+  useEffect(() => {
+    if (!cancelling) {
+      setCancelStuck(false)
+      return undefined
+    }
+    const timer = setTimeout(() => setCancelStuck(true), 10000)
+    return () => clearTimeout(timer)
+  }, [cancelling])
 
   if (!open) return null
 
@@ -445,12 +472,14 @@ function PosTerminalPaymentModal({
           <button
             type='button'
             onClick={handleCancel}
-            disabled={cancelling}
+            disabled={cancelling && !cancelStuck}
             className='pos-security-btn-cancel'
           >
-            {status === 'running' || status === 'starting'
-              ? t('pos.terminal.cancel')
-              : t('pos.security.cancel')}
+            {cancelStuck
+              ? t('pos.terminal.close_anyway')
+              : status === 'running' || status === 'starting'
+                ? t('pos.terminal.cancel')
+                : t('pos.security.cancel')}
           </button>
           {(status === 'declined' || status === 'failed' || status === 'unresolved' || status === 'cancelled') && (
             <button

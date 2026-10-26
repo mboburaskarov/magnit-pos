@@ -999,5 +999,6 @@
   "pos.nx.badge_title": "N+X promotion",
   "pos.nx.free_count": "{{count}} free",
   "pos.terminal.receipt_no": "Receipt no.",
-  "pos.terminal.auth_code": "Auth code"
+  "pos.terminal.auth_code": "Auth code",
+  "pos.terminal.close_anyway": "Close anyway"
 }

@@ -1084,5 +1084,6 @@
   "pos.nx.badge_title": "Акция N+X",
   "pos.nx.free_count": "{{count}} бесплатно",
   "pos.terminal.receipt_no": "Чек №",
-  "pos.terminal.auth_code": "Код авт."
+  "pos.terminal.auth_code": "Код авт.",
+  "pos.terminal.close_anyway": "Закрыть окно"
 }

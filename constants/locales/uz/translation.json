@@ -999,5 +999,6 @@
   "pos.nx.badge_title": "N+X aksiya",
   "pos.nx.free_count": "{{count}} dona bepul",
   "pos.terminal.receipt_no": "Chek №",
-  "pos.terminal.auth_code": "Avt. kodi"
+  "pos.terminal.auth_code": "Avt. kodi",
+  "pos.terminal.close_anyway": "Oynani yopish"
 }
