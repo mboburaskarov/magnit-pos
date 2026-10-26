@@ -14,8 +14,9 @@ import thousandDivider from '@utils/thousandDivider'
 import { error, success } from '@utils/toast'
 import { requests } from '@utils/requests'
 import {
-  terminalInfo,
+  SCHEME_BY_PROVIDER,
   terminalPaymentPayload,
+  terminalProviders,
   terminalReconciliation,
   waitForTerminalOperation,
 } from '@utils/paymentTerminal'
@@ -685,39 +686,57 @@ function CloseShiftPage() {
   // cashier never has to do it on the device by hand. Bounded and best effort:
   // a shift that cannot be closed is a cashier who cannot go home.
   const TERMINAL_RECONCILIATION_TIMEOUT_MS = 60000
-  const terminalAttachedRef = useRef(false)
+  // Which pinpads this till has. Both of them take money — Uzcard on ARCUS and
+  // Humo on Rahmat — so closing the shift has to settle each one it finds.
+  const attachedProvidersRef = useRef([])
   const [isReconciling, setIsReconciling] = useState(false)
 
   // Asked once, on mount, so the close path adds no latency at all on a till
   // that has no terminal (most of them, during the rollout).
   useEffect(() => {
     let cancelled = false
-    terminalInfo().then((info) => {
-      if (!cancelled) terminalAttachedRef.current = Boolean(info?.detected)
+    terminalProviders().then((reports) => {
+      if (cancelled) return
+      attachedProvidersRef.current = Object.entries(reports)
+        .filter(([, info]) => info?.detected)
+        .map(([provider]) => provider)
     })
     return () => {
       cancelled = true
     }
   }, [])
 
-  const runTerminalReconciliation = async () => {
-    if (!terminalAttachedRef.current) return null
+  /**
+   * «Сверка итогов» on every pinpad the till has, one after the other.
+   *
+   * Sequential rather than parallel on purpose: both devices talk through the
+   * same agent, and asking it to run two settlements at once is how you get a
+   * busy error on the second. Each gets its own deadline, and one that does not
+   * answer does not cost the other its сверка — or block the close.
+   */
+  const runTerminalReconciliations = async () => {
+    const providers = attachedProvidersRef.current
+    if (!providers.length) return []
     setIsReconciling(true)
-    try {
-      const started = await terminalReconciliation()
-      const deadline = Date.now() + TERMINAL_RECONCILIATION_TIMEOUT_MS
-      const finished = await waitForTerminalOperation({
-        operationId: started?.operation_id,
-        shouldStop: () => Date.now() > deadline,
-      })
-      return finished ? terminalPaymentPayload(finished) : null
-    } catch {
-      // No terminal, or it did not answer. The shift closes either way; the
-      // сверка can be run from the devices settings panel afterwards.
-      return null
-    } finally {
-      setIsReconciling(false)
+    const results = []
+    for (const provider of providers) {
+      try {
+        const scheme = SCHEME_BY_PROVIDER[provider] || ''
+        const started = await terminalReconciliation({ provider, scheme })
+        const deadline = Date.now() + TERMINAL_RECONCILIATION_TIMEOUT_MS
+        const finished = await waitForTerminalOperation({
+          operationId: started?.operation_id,
+          provider,
+          shouldStop: () => Date.now() > deadline,
+        })
+        if (finished) results.push(terminalPaymentPayload(finished, { provider, scheme }))
+      } catch {
+        // That terminal did not answer. The shift closes either way; its
+        // сверка can be run from the devices settings panel afterwards.
+      }
     }
+    setIsReconciling(false)
+    return results
   }
 
   const { mutate: closeCashBoxRegister, isLoading: iscloseCashBoxRegister } = useMutation(requests.closeCashBoxRegister, {
@@ -743,7 +762,7 @@ function CloseShiftPage() {
       error(t('close_shift.error_kept_exceeds_actual'))
       return
     }
-    const terminalReconciliationResult = await runTerminalReconciliation()
+    const terminalReconciliations = await runTerminalReconciliations()
     closeCashBoxRegister({
       id,
       data: {
@@ -751,7 +770,16 @@ function CloseShiftPage() {
         company_amount: counted - keptAmount,
         close_cashless_amount: current.availableCashless,
         is_company: current.company === '2',
-        ...(terminalReconciliationResult ? { terminal_reconciliation: terminalReconciliationResult } : {}),
+        // Every settlement this close performed, one per pinpad. The singular
+        // key is kept alongside it for the ERP's existing one-terminal reader
+        // and carries the first result; it goes away once that reader takes
+        // the array.
+        ...(terminalReconciliations.length
+          ? {
+              terminal_reconciliation: terminalReconciliations[0],
+              terminal_reconciliations: terminalReconciliations,
+            }
+          : {}),
       },
     })
   }

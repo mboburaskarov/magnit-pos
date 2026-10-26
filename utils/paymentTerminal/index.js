@@ -1,23 +1,29 @@
 import axios from 'axios'
 
 /**
- * Bank payment terminal, driven from the till.
+ * Bank payment terminals, driven from the till.
  *
- * Two of them exist behind this one client, and the POS does not care which a
- * till has: the agent is configured for one driver and answers in the same
- * shape either way.
+ * A till has TWO pinpads side by side and each card scheme is charged on its
+ * own one:
  *
- *   rahmat  the "Rahmat POS" app on a Sunmi P3, Multicard acquiring, reached
- *           over USB or the local network.
- *   arcus   a PAX pinpad on SmartVista, reached through the ARCUS 2 module
- *           installed on the till.
+ *   uzcard → arcus   a PAX pinpad on SmartVista, reached through the ARCUS 2
+ *                    module installed on the till.
+ *   humo   → rahmat  the "Rahmat POS" app on a Sunmi P3, Multicard acquiring,
+ *                    reached over USB or the local network.
  *
- * The one place the difference surfaces here is a REFUND. On Rahmat a reversal
- * is addressed by the original payment's order_id; on ARCUS it is addressed by
- * the receipt number the terminal printed, optionally with the authorisation
- * code, which together let the terminal find the operation in its own journal
- * without the customer's card. So a refund sends all of them and the agent
- * uses what its driver needs.
+ * Nothing about that reaches the cashier: they press Uzcard or Humo exactly as
+ * they always did, and that press is what decides which box wakes up. The
+ * mapping lives in PROVIDER_BY_SCHEME below and nowhere else, and every request
+ * carries the resolved `provider` so the agent knows which driver to hand it
+ * to. An agent that runs only one terminal can ignore the field and behave as
+ * it did before — which is what makes a half-rolled-out estate work.
+ *
+ * The second difference is a REFUND. On Rahmat a reversal is addressed by the
+ * original payment's order_id; on ARCUS it is addressed by the receipt number
+ * the terminal printed, optionally with the authorisation code, which together
+ * let the terminal find the operation in its own journal without the
+ * customer's card. So a refund sends all of them and the agent's driver uses
+ * what it needs.
  *
  * Until now a card sale was two disconnected acts: the cashier charged the card
  * on a standalone terminal and then typed the tender in here by hand. The sale
@@ -26,14 +32,14 @@ import axios from 'axios'
  * amount is charged once and the result lands on the sale.
  *
  * Transport is the local magnit-device-agent, the only process on the till that
- * can open a COM port:
+ * can open a COM port. Every call names the terminal it is for:
  *
- *   POST /payment-terminal/pay            { order_id, amount, scheme }
- *   POST /payment-terminal/refund         { order_id, receipt_no, auth_code, amount, scheme }
- *   POST /payment-terminal/reconciliation { scheme }            — «Сверка итогов»
- *   POST /payment-terminal/cancel                               — reject what is running
- *   GET  /payment-terminal/operation                            — poll the outcome
- *   GET  /payment-terminal/info                                 — which port was detected
+ *   POST /payment-terminal/pay            { order_id, amount, scheme, provider }
+ *   POST /payment-terminal/refund         { order_id, receipt_no, auth_code, amount, scheme, provider }
+ *   POST /payment-terminal/reconciliation { scheme, provider }    — «Сверка итогов»
+ *   POST /payment-terminal/cancel         { provider }            — reject what is running
+ *   GET  /payment-terminal/operation?provider=…                   — poll the outcome
+ *   GET  /payment-terminal/info?provider=…                        — is this one attached
  *
  * ── Two things that make this unlike utils/mertechDisplay ──
  *
@@ -56,6 +62,35 @@ const TIMEOUT_MS = 5000
 
 /** Poll interval while an operation is running. */
 export const TERMINAL_POLL_INTERVAL_MS = 1000
+
+/** The two drivers the agent can be asked for. */
+export const TERMINAL_PROVIDER = {
+  ARCUS: 'arcus',
+  RAHMAT: 'rahmat',
+}
+
+export const TERMINAL_PROVIDERS = [TERMINAL_PROVIDER.ARCUS, TERMINAL_PROVIDER.RAHMAT]
+
+/**
+ * Which pinpad charges which scheme. The one place the arrangement is written
+ * down: change it here and the payment screen, the returns flow, the shift
+ * close and the settings panel all follow.
+ */
+export const PROVIDER_BY_SCHEME = {
+  uzcard: TERMINAL_PROVIDER.ARCUS,
+  humo: TERMINAL_PROVIDER.RAHMAT,
+}
+
+/** The tender button that a given pinpad serves — for labelling, not routing. */
+export const SCHEME_BY_PROVIDER = {
+  [TERMINAL_PROVIDER.ARCUS]: 'uzcard',
+  [TERMINAL_PROVIDER.RAHMAT]: 'humo',
+}
+
+/** 'uzcard' | 'humo' → 'arcus' | 'rahmat'. Empty for anything else. */
+export function providerForScheme(scheme) {
+  return PROVIDER_BY_SCHEME[String(scheme || '').toLowerCase()] || ''
+}
 
 /**
  * Outcomes, as the agent reports them.
@@ -110,6 +145,14 @@ async function request(method, path, body) {
   throw lastError
 }
 
+/** Build a query string from the flags that are actually set. */
+function query(params) {
+  const pairs = Object.entries(params)
+    .filter(([, v]) => v !== '' && v !== false && v !== undefined && v !== null)
+    .map(([k, v]) => `${k}=${encodeURIComponent(v === true ? 1 : v)}`)
+  return pairs.length ? `?${pairs.join('&')}` : ''
+}
+
 /** Convert a sum to the tiyin the terminal protocol speaks (сум × 100). */
 export function toTiyin(sum) {
   return Math.round(Number(sum || 0) * 100)
@@ -121,24 +164,46 @@ export function fromTiyin(tiyin) {
 }
 
 /**
- * Start a card payment. Resolves with the pending operation; the caller polls.
- * Rejects when the terminal could not even be handed the request.
+ * Which driver an agent report describes.
+ *
+ * A dual-terminal agent names itself in `provider`. One from before the split
+ * does not, and has to be recognised: ARCUS announces its transport, and the
+ * only other thing that ever shipped is the serial Rahmat driver.
  */
-export async function terminalPay({ orderId, amount, scheme = '' }) {
+export function providerOf(info) {
+  if (!info) return ''
+  if (info.provider) return String(info.provider).toLowerCase()
+  if (info.transport === TERMINAL_PROVIDER.ARCUS) return TERMINAL_PROVIDER.ARCUS
+  return info.detected ? TERMINAL_PROVIDER.RAHMAT : ''
+}
+
+/**
+ * Start a card payment on the pinpad that serves this scheme. Resolves with
+ * the pending operation; the caller polls. Rejects when the terminal could not
+ * even be handed the request.
+ */
+export async function terminalPay({ orderId, amount, scheme = '', provider = '' }) {
   const data = await request('post', '/payment-terminal/pay', {
     order_id: orderId,
     amount: toTiyin(amount),
-    // Which tender button the cashier pressed, 'uzcard' or 'humo'. A Rahmat
-    // terminal ignores it — it reads the card and decides — while ARCUS needs
-    // it, because the acquirer maps the two schemes onto different ops.ini and
-    // cashreg.ini files and therefore different installations.
+    // Which tender button the cashier pressed, 'uzcard' or 'humo'. ARCUS needs
+    // it even once `provider` has picked the device, because the acquirer maps
+    // the two schemes onto different ops.ini and cashreg.ini files and
+    // therefore different installations.
     scheme,
+    // Which of the two pinpads to charge on. Derived from `scheme` and sent
+    // explicitly so the agent routes rather than guesses.
+    provider: provider || providerForScheme(scheme),
   })
   return data?.operation || null
 }
 
 /**
  * Start a refund of an earlier payment.
+ *
+ * `provider` here is the one that took the ORIGINAL payment, not whatever the
+ * cashier pressed on the return screen: a Humo charge can only be reversed on
+ * the Rahmat box that took it, and a Uzcard one only on ARCUS.
  *
  * All four addressing fields are sent and the agent's driver takes what it
  * needs, because there is no single answer to "what identifies the operation
@@ -157,68 +222,108 @@ export async function terminalPay({ orderId, amount, scheme = '' }) {
  * All of them come off the ERP's record of the original payment, which is why
  * the sale has to be loaded before it can be refunded.
  */
-export async function terminalRefund({ orderId, receiptNo = '', authCode = '', amount = 0, scheme = '' }) {
+export async function terminalRefund({
+  orderId,
+  receiptNo = '',
+  authCode = '',
+  amount = 0,
+  scheme = '',
+  provider = '',
+}) {
   const data = await request('post', '/payment-terminal/refund', {
     order_id: orderId,
     receipt_no: receiptNo,
     auth_code: authCode,
     amount: amount ? toTiyin(amount) : 0,
     scheme,
+    provider: provider || providerForScheme(scheme),
   })
   return data?.operation || null
 }
 
 /**
- * Start the end-of-day settlement. Polled like everything else.
+ * Start the end-of-day settlement on one terminal. Polled like everything else.
  *
- * NOTE for a two-profile ARCUS till: this settles the configuration `scheme`
- * selects (the default one when it is empty). Whether a till configured for
- * both Uzcard and Humo needs a settlement per configuration is a question for
- * the acquirer — it depends on whether the two share a batch — and running one
- * is deliberately not guessed at here.
+ * Both pinpads take money, so both have to be settled — the caller runs this
+ * once per attached provider rather than once per shift. `scheme` narrows it
+ * further on an ARCUS till configured with more than one acquirer profile; an
+ * empty one settles that driver's default.
  */
-export async function terminalReconciliation({ scheme = '' } = {}) {
-  const data = await request('post', '/payment-terminal/reconciliation', { scheme })
+export async function terminalReconciliation({ scheme = '', provider = '' } = {}) {
+  const data = await request('post', '/payment-terminal/reconciliation', {
+    scheme,
+    provider: provider || providerForScheme(scheme),
+  })
   return data?.operation || null
 }
 
 /**
- * Ask the terminal to abandon what it is doing.
+ * Ask a terminal to abandon what it is doing.
  *
  * This does not decide the outcome: the terminal answers the cancelled
  * operation itself, and that answer is the payment's result. So the caller
  * keeps polling after calling this.
  */
-export async function terminalCancel() {
+export async function terminalCancel({ provider = '' } = {}) {
   try {
-    await request('post', '/payment-terminal/cancel', {})
+    await request('post', '/payment-terminal/cancel', { provider })
     return { ok: true, message: '' }
   } catch (e) {
     return { ok: false, message: agentMessage(e) }
   }
 }
 
-/** The running operation, or the last finished one. */
-export async function terminalOperation() {
-  const data = await request('get', '/payment-terminal/operation', null)
+/** The running operation on one terminal, or the last finished one. */
+export async function terminalOperation({ provider = '' } = {}) {
+  const data = await request('get', `/payment-terminal/operation${query({ provider })}`, null)
   return data?.operation || null
 }
 
 /**
- * Whether this till has a terminal at all.
+ * Whether this till has a given terminal at all.
  *
  * Resolves to the agent's report, or null when the agent itself is
- * unreachable. Both mean the same thing to the payment screen: carry on
- * exactly as before this feature existed, with the cashier charging the card
- * on a standalone terminal and typing the tender in.
+ * unreachable. Both mean the same thing to the payment screen: for that
+ * scheme, carry on exactly as before this feature existed, with the cashier
+ * charging the card on a standalone terminal and typing the tender in.
  */
-export async function terminalInfo({ probe = false, ping = false } = {}) {
-  const query = [probe ? 'probe=1' : '', ping ? 'ping=1' : ''].filter(Boolean).join('&')
+export async function terminalInfo({ probe = false, ping = false, provider = '' } = {}) {
   try {
-    return await request('get', `/payment-terminal/info${query ? `?${query}` : ''}`, null)
+    return await request('get', `/payment-terminal/info${query({ probe, ping, provider })}`, null)
   } catch {
     return null
   }
+}
+
+/**
+ * Ask after ONE pinpad, and only believe an answer that is about it.
+ *
+ * An agent from before the split ignores ?provider= and answers with its
+ * single driver's report whichever one is asked for. Taking that at face value
+ * would invent a second pinpad and send Uzcard sales to a box that is not
+ * there, so a detected terminal only counts for the provider it says it is.
+ * A "nothing here" report is kept either way — its message and port list are
+ * the diagnosis the settings panel shows.
+ */
+export async function terminalProviderInfo({ provider, probe = false, ping = false } = {}) {
+  const info = await terminalInfo({ provider, probe, ping })
+  if (info?.detected && providerOf(info) !== provider) return null
+  return info
+}
+
+/**
+ * Ask after both pinpads at once.
+ *
+ * Returns { arcus, rahmat }, each the agent's report or null. A till with only
+ * one of them — which is every till until the second box is delivered — simply
+ * has a null on the other side, and the scheme it serves keeps the old manual
+ * flow while the other one goes through the terminal.
+ */
+export async function terminalProviders() {
+  const reports = await Promise.all(
+    TERMINAL_PROVIDERS.map((provider) => terminalProviderInfo({ provider })),
+  )
+  return Object.fromEntries(TERMINAL_PROVIDERS.map((provider, i) => [provider, reports[i]]))
 }
 
 /**
@@ -230,14 +335,14 @@ export async function terminalInfo({ probe = false, ping = false } = {}) {
  * the agent keeps the result, which is what makes recovery after a reload
  * possible.
  */
-export async function waitForTerminalOperation({ operationId, onTick, shouldStop } = {}) {
+export async function waitForTerminalOperation({ operationId, provider = '', onTick, shouldStop } = {}) {
   // eslint-disable-next-line no-constant-condition
   while (true) {
     if (shouldStop?.()) return null
 
     let operation = null
     try {
-      operation = await terminalOperation()
+      operation = await terminalOperation({ provider })
     } catch (e) {
       // A momentary hiccup talking to the agent is not an outcome. Keep
       // polling: the terminal is still working, and giving up here would lose
@@ -250,7 +355,7 @@ export async function waitForTerminalOperation({ operationId, onTick, shouldStop
 
     if (operation) {
       // A result for a DIFFERENT operation is not ours — it is the previous
-      // sale's, still sitting in the agent's single slot.
+      // sale's, still sitting in the agent's slot for this terminal.
       const isOurs = !operationId || operation.operation_id === operationId
       if (isOurs) {
         onTick?.(operation)
@@ -266,16 +371,24 @@ export async function waitForTerminalOperation({ operationId, onTick, shouldStop
  * Shape an operation into the `terminal_payment` block the ERP stores against
  * the sale. Amounts go back to sums here, so nothing downstream has to
  * remember which unit a number is in.
+ *
+ * `scheme` and `provider` are passed in rather than read off the operation,
+ * because they are what we ASKED for and the record of them is what lets a
+ * later return reverse the charge on the same box. An agent that echoes them
+ * back wins: its answer is the device's own word for what it did.
  */
-export function terminalPaymentPayload(operation, { parentOrderId } = {}) {
+export function terminalPaymentPayload(operation, { parentOrderId, scheme = '', provider = '' } = {}) {
   if (!operation) return null
   return {
     order_id: operation.order_id,
     parent_order_id: parentOrderId || '',
-    // Which integration charged the card, as the agent reports it. An agent
-    // from before the second driver sends nothing, and the ERP reads an empty
-    // provider as rahmat — which is what such a till is.
-    provider: operation.provider || '',
+    // Which integration charged the card. An agent from before the second
+    // driver sends nothing and was asked for nothing, and the ERP reads an
+    // empty provider as rahmat — which is what such a till is.
+    provider: operation.provider || provider || '',
+    // The tender button this was charged under, kept so a return knows which
+    // pinpad and which acquirer profile to reverse it on.
+    scheme: operation.scheme || scheme || '',
     status: operation.state,
     amount: fromTiyin(operation.amount),
     rrn: operation.rrn || '',

@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react'
 import { CreditCard, RefreshCw, Receipt, Search, Plug } from 'lucide-react'
 import { success, error } from '@utils/toast'
 import {
+  SCHEME_BY_PROVIDER,
+  TERMINAL_PROVIDER,
+  TERMINAL_PROVIDERS,
   TERMINAL_STATE,
-  terminalInfo,
+  terminalProviderInfo,
   terminalReconciliation,
   waitForTerminalOperation,
 } from '@utils/paymentTerminal'
@@ -23,15 +26,13 @@ const buttonStyle = {
 }
 
 /**
- * Bank payment terminal — status panel in the devices settings modal.
+ * One pinpad's status card.
  *
- * Nothing is configured from here: the local device agent knows which driver
- * this till runs and the payment screen uses it automatically. This answers the
- * two questions worth asking while setting a cashbox up — "is it detected" and
- * "does it answer" — plus «Сверка итогов» on demand, which is otherwise only
- * run at shift close.
+ * Each device answers for itself — it is detected, pinged, settled and
+ * diagnosed on its own — so each card owns its own state rather than the panel
+ * holding a map of everything.
  *
- * The panel reshapes itself for the ARCUS driver, because the two have
+ * The card reshapes itself for the ARCUS driver, because the two have
  * different questions. A Rahmat terminal is found by walking the machine's
  * serial ports, so the useful diagnosis is a list of what is there. ARCUS is a
  * program installed on this machine that owns the port itself, so the question
@@ -39,18 +40,21 @@ const buttonStyle = {
  * a documented, money-safe connection check (/o72) that asks the pinpad
  * directly whether it is answering.
  */
-export default function PosTerminalSettings({ t }) {
+function TerminalDeviceCard({ provider, t }) {
   const [info, setInfo] = useState(null) // the agent's report, or null when unreachable
   const [isChecking, setIsChecking] = useState(true)
   const [isProbing, setIsProbing] = useState(false)
   const [isReconciling, setIsReconciling] = useState(false)
   const [isPinging, setIsPinging] = useState(false)
 
+  const isArcus = provider === TERMINAL_PROVIDER.ARCUS
+  const scheme = SCHEME_BY_PROVIDER[provider] || ''
+
   const refresh = async ({ probe = false, ping = false } = {}) => {
     if (probe) setIsProbing(true)
     else if (ping) setIsPinging(true)
     else setIsChecking(true)
-    setInfo(await terminalInfo({ probe, ping }))
+    setInfo(await terminalProviderInfo({ provider, probe, ping }))
     setIsProbing(false)
     setIsPinging(false)
     setIsChecking(false)
@@ -64,8 +68,8 @@ export default function PosTerminalSettings({ t }) {
   const handleReconciliation = async () => {
     setIsReconciling(true)
     try {
-      const started = await terminalReconciliation()
-      const finished = await waitForTerminalOperation({ operationId: started?.operation_id })
+      const started = await terminalReconciliation({ provider, scheme })
+      const finished = await waitForTerminalOperation({ operationId: started?.operation_id, provider })
       if (finished?.state === TERMINAL_STATE.APPROVED) {
         success(finished.desc_ru || t('pos.terminal.reconciliation_done'))
       } else {
@@ -78,7 +82,6 @@ export default function PosTerminalSettings({ t }) {
   }
 
   const detected = Boolean(info?.detected)
-  const isArcus = info?.transport === 'arcus'
   // Where the terminal was found. On ARCUS that is a directory rather than a
   // port — ARCUS holds the port, we hold ARCUS.
   const location = info?.port || info?.dir || ''
@@ -91,8 +94,20 @@ export default function PosTerminalSettings({ t }) {
         : info.message || t('pos.terminal.not_detected')
 
   return (
-    <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+    <div
+      style={{
+        border: '1px solid #e5e7eb',
+        borderRadius: '10px',
+        padding: '14px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '12px',
+      }}
+    >
+      {/* Which tender this box serves, said in the cashier's own terms: the
+          device names mean nothing at the till, but "Uzcard" and "Humo" are
+          the two buttons they press all day. */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <div
           className='touch-modal-avatar'
           style={{
@@ -102,13 +117,8 @@ export default function PosTerminalSettings({ t }) {
         >
           <CreditCard size={20} />
         </div>
-        <div>
-          <div style={{ fontSize: '15px', fontWeight: '700', color: '#111217' }}>
-            {t('pos.terminal.settings_title')}
-          </div>
-          <div style={{ fontSize: '12px', color: '#6f6f6f', marginTop: '2px' }}>
-            {t('pos.terminal.settings_subtitle')}
-          </div>
+        <div style={{ fontSize: '14px', fontWeight: '700', color: '#111217' }}>
+          {t(`pos.terminal.device_${provider}`)}
         </div>
       </div>
 
@@ -228,6 +238,36 @@ export default function PosTerminalSettings({ t }) {
           {isReconciling ? t('pos.terminal.reconciling') : t('pos.terminal.reconciliation')}
         </button>
       </div>
+    </div>
+  )
+}
+
+/**
+ * Bank payment terminals — status panel in the devices settings modal.
+ *
+ * The till has two pinpads, one per card scheme, and each is set up and
+ * checked separately — so each gets its own card. Nothing is configured from
+ * here: the agent knows which drivers this till runs and the payment screen
+ * routes to them automatically off the tender button. This answers the two
+ * questions worth asking while setting a cashbox up — "is it detected" and
+ * "does it answer" — plus «Сверка итогов» on demand, which is otherwise only
+ * run at shift close.
+ */
+export default function PosTerminalSettings({ t }) {
+  return (
+    <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <div>
+        <div style={{ fontSize: '15px', fontWeight: '700', color: '#111217' }}>
+          {t('pos.terminal.settings_title')}
+        </div>
+        <div style={{ fontSize: '12px', color: '#6f6f6f', marginTop: '2px' }}>
+          {t('pos.terminal.settings_subtitle')}
+        </div>
+      </div>
+
+      {TERMINAL_PROVIDERS.map((provider) => (
+        <TerminalDeviceCard key={provider} provider={provider} t={t} />
+      ))}
     </div>
   )
 }

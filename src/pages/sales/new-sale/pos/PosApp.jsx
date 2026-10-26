@@ -8,7 +8,12 @@ import { requests } from '@utils/requests'
 import { error, success } from '@utils/toast'
 import { extractNumbers, checkBarcodeWithMarking } from '@utils/checkingMarkingWithBarcode'
 import { isLooseWeightLine, markingSlotCount, hasMarkingShape } from '@utils/posLines'
-import { terminalInfo } from '@utils/paymentTerminal'
+import {
+  SCHEME_BY_PROVIDER,
+  TERMINAL_PROVIDER,
+  providerForScheme,
+  terminalProviders,
+} from '@utils/paymentTerminal'
 import { containsCyrillic, convertoRuOrEngToEng } from '@utils/convertoRuOrEngToEng'
 import { bypassNextAppExit } from '@hooks/useExitConfirm'
 import { useBarcodeScanner } from '@/hooks/pos/useBarcodeScanner'
@@ -91,10 +96,12 @@ export default function PosApp() {
   const [focusedPaymentInput, setFocusedPaymentInput] = useState('cash')
   const [showAppScanModal, setShowAppScanModal] = useState(false)
   const [showMunisQrModal, setShowMunisQrModal] = useState(false)
-  // Card payments are driven through the bank terminal only where one is
-  // actually attached. A till without it keeps the old flow exactly: the
+  // Which of the till's two pinpads are actually attached, { arcus, rahmat } →
+  // boolean. Uzcard is charged on the ARCUS box and Humo on the Rahmat one, so
+  // this is asked per device: a till that has only one of them drives that
+  // scheme through the terminal and keeps the old flow for the other — the
   // cashier charges the card on a standalone terminal and types the tender in.
-  const [terminalDetected, setTerminalDetected] = useState(false)
+  const [attachedTerminals, setAttachedTerminals] = useState({})
   const [showTerminalModal, setShowTerminalModal] = useState(false)
   const [productSelectList, setProductSelectList] = useState([])
   const [pendingWeightGrams, setPendingWeightGrams] = useState(null)
@@ -464,6 +471,19 @@ export default function PosApp() {
   const terminalRefundReceiptNo = get(parentTerminalTx, 'receipt_no', '')
   const terminalRefundAuthCode = get(parentTerminalTx, 'auth_code', '')
 
+  // Which pinpad took the original payment. A Humo charge lives in the Rahmat
+  // box's journal and a Uzcard one in ARCUS's, so a reversal has to go back to
+  // the same device — the tender the cashier presses on the RETURN screen says
+  // nothing about where the money went. A sale recorded before the two-terminal
+  // split names no provider, and such a till only ever had the Rahmat terminal.
+  const refundTerminalProvider = get(parentTerminalTx, 'provider', '') || TERMINAL_PROVIDER.RAHMAT
+  // The acquirer profile it was charged under, which ARCUS needs in order to
+  // reverse through the same installation. Recorded on the payment since the
+  // split; for anything older, the scheme that provider serves is the only
+  // answer there is.
+  const refundTerminalScheme =
+    get(parentTerminalTx, 'scheme', '') || SCHEME_BY_PROVIDER[refundTerminalProvider] || ''
+
   // Can the card actually be reversed from the till? The answer depends on the
   // integration that charged it, because the two address a reversal by
   // different things — and a return with no usable basis has to fall through to
@@ -473,9 +493,16 @@ export default function PosApp() {
   // operation by its authorisation code); our own order_id means nothing to it.
   // Rahmat reverses by that order_id and has neither of the others.
   const terminalRefundable =
-    get(parentTerminalTx, 'provider', '') === 'arcus'
+    refundTerminalProvider === TERMINAL_PROVIDER.ARCUS
       ? Boolean(terminalRefundReceiptNo || terminalRefundAuthCode)
       : Boolean(terminalRefundOrderId)
+
+  // Where this sale's card leg goes, and whether that box is on this till. On
+  // a sale it follows the tender button; on a return it follows the original
+  // payment, whatever the cashier pressed.
+  const cardTerminalProvider = isReturnSale ? refundTerminalProvider : providerForScheme(cardPaymentType)
+  const cardTerminalScheme = isReturnSale ? refundTerminalScheme : cardPaymentType || ''
+  const cardTerminalAttached = Boolean(cardTerminalProvider && attachedTerminals[cardTerminalProvider])
 
   const terminalCardAmount = useMemo(
     () => paymentsList.filter((p) => p.type === 'card').reduce((sum, p) => sum + Number(p.amount || 0), 0),
@@ -1096,13 +1123,17 @@ export default function PosApp() {
     setPaymentMethod(method)
   }
 
-  // Is a bank terminal attached to this till? Asked once, on mount. Both "no"
-  // and "the agent is unreachable" mean the same thing here: leave the card
-  // flow exactly as it was before this feature existed.
+  // Which bank terminals are attached to this till? Asked once, on mount, for
+  // both at once. Both "no" and "the agent is unreachable" mean the same thing
+  // here: for that scheme, leave the card flow exactly as it was before this
+  // feature existed.
   useEffect(() => {
     let cancelled = false
-    terminalInfo().then((info) => {
-      if (!cancelled) setTerminalDetected(Boolean(info?.detected))
+    terminalProviders().then((reports) => {
+      if (cancelled) return
+      setAttachedTerminals(
+        Object.fromEntries(Object.entries(reports).map(([provider, info]) => [provider, Boolean(info?.detected)])),
+      )
     })
     return () => {
       cancelled = true
@@ -1172,16 +1203,17 @@ export default function PosApp() {
     }
 
     // Bank terminal: charge the card through the device, then submit the sale
-    // with the RRN attached. Only when a terminal is actually attached — a
-    // till without one falls through to the old flow, where the cashier has
-    // already charged the card on a standalone terminal by hand.
+    // with the RRN attached. Only when the pinpad for THIS scheme is actually
+    // attached — Uzcard goes to the ARCUS box and Humo to the Rahmat one, and
+    // a scheme whose box is missing falls through to the old flow, where the
+    // cashier has already charged the card on a standalone terminal by hand.
     //
     // On a return the same modal refunds the card instead, addressed by what
     // the original payment left behind — see terminalRefundable. A return whose
     // original was not paid on the terminal (cash, or a sale from before this
     // feature) has nothing to reverse, so it falls through and is refunded the
     // way it always was.
-    if (terminalDetected && terminalCardAmount > 0 && (!isReturnSale || terminalRefundable)) {
+    if (cardTerminalAttached && terminalCardAmount > 0 && (!isReturnSale || terminalRefundable)) {
       setShowTerminalModal(true)
       return
     }
@@ -2459,7 +2491,8 @@ export default function PosApp() {
         mode={isReturnSale ? 'refund' : 'pay'}
         saleId={id}
         amount={terminalCardAmount}
-        scheme={cardPaymentType || ''}
+        scheme={cardTerminalScheme}
+        provider={cardTerminalProvider}
         refundOrderId={terminalRefundOrderId}
         refundReceiptNo={terminalRefundReceiptNo}
         refundAuthCode={terminalRefundAuthCode}

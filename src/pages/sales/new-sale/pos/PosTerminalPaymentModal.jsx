@@ -16,9 +16,11 @@ import './PosLayout.css'
 // cashier actually sees that the card went through.
 const APPROVED_HOLD_MS = 1200
 
-// What the till was last asking the terminal to do, kept where a reload cannot
+// What the till was last asking a terminal to do, kept where a reload cannot
 // lose it. Without this, a POS that restarts mid-payment has no idea an
 // operation is outstanding and would cheerfully charge the card a second time.
+// The provider is part of it: with two pinpads, recovering means asking the
+// one that was actually busy.
 const PENDING_KEY = 'pos_terminal_pending'
 
 function readPending() {
@@ -74,7 +76,11 @@ function PosTerminalPaymentModal({
   mode = 'pay', // 'pay' | 'refund'
   saleId,
   amount,
-  scheme = '', // 'uzcard' | 'humo' — selects the ARCUS configuration
+  scheme = '', // 'uzcard' | 'humo' — the tender button the cashier pressed
+  // Which of the till's two pinpads this goes to, 'arcus' or 'rahmat'. Derived
+  // from the scheme by the caller (and, on a return, from the ORIGINAL
+  // payment's provider — a Humo charge cannot be reversed on the ARCUS box).
+  provider = '',
   refundOrderId, // the ORIGINAL payment's order_id, for mode='refund'
   // The rest of what addresses a reversal, read off the original payment. Which
   // of these is required depends on the driver: Rahmat reverses by order_id,
@@ -107,9 +113,15 @@ function PosTerminalPaymentModal({
   const finish = useCallback(
     (op) => {
       writePending(null)
-      onDoneRef.current?.(terminalPaymentPayload(op, { parentOrderId: isRefund ? refundOrderId : '' }))
+      onDoneRef.current?.(
+        terminalPaymentPayload(op, {
+          parentOrderId: isRefund ? refundOrderId : '',
+          scheme,
+          provider,
+        }),
+      )
     },
-    [isRefund, refundOrderId],
+    [isRefund, refundOrderId, scheme, provider],
   )
 
   // Drive one operation: resume an outstanding one if there is one, otherwise
@@ -156,7 +168,7 @@ function PosTerminalPaymentModal({
         setStatus('running')
         let recovered = null
         try {
-          recovered = await terminalOperation()
+          recovered = await terminalOperation({ provider: pending.provider || provider })
         } catch {
           recovered = null
         }
@@ -183,7 +195,7 @@ function PosTerminalPaymentModal({
 
       if (!operationId) {
         const orderId = newOrderId()
-        writePending({ orderId, saleId, mode, amount, at: Date.now() })
+        writePending({ orderId, saleId, mode, amount, provider, at: Date.now() })
         setStatus('starting')
         try {
           const started = isRefund
@@ -193,8 +205,9 @@ function PosTerminalPaymentModal({
                 authCode: refundAuthCode,
                 amount,
                 scheme,
+                provider,
               })
-            : await terminalPay({ orderId, amount, scheme })
+            : await terminalPay({ orderId, amount, scheme, provider })
           if (stopped) return
           operationId = started?.operation_id || null
           setOperation(started)
@@ -212,6 +225,7 @@ function PosTerminalPaymentModal({
 
       const finished = await waitForTerminalOperation({
         operationId,
+        provider,
         onTick: (op) => {
           if (!stopped) setOperation(op)
         },
@@ -225,9 +239,9 @@ function PosTerminalPaymentModal({
     return () => {
       stopped = true
     }
-    // scheme and the two refund-basis props are deliberately NOT dependencies:
-    // they are fixed for a given sale, and a re-run of this effect starts a
-    // second card operation.
+    // scheme, provider and the two refund-basis props are deliberately NOT
+    // dependencies: they are fixed for a given sale, and a re-run of this
+    // effect starts a second card operation.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, saleId, mode, amount, refundOrderId, attempt])
 
@@ -267,7 +281,7 @@ function PosTerminalPaymentModal({
     // Ask the terminal to abandon the operation, but keep the modal open: the
     // terminal still answers for itself, and that answer is the outcome.
     setCancelling(true)
-    const res = await terminalCancel()
+    const res = await terminalCancel({ provider })
     if (!res.ok) {
       setCancelling(false)
       setMessage(res.message)
