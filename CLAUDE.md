@@ -42,3 +42,14 @@ This is a touchscreen POS terminal app. Every screen, page, and dialog **must** 
 Our receipt (check) printers use **58mm paper**. When editing the receipt template (`utils/receiptBuilder.js`, `components/ReceiptPreviewCanvas.jsx`), lay text out for 58mm-wide paper (40-column monospace at the printer's default font). A prior attempt to switch this to 80mm/48-column broke real printouts (font enlarged and wrapped onto a second line), and was reverted — do not redo that change without confirming on real hardware first.
 
 Note: the actual ESC/POS rendering (font, bold, QR module size, cut) is performed by a separate local native print agent app (`http://localhost:7788` / `:7777`, launched via the `magnitposprinter://` URL scheme) that is **not part of this repository**. This repo only builds a text/tag protocol (`[BOLD_START]`, `[BOLD_END]`, `[QR:data]`, `[HEX:...]`, `[CUT]`) and POSTs it to that agent's `/print/raw-template` endpoint. Physical sizing quirks (paper width, QR pixel size) that persist after a template change may require changes in that external agent, not here.
+
+## Card payment terminals (Uzcard on ARCUS/PAX, Humo on Rahmat/Sunmi)
+
+The cashier's card flow drives two bank terminals through `magnit-device-agent`. **Reference:** `docs/summaries/payment-terminal.md` in the `magnitgo-crm` repo (branch `feat/payment-terminal`); the till runbook is `docs/payment-terminal.md` in `magnit-device-agent`.
+
+- **Files:** `utils/paymentTerminal/index.js` (the agent client and `PROVIDER_BY_SCHEME`), `PosTerminalPaymentModal.jsx`, `PosTerminalSettings.jsx`, the checkout gate in `PosApp.jsx`, and shift close in `card-shift-details`. Strings are `pos.terminal.*` in all three locales.
+- **The tender picks the device:** `uzcard` → `arcus`, `humo` → `rahmat`. Every agent call carries `provider`. A tender whose device is not attached **falls through to the old manual flow** — which is also exactly how "Humo closes the sale instantly" presents when the Sunmi is not detected, so check `GET /payment-terminal/info?provider=rahmat` before suspecting this code.
+- **`declined` and `failed` are never collapsed.** `failed` means the card MAY have been charged: no quiet retry, and nothing reassuring on that screen. A cancel the cashier asked for is its own neutral `cancelled` state.
+- **Polling is unbounded in time and bounded in confusion** (`LOST_POLL_LIMIT`): a payment waits on a person, but a modal must never wait for ever on an operation the agent has lost. The cancel button must never stay disabled — it becomes an escape after 10 s.
+- **The card is already charged when `onDone` fires, so the sale is submitted whatever else happens**; `terminal_payment` only rides along. Amounts are tiyin on the wire and **sums** in `terminal_payment`.
+- The ERP side (`payment_terminal_transactions`) is on the CRM branch above and is **not deployed**: until it is, `terminal_payment` is silently dropped and a return cannot refund the card.
