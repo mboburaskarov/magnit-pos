@@ -13,8 +13,7 @@ import LoadingContainer from '@components/LoadingContainer'
 import thousandDivider from '@utils/thousandDivider'
 import { error, success } from '@utils/toast'
 import { requests } from '@utils/requests'
-import { loadSvgAsEscposHex } from '@utils/escposImage'
-import { buildZReportReceiptLayout } from '@utils/receiptBuilder'
+import { buildZReportReceiptLines, useReceiptTemplateSync } from '@utils/receiptTemplate'
 
 const ACCENT = '#111217'
 const DANGER = '#E23A32'
@@ -514,6 +513,8 @@ function CloseShiftPage() {
   const { t } = useTranslation()
   const { values } = useQueryParams()
   const userData = useSelector((state) => state.user)
+  // Keeps this store's receipt templates (admin → /settings/receipts) cached for printing, offline included.
+  useReceiptTemplateSync(get(userData, 'store.id'))
 
   const [company, setCompany] = useState('1')
   const [amounts, setAmounts] = useState({ actual: '', uzcard: '', humo: '', closed: '' })
@@ -563,13 +564,6 @@ function CloseShiftPage() {
   const handleAgentZReportPrint = async (zrepoData) => {
     setPrintError(null)
     try {
-      let logoHex = null
-      try {
-        logoHex = await loadSvgAsEscposHex('/MagnitLogoPremiumCheque.svg', 400, 576)
-      } catch (e) {
-        console.warn('Failed to load logo for Z-Report:', e)
-      }
-
       let kassaNumber = '-'
       try {
         const savedCashbox = JSON.parse(localStorage.getItem('selected_cashbox') || 'null')
@@ -597,8 +591,8 @@ function CloseShiftPage() {
         givenToCompany: givenToCompanyAmount,
       }
 
-      const layoutLines = buildZReportReceiptLayout(enrichedZrepo, {
-        logoHex,
+      const layoutLines = await buildZReportReceiptLines(enrichedZrepo, {
+        storeId: get(userData, 'store.id'),
         name: get(userData, 'store.name'),
         address: get(userData, 'store.address'),
         cashier: `${get(userData, 'first_name', '')} ${get(userData, 'last_name', '')}`.trim(),

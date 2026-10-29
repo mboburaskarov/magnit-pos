@@ -13,9 +13,8 @@ import { bypassNextAppExit } from '@hooks/useExitConfirm'
 import { useBarcodeScanner } from '@/hooks/pos/useBarcodeScanner'
 import { useSaleOperations } from '@/hooks/sale/useSaleOperations'
 import { usePrintOperations } from '@/hooks/sale/usePrintOperations'
-import { buildReceiptLayout } from '@utils/receiptBuilder'
+import { buildSaleReceiptLines, useReceiptTemplateSync } from '@utils/receiptTemplate'
 import { roundToOne } from '@utils/formatUZS'
-import { loadSvgAsEscposHex } from '@utils/escposImage'
 import { RippedPaperItem } from '@components/RippedPaperList'
 import PosClientPanel from './PosClientPanel'
 import POSHeader from './POSHeader'
@@ -45,6 +44,8 @@ export default function PosApp() {
   const { id } = useParams()
   const navigate = useNavigate()
   const userData = useSelector((state) => state.user)
+  // Keeps this store's receipt templates (admin → /settings/receipts) cached for printing, offline included.
+  useReceiptTemplateSync(get(userData, 'store.id'))
   // TODO(temporary, frontend-only): security password is derived from the store name until
   // this check moves to the backend. Format: "{store_name}#5612@" (e.g. "MG3-Novza#5612@").
   const securityPassword = `${get(userData, 'store.name') || ''}#5612@`
@@ -1640,13 +1641,6 @@ export default function PosApp() {
     const isPostPayment = !!finalNewSaleId
 
     try {
-      let logoHex = null
-      try {
-        logoHex = await loadSvgAsEscposHex('/MagnitLogoPremiumCheque.svg', 400, 576)
-      } catch (e) {
-        console.warn('Receipt logo failed to load:', e)
-      }
-
       let paymentType = 'cash'
       if (cardPaymentSelected) {
         paymentType = 'card'
@@ -1696,8 +1690,8 @@ export default function PosApp() {
         customer: customerId?.name ? String(customerId.name) : '',
       }
 
-      const layoutLines = buildReceiptLayout(payloadData, {
-        logoHex,
+      const layoutLines = await buildSaleReceiptLines(payloadData, {
+        storeId: get(userData, 'store.id'),
         name: get(userData, 'store.name'),
         address: get(userData, 'store.address'),
       })

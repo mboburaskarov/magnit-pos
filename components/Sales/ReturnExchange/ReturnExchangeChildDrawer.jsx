@@ -20,8 +20,7 @@ import CustomImg from '../../CustomImg'
 import LoadingContainer from '../../LoadingContainer'
 import ReturnExchangeChildItemBox from './ReturnExchangeChildItemBox'
 import RippedPaperCheckReturn from '../../ChequePaper/RippedPaperCheckReturn'
-import { loadSvgAsEscposHex } from '../../../utils/escposImage'
-import { buildReceiptLayout } from '../../../utils/receiptBuilder'
+import { buildSaleReceiptLines } from '../../../utils/receiptTemplate'
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -167,13 +166,6 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
     if (!saleData) return
 
     try {
-      let logoHex = null
-      try {
-        logoHex = await loadSvgAsEscposHex('/MagnitLogoPremiumCheque.svg', 400, 576)
-      } catch (e) {
-        console.warn('Duplicate logo loading failed:', e)
-      }
-
       const cashierNameStr = `${saleData.employee?.first_name || ''} ${saleData.employee?.last_name || ''}`.trim() || t('pos.default_cashier_name')
       const rawPaymentTypeName = (saleData.sale_payments?.[0]?.payment_type?.name || '').toLowerCase()
       const cardScheme = rawPaymentTypeName === 'humo' ? 'humo' : rawPaymentTypeName === 'uzcard' ? 'uzcard' : null
@@ -217,8 +209,8 @@ function ReturnExchangeItemDrawer({ open, cash_box_operation_id, setChildOpen, s
         isDuplicate: true,
       }
 
-      const layoutLines = buildReceiptLayout(payloadData, {
-        logoHex,
+      const layoutLines = await buildSaleReceiptLines(payloadData, {
+        storeId: get(userData, 'store.id'),
         name: get(userData, 'store.name'),
         address: get(userData, 'store.address'),
       })
