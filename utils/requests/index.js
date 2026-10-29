@@ -506,4 +506,10 @@ export const requests = {
   updateEmployeeTarget: ({ employee_id, data }) => request.put(`v1/store-target/employee/${employee_id}`, data),
   getMyTarget: (filter) => request.get(`v1/store-target/employee/my${qs.stringify(filter, { addQueryPrefix: true })}`),
   getTargetsExcelReport: (filter) => requestEXCEL.get(`v1/store-target/export-excel${qs.stringify(filter, { addQueryPrefix: true })}`),
+
+  // Receipt templates (/settings/receipts in the admin panel), resolved for one
+  // store: store → global → built-in. Open to any employee. The timeout keeps a
+  // hung request from blocking the next refresh (utils/receiptTemplate).
+  getEffectiveReceiptTemplates: (storeId) =>
+    request.get('v1/receipt-template/effective', { params: { store_id: storeId || 'global' }, timeout: 20000 }),
 }

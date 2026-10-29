@@ -3,8 +3,8 @@ import { X, Play, RefreshCw, Server, Wifi, Usb, Search, Box, Eye } from 'lucide-
 import axios from 'axios'
 import { success, error } from '@utils/toast'
 import { bypassNextAppExit } from '@hooks/useExitConfirm'
-import { buildReceiptLayout } from '@utils/receiptBuilder'
-import { loadSvgAsEscposHex } from '@utils/escposImage'
+import { useSelector } from 'react-redux'
+import { buildSaleReceiptLines } from '@utils/receiptTemplate'
 import ReceiptPreviewCanvas from '@components/ReceiptPreviewCanvas'
 import PosMertechSettings from './PosMertechSettings'
 import './PosLayout.css'
@@ -16,21 +16,10 @@ export default function PosPrinterSettings({ open, onClose, t }) {
   const [isRunning, setIsRunning] = useState(false)
   const [activeUrl, setActiveUrl] = useState(AGENT_URL)
   const [mode, setMode] = useState('network') // 'network' or 'local'
-  const [logoHex, setLogoHex] = useState(null)
-
-  useEffect(() => {
-    let active = true
-    loadSvgAsEscposHex('/MagnitLogoPremiumCheque.svg', 400, 576)
-      .then((hex) => {
-        if (active) setLogoHex(hex)
-      })
-      .catch((e) => {
-        console.warn('Failed to load logo for settings preview:', e)
-      })
-    return () => {
-      active = false
-    }
-  }, [])
+  const userData = useSelector((state) => state.user)
+  // The sample receipt below, laid out with this store's template — the same
+  // one a real sale prints with.
+  const [previewLines, setPreviewLines] = useState([])
   
   // Network
   const [printerIP, setPrinterIP] = useState('')
@@ -74,6 +63,21 @@ export default function PosPrinterSettings({ open, onClose, t }) {
     fiscalDate: "20260612150839",
     qrData: "https://my.soliq.uz/check?id=123"
   }
+
+  useEffect(() => {
+    if (!showPreview) return undefined
+    let active = true
+    buildSaleReceiptLines(dummyData, {
+      storeId: userData?.store?.id,
+      name: userData?.store?.name,
+      address: userData?.store?.address,
+    }).then((lines) => active && setPreviewLines(lines))
+    return () => {
+      active = false
+    }
+    // dummyData is a constant sample rebuilt on every render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showPreview, userData?.store?.id])
 
   // 1. Check agent status and load settings
   const checkAgentStatus = async (showToasts = false) => {
@@ -652,7 +656,7 @@ export default function PosPrinterSettings({ open, onClose, t }) {
           {showPreview && (
             <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '16px', marginTop: '16px' }}>
               <h4 style={{ margin: '0 0 16px 0', fontSize: '15px', fontWeight: '700', color: '#374151' }}>{t('pos.printer.receipt_preview_test')}</h4>
-              <ReceiptPreviewCanvas lines={buildReceiptLayout(dummyData, { logoHex })} />
+              <ReceiptPreviewCanvas lines={previewLines} />
             </div>
           )}
 

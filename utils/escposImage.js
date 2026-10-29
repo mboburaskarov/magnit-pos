@@ -9,6 +9,13 @@ export async function loadSvgAsEscposHex(url, targetWidth = 328, fullWidth = nul
     const img = new Image()
     img.crossOrigin = 'Anonymous'
     img.onload = () => {
+      // An SVG without width/height can load with no size at all; scaling by it
+      // would fill the canvas with NaN instead of failing.
+      if (!img.width || !img.height) {
+        reject(new Error(`Image has no size: ${url.slice(0, 64)}`))
+        return
+      }
+
       // Width must be a multiple of 8 for ESC/POS bit image
       const logoWidth = Math.round(targetWidth / 8) * 8
       const canvasWidth = fullWidth ? Math.round(fullWidth / 8) * 8 : logoWidth

@@ -11,8 +11,7 @@ import ArrowRightIcon from '../../../src/assets/icons/ArrowRightIcon'
 import BagOutline from '../../../src/assets/icons/BagOutline'
 import { requests } from '../../../utils/requests'
 import thousandDivider from '../../../utils/thousandDivider'
-import { loadSvgAsEscposHex } from '../../../utils/escposImage'
-import { buildReceiptLayout } from '../../../utils/receiptBuilder'
+import { buildSaleReceiptLines } from '../../../utils/receiptTemplate'
 
 const useStyles = makeStyles((theme) => ({
   rightArrowIcon: {
@@ -77,13 +76,6 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
         throw new Error('No sale data returned')
       }
 
-      let logoHex = null
-      try {
-        logoHex = await loadSvgAsEscposHex('/MagnitLogoPremiumCheque.svg', 400, 576)
-      } catch (logoErr) {
-        console.warn('Duplicate logo loading failed:', logoErr)
-      }
-
       const cashierNameStr = `${saleData.employee?.first_name || ''} ${saleData.employee?.last_name || ''}`.trim() || t('pos.default_cashier_name')
       const rawPaymentTypeName = (saleData.sale_payments?.[0]?.payment_type?.name || '').toLowerCase()
       const cardScheme = rawPaymentTypeName === 'humo' ? 'humo' : rawPaymentTypeName === 'uzcard' ? 'uzcard' : null
@@ -127,8 +119,8 @@ function ReturnExchangeParentItemBox({ setIsOpenChild, item }) {
         isDuplicate: true,
       }
 
-      const layoutLines = buildReceiptLayout(payloadData, {
-        logoHex,
+      const layoutLines = await buildSaleReceiptLines(payloadData, {
+        storeId: get(userData, 'store.id'),
         name: get(userData, 'store.name'),
         address: get(userData, 'store.address'),
       })
