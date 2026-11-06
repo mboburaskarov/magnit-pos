@@ -14,6 +14,7 @@ import { useBarcodeScanner } from '@/hooks/pos/useBarcodeScanner'
 import { useSaleOperations } from '@/hooks/sale/useSaleOperations'
 import { usePrintOperations } from '@/hooks/sale/usePrintOperations'
 import { buildSaleReceiptLines, useReceiptTemplateSync } from '@utils/receiptTemplate'
+import { buildReceiptItems } from '@utils/receiptTemplate/nxItems'
 import { roundToOne } from '@utils/formatUZS'
 import { RippedPaperItem } from '@components/RippedPaperList'
 import PosClientPanel from './PosClientPanel'
@@ -209,6 +210,11 @@ export default function PosApp() {
   // false: during a backend wobble under-enforcing beats blocking every sale
   // at every till at once.
   const markingRequiredForAll = get(cartItemsRes, 'data.data.marking_required_for_all', false)
+
+  // Who issues the fiscal receipt: 'uzpos' (this till, via the device agent) or
+  // 'paylov' (the server). Rides on the cart like the switch above; absent means
+  // uzpos so a wobble never reroutes receipts.
+  const fiscalProvider = get(cartItemsRes, 'data.data.fiscal_provider', 'uzpos')
 
   // itemOrder maintains frontend interaction ordering (last scanned/updated items at the top)
   const [itemOrder, setItemOrder] = useState([])
@@ -594,6 +600,7 @@ export default function PosApp() {
       cartItemsList: posCartItemsList,
       markingsList,
       markingRequiredForAll,
+      fiscalProvider,
       dmedOrganizedList,
       dmedPrescriptionsList,
       serviceType: 'other',
@@ -1650,6 +1657,15 @@ export default function PosApp() {
 
       const cashierNameStr = `${userData?.first_name || ''} ${userData?.last_name || ''}`.trim() || t('pos.default_cashier_name')
 
+      // Print in the order the screen shows, so an N+X gift stays against the line
+      // that earned it. Membership is still `cartItems` (what the receipt has always
+      // printed); displayCartItems only decides the order, and anything it doesn't
+      // carry keeps its place at the end.
+      const displayRank = new Map(displayCartItems.map((item, index) => [item.id, index]))
+      const receiptCartItems = [...cartItems].sort(
+        (a, b) => (displayRank.get(a.id) ?? Infinity) - (displayRank.get(b.id) ?? Infinity),
+      )
+
       const payloadData = {
         saleId: String(cashBoxDetails?.data?.data?.sale_number || finalNewSaleId || id || ''),
         cashier: cashierNameStr,
@@ -1658,16 +1674,10 @@ export default function PosApp() {
         isCorporateCard: qrcodeUrl.cardType === 'corporative',
         cardScheme: cardPaymentType,
         date: new Date().toISOString(),
-        items: cartItems.map((item) => ({
-          name: item.name || t('pos.default_product_name'),
-          mxik: item.mxik || item.code || '',
-          qty: item.unit_per_pack === 1000 
-            ? ((item.quantity || 0) * 1000 + (item.unit_quantity || 0)) / 1000
-            : Number(item.quantity || 1),
-          price: Number(item.unit_price || 0),
-          total: Number(item.total_price || 0),
-          vatPercent: item.vat_percent || (posCartItemsList.vat_sum > 0 ? 12 : 0),
-          vatAmount: item.vat_amount || 0,
+        items: buildReceiptItems(receiptCartItems).map((row) => ({
+          ...row,
+          name: row.name || t('pos.default_product_name'),
+          vatPercent: row.vatPercent || (posCartItemsList.vat_sum > 0 ? 12 : 0),
         })),
         subtotal: Number(
           cartItems.reduce((acc, item) => {

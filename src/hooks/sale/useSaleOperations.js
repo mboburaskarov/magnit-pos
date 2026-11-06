@@ -57,6 +57,7 @@ export const useSaleOperations = ({
   cartItemsList,
   markingsList,
   markingRequiredForAll = false,
+  fiscalProvider = 'uzpos',
   dmedOrganizedList,
   dmedPrescriptionsList,
   serviceType,
@@ -102,6 +103,21 @@ export const useSaleOperations = ({
   const SALE_STAGE = get(cashBoxDetails, 'data.data.stage', 0)
   const SALE_NUMBER = get(cashBoxDetails, 'data.data.sale_number', 0)
 
+  // With the Paylov provider the SERVER issues the receipt: the till skips the
+  // device agent and just asks the server to finish the sale. A sale follows the
+  // global setting; a RETURN follows how the ORIGINAL sale was fiscalized (the
+  // server stamps `provider` on the payload it stores), because a receipt can only
+  // be reversed where it was issued — whatever the setting says today.
+  const originalProvider = (() => {
+    try {
+      return JSON.parse(get(cashBoxDetails, 'data.data.epos_response.response', '{}'))?.provider
+    } catch (e) {
+      return undefined
+    }
+  })()
+  const serverFiscal =
+    SALE_TYPE === 'SALE' ? fiscalProvider === 'paylov' : SALE_TYPE === 'RETURN' ? originalProvider === 'paylov' : false
+
   // Finish sale without app payment
   const {
     mutate: finishSaleWithoutAppPaymentType,
@@ -110,7 +126,11 @@ export const useSaleOperations = ({
   } = useMutation(requests.addToOrderPayment, {
     onSuccess: (data) => {
       if (SALE_STAGE === 6) {
-        sendEPOSresponseToBackend({ error: false, response_data: null, sale_id: id })
+        sendEPOSresponseToBackend({ error: false, response_data: null, sale_id: id, ...(serverFiscal ? { server_fiscal: true } : {}) })
+        return
+      }
+      if (serverFiscal) {
+        sendEPOSresponseToBackend({ error: false, response_data: null, sale_id: id, server_fiscal: true })
         return
       }
       if (!JSON.parse(sendToEpos) || get(cashBoxDetails, 'data.data.service_type') === 'uzum') {
@@ -320,8 +340,14 @@ export const useSaleOperations = ({
     isLoading: isSendEPOSresponseToBackend,
     isError: isSaleResponseError,
   } = useMutation(requests.sendEPOSresponseToBackend, {
-    onSuccess: ({ data }) => {
+    onSuccess: ({ data }, variables) => {
       setOpenRefreshDialog(false)
+      // A server-issued receipt comes back on the response; the till did not
+      // fiscalize, so the paper cheque has no other source for its QR and sign.
+      if (variables?.server_fiscal && get(data, 'data.fiscal_receipt')) {
+        const receipt = get(data, 'data.fiscal_receipt')
+        setQrcodeUrl({ qr: receipt.qr_code_url || 'pending', fiscal: receipt.fiscal_sign || 'pending', terminalId: receipt.terminal_id || 'pending', cardType: cartOwnerType })
+      }
       setNewSaleId(get(data, 'data.id', false))
       setDmedPrescriptionsList([])
       setDmedOrganizedList([])

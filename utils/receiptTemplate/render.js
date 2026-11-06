@@ -196,7 +196,7 @@ function renderItems(block, ctx, add) {
   const fill = fillOf(block)
   ctx.items.forEach((item, index) => {
     const name = item.name || item.barcode || label(block, 'default_name', 'Tovar')
-    wrapText(option(block, 'show_index', true) ? `${index + 1}. ${name}` : name).forEach((l) => add(l))
+    wrapText(option(block, 'show_index', true) ? `${item.label ?? index + 1}${String(item.label ?? '').includes('.') ? '' : '.'} ${name}` : name).forEach((l) => add(l))
 
     if (option(block, 'show_mxik', true) && item.mxik) {
       add(leftRight(label(block, 'mxik', '  MXIK'), item.mxik, RECEIPT_WIDTH, fill))
