@@ -38,6 +38,9 @@ export default function ActionBar({
   cardPaymentAmount,
   secondaryPaymentMethod,
   secondaryPaymentAmount,
+  balanceSelected,
+  balanceAmount,
+  onSelectBalancePayment,
   onSelectCashPayment,
   onSelectCardPayment,
   onSelectSecondaryPayment,
@@ -45,12 +48,13 @@ export default function ActionBar({
   totalAmount,
   t,
 }) {
-  const selectedPaymentCount = [cashPaymentSelected, cardPaymentSelected, Boolean(secondaryPaymentMethod)]
+  const selectedPaymentCount = [cashPaymentSelected, cardPaymentSelected, Boolean(secondaryPaymentMethod), balanceSelected]
     .filter(Boolean).length
   const totalPaid =
     (cashPaymentSelected ? Number(receivedAmount || 0) : 0) +
     (cardPaymentSelected ? Number(cardPaymentAmount || 0) : 0) +
-    Number(secondaryPaymentAmount || 0)
+    Number(secondaryPaymentAmount || 0) +
+    (balanceSelected ? Number(balanceAmount || 0) : 0)
   const isPaymentAmountEnough = totalPaid >= Number(totalAmount) && Number(totalAmount) > 0
   const shouldDisableInactive = isPaymentAmountEnough || selectedPaymentCount >= 2
 
@@ -128,9 +132,9 @@ export default function ActionBar({
             UzQR
           </button>
           <button
-            className={`method-select-btn ${secondaryPaymentMethod === 'loyaltycard' ? 'is-active' : ''}`}
-            onClick={() => { onSelectSecondaryPayment('loyaltycard'); blurActiveBtn() }}
-            disabled={!customerId || (shouldDisableInactive && secondaryPaymentMethod !== 'loyaltycard') || Boolean(secondaryPaymentMethod && secondaryPaymentMethod !== 'loyaltycard') || isMethodBlocked('loyaltycard')}
+            className={`method-select-btn ${balanceSelected ? 'is-active' : ''}`}
+            onClick={() => { onSelectBalancePayment(); blurActiveBtn() }}
+            disabled={!customerId || (shouldDisableInactive && !balanceSelected) || isMethodBlocked('loyaltycard')}
             type='button'
           >
             <CreditCard size={18} className="payment-icon-svg" style={{ marginRight: 6 }} />

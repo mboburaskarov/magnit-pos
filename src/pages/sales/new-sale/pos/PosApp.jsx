@@ -87,6 +87,10 @@ export default function PosApp() {
   const [cardPaymentAmount, setRawCardPaymentAmount] = useState('')
   const [secondaryPaymentMethod, setSecondaryPaymentMethod] = useState(null)
   const [secondaryPaymentAmount, setRawSecondaryPaymentAmount] = useState('')
+  // Balance (loyalty points) is a tender of its own, not an app: it has to stack
+  // with Payme/Click/Uzum/Munis, which all share the single secondary slot above.
+  const [balanceSelected, setBalanceSelected] = useState(false)
+  const [balanceAmount, setRawBalanceAmount] = useState('')
   const [focusedPaymentInput, setFocusedPaymentInput] = useState('cash')
   const [showAppScanModal, setShowAppScanModal] = useState(false)
   const [showMunisQrModal, setShowMunisQrModal] = useState(false)
@@ -379,6 +383,20 @@ export default function PosApp() {
     })
   }, [totalAmount])
 
+  // Capped at what the customer actually holds too: the backend rejects
+  // amount > balance with invalid.sale.amount, so typing past it would dead-end
+  // the cashier on a sale that can never go through.
+  const setBalanceAmount = useCallback((val) => {
+    setRawBalanceAmount((prev) => {
+      let nextVal = typeof val === 'function' ? val(prev) : val
+      const cap = Math.min(Number(totalAmount || 0), Number(customerId?.balance || 0))
+      if (nextVal !== '' && Number(nextVal) > cap) {
+        return String(cap)
+      }
+      return nextVal
+    })
+  }, [totalAmount, customerId?.balance])
+
   const posCartItemsList = useMemo(
     () => ({
       data: activeCartItems,
@@ -427,25 +445,33 @@ export default function PosApp() {
         payme: 'Payme',
         uzum: 'Uzum',
         munis: 'Munis',
-        loyaltycard: 'Balans',
       }
       const appName = appNameByMethod[secondaryPaymentMethod]
-      const paymentTypeKey = secondaryPaymentMethod === 'loyaltycard' ? 'loyalty_card' : secondaryPaymentMethod
 
       payments.push({
         amount: Number(secondaryPaymentAmount),
-        // matches payment_types by name ('Balans') or front_name ('loyalty_card');
-        // the raw selector key is kept so the other methods still resolve.
-        payment_type_id: getPaymentTypeId([appName, secondaryPaymentMethod, paymentTypeKey]),
-        type: secondaryPaymentMethod === 'loyaltycard' ? 'loyalty_card' : 'app',
+        payment_type_id: getPaymentTypeId([appName, secondaryPaymentMethod]),
+        type: 'app',
         name: appName,
         app_type: secondaryPaymentMethod,
-        front_name: paymentTypeKey,
+        front_name: secondaryPaymentMethod,
+      })
+    }
+
+    if (balanceSelected && Number(balanceAmount) > 0) {
+      payments.push({
+        amount: Number(balanceAmount),
+        // matches payment_types by name ('Balans') or front_name ('loyalty_card')
+        payment_type_id: getPaymentTypeId(['Balans', 'loyaltycard', 'loyalty_card']),
+        type: 'loyalty_card',
+        name: 'Balans',
+        app_type: 'loyaltycard',
+        front_name: 'loyalty_card',
       })
     }
 
     return payments
-  }, [cashPaymentSelected, receivedAmount, cardPaymentSelected, cardPaymentType, cardPaymentAmount, secondaryPaymentMethod, secondaryPaymentAmount, paymentTypesList])
+  }, [cashPaymentSelected, receivedAmount, cardPaymentSelected, cardPaymentType, cardPaymentAmount, secondaryPaymentMethod, secondaryPaymentAmount, balanceSelected, balanceAmount, paymentTypesList])
 
   const paymentAmount = paymentsList.reduce((sum, item) => sum + Number(item.amount || 0), 0)
   const maxAmount = Number(totalAmount || 0) - paymentAmount
@@ -928,7 +954,9 @@ export default function PosApp() {
 
   // ── Handlers ──
   const handleQuickCash = (amount) => {
-    if (focusedPaymentInput === 'secondary' && secondaryPaymentMethod) {
+    if (focusedPaymentInput === 'balance' && balanceSelected) {
+      setBalanceAmount((prev) => String(Number(prev || 0) + amount))
+    } else if (focusedPaymentInput === 'secondary' && secondaryPaymentMethod) {
       setSecondaryPaymentAmount((prev) => String(Number(prev || 0) + amount))
     } else if (focusedPaymentInput === 'card' && cardPaymentSelected) {
       setCardPaymentAmount((prev) => String(Number(prev || 0) + amount))
@@ -959,6 +987,8 @@ export default function PosApp() {
     setCardPaymentAmount('')
     setSecondaryPaymentMethod(null)
     setSecondaryPaymentAmount('')
+    setBalanceSelected(false)
+    setBalanceAmount('')
     setFocusedPaymentInput(null)
     setPaymentMethod(null)
     setCartOwnerType('physical')
@@ -975,6 +1005,9 @@ export default function PosApp() {
       } else if (secondaryPaymentMethod) {
         setFocusedPaymentInput('secondary')
         setPaymentMethod(secondaryPaymentMethod)
+      } else if (balanceSelected) {
+        setFocusedPaymentInput('balance')
+        setPaymentMethod('loyaltycard')
       } else {
         setFocusedPaymentInput(null)
         setPaymentMethod(null)
@@ -982,7 +1015,7 @@ export default function PosApp() {
       return
     }
 
-    const remainingAmount = Math.max(Number(totalAmount) - Number(cardPaymentAmount || 0) - Number(secondaryPaymentAmount || 0), 0)
+    const remainingAmount = Math.max(Number(totalAmount) - Number(cardPaymentAmount || 0) - Number(secondaryPaymentAmount || 0) - Number(balanceAmount || 0), 0)
     if (remainingAmount <= 0) return
 
     setCashPaymentSelected(true)
@@ -1002,6 +1035,9 @@ export default function PosApp() {
       } else if (secondaryPaymentMethod) {
         setFocusedPaymentInput('secondary')
         setPaymentMethod(secondaryPaymentMethod)
+      } else if (balanceSelected) {
+        setFocusedPaymentInput('balance')
+        setPaymentMethod('loyaltycard')
       } else {
         setFocusedPaymentInput(null)
         setPaymentMethod(null)
@@ -1017,7 +1053,7 @@ export default function PosApp() {
       return
     }
 
-    const remainingAmount = Math.max(Number(totalAmount) - (cashPaymentSelected ? Number(receivedAmount || 0) : 0) - Number(secondaryPaymentAmount || 0), 0)
+    const remainingAmount = Math.max(Number(totalAmount) - (cashPaymentSelected ? Number(receivedAmount || 0) : 0) - Number(secondaryPaymentAmount || 0) - Number(balanceAmount || 0), 0)
     if (remainingAmount <= 0) return
 
     setCardPaymentType(scheme)
@@ -1036,6 +1072,9 @@ export default function PosApp() {
       } else if (cardPaymentSelected) {
         setFocusedPaymentInput('card')
         setPaymentMethod('card')
+      } else if (balanceSelected) {
+        setFocusedPaymentInput('balance')
+        setPaymentMethod('loyaltycard')
       } else {
         setFocusedPaymentInput(null)
         setPaymentMethod(null)
@@ -1044,21 +1083,45 @@ export default function PosApp() {
     }
 
     const cashAmount = cashPaymentSelected ? Number(receivedAmount || 0) : 0
-    const remainingAmount = Math.max(Number(totalAmount) - cashAmount - Number(cardPaymentAmount || 0), 0)
+    const remainingAmount = Math.max(Number(totalAmount) - cashAmount - Number(cardPaymentAmount || 0) - Number(balanceAmount || 0), 0)
     if (remainingAmount <= 0) return
 
-    // Never pre-fill more balance than the customer has: the backend rejects
-    // amount > balance with invalid.sale.amount, which would dead-end the cashier
-    // on a sale that can never go through. (Nothing is fiscalized in that case —
-    // EPOS only runs from the finalize mutation's onSuccess.) Mirrors the guard in
-    // useFullOrderPayments.
-    const prefillAmount =
-      method === 'loyaltycard' ? Math.min(remainingAmount, Number(customerId?.balance || 0)) : remainingAmount
-
     setSecondaryPaymentMethod(method)
-    setSecondaryPaymentAmount(String(prefillAmount))
+    setSecondaryPaymentAmount(String(remainingAmount))
     setFocusedPaymentInput('secondary')
     setPaymentMethod(method)
+  }
+
+  const handleSelectBalancePayment = () => {
+    if (balanceSelected) {
+      setBalanceSelected(false)
+      setBalanceAmount('')
+      if (cashPaymentSelected) {
+        setFocusedPaymentInput('cash')
+        setPaymentMethod('cash')
+      } else if (cardPaymentSelected) {
+        setFocusedPaymentInput('card')
+        setPaymentMethod('card')
+      } else if (secondaryPaymentMethod) {
+        setFocusedPaymentInput('secondary')
+        setPaymentMethod(secondaryPaymentMethod)
+      } else {
+        setFocusedPaymentInput(null)
+        setPaymentMethod(null)
+      }
+      return
+    }
+
+    const cashAmount = cashPaymentSelected ? Number(receivedAmount || 0) : 0
+    const remainingAmount = Math.max(Number(totalAmount) - cashAmount - Number(cardPaymentAmount || 0) - Number(secondaryPaymentAmount || 0), 0)
+    if (remainingAmount <= 0) return
+
+    // Never pre-fill more balance than the customer has (see setBalanceAmount).
+    // Mirrors the guard in useFullOrderPayments.
+    setBalanceSelected(true)
+    setBalanceAmount(String(Math.min(remainingAmount, Number(customerId?.balance || 0))))
+    setFocusedPaymentInput('balance')
+    setPaymentMethod('loyaltycard')
   }
 
   const handleCheckout = async () => {
@@ -1070,10 +1133,12 @@ export default function PosApp() {
 
     const cardAmount = Number(cardPaymentAmount || 0)
     const secondaryAmount = Number(secondaryPaymentAmount || 0)
+    const balancePaid = Number(balanceAmount || 0)
     const numEffective = effectiveTotalAmount
 
     if ((cardPaymentSelected && cardAmount > numEffective) ||
-        (secondaryPaymentMethod && secondaryAmount > numEffective)) {
+        (secondaryPaymentMethod && secondaryAmount > numEffective) ||
+        (balanceSelected && balancePaid > numEffective)) {
       error(t('pos.error_non_cash_exceeds'))
       return
     }
@@ -1569,6 +1634,8 @@ export default function PosApp() {
     setCardPaymentAmount('')
     setSecondaryPaymentMethod(null)
     setSecondaryPaymentAmount('')
+    setBalanceSelected(false)
+    setBalanceAmount('')
     setCartOwnerType('physical')
     setShowPaymentView(false)
   }
@@ -1646,6 +1713,8 @@ export default function PosApp() {
         paymentType = 'card'
       } else if (secondaryPaymentMethod) {
         paymentType = secondaryPaymentMethod
+      } else if (balanceSelected) {
+        paymentType = 'loyaltycard'
       }
 
       const cashierNameStr = `${userData?.first_name || ''} ${userData?.last_name || ''}`.trim() || t('pos.default_cashier_name')
@@ -1679,7 +1748,7 @@ export default function PosApp() {
         ),
         discount: Number(totalDiscount || 0),
         totalAmount: Number(totalAmount || 0),
-        paidAmount: Number(receivedAmount || cardPaymentAmount || secondaryPaymentAmount || totalAmount || 0),
+        paidAmount: Number(receivedAmount || cardPaymentAmount || secondaryPaymentAmount || balanceAmount || totalAmount || 0),
         changeAmount: roundToOne(Math.max(Number(receivedAmount || 0) - Number(totalAmount || 0), 0)),
         vatAmount: Number(posCartItemsList.vat_sum || 0),
         chequeType: get(cashBoxDetails, 'data.data.sale_type') === 'RETURN' ? 'return' : 'sale',
@@ -1810,7 +1879,10 @@ export default function PosApp() {
     if (secondaryPaymentAmount && Number(secondaryPaymentAmount) > numTotal) {
       setSecondaryPaymentAmount(String(numTotal))
     }
-  }, [totalAmount, cardPaymentAmount, secondaryPaymentAmount])
+    if (balanceAmount && Number(balanceAmount) > numTotal) {
+      setBalanceAmount(String(numTotal))
+    }
+  }, [totalAmount, cardPaymentAmount, secondaryPaymentAmount, balanceAmount])
 
   // ── Focus Fix: blur any focused action button to prevent scanner re-triggering ──
   const clearPOSActionFocus = () => {
@@ -2174,6 +2246,9 @@ export default function PosApp() {
               cardPaymentAmount={cardPaymentAmount}
               secondaryPaymentMethod={secondaryPaymentMethod}
               secondaryPaymentAmount={secondaryPaymentAmount}
+              balanceSelected={balanceSelected}
+              balanceAmount={balanceAmount}
+              onSelectBalancePayment={handleSelectBalancePayment}
               onSelectCashPayment={handleSelectCashPayment}
               onSelectCardPayment={handleSelectCardPayment}
               onSelectSecondaryPayment={handleSelectSecondaryPayment}
@@ -2208,6 +2283,9 @@ export default function PosApp() {
           secondaryPaymentMethod={secondaryPaymentMethod}
           secondaryPaymentAmount={secondaryPaymentAmount}
           setSecondaryPaymentAmount={setSecondaryPaymentAmount}
+          balanceSelected={balanceSelected}
+          balanceAmount={balanceAmount}
+          setBalanceAmount={setBalanceAmount}
           focusedPaymentInput={focusedPaymentInput}
           setFocusedPaymentInput={setFocusedPaymentInput}
           totalAmount={effectiveTotalAmount}

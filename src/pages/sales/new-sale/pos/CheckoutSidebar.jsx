@@ -26,6 +26,9 @@ export default function CheckoutSidebar({
   secondaryPaymentMethod,
   secondaryPaymentAmount,
   setSecondaryPaymentAmount,
+  balanceSelected,
+  balanceAmount,
+  setBalanceAmount,
   focusedPaymentInput,
   setFocusedPaymentInput,
   totalAmount,
@@ -44,10 +47,12 @@ export default function CheckoutSidebar({
   const receivedAmountInputRef = useRef(null)
   const cardPaymentInputRef = useRef(null)
   const secondaryPaymentInputRef = useRef(null)
+  const balancePaymentInputRef = useRef(null)
   const totalPaid =
     (cashPaymentSelected ? Number(receivedAmount || 0) : 0) +
     (cardPaymentSelected ? Number(cardPaymentAmount || 0) : 0) +
-    Number(secondaryPaymentAmount || 0)
+    Number(secondaryPaymentAmount || 0) +
+    (balanceSelected ? Number(balanceAmount || 0) : 0)
 
   const paymentLabels = {
     card: t('pos.card_payment'),
@@ -59,7 +64,9 @@ export default function CheckoutSidebar({
   }
 
   const setFocusedAmount = (updater) => {
-    if (focusedPaymentInput === 'secondary' && secondaryPaymentMethod) {
+    if (focusedPaymentInput === 'balance' && balanceSelected) {
+      setBalanceAmount(updater)
+    } else if (focusedPaymentInput === 'secondary' && secondaryPaymentMethod) {
       setSecondaryPaymentAmount(updater)
     } else if (focusedPaymentInput === 'card' && cardPaymentSelected) {
       setCardPaymentAmount(updater)
@@ -87,14 +94,16 @@ export default function CheckoutSidebar({
   useEffect(() => {
     if (!showPaymentView) return
 
-    if (focusedPaymentInput === 'secondary' && secondaryPaymentMethod) {
+    if (focusedPaymentInput === 'balance' && balanceSelected) {
+      balancePaymentInputRef.current?.focus()
+    } else if (focusedPaymentInput === 'secondary' && secondaryPaymentMethod) {
       secondaryPaymentInputRef.current?.focus()
     } else if (focusedPaymentInput === 'card' && cardPaymentSelected) {
       cardPaymentInputRef.current?.focus()
     } else if (focusedPaymentInput === 'cash' && cashPaymentSelected) {
       receivedAmountInputRef.current?.focus()
     }
-  }, [cardPaymentSelected, cashPaymentSelected, focusedPaymentInput, secondaryPaymentMethod, showPaymentView])
+  }, [cardPaymentSelected, cashPaymentSelected, focusedPaymentInput, secondaryPaymentMethod, balanceSelected, showPaymentView])
 
   return (
     <aside className='pos-sidebar-premium'>
@@ -231,7 +240,7 @@ export default function CheckoutSidebar({
                       value={cardPaymentAmount ? formatNumberUZS(cardPaymentAmount) : ''}
                       onChange={(e) => setCardPaymentAmount(e.target.value.replace(/\D/g, ''))}
                       onFocus={() => setFocusedPaymentInput('card')}
-                      placeholder={formatNumberUZS(Math.max(totalAmount - Number(receivedAmount || 0) - Number(secondaryPaymentAmount || 0), 0))}
+                      placeholder={formatNumberUZS(Math.max(totalAmount - Number(receivedAmount || 0) - Number(secondaryPaymentAmount || 0) - Number(balanceAmount || 0), 0))}
                       className='received-amount-input'
                     />
                     <button
@@ -268,13 +277,38 @@ export default function CheckoutSidebar({
                     value={secondaryPaymentAmount ? formatNumberUZS(secondaryPaymentAmount) : ''}
                     onChange={(e) => setSecondaryPaymentAmount(e.target.value.replace(/\D/g, ''))}
                     onFocus={() => setFocusedPaymentInput('secondary')}
-                    placeholder={formatNumberUZS(Math.max(totalAmount - Number(receivedAmount || 0) - Number(cardPaymentAmount || 0), 0))}
+                    placeholder={formatNumberUZS(Math.max(totalAmount - Number(receivedAmount || 0) - Number(cardPaymentAmount || 0) - Number(balanceAmount || 0), 0))}
                     className='received-amount-input'
                   />
                   <button
                     className='received-amount-clear'
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => setSecondaryPaymentAmount('')}
+                  >
+                    C
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {balanceSelected && (
+              <div className={`payment-row ${cashPaymentSelected || cardPaymentSelected || secondaryPaymentMethod ? '' : 'border-top-dashed'}`}>
+                <span className='payment-label'>{paymentLabels.loyaltycard}:</span>
+                <div className='payment-input-wrapper'>
+                  <input
+                    ref={balancePaymentInputRef}
+                    type='text'
+                    inputMode='none'
+                    value={balanceAmount ? formatNumberUZS(balanceAmount) : ''}
+                    onChange={(e) => setBalanceAmount(e.target.value.replace(/\D/g, ''))}
+                    onFocus={() => setFocusedPaymentInput('balance')}
+                    placeholder={formatNumberUZS(Math.max(totalAmount - Number(receivedAmount || 0) - Number(cardPaymentAmount || 0) - Number(secondaryPaymentAmount || 0), 0))}
+                    className='received-amount-input'
+                  />
+                  <button
+                    className='received-amount-clear'
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => setBalanceAmount('')}
                   >
                     C
                   </button>
