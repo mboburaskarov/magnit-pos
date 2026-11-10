@@ -41,6 +41,8 @@ import PosZReportClosedModal from './PosZReportClosedModal'
 import PosOnScreenKeyboard from './PosOnScreenKeyboard'
 import PosLiveSearchPanel from './PosLiveSearchPanel'
 
+const CUSTOMER_SEARCH_DEBOUNCE_MS = 500
+
 export default function PosApp() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -492,14 +494,25 @@ export default function PosApp() {
     return activeCartItems.reduce((acc, item) => acc + (item.discount_price || 0) + (Number(item.nx_discount_amount) || 0), 0)
   }, [activeCartItems])
 
+  // Wait for the typing (or a scanner's burst) to stop before asking the
+  // server: every prefix of a card code would otherwise be its own lookup.
+  const [debouncedCustomerSearchTerm, setDebouncedCustomerSearchTerm] = useState('')
+  useEffect(() => {
+    const timeoutId = setTimeout(() => setDebouncedCustomerSearchTerm(customerSearchTerm), CUSTOMER_SEARCH_DEBOUNCE_MS)
+    return () => clearTimeout(timeoutId)
+  }, [customerSearchTerm])
+
   // Search customers query
-  const { data: customersRes, isLoading: isSearchingCustomers } = useQuery(
-    ['customersList', customerSearchTerm],
-    () => requests.getAllCustomersForSale({ search: customerSearchTerm }),
+  const { data: customersRes, isLoading: isLoadingCustomers } = useQuery(
+    ['customersList', debouncedCustomerSearchTerm],
+    () => requests.getAllCustomersForSale({ search: debouncedCustomerSearchTerm }),
     {
-      enabled: customerSearchTerm.length >= 3,
+      enabled: debouncedCustomerSearchTerm.length >= 3,
     },
   )
+  // still "searching" while the debounce is pending, or the panel would flash "add new"
+  const isSearchingCustomers =
+    isLoadingCustomers || (customerSearchTerm.length >= 3 && customerSearchTerm !== debouncedCustomerSearchTerm)
 
   // API returns null (not undefined) when there are no matches, so get()'s default never applies
   const customersList = get(customersRes, 'data.data.data') || []
