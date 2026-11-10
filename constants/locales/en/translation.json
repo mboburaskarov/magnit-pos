@@ -704,6 +704,8 @@
   "pos.sale_previously_sent_epos": "Sale was previously sent to EPOS: {{message}}",
   "pos.epos_error_generic": "EPOS error",
   "pos.result_error": "Result error: {{detail}}",
+  "pos.fiscal_provider_changed": "The fiscal provider for this cashbox was changed. Data refreshed — press Finish again.",
+  "pos.fiscal_replacement_issued": "Partial return: a new receipt was issued for the goods the customer kept, fiscal sign {{sign}}.",
   "pos.zreport_open_failed": "Could not open the Z-report",
   "pos.zreport_closed_confirm_toast": "The Z-report is closed. Open it to finish the sale.",
   "pos.products_loading_retry": "Products are loading. Please try again shortly.",

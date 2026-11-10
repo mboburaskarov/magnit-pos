@@ -704,6 +704,8 @@
   "pos.sale_previously_sent_epos": "Oldin EPOSga yuborilgan savdo: {{message}}",
   "pos.epos_error_generic": "EPOS xatoligi",
   "pos.result_error": "Natija xatoligi: {{detail}}",
+  "pos.fiscal_provider_changed": "Ushbu kassa uchun fiskal provayder o‘zgartirildi. Ma’lumotlar yangilandi — «Yakunlash» tugmasini yana bosing.",
+  "pos.fiscal_replacement_issued": "Qisman qaytarish: mijoz olib qolgan tovarlar uchun yangi chek berildi, fiskal belgi {{sign}}.",
   "pos.zreport_open_failed": "ZReportni ochib bo'lmadi",
   "pos.zreport_closed_confirm_toast": "ZReport yopiq. Sotuvni yakunlash uchun uni oching.",
   "pos.products_loading_retry": "Mahsulotlar yuklanmoqda. Iltimos, birozdan so'ng qayta urinib ko'ring.",
