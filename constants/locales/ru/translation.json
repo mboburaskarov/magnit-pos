@@ -790,6 +790,7 @@
   "pos.sale_previously_sent_epos": "Продажа ранее отправлена в EPOS: {{message}}",
   "pos.epos_error_generic": "Ошибка при EPOS",
   "pos.result_error": "Ошибка результата: {{detail}}",
+  "pos.fiscal_provider_changed": "Провайдер фискализации для этой кассы изменён. Данные обновлены — нажмите «Завершить» ещё раз.",
   "pos.zreport_open_failed": "Не удалось открыть ZReport",
   "pos.zreport_closed_confirm_toast": "ZReport закрыт. Откройте его, чтобы завершить продажу.",
   "pos.products_loading_retry": "Продукты загружаются. Пожалуйста, повторите попытку позже.",

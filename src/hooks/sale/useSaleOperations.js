@@ -58,6 +58,7 @@ export const useSaleOperations = ({
   markingsList,
   markingRequiredForAll = false,
   fiscalProvider = 'uzpos',
+  refreshCart,
   dmedOrganizedList,
   dmedPrescriptionsList,
   serviceType,
@@ -357,6 +358,14 @@ export const useSaleOperations = ({
       setHasError({ hasError: true, errorType: 'Epos result' })
 
       setOpenRefreshDialog(false)
+      // An admin moved this cashbox to another fiscal provider after the cart was
+      // read. Re-read the cart (it carries the provider) so the next press of the
+      // finish button goes the right way, and say so instead of an opaque error.
+      if (get(response, 'data.data') === 'fiscal.provider.changed') {
+        refreshCart?.()
+        error(t('pos.fiscal_provider_changed'))
+        return
+      }
       error(t('pos.result_error', { detail: get(response, 'data.data') }))
     },
   })

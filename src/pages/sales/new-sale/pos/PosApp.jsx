@@ -601,6 +601,7 @@ export default function PosApp() {
       markingsList,
       markingRequiredForAll,
       fiscalProvider,
+      refreshCart: refetchCart,
       dmedOrganizedList,
       dmedPrescriptionsList,
       serviceType: 'other',
