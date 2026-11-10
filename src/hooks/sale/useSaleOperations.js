@@ -349,6 +349,13 @@ export const useSaleOperations = ({
         const receipt = get(data, 'data.fiscal_receipt')
         setQrcodeUrl({ qr: receipt.qr_code_url || 'pending', fiscal: receipt.fiscal_sign || 'pending', terminalId: receipt.terminal_id || 'pending', cardType: cartOwnerType })
       }
+      // A partial return at Paylov reverses the WHOLE receipt, so the goods the
+      // customer kept were registered again under a new one. Tell the cashier it
+      // exists — it is the receipt that stands for what the customer keeps.
+      const replacement = get(data, 'data.replacement_receipt')
+      if (replacement?.fiscal_sign) {
+        success(t('pos.fiscal_replacement_issued', { sign: replacement.fiscal_sign }))
+      }
       setNewSaleId(get(data, 'data.id', false))
       setDmedPrescriptionsList([])
       setDmedOrganizedList([])

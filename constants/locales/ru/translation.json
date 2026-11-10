@@ -791,6 +791,7 @@
   "pos.epos_error_generic": "Ошибка при EPOS",
   "pos.result_error": "Ошибка результата: {{detail}}",
   "pos.fiscal_provider_changed": "Провайдер фискализации для этой кассы изменён. Данные обновлены — нажмите «Завершить» ещё раз.",
+  "pos.fiscal_replacement_issued": "Возврат частичный: выдан новый чек на оставшиеся товары, фискальный признак {{sign}}.",
   "pos.zreport_open_failed": "Не удалось открыть ZReport",
   "pos.zreport_closed_confirm_toast": "ZReport закрыт. Откройте его, чтобы завершить продажу.",
   "pos.products_loading_retry": "Продукты загружаются. Пожалуйста, повторите попытку позже.",
