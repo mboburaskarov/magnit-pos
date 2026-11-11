@@ -2,7 +2,7 @@ import LogoMain from '@icons/LogoMain'
 import RussianFlagIcon from '@icons/RussianFlagIcon'
 import UzbekistanFlagIcon from '@icons/UzbekistanFlagIcon'
 import UkFlagIcon from '@icons/UkFlagIcon'
-import { Search, User, X, Printer, RefreshCw, Languages, Users, Lock, FileText, LogOut, ChevronRight } from 'lucide-react'
+import { Search, User, X, Printer, RefreshCw, Languages, Users, Lock, FileText, LogOut, ChevronRight, Banknote } from 'lucide-react'
 import './PosLayout.css'
 
 export const APP_VERSION = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '1.0.1'
@@ -27,6 +27,7 @@ export default function POSHeader({
   receiptNumber,
   isReturnSale,
   onOpenPrinterSettings,
+  onOpenCashDrawer,
   isAgentRunning,
   onHardRefresh,
   onFocusLiveSearch,
@@ -139,6 +140,15 @@ export default function POSHeader({
             title={t('pos.search_title')}
           >
             <Search size={18} />
+          </button>
+
+          <button
+            type='button'
+            className='pos-header-btn'
+            onClick={(e) => { onOpenCashDrawer(); setTimeout(() => e.currentTarget?.blur(), 0) }}
+            title={t('pos.open_cash_drawer')}
+          >
+            <Banknote size={18} />
           </button>
 
           <button

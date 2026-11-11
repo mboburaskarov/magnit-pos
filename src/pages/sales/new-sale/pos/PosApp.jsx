@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { get } from 'lodash'
 import { requests } from '@utils/requests'
 import { error, success } from '@utils/toast'
+import { playAttentionSound } from '@utils/attentionSound'
 import { extractNumbers, checkBarcodeWithMarking } from '@utils/checkingMarkingWithBarcode'
 import { isLooseWeightLine, markingSlotCount, hasMarkingShape } from '@utils/posLines'
 import { containsCyrillic, convertoRuOrEngToEng } from '@utils/convertoRuOrEngToEng'
@@ -1335,12 +1336,14 @@ export default function PosApp() {
           delete next[searchBarcode]
           return next
         })
+        playAttentionSound()
         error(t('product_not_found'))
         return
       }
 
       // If multiple products match, let the cashier pick one
       if (productsList.length > 1) {
+        playAttentionSound()
         setPendingWeightGrams(weightGrams)
         setPendingScannedValue(scannedBarcode)
         setProductSelectList(productsList)
@@ -1372,6 +1375,7 @@ export default function PosApp() {
         delete next[searchBarcode]
         return next
       })
+      playAttentionSound()
       error(t('pos.error_searching_product'))
       console.error(err)
     }
@@ -1854,6 +1858,24 @@ export default function PosApp() {
     }, 100)
   }
 
+  // Kicks the physical cash drawer through the device agent (the same call a
+  // cash sale makes before printing). Guarded so a double tap sends one pulse.
+  const isOpeningDrawerRef = useRef(false)
+  const handleOpenCashDrawer = async () => {
+    if (isOpeningDrawerRef.current) return
+    isOpeningDrawerRef.current = true
+    try {
+      await axios.post(`${activeAgentUrl}/cash-drawer/open`, null, { timeout: 5000 })
+      success(t('pos.cash_drawer_opened'))
+    } catch (err) {
+      error(get(err, 'response.data.message') || t('pos.cash_drawer_open_failed'))
+    } finally {
+      setTimeout(() => {
+        isOpeningDrawerRef.current = false
+      }, 1000)
+    }
+  }
+
   const handleHardRefreshRequest = () => {
     if (cartItems && cartItems.length > 0) {
       setShowHardRefreshConfirmation(true)
@@ -2121,6 +2143,7 @@ export default function PosApp() {
         receiptNumber={cashBoxDetails?.data?.data?.sale_number || '--'}
         isReturnSale={get(cashBoxDetails, 'data.data.sale_type') === 'RETURN'}
         onOpenPrinterSettings={() => { handleCloseLiveSearch(); setShowPrinterSettings(true) }}
+        onOpenCashDrawer={handleOpenCashDrawer}
         isAgentRunning={isAgentRunning}
         onHardRefresh={handleHardRefreshRequest}
         onFocusLiveSearch={() => {
