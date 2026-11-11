@@ -180,8 +180,22 @@ export default function ProductTable({
                             title={item.nx_promo_name || t('pos.nx.badge_title')}
                           >
                             <Gift size={12} strokeWidth={2.4} />
-                            {item.nx_rule || ''}
-                            {nxDiscounted ? ` · ${t('pos.nx.free_count', { count: item.nx_free_quantity || 0 })}` : ''}
+                            {/* a weight side of the rule is kilograms and a weight line's
+                                free amount a fractional kg, not a count of packs */}
+                            {(() => {
+                              // each side of the rule carries its own unit: "1 кг+2"
+                              const [buy = '', free = ''] = String(item.nx_rule || '').split('+')
+                              const kg = ` ${t('pos.unit.kg')}`
+                              return `${buy}${item.nx_buy_weight ? kg : ''}+${free}${item.nx_free_weight ? kg : ''}`
+                            })()}
+                            {nxDiscounted
+                              ? ` · ${t('pos.nx.free_count', {
+                                  count:
+                                    item.unit_per_pack === 1000
+                                      ? `${String(Number(item.nx_free_quantity || 0)).replace('.', ',')} ${t('pos.unit.kg')}`
+                                      : item.nx_free_quantity || 0,
+                                })}`
+                              : ''}
                           </span>
                         )}
                       </div>
