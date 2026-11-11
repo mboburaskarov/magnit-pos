@@ -13,6 +13,7 @@ import LoadingContainer from '@components/LoadingContainer'
 import thousandDivider from '@utils/thousandDivider'
 import { error, success } from '@utils/toast'
 import { requests } from '@utils/requests'
+import { usesEposShift } from '@utils/terminalAccess'
 import { buildZReportReceiptLines, useReceiptTemplateSync } from '@utils/receiptTemplate'
 
 const ACCENT = '#111217'
@@ -838,8 +839,24 @@ function CloseShiftPage() {
     setAmounts((a) => ({ ...a, [target]: formatResultForEntry(result) }))
   }
 
-  const startClose = () => {
+  const startClose = async () => {
     setPrintError(null)
+    // A Paylov cashbox has no Z-report to print or close. If the cashbox was on
+    // EPOS earlier in this shift an EPOS Z-report may still be open on the till,
+    // so try to close it quietly (short timeout, any failure ignored) — it must
+    // never block closing the shift.
+    if (!usesEposShift(operationDetail.fiscal_provider)) {
+      try {
+        await Promise.race([
+          requests.closeZReport({ token: 'DXJFX32CN1296678504F2', method: 'closeZreport' }),
+          new Promise((resolve) => setTimeout(resolve, 3000)),
+        ])
+      } catch (e) {
+        // EPOS absent or Z-report not open: nothing to close
+      }
+      submitRegister()
+      return
+    }
     closeZReport({
       token: 'DXJFX32CN1296678504F2',
       method: 'closeZreport',

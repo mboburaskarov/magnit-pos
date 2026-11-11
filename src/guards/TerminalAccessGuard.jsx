@@ -112,7 +112,15 @@ export default function TerminalAccessGuard({ children }) {
     return normalizeUserData(getLocalUserData())
   }, [userData, userInfo?.data?.data])
 
-  const shouldCheckTerminal = Boolean(import.meta.env.VITE_MODE !== 'dev' && accessToken && !isLoginPage && currentUser?.id && currentUser?.store && hasAccess('check-terminal-id', currentUser))
+  // A Paylov cashbox has no EPOS terminal to match against (provider saved at login).
+  const isPaylovCashbox = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('selected_cashbox') || 'null')?.fiscal_provider === 'paylov'
+    } catch (e) {
+      return false
+    }
+  })()
+  const shouldCheckTerminal = Boolean(!isPaylovCashbox && import.meta.env.VITE_MODE !== 'dev' && accessToken && !isLoginPage && currentUser?.id && currentUser?.store && hasAccess('check-terminal-id', currentUser))
   const validationKey = `${accessToken || 'no-token'}:${currentUser?.id || 'no-user'}:${currentUser?.store?.id || 'no-store'}`
 
   useEffect(() => {

@@ -68,3 +68,7 @@ export const isZReportAlreadyOpen = (message) =>
 // True when EPOS considers the Z-report open: it either just opened it, or it
 // refused because the report was open all along.
 export const isZReportOpenOk = (data) => get(data, 'error', true) == false || isZReportAlreadyOpen(get(data, 'message', ''))
+
+// A Paylov cashbox is fiscalized server-side and has no EPOS Z-report, so only
+// the other providers open/close one. Unknown/missing means EPOS (old behaviour).
+export const usesEposShift = (provider) => provider !== 'paylov'

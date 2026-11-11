@@ -12,7 +12,7 @@ import { request, eposRequest } from '../../../utils/axios'
 import { fetchMachineId } from '../../../utils/deviceAgent'
 import { isDevEnvironment } from '../../../utils/isDevEnvironment'
 import thousandDivider from '../../../utils/thousandDivider'
-import { isZReportOpenOk } from '../../../utils/terminalAccess'
+import { isZReportOpenOk, usesEposShift } from '../../../utils/terminalAccess'
 import { setUserData } from '../../redux-toolkit/userSlice'
 import { bypassNextAppExit } from '../../hooks/useExitConfirm'
 import LoadingContainer from '/components/LoadingContainer'
@@ -814,6 +814,7 @@ export default function LoginPage() {
           store_id: storeId,
           store_name: cashbox?.store_name || employee?.store?.name,
           is_open: true,
+          fiscal_provider: cashbox?.fiscal_provider,
         }),
       )
     }
@@ -824,7 +825,10 @@ export default function LoginPage() {
     // no-op when it's already open (ERROR_ZREPORT_IS_ALREADY_OPEN), so it's
     // safe to fire without blocking login; if it still fails, the sale screen
     // offers the same fix reactively when a sale actually hits the error.
-    requests.openZReport({ token: 'DXJFX32CN1296678504F2', method: 'openZreport' }).catch(() => {})
+    // A Paylov cashbox has no EPOS Z-report at all, so there is nothing to open.
+    if (usesEposShift(cashbox?.fiscal_provider)) {
+      requests.openZReport({ token: 'DXJFX32CN1296678504F2', method: 'openZreport' }).catch(() => {})
+    }
 
     try {
       const checkRes = await requests.checkSaleExist({ store_id: storeId, cash_box_id: cashBoxId, device_id })
@@ -864,16 +868,18 @@ export default function LoginPage() {
     setOpenError('')
 
     try {
-      const zRes = await requests.openZReport({ token: 'DXJFX32CN1296678504F2', method: 'openZreport' })
-      const zData = zRes?.data
-      const zOk = isZReportOpenOk(zData)
-      if (!zOk) {
-        const msg = get(zData, 'message', '')
-        setOpenError(msg.includes('Ru:') ? msg.split('Ru:')[1] : msg || t('login.open_shift_failed'))
-        setIsOpening(false)
-        return
+      if (usesEposShift(cashbox?.fiscal_provider)) {
+        const zRes = await requests.openZReport({ token: 'DXJFX32CN1296678504F2', method: 'openZreport' })
+        const zData = zRes?.data
+        const zOk = isZReportOpenOk(zData)
+        if (!zOk) {
+          const msg = get(zData, 'message', '')
+          setOpenError(msg.includes('Ru:') ? msg.split('Ru:')[1] : msg || t('login.open_shift_failed'))
+          setIsOpening(false)
+          return
+        }
+        localStorage.setItem('leftZreportCount', get(zData, 'leftZreportCount', 999))
       }
-      localStorage.setItem('leftZreportCount', get(zData, 'leftZreportCount', 999))
 
       const device_id = localStorage.getItem('device_id') || crypto.randomUUID()
       localStorage.setItem('device_id', device_id)
@@ -902,6 +908,7 @@ export default function LoginPage() {
           store_id: storeId,
           store_name: cashbox?.store_name || employeeData?.store?.name,
           is_open: true,
+          fiscal_provider: cashbox?.fiscal_provider,
         }),
       )
       bypassNextAppExit()
