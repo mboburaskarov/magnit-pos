@@ -648,14 +648,35 @@ function CloseShiftPage() {
     },
   })
 
+  // Which getZreportInfo index holds the shift that was just closed. Index 0 is
+  // the module's current shift and 1 the one before it. Some modules (v4) keep
+  // the closed shift as the current one until the next shift is opened, others
+  // — or any till that opens the next shift straight away — move it to index 1,
+  // so a fixed index prints the wrong shift's times and fiscal totals. A
+  // current shift that carries a close time IS the one just closed; otherwise
+  // it is a newer shift and ours is one back. (Read-only probe: doNotPrint.)
+  const findClosedZReportId = async () => {
+    try {
+      const { data } = await requests.closeCheckZReport({
+        token: 'DXJFX32CN1296678504F2',
+        method: 'getZreportInfo',
+        zReportId: 0,
+        doNotPrint: true,
+      })
+      return get(data, 'message.closeTime') ? 0 : 1
+    } catch (e) {
+      return 1
+    }
+  }
+
   const { mutate: closeZReport, isLoading: iscloseZReport } = useMutation(requests.closeZReport, {
-    onSuccess: ({ data }) => {
+    onSuccess: async ({ data }) => {
       if (get(data, 'message', '').includes('ERROR_ZREPORT_IS_NOT_OPEN') || get(data, 'error', true) == false) {
         closeCheckZReport({
           token: 'DXJFX32CN1296678504F2',
           method: 'getZreportInfo',
           printerSize: 80,
-          zReportId: 1,
+          zReportId: await findClosedZReportId(),
         })
         success(t('close_shift.register_closed_success'))
         return
