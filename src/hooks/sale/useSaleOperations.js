@@ -635,12 +635,13 @@ export const useSaleOperations = ({
         printerSize: 58,
         phoneNumber: get(userData, 'store.phone'),
         companyPhoneNumber: '+998712916999',
-        is_corporate: cartOwnerType === 'corporative',
+        // E-POS wants the card kind as extraInfo.cardType (1 corporate, 2 personal);
+        // the old is_corporate flag is not part of its contract.
+        extraInfo: { cardType: cartOwnerType === 'corporative' ? 1 : 2 },
         params: {
           ...(SALE_TYPE === 'SALE' ? { externalId: `${SALE_NUMBER}` } : {}),
           clientName: get(customerId, 'name'),
           items,
-          is_corporate: cartOwnerType === 'corporative',
 
           receivedCash: parseFloat(
             (
