@@ -1476,6 +1476,19 @@ export default function PosApp() {
     setPendingScannedValue(null)
   }
 
+  // A scale label (prefix 26/27, 5-digit product code, 5-digit weight, check digit)
+  // is not any product's barcode — weight goods have none — so searching the raw
+  // digits finds nothing. Decode it the way the scanner path does: the product
+  // code (leading zeros dropped) is what to search for, the weight rides along.
+  // Needs the full label (12–13 digits) so a half-typed number is left alone.
+  const decodeScaleBarcode = (value) => {
+    if (!/^2[67]\d{10,11}$/.test(value)) return null
+    const productCode = value.slice(2, 7)
+    const weightGrams = parseInt(value.slice(7, 12), 10)
+    if (!(weightGrams > 0)) return null
+    return { searchTerm: productCode.replace(/^0+/, '') || productCode, weightGrams }
+  }
+
   const triggerLiveSearch = async (query) => {
     const searchId = ++latestSearchIdRef.current
     setIsLiveSearchLoading(true)
@@ -1486,7 +1499,7 @@ export default function PosApp() {
 
       const res = await requests.getAllStoreProducts(
         { id: storeId },
-        { search: query, offset: 0, limit: 30 }
+        { search: decodeScaleBarcode(query)?.searchTerm ?? query, offset: 0, limit: 30 }
       )
 
       if (searchId !== latestSearchIdRef.current) return
@@ -1512,15 +1525,8 @@ export default function PosApp() {
   }
 
   const handleLiveProductSelect = (product) => {
-    let weightGrams = null
     const searchBarcode = product.barcode
-    const inputVal = topbarSearchTerm.trim()
-    if (inputVal.startsWith('26') || inputVal.startsWith('27')) {
-      const parsed = parseInt(inputVal.slice(7, 12), 10)
-      if (!isNaN(parsed) && parsed > 0) {
-        weightGrams = parsed
-      }
-    }
+    const weightGrams = decodeScaleBarcode(topbarSearchTerm.trim())?.weightGrams ?? null
 
     addProductToCart(product, weightGrams, null, searchBarcode)
     
