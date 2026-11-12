@@ -974,6 +974,23 @@ export default function PosApp() {
     }
   }, [cashBoxDetails])
 
+  // A refund goes back to the card the sale was paid with, so a return of a
+  // corporate-card sale starts with «Корпоративная карта» ticked instead of
+  // registering the refund as a personal card. Applied when a card tender is
+  // picked (the checkbox only exists then, and the payment-view resets would
+  // wipe an earlier value); the cashier can still untick it.
+  const returnParentId =
+    get(cashBoxDetails, 'data.data.sale_type') === 'RETURN' ? get(cashBoxDetails, 'data.data.parent_id') : undefined
+  const { data: returnParentSale } = useQuery(
+    ['returnParentSale', returnParentId],
+    () => requests.getCashBoxDetaildWithSaleId(returnParentId),
+    { enabled: Boolean(returnParentId) },
+  )
+  const returnParentIsCorporate = get(returnParentSale, 'data.data.is_corporate') === true
+  useEffect(() => {
+    if (cardPaymentType && returnParentIsCorporate) setCartOwnerType('corporative')
+  }, [cardPaymentType, returnParentIsCorporate])
+
   // ── Handlers ──
   const handleQuickCash = (amount) => {
     if (focusedPaymentInput === 'balance' && balanceSelected) {
